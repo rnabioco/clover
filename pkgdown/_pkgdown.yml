@@ -1,0 +1,7 @@
+url: https://rnabioco.github.io/clover/
+
+template:
+  bootstrap: 5
+  package: rbitemplate
+  bslib:
+    primary: "#009E73"
