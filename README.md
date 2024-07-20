@@ -1,0 +1,113 @@
+
+
+<!-- README.md is generated from README.qmd. Please edit that file -->
+
+# clover
+
+<!-- badges: start -->
+
+[![R-CMD-check](https://github.com/rnabioco/clover/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rnabioco/clover/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+clover facilitates analysis and plotting of nanopore tRNA sequencing
+data.
+
+🚧 **clover is under active development.** Caveat emptor. 🚧
+
+## Installation
+
+You can install the development version of clover from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("rnabioco/clover")
+```
+
+## Example
+
+clover uses a `SummarizedExperiment::RangedSummarizedExperiment()` to
+store data associated with nanopore tRNA sequencing experiments. Here’s
+an example of how to create the object, which includes:
+
+- `fa`: a FASTA file containing the tRNA reference sequences.
+- `pod5`: a list of pod5 files, one per experiment. Merge pod5 files
+  with the [pod5 tool](https://github.com/nanoporetech/pod5-file-format)
+  and `pod5 merge *.pod5`
+- `bam`: a list of BAM files, one per experimetnt, each containing
+  **reads aligned** to the tRNA FASTA reference.
+- `mod_bed` \[*optional*\]: a
+  [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) file
+  containing sites of tRNA modification.
+
+``` r
+library(clover)
+
+rse_clover <- create_clover(
+  pod5    = list(
+    "grande" = clover_data("grande.pod5"),
+    "petite" = clover_data("petite.pod5")
+  ),
+  bam     = list(
+    "grande" = clover_data("grande.bam"),
+    "petite" = clover_data("petite.bam")
+  ),
+  fa      = clover_data("yeast.trna.fa.gz"),
+  mod_bed = clover_data("yeast.trna.mods.bed.gz")
+)
+
+rse_clover
+```
+
+The object contains data in the following slots:
+
+- `exp`: expression levels, per-tRNA.
+- `berror`: base-calling error rates, per-tRNA and per-position.
+
+## Plots
+
+clover provides plotting functions to visualize tRNA-related data.
+
+The plots below illustrate the base-calling error rates and secondary
+structure of a tRNA molecule in the **grande** *S. cerevisiae* strain.
+The error rates are shown as a heatmap, with the x-axis representing the
+position in the tRNA molecule and the y-axis representing the tRNA
+molecule itself.
+
+``` r
+plot_bcerror_heatmap(rse_clover)
+```
+
+The secondary structure is shown as a dot-bracket diagram, with the
+nucleotides colored by their base-calling error rates
+
+``` r
+plot_trna_structure(
+  rse_clover,
+  exp = "grande",
+  ref = "tRNA-Gly-GCC-1-1"
+)
+```
+
+## Comparison
+
+clover also provides functions to compare two
+`RangedSummarizedExperiment` objects corresponding to two experiments.
+
+Here we calculate differential expression and modification of tRNAs
+prepared from **grande** and **petite** *S. cerevisiae* strains. The
+**petite** strain lacks mitochondrial DNA and its encoded tRNAs.
+
+``` r
+calc_diff_exp(rse_clover)
+
+calc_diff_mod(rse_clover)
+```
+
+## Related work
+
+- [R2easyR](https://github.com/JPSieg/R2easyR) vizualizes structure
+  probing signals on RNA secondary structure diagrams.
+- [nanoblot](https://github.com/SamDeMario-lab/NanoBlot) faciliates
+  visualization nanopore sequencing data, including a “virtual gel”
+  plot.
