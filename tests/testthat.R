@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(cloverleaf)
+library(clover)
 
-test_check("cloverleaf")
+test_check("clover")

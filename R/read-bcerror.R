@@ -1,21 +1,37 @@
 #' Read base-calling error (bcerror) TSV files.
 #'
-#' bcerror files can be created by x, y, z.
+#' bcerror files are generated with [detectrms](https://github.com/rnabioco/detectrms-rs)
 #'
 #' @examples
-#' bcerror_file <- clover_example("grande.bcerror.tsv.xz")
-#' read_bcerror(bcerror_file)
+#' bcerr_path <- clover_example("yeast/grande.bcerr.tsv.gz")
+#' read_bcerror(bcerr_path)
+#'
+#' @param bcerr_path Path to bcerror file.
 #'
 #' @return A tibble
-#' @param path Path to bcerror file.
 #' @export
-read_bcerror <- function(path) {
+read_bcerror <- function(bcerr_path) {
+
   col_names <- c(
-    "ref", "pos", "n_span", "n_base_mapped",
-    "freq_a", "freq_t", "freq_g", "freq_c", "freq_n",
-    "freq_mm", "freq_ins", "freq_del", "freq_bcerror",
-    "qual_mean"
+    "ref", "pos", "base", "strand",
+    "cov", "q_mean", "q_median", "q_std",
+    "mis", "ins", "del", "ACGT"
   )
 
-  readr::read_tsv(path, col_names = col_names, skip = 1)
+  readr::read_tsv(
+    bcerr_path,
+    col_names = col_names,
+    skip = 1,
+    show_col_types = FALSE
+  ) |>
+    dplyr::mutate(
+      pos = as.integer(pos)
+    ) |>
+    tidyr::separate(
+      ACGT,
+      into = c("na", "nc", "ng", "nt"),
+      sep = ":",
+      convert = TRUE
+    )
+
 }
