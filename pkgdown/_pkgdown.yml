@@ -5,3 +5,16 @@ template:
   package: rbitemplate
   bslib:
     primary: "#009E73"
+
+reference:
+  - title: Read
+    contents:
+    - starts_with("read_")
+
+  - title: Create
+    contents:
+    - starts_with("create_")
+
+  - title: Utilities
+    contents:
+    - clover_example

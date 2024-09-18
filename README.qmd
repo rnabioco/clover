@@ -46,15 +46,15 @@ Here's an example of how to create the object, which includes:
 library(clover)
 
 rse_clover <- create_clover(
-  pod5    = list(
+  pod5 = list(
     "grande" = clover_data("grande.pod5"),
     "petite" = clover_data("petite.pod5")
   ),
-  bam     = list(
+  bam = list(
     "grande" = clover_data("grande.bam"),
     "petite" = clover_data("petite.bam")
   ),
-  fa      = clover_data("yeast.trna.fa.gz"),
+  fa = clover_data("yeast.trna.fa.gz"),
   mod_bed = clover_data("yeast.trna.mods.bed.gz")
 )
 

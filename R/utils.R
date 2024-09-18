@@ -3,7 +3,7 @@
 #' @param path path to file
 #'
 #' @examples
-#' clover_example("bcerror.tsv.gz")
+#' clover_example("yeast/grande.bcerr.tsv.gz")
 #'
 #' @export
 clover_example <- function(path) {

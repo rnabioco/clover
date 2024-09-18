@@ -2,18 +2,23 @@
 % Please edit documentation in R/read-bcerror.R
 \name{read_bcerror}
 \alias{read_bcerror}
-\title{Read base-calling error (bcerror) TSV files.}
+\title{Read base-calling error ("bcerror") TSV files.}
 \usage{
-read_bcerror(bcerr_path)
+read_bcerror(bcerr_path, raw = FALSE)
 }
 \arguments{
 \item{bcerr_path}{Path to bcerror file.}
+
+\item{raw}{Logical, return raw data.}
 }
 \value{
 A tibble
 }
 \description{
 bcerror files are generated with \href{https://github.com/rnabioco/detectrms-rs}{detectrms}
+}
+\details{
+\code{error_rate} is the sum of \code{mis}, \code{ins}, and \code{del}.
 }
 \examples{
 bcerr_path <- clover_example("yeast/grande.bcerr.tsv.gz")
