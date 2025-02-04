@@ -1,52 +1,45 @@
-import tempfile
 import argparse
+import tempfile
+import shutil
+from Bio import SeqIO
 
+"""
+input: 
+1. afa: reference file generated from a cmalignment (esl-reformat .sto -> .afa)
+
+x. increase flexibility in input file formats resulting in handling header line differently
+
+"""
 class StandardizeAFA:
-    def __init__(self, input_file, output_file):
-        self.input_file = input_file
-        self.output_file = output_file
-        self.conversion = {
-            'I': 'A', '3': 'T', '!': 'T', '$': 'T', 'N': 'T', '2': 'T', '#': 'G', ')': 'T',
-            'Q': 'G', '1': 'T', 'P': 'T', 'V': 'T', '⊄': 'G', 'S': 'T', '{': 'T', 'B': 'C',
-            'M': 'C', 'ʆ': 'G', 'J': 'T', '9': 'G', '.': 'A', 'ʭ': 'T', 'ƕ': 'T', '>': 'C', '*': 'A'
-        }
+    
+    
+    def __init__(self, afa):
+        """ Initialize inputs afa """
+        self.afa = afa
+        
 
-    def convert_anticodon(self, anticodon):
-        return f"{''.join(self.conversion.get(char, char) for char in anticodon)}-{anticodon}"
+    # this function is now fixed
+    def clean_headers(self):
+        """ Standardize the FASTA headers, add adapters, and replace afa with standardized afa """
+        
+        with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp_file:
+            temp_filename = temp_file.name  # Get temp file path
 
-    def clean_fasta_header(self, intermediate_file):
-        with open(self.input_file, 'r') as infile, open(intermediate_file, 'w') as outfile:
-            for line in infile:
-                if line.startswith('>'):
-                    parts = line.split('|')
-                    type_, amino_acid, anticodon, location = parts[1], parts[2], parts[3].replace('U', 'T'), parts[5].strip().lower()
-                    if amino_acid == "Ini":
-                        amino_acid = "iMet"
-                    anticodon_converted = self.convert_anticodon(anticodon.strip())
-                    prefix = 'mito' if 'mitochondrion' in location else 'nuc'
-                    outfile.write(f'>{prefix}-{type_}-{amino_acid}-{anticodon_converted}\n')
-                else:
-                    outfile.write(line)
+            with open(self.afa) as infile, open(self.output_file, 'w') as outfile:
+                for record in SeqIO.parse(infile, "fasta"):
 
-    def clean_and_modify_sequences(self, intermediate_file):
-        unique_entries = set()
-        with open(intermediate_file, 'r') as infile, open(self.output_file, 'w') as outfile:
-            for line in infile:
-                if line.startswith('>'):
-                    header = line.strip()
-                    if len(header.split('-')) < 4:
-                        continue  # Skip invalid headers
-                    sequence = next(infile).strip()
-                    modified_sequence = f'CCUAAGAGCAAGAAGAAGCCUGGN{sequence}GGCUUCUUCUUGCUCUUAGGAAAAAAAAAA'
-                    if (header, modified_sequence) not in unique_entries:
-                        unique_entries.add((header, modified_sequence))
-                        outfile.write(header + '\n' + modified_sequence + '\n')
+                    # remove most irrelevant info from header
+                    parts = record.description.split()
+                    type_, amino_acid, anticodon = parts[0], parts[3], parts[4].replace('U', 'T').replace('(', '').replace(')', '')
+                    header = f'>{type_}-{amino_acid}-{anticodon}'
 
-    def process(self):
-        with tempfile.NamedTemporaryFile(mode='w+', delete=True) as temp_file:
-            self.clean_fasta_header(temp_file.name)
-            temp_file.seek(0)
-            self.clean_and_modify_sequences(temp_file.name)
+                    # add adapters to seq
+                    modified_seq = f'CCUAAGAGCAAGAAGAAGCCUGGN{record.seq}GGCUUCUUCUUGCUCUUAGGAAAAAAAAAA'
+
+                    # write to new file
+                    temp_file.write(header + '\n' + modified_seq + '\n')
+        shutil.move(temp_filename, self.afa)
+        
 
 # Argument Parsing
 if __name__ == "__main__":
