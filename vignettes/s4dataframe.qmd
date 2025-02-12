@@ -1,0 +1,161 @@
+----
+title: build a s4 class data structure
+----
+
+# build a s4 data frame using bioconductor in R
+# create this data frame similar to a summarized experiment
+
+# test data: wildtype charged ecoli sequencing 30 minutes uninfected vs infected (MOI = 10)
+
+```{r}
+load_pkgs <- function(pkgs){
+    failed_pkgs <- c() # Initialize a vector to store failed installations
+    for (pkg in pkgs) {
+        library(pkg, character.only = TRUE, quietly = TRUE)
+
+    }
+    failed_pkgs <<- c(failed_pkgs, pkg)
+        message(sprintf("Failed to load package: %s", pkg))
+
+    if (length(failed_pkgs) > 0) {
+        message("The following packages failed to install or load:")
+        print(failed_pkgs)
+    } else {
+        message("All packages installed and loaded successfully.")
+    }  
+}
+pkgs <- c("tidyverse",
+          "here",
+          "cowplot",
+          "purrr",
+          "ggrepel",
+          "patchwork",
+          "FNN",
+          "fs",
+          "glue",
+          "janitor",
+          "ggokabeito", 
+          "fs",
+          "SummarizedExperiment")
+
+load_pkgs(pkgs)            
+```
+
+# summarized experiment
+```{r}
+library(SummarizedExperiment)
+
+```
+
+
+
+# Load in data in a simple format
+```{r}
+library(SummarizedExperiment)
+# function for generating dataframe from files
+create_df_from_files <- function(results_dir, extension){
+  
+  # file pattern
+  pattern <- glue("\\.{extension}\\.tsv\\.gz$")
+
+  # Get all file paths recursively
+  files <- list.files(results_dir, pattern = pattern, full.names = TRUE, recursive = TRUE)
+
+  # create dataframe 
+  df <- map_dfr(files, ~ read_tsv(gzfile(.x)) |> 
+                 mutate(sample = basename(.x)) |> 
+                 mutate(sample = str_remove(sample, glue("\\.{extension}\\.tsv\\.gz$")))) # Strip file suffix
+  
+  # clean column names
+  df <- clean_names(df)
+
+  # wrangle dataframe:
+  # clean reference name
+  # clean sample name
+  # summarize tRNA counts into family - could reduce granularity
+  # add MOI column 
+  if (extension == "charging.cpm"){
+    df <- df |> 
+    separate_wider_delim(sample, 
+                        delim = "-", 
+                        names = c('date', 'infection_status', 'genotype', 'timepoint')) |> 
+    separate_wider_delim(t_rna, 
+                        delim = "-", 
+                        names = c("origin", "trna", "aa", "anticodon", "family", "species"), 
+                        too_many = "drop",
+                        too_few = "align_start") |> # exclude uncharged ref for now
+    select(-trna) |>
+    group_by(origin, aa, anticodon, species, family, genotype, infection_status, timepoint, date) |> 
+    summarize(
+    charged = sum(charged),
+    uncharged = sum(uncharged),
+    charged_cpm = sum(charged_cpm),
+    uncharged_cpm = sum(uncharged_cpm),
+    .groups = 'drop'  # Optionally ungroup after summarizing
+    ) |> mutate(moi = case_when(
+      date == "20240805" ~ "one",
+      date == "20240813" ~ "one",
+      date == "20241018" ~ "one",
+      date == "20241219" ~ "ten"
+    )) |> 
+    mutate(isodecoder = paste(origin, aa, anticodon, sep = "-"))
+  } 
+
+
+  # wrangle dataframe:
+  # clean reference names
+  # calculate bcerror
+  # clean sample column - make date, moi, sample columns
+  # create isodecoder column 
+  # correct position for 24 nt 3' adapter
+  if (extension == "bcerror"){
+    df <- df |> 
+      separate_wider_delim(sample, 
+                        delim = "-", 
+                        names = c('date', 'infection_status', 'genotype', 'timepoint')) |> 
+      separate_wider_delim(reference, 
+                        delim = "-", 
+                        names = c("origin", "trna", "aa", "anticodon", "family", "species"), 
+                        too_many = "drop",
+                        too_few = "align_start") |>
+      select(-trna) |> 
+      mutate(position = position -24, 
+            isodecoder = paste(origin, aa, anticodon, sep = "-"))  
+  }
+  
+
+
+  # return data frame
+  return(df)
+}
+
+results_dir <- here("inst/extdata/ecoli")
+cpm_extension <- "charging.cpm"
+cpm_df <- create_df_from_files(results_dir, cpm_extension)
+
+# step 1:
+# create matricies for each read category: charged charged-cpm uncharged uncharged-cpm
+# reshape data for raw and normalized read counts
+matrix_maker <- function(df, filter, status){
+    df <- df |> 
+        filter(infection_status == filter) |> 
+        select(genotype, isodecoder, {{status}}) |> 
+        group_by(genotype, isodecoder) |> 
+        summarize(
+            charged = sum({{status}}),
+            .groups = 'drop'
+        ) |> 
+        pivot_wider(
+            names_from = genotype, 
+            values_from = status,
+            values_fill = 0
+        ) |> 
+        column_to_rownames("isodecoder") |> 
+        as.matrix()
+
+    return(df)
+}
+test <- matrix_maker(cpm_df, "uninf", "charged")
+
+
+```
