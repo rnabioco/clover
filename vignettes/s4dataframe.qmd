@@ -1,5 +1,6 @@
 ----
 title: build a s4 class data structure
+description: generate matricies that will be used to combine into a standard summarized experiment object
 ----
 
 # build a s4 data frame using bioconductor in R
@@ -50,11 +51,39 @@ library(SummarizedExperiment)
 
 
 # Load in data in a simple format
+# TODO:
+1. remove unneccessary data files from ecoli folder (done)
+2. generate a readme.md to keep track of the files (done)
+3. set seed and use a small subset of data to test
+4. remove dates from sample names (done)
+ # the idea is that the function will take a tsv file and then generate the summarized experiment. Under the hood i will have to mannully create the matricies that will be joined in to create the object 'metadata', 'assays' etc. 
+
+```{r}
+# build file names
+samples <- c("inf", "uninf")
+replicates <- "r1"
+counts_files <- crossing (id = samples, repl = replicates) |> 
+    mutate(path = path(here(), 'inst/extdata/ecoli', glue("{id}-{repl}.charging.cpm.tsv.gz")))
+
+bc_files <- crossing (id = sample_ids, repl = replicates) |> 
+    mutate(path = path(here(), 'inst/extdata/ecoli', glue("{id}-{repl}.bcerror.tsv.gz")))
+
+
+```
+
+ # function below is not generalizable but should work
 ```{r}
 library(SummarizedExperiment)
-# function for generating dataframe from files
+# 1. First need to bring in data files and clean them.
 create_df_from_files <- function(results_dir, extension){
-  
+  """ 
+  this function can handle cpm counts and basecalling error bcerror.
+  it takes a results directory and file extension to access and read each file that matches the given description.
+  it will then conditionally clean the data frame depending on which type of extension it is.
+  I am not sure this will be generalizable in the future, however, the data frame does need to be built and cleaned prior to S4 construction
+  """
+
+
   # file pattern
   pattern <- glue("\\.{extension}\\.tsv\\.gz$")
 
@@ -92,13 +121,38 @@ create_df_from_files <- function(results_dir, extension){
     charged_cpm = sum(charged_cpm),
     uncharged_cpm = sum(uncharged_cpm),
     .groups = 'drop'  # Optionally ungroup after summarizing
-    ) |> mutate(moi = case_when(
+    ) |> 
+    # specific to ecoli data
+    mutate(moi = case_when(
       date == "20240805" ~ "one",
       date == "20240813" ~ "one",
       date == "20241018" ~ "one",
       date == "20241219" ~ "ten"
     )) |> 
-    mutate(isodecoder = paste(origin, aa, anticodon, sep = "-"))
+    mutate(isodecoder = paste(origin, aa, anticodon, sep = "-"),
+    reference = paste(origin, aa, anticodon, species, family, sep = "-"))
+
+    charged_cpm <- df |> 
+        filter(infection_status == "uninf") |> 
+        select(genotype, reference, charged_cpm) |> 
+        pivot_wider(
+            names_from = genotype, 
+            values_from = charged_cpm,
+            values_fill = 0
+        ) |> 
+        column_to_rownames("reference") |> 
+        as.matrix()
+
+    uncharged_cpm <- df |> 
+        filter(infection_status == "uninf") |> 
+        select(genotype, reference, uncharged_cpm) |> 
+        pivot_wider(
+            names_from = genotype, 
+            values_from = uncharged_cpm,
+            values_fill = 0
+        ) |> 
+        column_to_rownames("reference") |> 
+        as.matrix()
   } 
 
 
@@ -126,15 +180,18 @@ create_df_from_files <- function(results_dir, extension){
 
 
   # return data frame
-  return(df)
+  return(df, charged_cpm, uncharged_cpm)
 }
 
 results_dir <- here("inst/extdata/ecoli")
 cpm_extension <- "charging.cpm"
-cpm_df <- create_df_from_files(results_dir, cpm_extension)
+bc_extension <- "bcerror"
 
-# step 1:
-# create matricies for each read category: charged charged-cpm uncharged uncharged-cpm
+cpm_df <- create_df_from_files(results_dir, cpm_extension)
+bcerr_df < create_df_from_files(results_dir, bc_extension)
+
+# step 2:
+# create matricies for each read category: charged charged-cpm uncharged uncharged-cpm infected and uninfected
 # reshape data for raw and normalized read counts
 matrix_maker <- function(df, filter, status){
     df <- df |> 
@@ -147,7 +204,7 @@ matrix_maker <- function(df, filter, status){
         ) |> 
         pivot_wider(
             names_from = genotype, 
-            values_from = status,
+            values_from = {{status}},
             values_fill = 0
         ) |> 
         column_to_rownames("isodecoder") |> 
