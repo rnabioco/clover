@@ -1,0 +1,14 @@
+Summary:
+E coli infected with T4 (MOI = 10) 30 minutes post infection with time matched no infection control. Charged sequencing was performed 20241219 and aa-tRNA-seq pipeline was used to generate base-calling error tsv and counts per million (includes raw counts) tsvs. This is the intended input into Clover package. Files are stored on bilodeaj bodhi account in aa-tRNA-seq repository.
+
+
+Data files:
+    beevol/home/bilodeaj/devel/projects/aa-tRNA-seq/outputs/tables/20241219-t4-wt-30
+    beevol/home/bilodeaj/devel/projects/aa-tRNA-seq/outputs/tables/20241219-uninf-wt-30
+
+samples
+    inf-r1 -> 20241219-t4-wt-30 - infected wildtype ecoli MOI = 10 30 minutes pi
+    uninf-r1 -> 20241219-uninf-wt-30 - no infection time matched wildtype ecoli (30 mins)
+
+
+
