@@ -11,10 +11,13 @@ knitr:
 ---
 
 ```{r}
+#| label: load-libs
+library(clover)
+```
+
+```{r}
 #| label: create_clover
 #| eval: false
-library(clover)
-
 rse_clover <- create_clover(
   pod5 = list(
     "grande" = clover_data("yeast/grande.pod5"),
