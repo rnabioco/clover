@@ -3,11 +3,12 @@
 #' Plot base-calling error in a heatmap.
 #'
 #' @param tbl tibble of bc-delta values
+#' @param data sequence to structure file
 #' @param title_suffix string
 #' @param include_legend Logical, include legend in the plot.
 #'
 #' @export
-plot_bcerror <- function(data, title_suffix, include_legend = TRUE) {
+plot_bcerror <- function(tbl, data, title_suffix, include_legend = TRUE) {
   data <-
     dplyr::mutate(
       data,
@@ -48,7 +49,7 @@ plot_bcerror <- function(data, title_suffix, include_legend = TRUE) {
       breaks = seq(-0.5, 0.5, by = 0.25)
     ) +
     scale_x_discrete(
-      labels = trna_cons_labels
+      labels = trna_consensus_labels
     ) +
     labs(
       title = paste("Difference in basecalling error", title_suffix),

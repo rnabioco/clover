@@ -1,0 +1,13 @@
+globalVariables(c(
+  "ref",
+  "base",
+  "mis",
+  "ins",
+  "del",
+  "ref",
+  "q_std",
+  "error_rate",
+  "strand",
+  "ACGT",
+  "BC_delta"
+))

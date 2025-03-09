@@ -4,25 +4,21 @@
 \alias{CloverSE}
 \title{Create a SummarizedExperiment}
 \usage{
-CloverSE(counts, fasta, bcerror = NULL, ...)
+CloverSE(counts, fasta, bcerror = NULL, bam = NULL, pod5 = NULL, mods = NULL)
 }
 \arguments{
+\item{counts}{path to counts file}
+
+\item{fasta}{path to the FASTA reference used in alignment}
+
+\item{bcerror}{path to base-calling error file}
+
 \item{bam}{list of BAM files, names are sample names}
 
 \item{pod5}{list of POD5 files, names are samples names}
 
 \item{mods}{TSV file containing modification information}
-
-\item{fa}{path to the FASTA reference used in alignment}
 }
 \description{
 Create a SummarizedExperiment
-}
-\examples{
-counts <- read_counts(clover_example("grande.counts.tsv.gz"))
-bcerror <- read_bcerror(clover_example("grande.bcerror.tsv.gz"))
-fasta <- read_fasta(clover_example("yeast/trna-ref.fa.gz"))
-
-CloverSE(counts, fasta, bcerror)
-
 }

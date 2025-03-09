@@ -1,5 +1,13 @@
 ---
 title: "tRNAs in grande and petite *S. cerevisiae*"
+vignette: >
+  %\VignetteIndexEntry{yeast-trnas}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
 ---
 
 ```{r}

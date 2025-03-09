@@ -6,6 +6,9 @@
 \usage{
 read_mod_annotations(mods)
 }
+\arguments{
+\item{mods}{path to modifications file}
+}
 \description{
 TSV file with 4 columns:
 }

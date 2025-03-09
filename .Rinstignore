@@ -1,0 +1,3 @@
+"BC_delta^inst/extdata/*.bam$
+^inst/extdata/*.bai$
+^inst/extdata/*.pod5$

@@ -6,6 +6,9 @@
 \usage{
 read_fasta(fa)
 }
+\arguments{
+\item{fa}{path to fasta file}
+}
 \description{
 Read FASTA reference
 }

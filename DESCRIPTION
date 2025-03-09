@@ -10,18 +10,14 @@ URL: https://rnabioco.github.io/clover, https://github.com/rnabioco/clover
 Depends:
     R (>= 4.0.0)
 Imports:
-    cli,
-    cowplot,
-    DESeq2,
+    Biostrings,
     dplyr,
-    fs,
-    ggokabeito,
+    forcats,
+    GenomicRanges,
     ggplot2,
-    ggrepel,
-    ggtext,
+    methods,
     readr,
-    Rhtslib,
-    scales,
+    SummarizedExperiment,
     tidyr
 Suggests:
     knitr,

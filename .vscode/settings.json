@@ -3,15 +3,19 @@
         "ACGT",
         "bcerr",
         "bcerror",
+        "berror",
         "Biostrings",
+        "CRAN",
         "detectrms",
+        "extdata",
         "FASTA",
+        "pkgdown",
         "readr",
         "rpod",
+        "Rproj",
         "tibble",
         "trna"
     ],
-
     "[r]": {
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "Posit.air-vscode"

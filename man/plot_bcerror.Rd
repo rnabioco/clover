@@ -4,14 +4,16 @@
 \alias{plot_bcerror}
 \title{Plot base-calling error in a heatmap.}
 \usage{
-plot_bcerror(data, title_suffix, include_legend = TRUE)
+plot_bcerror(tbl, data, title_suffix, include_legend = TRUE)
 }
 \arguments{
+\item{tbl}{tibble of bc-delta values}
+
+\item{data}{sequence to structure file}
+
 \item{title_suffix}{string}
 
 \item{include_legend}{Logical, include legend in the plot.}
-
-\item{tbl}{tibble of bc-delta values}
 }
 \description{
 Plot base-calling error in a heatmap.

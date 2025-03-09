@@ -1,3 +1,12 @@
+#' Read counts from file
+#'
+#' @param path path to file
+#'
+#' @export
+read_counts <- function(path) {
+  read_tsv(path)
+}
+
 #' Read base-calling error ("bcerror") TSV files.
 #'
 #' bcerror files are generated with
