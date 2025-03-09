@@ -1,2 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github$
+^vignettes/\.quarto$
+^vignettes/*_files$
+^README\.Rmd$
+^\.vscode$
+^air.toml$

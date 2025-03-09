@@ -1,22 +1,23 @@
-Version: 1.0
+Version:1.0
+ProjectId:a1e26558-feb2-4b25-b8be-332fb5b480c9
 
-RestoreWorkspace: No
-SaveWorkspace: No
-AlwaysSaveHistory: No
+RestoreWorkspace:No
+SaveWorkspace:No
+AlwaysSaveHistory:No
 
-EnableCodeIndexing: Yes
-UseSpacesForTab: Yes
-NumSpacesForTab: 2
-Encoding: UTF-8
+EnableCodeIndexing:Yes
+UseSpacesForTab:Yes
+NumSpacesForTab:2
+Encoding:UTF - 8
 
-RnwWeave: Sweave
-LaTeX: pdfLaTeX
+RnwWeave:Sweave
+LaTeX:pdfLaTeX
 
-AutoAppendNewline: Yes
-StripTrailingWhitespace: Yes
+AutoAppendNewline:Yes
+StripTrailingWhitespace:Yes
 
-BuildType: Package
-PackageUseDevtools: Yes
-PackageInstallArgs: --no-multiarch --with-keep.source
+BuildType:Package
+PackageUseDevtools:Yes
+PackageInstallArgs:--no - multiarch - -with - keep.source
 
-UseNativePipeOperator: Yes
+UseNativePipeOperator:Yes

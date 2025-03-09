@@ -1,7 +1,4 @@
 
-
-<!-- README.md is generated from README.qmd. Please edit that file -->
-
 # clover
 
 <!-- badges: start -->
@@ -12,7 +9,7 @@
 clover facilitates analysis and plotting of nanopore tRNA sequencing
 data.
 
-🚧 **clover is under active development.** Caveat emptor. 🚧
+🚧 **clover is under active development.** *Caveat emptor*. 🚧
 
 ## Installation
 
@@ -27,8 +24,10 @@ pak::pak("rnabioco/clover")
 ## Example
 
 clover uses a `SummarizedExperiment::RangedSummarizedExperiment()` to
-store data associated with nanopore tRNA sequencing experiments. Here’s
-an example of how to create the object, which includes:
+store and compute on data associated with nanopore tRNA sequencing
+experiments.
+
+Here’s an example of how to create the object, which includes:
 
 - `fa`: a FASTA file containing the tRNA reference sequences.
 - `pod5`: a list of pod5 files, one per experiment. Merge pod5 files
@@ -44,20 +43,22 @@ an example of how to create the object, which includes:
 library(clover)
 
 rse_clover <- create_clover(
-  pod5    = list(
+  pod5 = list(
     "grande" = clover_data("grande.pod5"),
     "petite" = clover_data("petite.pod5")
   ),
-  bam     = list(
+  bam = list(
     "grande" = clover_data("grande.bam"),
     "petite" = clover_data("petite.bam")
   ),
-  fa      = clover_data("yeast.trna.fa.gz"),
+  fa = clover_data("yeast.trna.fa.gz"),
   mod_bed = clover_data("yeast.trna.mods.bed.gz")
 )
 
 rse_clover
 ```
+
+## Summary statistics
 
 The object contains data in the following slots:
 
@@ -85,7 +86,7 @@ nucleotides colored by their base-calling error rates
 plot_trna_structure(
   rse_clover,
   exp = "grande",
-  ref = "tRNA-Gly-GCC-1-1"
+  seq = "tRNA-Gly-GCC-1-1"
 )
 ```
 
@@ -99,9 +100,9 @@ prepared from **grande** and **petite** *S. cerevisiae* strains. The
 **petite** strain lacks mitochondrial DNA and its encoded tRNAs.
 
 ``` r
-calc_diff_exp(rse_clover)
+calc_diff_exp(rse_clover, ref = "grande", exp = "petite")
 
-calc_diff_mod(rse_clover)
+calc_diff_mod(rse_clover, ref = "grande", exp = "petite")
 ```
 
 ## Related work

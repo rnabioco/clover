@@ -1,14 +1,16 @@
 ---
-format: gfm
-knitr:
-  opts_chunk:
-    collapse: TRUE
-    comment: "#>"
-    fig.path: "man/figures/README-"
-    out.width: "100%"
+output: github_document
 ---
 
-<!-- README.md is generated from README.qmd. Please edit that file -->
+```{r}
+#| include = FALSE
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # clover
 
@@ -18,7 +20,7 @@ knitr:
 
 clover facilitates analysis and plotting of nanopore tRNA sequencing data.
 
-🚧 **clover is under active development.** Caveat emptor. 🚧 
+🚧 **clover is under active development.** *Caveat emptor*. 🚧 
 
 ## Installation
 
@@ -88,7 +90,7 @@ The secondary structure is shown as a dot-bracket diagram, with the nucleotides 
 plot_trna_structure(
   rse_clover,
   exp = "grande",
-  ref = "tRNA-Gly-GCC-1-1"
+  seq = "tRNA-Gly-GCC-1-1"
 )
 ```
 

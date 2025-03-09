@@ -1,0 +1,19 @@
+{
+    "cSpell.words": [
+        "ACGT",
+        "bcerr",
+        "bcerror",
+        "Biostrings",
+        "detectrms",
+        "FASTA",
+        "readr",
+        "rpod",
+        "tibble",
+        "trna"
+    ],
+
+    "[r]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "Posit.air-vscode"
+    }
+}
