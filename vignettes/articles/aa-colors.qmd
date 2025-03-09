@@ -1,9 +1,9 @@
 ---
 title: "AA color palette"
-author: "JH"
-format:
-  html:
-    code-fold: true
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
 ---
 
 ```{r}
