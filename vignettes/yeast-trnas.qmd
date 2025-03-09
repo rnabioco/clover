@@ -24,4 +24,3 @@ rse_clover <- create_clover(
   mods = clover_data("yeast/trna-mods.tsv.gz")
 )
 ```
-

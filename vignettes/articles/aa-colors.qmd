@@ -1,0 +1,89 @@
+---
+title: "AA color palette"
+author: "JH"
+format:
+  html:
+    code-fold: true
+---
+
+```{r}
+#| label: load-libs
+#| message: false
+library(tidyverse)
+library(ggokabeito)
+library(colorspace)
+library(cowplot)
+
+# fmt: skip
+aa_info <- tribble(
+  ~aa1, ~aa3, ~mw, ~class,
+  "A", "Ala", 89.09, "aliphatic",
+  "R", "Arg", 174.20, "basic",
+  "N", "Asn", 132.12, "polar",
+  "D", "Asp", 133.10, "acidic",
+  "C", "Cys", 121.16, "other",
+  "Q", "Gln", 146.15, "polar",
+  "E", "Glu", 147.13, "acidic",
+  "G", "Gly", 75.07, "aliphatic",
+  "H", "His", 155.16, "other",
+  "I", "Ile", 131.18, "aliphatic",
+  "L", "Leu", 131.18, "aliphatic",
+  "K", "Lys", 146.19, "basic",
+  "M", "Met", 149.21, "other",
+  "F", "Phe", 165.19, "aromatic",
+  "P", "Pro", 115.13, "other",
+  "S", "Ser", 105.09, "polar",
+  "T", "Thr", 119.12, "polar",
+  "W", "Trp", 204.23, "aromatic",
+  "Y", "Tyr", 181.19, "aromatic",
+  "V", "Val", 117.15, "aliphatic",
+  "U", "Sel", 150.04, "other"
+) %>%
+  mutate(class = as_factor(class)) %>%
+  arrange(class, desc(mw))
+
+# adjust primary colors here
+# fmt: skip
+class_colors <- tribble(
+  ~class, ~color,
+  "aliphatic", "#0072B2",
+  "aromatic", "#000000",
+  "basic", "#56B4E9",
+  "acidic", "#E69F00",
+  "polar", "#CC79A7",
+  "other", "#009E73"
+)
+
+plt_tbl <- aa_info |>
+  left_join(class_colors, by = "class") |>
+  mutate(
+    .lighten_by = (1 / n() * row_number()) - 0.5,
+    .by = class
+  ) |>
+  mutate(color = lighten(color, amount = .lighten_by)) |>
+  select(-.lighten_by)
+```
+
+```{r}
+#| label: fig-aa-colors
+#| fig.width: 4
+#| fig.height: 4
+ggplot(
+  plt_tbl,
+  aes(
+    x = mw,
+    y = reorder(aa3, mw),
+    color = color
+  )
+) +
+  geom_point(size = 4) +
+  scale_color_identity() +
+  theme_cowplot() +
+  theme(
+    legend.position = "top"
+  ) +
+  labs(
+    x = "Molecular weight",
+    y = ""
+  )
+```

@@ -6,3 +6,6 @@
 ^README\.Rmd$
 ^\.vscode$
 ^air.toml$
+^vignettes/articles/\.quarto$
+^vignettes/articles/*_files$
+^vignettes/articles$
