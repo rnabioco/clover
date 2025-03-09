@@ -10,10 +10,20 @@ reference:
   - title: Read
     contents:
     - starts_with("read_")
+    - CloverSE
 
   - title: Create
     contents:
     - starts_with("create_")
+
+  - title: Plot
+    contents:
+    - starts_with("plot_")
+
+  - title: Variables
+    contents:
+    - aa_props
+    - trna_consensus_labels
 
   - title: Utilities
     contents:
