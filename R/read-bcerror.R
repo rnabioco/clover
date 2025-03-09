@@ -1,8 +1,17 @@
 #' Read base-calling error ("bcerror") TSV files.
 #'
-#' bcerror files are generated with [detectrms](https://github.com/rnabioco/detectrms-rs)
+#' bcerror files are generated with
+#' [detectrms](https://github.com/rnabioco/detectrms-rs)
 #'
-#' `error_rate` is the sum of `mis`, `ins`, and `del`.
+#' - `ref`: fasta reference name
+#' - `pos` : position in `ref`
+#' - `base`: reference base
+#' - `cov`: coverage at `pos`
+#' - `q_mean`, `q_median`, `q_std` : mean, median, and standard deviations of
+#'   quality scores
+#' - `error_rate` is the sum of `mis`, `ins`, and `del`.
+#' - `mis`, `ins`, `del`: frequency of mismatches, insertions, and deletions
+#' - `na`, `nc`, `ng`, `nt`: counts of A, C, G, T in the reads
 #'
 #' @examples
 #' bcerr_path <- clover_example("yeast/grande.bcerr.tsv.gz")
@@ -15,9 +24,18 @@
 #' @export
 read_bcerror <- function(bcerr_path, raw = FALSE) {
   col_names <- c(
-    "ref", "pos", "base", "strand",
-    "cov", "q_mean", "q_median", "q_std",
-    "mis", "ins", "del", "ACGT"
+    "ref",
+    "pos",
+    "base",
+    "strand",
+    "cov",
+    "q_mean",
+    "q_median",
+    "q_std",
+    "mis",
+    "ins",
+    "del",
+    "ACGT"
   )
 
   raw_tbl <-
@@ -45,7 +63,9 @@ read_bcerror <- function(bcerr_path, raw = FALSE) {
       convert = TRUE
     ) |>
     select(
-      ref:q_std, error_rate, everything(),
+      ref:q_std,
+      error_rate,
+      everything(),
       -strand
     )
 }

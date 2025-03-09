@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jay Hesselberth \email{jay.hesselbrerth@cuanschutz.edu} (\href{https://orcid.org/0000-0002-6299-179X}{ORCID})
+\strong{Maintainer}: Jay Hesselberth \email{jay.hesselberth@cuanschutz.edu} (\href{https://orcid.org/0000-0002-6299-179X}{ORCID})
 
 }
 \keyword{internal}

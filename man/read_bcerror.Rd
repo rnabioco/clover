@@ -15,10 +15,21 @@ read_bcerror(bcerr_path, raw = FALSE)
 A tibble
 }
 \description{
-bcerror files are generated with \href{https://github.com/rnabioco/detectrms-rs}{detectrms}
+bcerror files are generated with
+\href{https://github.com/rnabioco/detectrms-rs}{detectrms}
 }
 \details{
-\code{error_rate} is the sum of \code{mis}, \code{ins}, and \code{del}.
+\itemize{
+\item \code{ref}: fasta reference name
+\item \code{pos} : position in \code{ref}
+\item \code{base}: reference base
+\item \code{cov}: coverage at \code{pos}
+\item \code{q_mean}, \code{q_median}, \code{q_std} : mean, median, and standard deviations of
+quality scores
+\item \code{error_rate} is the sum of \code{mis}, \code{ins}, and \code{del}.
+\item \code{mis}, \code{ins}, \code{del}: frequency of mismatches, insertions, and deletions
+\item \code{na}, \code{nc}, \code{ng}, \code{nt}: counts of A, C, G, T in the reads
+}
 }
 \examples{
 bcerr_path <- clover_example("yeast/grande.bcerr.tsv.gz")

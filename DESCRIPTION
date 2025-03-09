@@ -1,31 +1,36 @@
 Package: clover
 Title: Plotting and analysis for nanopore tRNA sequencing data
 Version: 0.0.0.9000
-Authors@R: 
-    person("Jay", "Hesselberth", , "jay.hesselbrerth@cuanschutz.edu", role = c("aut", "cre"),
+Authors@R:
+    person("Jay", "Hesselberth", , "jay.hesselberth@cuanschutz.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6299-179X"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 URL: https://rnabioco.github.io/clover, https://github.com/rnabioco/clover
-Imports: 
+Depends:
+    R (>= 4.0.0)
+Imports:
     cli,
     cowplot,
+    DESeq2,
     dplyr,
     fs,
     ggokabeito,
     ggplot2,
+    ggrepel,
     ggtext,
     readr,
     Rhtslib,
+    scales,
     tidyr
-Suggests: 
+Suggests:
     knitr,
+    quarto,
     rmarkdown,
     testthat (>= 3.0.0)
-VignetteBuilder: 
-    knitr
+VignetteBuilder: knitr, quarto
 bioCViews: RNASeq, Visualization
-Config/Needs/website:pkgdown, rnabioco/rbitemplate
+Config/Needs/website: pkgdown, rnabioco/rbitemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
