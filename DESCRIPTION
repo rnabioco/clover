@@ -24,9 +24,9 @@ Suggests:
     quarto,
     rmarkdown,
     testthat (>= 3.0.0)
-VignetteBuilder: knitr, quarto
+VignetteBuilder: quarto, knitr
 bioCViews: RNASeq, Visualization
-Config/Needs/website: pkgdown, rnabioco/rbitemplate, quarto
+Config/Needs/website: rnabioco/rbitemplate, quarto
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
