@@ -6,7 +6,7 @@
 \alias{clover-package}
 \title{clover: Plotting and analysis for nanopore tRNA sequencing data}
 \description{
-What the package does (one paragraph).
+Analyze direct tRNA sequencing data. Provides differential expression, modification, and tools for visualization.
 }
 \seealso{
 Useful links:
@@ -18,6 +18,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Jay Hesselberth \email{jay.hesselberth@cuanschutz.edu} (\href{https://orcid.org/0000-0002-6299-179X}{ORCID})
+
+Other contributors:
+\itemize{
+  \item RNA Bioscience Initiative (https://ror.org/03wmf1y16) [funder, copyright holder]
+}
 
 }
 \keyword{internal}

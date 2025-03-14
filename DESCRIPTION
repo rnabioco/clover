@@ -1,10 +1,14 @@
 Package: clover
 Title: Plotting and analysis for nanopore tRNA sequencing data
 Version: 0.0.0.9000
-Authors@R:
-    person("Jay", "Hesselberth", , "jay.hesselberth@cuanschutz.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-6299-179X"))
-Description: What the package does (one paragraph).
+Authors@R: c(
+        person("Jay", "Hesselberth", , "jay.hesselberth@cuanschutz.edu", role = c("aut", "cre"),
+               comment = c(ORCID = "0000-0002-6299-179X")),
+        person("RNA Bioscience Initiative", role = c("fnd", "cph"),
+               comment = c(ROR = "https://ror.org/03wmf1y16"))
+    )
+Description: Analyze direct tRNA sequencing data. Provides differential expression,
+    modification, and tools for visualization.
 License: MIT + file LICENSE
 URL: https://rnabioco.github.io/clover, https://github.com/rnabioco/clover
 Depends:
