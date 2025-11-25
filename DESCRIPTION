@@ -19,9 +19,12 @@ Imports:
     forcats,
     GenomicRanges,
     ggplot2,
+    jsonlite,
     methods,
+    purrr,
     readr,
     SummarizedExperiment,
+    tibble,
     tidyr
 Suggests:
     knitr,
