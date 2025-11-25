@@ -79,7 +79,9 @@ plot_bcerror_heatmap <- function(
     theme(
       axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 7),
       axis.text.y = element_text(size = 6),
-      panel.grid = element_blank()
+      panel.grid = element_blank(),
+      panel.background = element_rect(fill = "white", color = NA),
+      plot.background = element_rect(fill = "white", color = NA)
     )
 
   # Add region annotations if requested

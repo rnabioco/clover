@@ -297,7 +297,9 @@ if (!"sprinzl_label" %in% names(data)) {
     coord_fixed() +
     theme_void() +
     theme(
-      legend.position = "right"
+      legend.position = "right",
+      panel.background = element_rect(fill = "white", color = NA),
+      plot.background = element_rect(fill = "white", color = NA)
     )
 
   # Add Modomics overlay if requested
