@@ -20,5 +20,20 @@ globalVariables(c(
   "trna_id",
   "seq_index",
   "sprinzl_index",
-  "residue"
+  "residue",
+  # Structure visualization
+  "x",
+  "y",
+  "x1",
+  "y1",
+  "x2",
+  "y2",
+  "residue_index",
+  "residue_name",
+  "condition",
+  ".fill_value",
+  # Modomics
+  "gtRNAdb_trna_id",
+  "modification_short_name",
+  "modification_name"
 ))
