@@ -175,3 +175,29 @@ get_region_bounds <- function(coords) {
     ) |>
     dplyr::select(-region_group)
 }
+
+
+#' Classify tRNA as Type I or Type II
+#'
+#' Type II tRNAs have extended variable loops (9-24 extra nucleotides). These
+#' include Leucine, Serine, Tyrosine, and Selenocysteine tRNAs. All other
+#' tRNAs are Type I with standard 73-77 nucleotide length.
+#'
+#' @param trna_ids Character vector of tRNA IDs (e.g., "tRNA-Leu-CAA-1-1")
+#' @return Character vector of "Type I" or "Type II"
+#'
+#' @export
+#'
+#' @examples
+#' # Type II tRNAs
+#' classify_trna_type(c("tRNA-Leu-CAA-1-1", "tRNA-Ser-GCT-1-1"))
+#'
+#' # Type I tRNAs
+#' classify_trna_type(c("tRNA-Ala-GGC-1-1", "tRNA-Arg-ACG-1-1"))
+classify_trna_type <- function(trna_ids) {
+  ifelse(
+    grepl("tRNA-(Leu|Ser|Tyr|SeC)", trna_ids),
+    "Type II",
+    "Type I"
+  )
+}
