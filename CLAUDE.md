@@ -2,6 +2,36 @@
 
 R package for analyzing and visualizing nanopore tRNA sequencing data.
 
+## Session Workflow (READ FIRST)
+
+**At session start:**
+1. Read `PROJECT_TRACKER.md` to understand current state and recent work
+2. Review `R/` directory to understand existing patterns before adding code
+
+**Before creating new functions:**
+1. Check existing files in `R/` for similar functionality
+2. Follow established patterns (see Code Style section below)
+3. Add to existing files when appropriate rather than creating new ones
+
+**Before committing:**
+- [ ] `devtools::document()` - regenerate documentation
+- [ ] `devtools::test()` - all tests pass
+- [ ] `devtools::check()` - no errors or warnings
+- [ ] New exported functions have roxygen2 documentation
+- [ ] NAMESPACE updated if exports changed
+
+**At session end:**
+1. Update `PROJECT_TRACKER.md` with:
+   - Work completed this session
+   - Any issues encountered
+   - Suggested next steps
+2. Commit all changes with descriptive message
+
+**File size limits:**
+- No files > 5MB to git
+- Small sample data (`.pod5`, `.bam`, etc.) OK in `inst/extdata/` if < 1MB
+- Large test data should be hosted externally and downloaded
+
 ## Project Overview
 
 **Repository**: https://github.com/rnabioco/clover

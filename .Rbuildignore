@@ -19,3 +19,4 @@
 ^[\.]?air\.toml$
 ^CLAUDE\.md$
 ^\.cursor$
+^PROJECT_TRACKER\.md$
