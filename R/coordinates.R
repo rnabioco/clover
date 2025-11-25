@@ -95,7 +95,24 @@ read_coords_file <- function(path) {
 #'   or a character string specifying an organism name.
 #'
 #' @return The input bcerror tibble with additional columns:
-#'   `global_index`, `sprinzl_label`, and `region`.
+#'   `global_index`, `sprinzl_label`, `region`, and `is_adapter`.
+#'
+#' @details
+#' **Adapter Offset Handling**:
+#'
+#' The join accounts for a 24-nucleotide adapter sequence present at the
+#' 5' end of reference sequences used in the nanopore tRNA-seq protocol.
+#'
+#' Reference FASTA structure: `[24nt adapter][73nt mature tRNA][33nt tail]`
+#'
+#' - **bcerror positions**: 1-based from start of full reference (adapter + tRNA + tail)
+#' - **coordinate seq_index**: 1-based from start of mature tRNA sequence
+#' - **Offset applied**: seq_index + 24 matches bcerror position
+#'
+#' Example:
+#' - bcerror pos=25 (first tRNA nucleotide) → coords seq_index=1 (Sprinzl position 1)
+#' - bcerror pos=1-24 (adapter) → no coordinate match (NA values, is_adapter=TRUE)
+#' - bcerror pos=98-130 (tail) → no coordinate match (NA values, is_adapter=TRUE)
 #'
 #' @export
 #'
@@ -109,13 +126,26 @@ add_global_coords <- function(bcerror, coords) {
     coords <- load_global_coords(coords)
   }
 
-  # Join on tRNA ID and position
+  # Adjust for 24nt adapter: bcerror pos includes adapter, coords seq_index does not
+  coords_adj <- coords |>
+    dplyr::mutate(seq_index_with_adapter = seq_index + 24L)
 
-  dplyr::left_join(
+  result <- dplyr::left_join(
     bcerror,
-    coords,
-    by = c("ref" = "trna_id", "pos" = "seq_index")
-  )
+    coords_adj,
+    by = c("ref" = "trna_id", "pos" = "seq_index_with_adapter")
+  ) |>
+    dplyr::select(-seq_index)  # Remove seq_index, keep only pos
+
+  # Mark adapter regions explicitly for filtering in downstream analysis
+  # 5' adapter: positions 1-24
+  # 3' tail: positions beyond mature tRNA (where global_index is NA)
+  result <- result |>
+    dplyr::mutate(
+      is_adapter = pos <= 24 | is.na(global_index)
+    )
+
+  result
 }
 
 #' Get unique global index labels for plotting

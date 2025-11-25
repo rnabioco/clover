@@ -413,11 +413,17 @@ read_mod_calls <- function(path, organism = c("sacCer", "ecoliK12", "hg38")) {
   # Add global_index from coordinates if available
   coords <- load_global_coords(organism)
 
+  # Adjust for 24nt adapter: pos includes adapter, seq_index does not
+  coords_adj <- coords |>
+    dplyr::select(trna_id, seq_index, global_index) |>
+    dplyr::mutate(seq_index_with_adapter = seq_index + 24L)
+
   result <- result |>
     dplyr::left_join(
-      coords |> dplyr::select(trna_id, seq_index, global_index),
-      by = c("ref" = "trna_id", "pos" = "seq_index")
-    )
+      coords_adj,
+      by = c("ref" = "trna_id", "pos" = "seq_index_with_adapter")
+    ) |>
+    dplyr::select(-seq_index)  # Remove seq_index, keep only pos
 
   result
 }

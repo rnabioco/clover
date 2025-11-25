@@ -15,6 +15,7 @@ globalVariables(c(
   "region",
   "region_change",
   "region_group",
+  "trna_type",
   "start",
   "end",
   "trna_id",

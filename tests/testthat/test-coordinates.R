@@ -53,3 +53,43 @@ test_that("available_organisms returns expected organisms", {
   expect_true("sacCer" %in% orgs)
   expect_true("hg38" %in% orgs)
 })
+
+test_that("adapter offset correctly aligns bcerror with coordinates", {
+  bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz"))
+  bcerr_coords <- add_global_coords(bcerr, "sacCer")
+
+  # Check that is_adapter column was added
+  expect_true("is_adapter" %in% names(bcerr_coords))
+
+  # Nuclear tRNA positions 25-97 should have coordinate matches
+  nuc_tRNA <- bcerr_coords |>
+    dplyr::filter(grepl("^nuc-", ref), pos >= 25, pos <= 97)
+
+  matched <- sum(!is.na(nuc_tRNA$global_index))
+  total <- nrow(nuc_tRNA)
+  match_rate <- matched / total
+
+  expect_gt(match_rate, 0.80,
+            label = paste("Match rate:", round(match_rate * 100, 1), "%"))
+
+  # Adapter positions (1-24) should have NO matches
+  adapter_region <- bcerr_coords |>
+    dplyr::filter(grepl("^nuc-", ref), pos <= 24)
+
+  expect_true(all(is.na(adapter_region$global_index)),
+              label = "Adapter positions should not match coordinates")
+
+  # is_adapter flag should be TRUE for adapter positions
+  expect_true(all(adapter_region$is_adapter),
+              label = "is_adapter should be TRUE for positions 1-24")
+
+  # Most tail positions (beyond standard tRNA length) should have NO matches
+  # Note: Type II tRNAs (Leu, Ser, Tyr) may have valid coords up to ~97+24=121
+  far_tail_region <- bcerr_coords |>
+    dplyr::filter(grepl("^nuc-", ref), pos >= 110)
+
+  # Far tail should have very few or no matches
+  far_tail_match_rate <- sum(!is.na(far_tail_region$global_index)) / nrow(far_tail_region)
+  expect_lt(far_tail_match_rate, 0.05,
+            label = "Far tail positions (110+) should have <5% match rate")
+})

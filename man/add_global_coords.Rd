@@ -14,11 +14,31 @@ or a character string specifying an organism name.}
 }
 \value{
 The input bcerror tibble with additional columns:
-\code{global_index}, \code{sprinzl_label}, and \code{region}.
+\code{global_index}, \code{sprinzl_label}, \code{region}, and \code{is_adapter}.
 }
 \description{
 Join bcerror data with global coordinates to enable cross-tRNA comparisons.
 Matches on tRNA ID and sequence position.
+}
+\details{
+\strong{Adapter Offset Handling}:
+
+The join accounts for a 24-nucleotide adapter sequence present at the
+5' end of reference sequences used in the nanopore tRNA-seq protocol.
+
+Reference FASTA structure: \verb{[24nt adapter][73nt mature tRNA][33nt tail]}
+\itemize{
+\item \strong{bcerror positions}: 1-based from start of full reference (adapter + tRNA + tail)
+\item \strong{coordinate seq_index}: 1-based from start of mature tRNA sequence
+\item \strong{Offset applied}: seq_index + 24 matches bcerror position
+}
+
+Example:
+\itemize{
+\item bcerror pos=25 (first tRNA nucleotide) → coords seq_index=1 (Sprinzl position 1)
+\item bcerror pos=1-24 (adapter) → no coordinate match (NA values, is_adapter=TRUE)
+\item bcerror pos=98-130 (tail) → no coordinate match (NA values, is_adapter=TRUE)
+}
 }
 \examples{
 bcerr_path <- clover_example("yeast/grande.bcerr.tsv.gz")
