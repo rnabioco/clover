@@ -299,7 +299,9 @@ if (!"sprinzl_label" %in% names(data)) {
     theme(
       legend.position = "right",
       panel.background = element_rect(fill = "white", color = NA),
-      plot.background = element_rect(fill = "white", color = NA)
+      plot.background = element_rect(fill = "white", color = NA),
+      strip.background = element_rect(fill = "white", color = "grey70"),
+      strip.text = element_text(color = "black")
     )
 
   # Add Modomics overlay if requested
