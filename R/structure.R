@@ -137,40 +137,71 @@ load_modomics <- function(organism = c("sacCer", "ecoliK12", "hg38")) {
 #' Plot tRNA secondary structure
 #'
 #' Creates a cloverleaf visualization of tRNA secondary structure with
-#' data mapped to color.
+#' data mapped to color. Useful for visualizing base-calling error rates or
+#' modification signals at specific positions in the tRNA structure.
+#'
+#' For a genome-wide view across all tRNAs, see [plot_bcerror_heatmap()].
 #'
 #' @param data Tibble with modification calls or bcerror data. Must have
-#'   `sprinzl_label` column for mapping to structure positions.
+#'   `sprinzl_label` column for mapping to structure positions. Use
+#'   [add_global_coords()] to add this column to bcerror data.
 #' @param trna_id Character string specifying a single tRNA to plot.
-#'   If NULL, aggregates across all tRNAs in data.
+#'   If NULL, aggregates across all tRNAs in data by taking the mean
+#'   value per Sprinzl position.
 #' @param fill Column name to map to fill color. Default is "error_rate".
-#'   Can be any numeric column in data.
+#'   Can be any numeric column in data (e.g., "mis", "ins", "del",
+#'   "bcerror_residual").
 #' @param compare Character vector of condition names for faceting.
 #'   Data must have a `condition` column matching these values.
 #' @param modomics Logical or tibble. If TRUE, loads Modomics for organism
-
-#'   detected from data. If tibble, uses provided Modomics data.
-#'   Set to FALSE to disable overlay.
+#'   and overlays known modification positions as red circles. If tibble,
+#'   uses provided Modomics data. Set to FALSE to disable overlay.
 #' @param organism Organism code for Modomics lookup when `modomics = TRUE`.
+#'   One of "sacCer", "ecoliK12", or "hg38".
 #' @param show_labels Character: "sprinzl" to label positions, "residue" to
 #'   show nucleotides, or "none" for no labels.
 #' @param point_size Numeric size for residue points.
 #'
-#' @return A ggplot2 object
+#' @return A ggplot2 object displaying the tRNA cloverleaf structure. Positions
+#'   with higher fill values appear brighter (viridis magma palette). Red
+#'   circles indicate known modification sites when `modomics = TRUE`.
 #'
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Load bcerror data with coordinates
-#' bcerr <- read_bcerror("sample.bcerr.tsv.gz") |>
+#' # Using bundled example data
+#' bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz")) |>
 #'   add_global_coords("sacCer")
 #'
-#' # Plot single tRNA
-#' plot_trna_structure(bcerr, trna_id = "nuc-tRNA-Ala-AGC-1-1", fill = "error_rate")
+#' # Plot single tRNA with Modomics overlay
+#' plot_trna_structure(
+#'   bcerr,
+#'   trna_id = "nuc-tRNA-Ala-AGC-1-1",
+#'   fill = "error_rate",
+#'   modomics = TRUE,
+#'   organism = "sacCer"
+#' )
 #'
-#' # Aggregate across all tRNAs
+#' # Aggregate across all tRNAs (consensus view)
 #' plot_trna_structure(bcerr, fill = "error_rate")
+#'
+#' \dontrun{
+#' # Compare conditions with faceting
+#' bcerr_grande <- read_bcerror("grande.bcerr.tsv.gz") |>
+#'   add_global_coords("sacCer") |>
+#'   dplyr::mutate(condition = "grande")
+#'
+#' bcerr_petite <- read_bcerror("petite.bcerr.tsv.gz") |>
+#'   add_global_coords("sacCer") |>
+#'   dplyr::mutate(condition = "petite")
+#'
+#' bcerr_both <- dplyr::bind_rows(bcerr_grande, bcerr_petite)
+#'
+#' plot_trna_structure(
+#'   bcerr_both,
+#'   compare = c("grande", "petite"),
+#'   fill = "error_rate"
+#' )
 #' }
 plot_trna_structure <- function(
     data,
