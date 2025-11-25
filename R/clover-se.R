@@ -1,41 +1,48 @@
-#' Create a SummarizedExperiment
+#' Create a CloverExperiment object
 #'
-#' @param counts path to counts file
-#' @param fasta path to the FASTA reference used in alignment
-#' @param bcerror path to base-calling error file
+#' Creates a SummarizedExperiment-based object for storing tRNA sequencing data,
+#' including expression counts, base-calling error rates, and global coordinates.
 #'
-#' @param bam list of BAM files, names are sample names
-#' @param pod5 list of POD5 files, names are samples names
-#' @param mods TSV file containing modification information
+#' @param counts Matrix or data.frame of tRNA counts (rows = tRNAs, cols = samples)
+#' @param bcerror Tibble of base-calling error data from [read_bcerror()]
+#' @param coords Tibble of global coordinates from [load_global_coords()],
+#'   or a character string specifying an organism name.
+#' @param metadata Named list of additional metadata (e.g., file paths)
+#'
+#' @return A CloverExperiment object
 #'
 #' @export
 CloverSE <- function(
-  counts,
-  fasta,
-  bcerror = NULL,
-  bam = NULL,
-  pod5 = NULL,
-  mods = NULL
+    counts = NULL,
+    bcerror = NULL,
+    coords = NULL,
+    metadata = list()
 ) {
-  se <- SummarizedExperiment::SummarizedExperiment(
-    list(
-      counts = counts,
-      fasta = fasta,
-      berror = bcerror,
-      ...
-    )
-  )
+  # Handle coordinates
+  if (is.character(coords)) {
+    coords <- load_global_coords(coords)
+  }
 
-  #  assays = list(
-  #    counts = list(),
-  #    bcerror = list()
-  #  ),
-  #  rowData = list(),
-  #  rowRanges = GRangesList(),
-  #  metadata = list(
-  #    pod5 = list()
-  #  )
-  # )
+ # Add coordinates to bcerror if both provided
+  if (!is.null(bcerror) && !is.null(coords)) {
+    bcerror <- add_global_coords(bcerror, coords)
+  }
+
+  # Store in metadata
+  metadata$bcerror <- bcerror
+  metadata$coords <- coords
+
+  # Create minimal SummarizedExperiment
+  if (!is.null(counts)) {
+    se <- SummarizedExperiment::SummarizedExperiment(
+      assays = list(counts = as.matrix(counts)),
+      metadata = metadata
+    )
+  } else {
+    se <- SummarizedExperiment::SummarizedExperiment(
+      metadata = metadata
+    )
+  }
 
   .CloverSE(se)
 }
