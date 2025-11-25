@@ -1,55 +1,34 @@
 # Plotting functions ----------------------------------------------------------
 
-#' Plot base-calling error heatmap with global coordinates
+#' Internal helper to create heatmap plot
 #'
-#' Creates a heatmap of base-calling error rates across all tRNAs using
-#' global coordinates for proper structural alignment.
+#' @param plot_data Filtered bcerror data
+#' @param value Column name for fill
+#' @param show_regions Logical for region annotations
+#' @param title_suffix Optional title suffix (e.g., "Type I", "Type II")
 #'
-#' @param bcerror Tibble of bcerror data with global coordinates added
-#'   via [add_global_coords()].
-#' @param value Column to plot. Default is "error_rate". Can also use
-#'   "mis", "ins", "del", or any numeric column.
-#' @param show_regions Logical, add region annotations below the heatmap.
-#' @param label_interval Integer, show Sprinzl labels every N positions.
-#'   Set to NULL to show all labels.
-#'
-#' @return A ggplot2 object
-#'
-#' @export
-#'
-#' @examples
-#' bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz"))
-#' bcerr_coords <- add_global_coords(bcerr, "sacCer")
-#' # Filter to nuclear tRNAs only
-#' bcerr_nuc <- dplyr::filter(bcerr_coords, grepl("^nuc-", ref))
-#' plot_bcerror_heatmap(bcerr_nuc)
-plot_bcerror_heatmap <- function(
-    bcerror,
-    value = "error_rate",
-    show_regions = TRUE,
-    label_interval = 5
+#' @noRd
+.plot_heatmap_internal <- function(
+    plot_data,
+    value,
+    show_regions,
+    title_suffix = NULL
 ) {
-  if (!"global_index" %in% names(bcerror)) {
-    stop("bcerror must have global coordinates. Use add_global_coords() first.")
-  }
+  # Get ALL axis labels for all global indices
+  all_indices <- sort(unique(plot_data$global_index))
 
-  # Filter to rows with valid global coordinates
-  plot_data <- bcerror |>
-    dplyr::filter(!is.na(global_index))
-
-  # Get axis labels
-  labels_df <- plot_data |>
+  labels_lookup <- plot_data |>
     dplyr::distinct(global_index, sprinzl_label) |>
-    dplyr::arrange(global_index) |>
-    dplyr::filter(sprinzl_label != "-1")
+    dplyr::mutate(
+      sprinzl_label = ifelse(sprinzl_label == "-1", "NA", sprinzl_label)
+    )
 
-  # Subsample labels if requested
-  if (!is.null(label_interval)) {
-    label_positions <- seq(1, nrow(labels_df), by = label_interval)
-    labels_df <- labels_df[label_positions, ]
-  }
-
-  axis_labels <- stats::setNames(labels_df$sprinzl_label, labels_df$global_index)
+  # Create full label vector with NA for missing positions
+  axis_labels <- sapply(all_indices, function(idx) {
+    label <- labels_lookup$sprinzl_label[labels_lookup$global_index == idx]
+    if (length(label) == 0) "NA" else label[1]
+  })
+  names(axis_labels) <- all_indices
 
   # Build plot
   p <- ggplot(
@@ -84,8 +63,12 @@ plot_bcerror_heatmap <- function(
       plot.background = element_rect(fill = "white", color = NA)
     )
 
-  # Add region annotations if requested
+  # Add title if suffix provided
+  if (!is.null(title_suffix)) {
+    p <- p + labs(title = paste("tRNAs -", title_suffix))
+  }
 
+  # Add region annotations if requested
   if (show_regions) {
     regions <- get_region_bounds(plot_data)
 
@@ -107,6 +90,79 @@ plot_bcerror_heatmap <- function(
   }
 
   p
+}
+
+
+#' Plot base-calling error heatmap with global coordinates
+#'
+#' Creates a heatmap visualization of base-calling error rates across tRNA
+#' positions. Splits into separate plots for Type I (standard) and Type II
+#' (extended variable loop) tRNAs, stacked vertically.
+#'
+#' Type II tRNAs (Leu, Ser, Tyr, SeC) have extended variable loops with 9-24
+#' extra nucleotides and are displayed in a separate heatmap.
+#'
+#' @param bcerror Tibble with base-calling error data. Must have global
+#'   coordinates added via [add_global_coords()].
+#' @param value Column name to map to heatmap color. Default is "error_rate".
+#'   Can use "mis", "ins", "del", or any numeric column.
+#' @param show_regions Logical. If TRUE, adds grey boxes around structural
+#'   regions (acceptor-stem, D-loop, etc.).
+#' @param split_by_type Logical. If TRUE (default), returns stacked plots for
+#'   Type I and Type II tRNAs. If FALSE, returns single plot with all tRNAs.
+#'
+#' @return A patchwork object with Type I and Type II heatmaps stacked
+#'   vertically (if split_by_type=TRUE), or a single ggplot object (if FALSE).
+#'
+#'   All Sprinzl position labels are shown on the x-axis. Positions without
+#'   Sprinzl labels display "NA".
+#'
+#' @export
+#'
+#' @examples
+#' bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz")) |>
+#'   add_global_coords("sacCer")
+#'
+#' # Get stacked plots for Type I and Type II (default)
+#' plot_bcerror_heatmap(bcerr)
+#'
+#' # Single plot with all tRNAs
+#' plot_bcerror_heatmap(bcerr, split_by_type = FALSE)
+plot_bcerror_heatmap <- function(
+    bcerror,
+    value = "error_rate",
+    show_regions = TRUE,
+    split_by_type = TRUE
+) {
+  if (!"global_index" %in% names(bcerror)) {
+    stop("bcerror must have global coordinates. Use add_global_coords() first.")
+  }
+
+  # Filter to rows with valid global coordinates
+  plot_data <- bcerror |>
+    dplyr::filter(!is.na(global_index))
+
+  # Add tRNA type classification
+  plot_data <- plot_data |>
+    dplyr::mutate(
+      trna_type = classify_trna_type(ref)
+    )
+
+  if (split_by_type) {
+    # Split into Type I and Type II
+    type1_data <- plot_data |> dplyr::filter(trna_type == "Type I")
+    type2_data <- plot_data |> dplyr::filter(trna_type == "Type II")
+
+    # Create two separate plots
+    p_type1 <- .plot_heatmap_internal(type1_data, value, show_regions, "Type I")
+    p_type2 <- .plot_heatmap_internal(type2_data, value, show_regions, "Type II")
+
+    # Stack vertically using patchwork
+    patchwork::wrap_plots(p_type1, p_type2, ncol = 1)
+  } else {
+    # Single plot (old behavior)
+    .plot_heatmap_internal(plot_data, value, show_regions, NULL)
+  }
 }
 
 #' Plot base-calling error in a heatmap (legacy)

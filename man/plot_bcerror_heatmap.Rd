@@ -8,32 +8,45 @@ plot_bcerror_heatmap(
   bcerror,
   value = "error_rate",
   show_regions = TRUE,
-  label_interval = 5
+  split_by_type = TRUE
 )
 }
 \arguments{
-\item{bcerror}{Tibble of bcerror data with global coordinates added
-via \code{\link[=add_global_coords]{add_global_coords()}}.}
+\item{bcerror}{Tibble with base-calling error data. Must have global
+coordinates added via \code{\link[=add_global_coords]{add_global_coords()}}.}
 
-\item{value}{Column to plot. Default is "error_rate". Can also use
-"mis", "ins", "del", or any numeric column.}
+\item{value}{Column name to map to heatmap color. Default is "error_rate".
+Can use "mis", "ins", "del", or any numeric column.}
 
-\item{show_regions}{Logical, add region annotations below the heatmap.}
+\item{show_regions}{Logical. If TRUE, adds grey boxes around structural
+regions (acceptor-stem, D-loop, etc.).}
 
-\item{label_interval}{Integer, show Sprinzl labels every N positions.
-Set to NULL to show all labels.}
+\item{split_by_type}{Logical. If TRUE (default), returns stacked plots for
+Type I and Type II tRNAs. If FALSE, returns single plot with all tRNAs.}
 }
 \value{
-A ggplot2 object
+A patchwork object with Type I and Type II heatmaps stacked
+vertically (if split_by_type=TRUE), or a single ggplot object (if FALSE).
+
+All Sprinzl position labels are shown on the x-axis. Positions without
+Sprinzl labels display "NA".
 }
 \description{
-Creates a heatmap of base-calling error rates across all tRNAs using
-global coordinates for proper structural alignment.
+Creates a heatmap visualization of base-calling error rates across tRNA
+positions. Splits into separate plots for Type I (standard) and Type II
+(extended variable loop) tRNAs, stacked vertically.
+}
+\details{
+Type II tRNAs (Leu, Ser, Tyr, SeC) have extended variable loops with 9-24
+extra nucleotides and are displayed in a separate heatmap.
 }
 \examples{
-bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz"))
-bcerr_coords <- add_global_coords(bcerr, "sacCer")
-# Filter to nuclear tRNAs only
-bcerr_nuc <- dplyr::filter(bcerr_coords, grepl("^nuc-", ref))
-plot_bcerror_heatmap(bcerr_nuc)
+bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz")) |>
+  add_global_coords("sacCer")
+
+# Get stacked plots for Type I and Type II (default)
+plot_bcerror_heatmap(bcerr)
+
+# Single plot with all tRNAs
+plot_bcerror_heatmap(bcerr, split_by_type = FALSE)
 }
