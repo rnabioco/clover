@@ -9,6 +9,38 @@ Track development progress and session notes for clover.
 
 ## Recent Sessions
 
+### 2025-11-24 - Heatmap Type Splitting Enhancement
+
+**Work completed:**
+- Split heatmap visualization into Type I and Type II tRNAs
+- Type II tRNAs (Leu, Ser, Tyr, SeC) have extended variable loops (9-24 extra nucleotides)
+- Plots are stacked vertically using patchwork
+- Removed label_interval parameter - now shows ALL Sprinzl labels
+- Positions without Sprinzl labels display "NA"
+- Added classify_trna_type() helper function to identify Type I vs Type II
+- Generated new example plot: man/figures/heatmap-split-example.png
+- All 86 tests pass (19 coords + 2 bcerror + 11 plots + 53 structure + 1 nested)
+
+**Files modified:**
+- `R/coordinates.R` (added classify_trna_type, lines 180-203)
+- `R/plots.R` (refactored plot_bcerror_heatmap, added .plot_heatmap_internal)
+- `DESCRIPTION` (added patchwork dependency)
+- `tests/testthat/test-plots.R` (new file, 11 tests)
+- `man/classify_trna_type.Rd` (new)
+- `man/plot_bcerror_heatmap.Rd` (updated)
+- `NAMESPACE` (added classify_trna_type export)
+
+**Breaking changes:**
+- `label_interval` parameter removed from plot_bcerror_heatmap()
+- Return type changed to patchwork when split_by_type=TRUE (default)
+- To get old single-plot behavior, use split_by_type=FALSE
+
+**Next steps:**
+- Merge to devel
+- Update vignette with new plot behavior
+
+---
+
 ### 2025-11-24 - Structure Visualization Testing & Finalization
 
 **Work completed:**
