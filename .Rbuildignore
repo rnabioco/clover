@@ -17,3 +17,5 @@
 ^inst/extdata/yeast/*\.bam$
 ^LICENSE\.md$
 ^[\.]?air\.toml$
+^CLAUDE\.md$
+^\.cursor$
