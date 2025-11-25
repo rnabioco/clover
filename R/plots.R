@@ -1,6 +1,113 @@
 # Plotting functions ----------------------------------------------------------
 
-#' Plot base-calling error in a heatmap.
+#' Plot base-calling error heatmap with global coordinates
+#'
+#' Creates a heatmap of base-calling error rates across all tRNAs using
+#' global coordinates for proper structural alignment.
+#'
+#' @param bcerror Tibble of bcerror data with global coordinates added
+#'   via [add_global_coords()].
+#' @param value Column to plot. Default is "error_rate". Can also use
+#'   "mis", "ins", "del", or any numeric column.
+#' @param show_regions Logical, add region annotations below the heatmap.
+#' @param label_interval Integer, show Sprinzl labels every N positions.
+#'   Set to NULL to show all labels.
+#'
+#' @return A ggplot2 object
+#'
+#' @export
+#'
+#' @examples
+#' bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz"))
+#' bcerr_coords <- add_global_coords(bcerr, "sacCer")
+#' # Filter to nuclear tRNAs only
+#' bcerr_nuc <- dplyr::filter(bcerr_coords, grepl("^nuc-", ref))
+#' plot_bcerror_heatmap(bcerr_nuc)
+plot_bcerror_heatmap <- function(
+    bcerror,
+    value = "error_rate",
+    show_regions = TRUE,
+    label_interval = 5
+) {
+  if (!"global_index" %in% names(bcerror)) {
+    stop("bcerror must have global coordinates. Use add_global_coords() first.")
+  }
+
+  # Filter to rows with valid global coordinates
+  plot_data <- bcerror |>
+    dplyr::filter(!is.na(global_index))
+
+  # Get axis labels
+  labels_df <- plot_data |>
+    dplyr::distinct(global_index, sprinzl_label) |>
+    dplyr::arrange(global_index) |>
+    dplyr::filter(sprinzl_label != "-1")
+
+  # Subsample labels if requested
+  if (!is.null(label_interval)) {
+    label_positions <- seq(1, nrow(labels_df), by = label_interval)
+    labels_df <- labels_df[label_positions, ]
+  }
+
+  axis_labels <- stats::setNames(labels_df$sprinzl_label, labels_df$global_index)
+
+  # Build plot
+  p <- ggplot(
+    plot_data,
+    aes(
+      x = global_index,
+      y = forcats::fct_rev(ref),
+      fill = .data[[value]]
+    )
+  ) +
+    geom_tile() +
+    scale_fill_viridis_c(
+      option = "magma",
+      na.value = "grey90",
+      name = value
+    ) +
+    scale_x_continuous(
+      breaks = as.numeric(names(axis_labels)),
+      labels = axis_labels,
+      expand = c(0, 0)
+    ) +
+    labs(
+      x = "Position (Sprinzl)",
+      y = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 7),
+      axis.text.y = element_text(size = 6),
+      panel.grid = element_blank()
+    )
+
+  # Add region annotations if requested
+
+  if (show_regions) {
+    regions <- get_region_bounds(plot_data)
+
+    p <- p +
+      geom_rect(
+        data = regions,
+        aes(
+          xmin = start - 0.5,
+          xmax = end + 0.5,
+          ymin = -Inf,
+          ymax = Inf,
+          fill = NULL
+        ),
+        alpha = 0,
+        color = "grey50",
+        linewidth = 0.25,
+        inherit.aes = FALSE
+      )
+  }
+
+  p
+}
+
+#' Plot base-calling error in a heatmap (legacy)
 #'
 #' @param tbl tibble of bc-delta values
 #' @param data sequence to structure file

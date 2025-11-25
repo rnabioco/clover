@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plot_bcerror}
 \alias{plot_bcerror}
-\title{Plot base-calling error in a heatmap.}
+\title{Plot base-calling error in a heatmap (legacy)}
 \usage{
 plot_bcerror(tbl, data, title_suffix, include_legend = TRUE)
 }
@@ -16,5 +16,5 @@ plot_bcerror(tbl, data, title_suffix, include_legend = TRUE)
 \item{include_legend}{Logical, include legend in the plot.}
 }
 \description{
-Plot base-calling error in a heatmap.
+Plot base-calling error in a heatmap (legacy)
 }

@@ -9,6 +9,39 @@ Track development progress and session notes for clover.
 
 ## Recent Sessions
 
+### 2025-11-24 - Global Coordinate System Integration
+
+**Work completed:**
+- Integrated global tRNA coordinate system from tRNAs-in-space project
+- Added pre-computed coordinate files for E. coli K12, S. cerevisiae, and H. sapiens
+- Created `R/coordinates.R` with functions:
+  - `load_global_coords()` - Load pre-computed coordinate mappings
+  - `add_global_coords()` - Join bcerror data with global coordinates
+  - `get_global_labels()` - Get Sprinzl labels for plotting
+  - `get_region_bounds()` - Get structural region boundaries
+  - `available_organisms()` - List available organisms
+- Added `plot_bcerror_heatmap()` - Heatmap visualization using global coordinates
+- Fixed `CloverSE()` class - Now properly stores bcerror and coordinates
+- Added comprehensive tests for coordinate functions (19 new tests)
+- Package passes R CMD check with 0 errors, 0 warnings
+
+**Files added/modified:**
+- `R/coordinates.R` (new)
+- `R/plots.R` (added plot_bcerror_heatmap)
+- `R/clover-se.R` (rewrote CloverSE constructor)
+- `R/globals.R` (added new global variables)
+- `inst/extdata/coords/` (new directory with coordinate TSVs)
+- `tests/testthat/test-coordinates.R` (new)
+
+**Next steps:**
+- Implement `plot_trna_structure()` for secondary structure diagrams
+- Implement `calc_diff_exp()` for differential expression
+- Implement `calc_diff_mod()` for differential modification
+- Update vignette to be runnable
+- Consider adding Modomics modification mapping integration
+
+---
+
 ### 2024-11-24 - AI Readiness Setup
 
 **Work completed:**
@@ -36,9 +69,12 @@ Track development progress and session notes for clover.
 
 ### File Organization
 - `R/clover-se.R` - Main class definition and constructors
+- `R/coordinates.R` - Global coordinate system functions
 - `R/plots.R` - Visualization functions
 - `R/utils.R` - Helper functions
 - `R/read-bcerror.R` - Data input functions
+- `R/globals.R` - Global variable declarations
+- `inst/extdata/coords/` - Pre-computed global coordinate files
 
 ## Useful Commands
 

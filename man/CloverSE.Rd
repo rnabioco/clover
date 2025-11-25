@@ -2,23 +2,24 @@
 % Please edit documentation in R/clover-se.R
 \name{CloverSE}
 \alias{CloverSE}
-\title{Create a SummarizedExperiment}
+\title{Create a CloverExperiment object}
 \usage{
-CloverSE(counts, fasta, bcerror = NULL, bam = NULL, pod5 = NULL, mods = NULL)
+CloverSE(counts = NULL, bcerror = NULL, coords = NULL, metadata = list())
 }
 \arguments{
-\item{counts}{path to counts file}
+\item{counts}{Matrix or data.frame of tRNA counts (rows = tRNAs, cols = samples)}
 
-\item{fasta}{path to the FASTA reference used in alignment}
+\item{bcerror}{Tibble of base-calling error data from \code{\link[=read_bcerror]{read_bcerror()}}}
 
-\item{bcerror}{path to base-calling error file}
+\item{coords}{Tibble of global coordinates from \code{\link[=load_global_coords]{load_global_coords()}},
+or a character string specifying an organism name.}
 
-\item{bam}{list of BAM files, names are sample names}
-
-\item{pod5}{list of POD5 files, names are samples names}
-
-\item{mods}{TSV file containing modification information}
+\item{metadata}{Named list of additional metadata (e.g., file paths)}
+}
+\value{
+A CloverExperiment object
 }
 \description{
-Create a SummarizedExperiment
+Creates a SummarizedExperiment-based object for storing tRNA sequencing data,
+including expression counts, base-calling error rates, and global coordinates.
 }
