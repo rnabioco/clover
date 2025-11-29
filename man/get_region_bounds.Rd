@@ -17,7 +17,7 @@ defining contiguous regions.
 Returns a mapping of global indices to structural regions for annotation.
 }
 \examples{
-coords <- load_global_coords("sacCer")
+coords <- load_global_coords("sacCer", type = "type1", offset = 0)
 regions <- get_region_bounds(coords)
 regions
 }

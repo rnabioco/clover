@@ -9,9 +9,11 @@ test_that("classify_trna_type identifies Type II correctly", {
   expect_equal(classify_trna_type(type1_ids), rep("Type I", 3))
 })
 
-test_that("classify_trna_type handles SeC", {
+test_that("classify_trna_type treats SeC as Type I (excluded from coordinates)", {
+  # SeC tRNAs are excluded from coordinate system due to structural incompatibility
+  # classify_trna_type returns "Type I" (default) but SeC won't match any group
   sec_id <- "tRNA-SeC-TCA-1-1"
-  expect_equal(classify_trna_type(sec_id), "Type II")
+  expect_equal(classify_trna_type(sec_id), "Type I")
 })
 
 # Test plot_bcerror_heatmap split behavior ----
@@ -19,7 +21,7 @@ test_that("plot_bcerror_heatmap returns patchwork object when split", {
   bcerr_coords <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz")) |>
     add_global_coords("sacCer")
 
-  p <- plot_bcerror_heatmap(bcerr_coords, split_by_type = TRUE)
+  p <- plot_bcerror_heatmap(bcerr_coords, split_by_group = TRUE)
 
   # Should return patchwork object
   expect_s3_class(p, "patchwork")
@@ -29,7 +31,7 @@ test_that("plot_bcerror_heatmap returns single ggplot when not split", {
   bcerr_coords <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz")) |>
     add_global_coords("sacCer")
 
-  p <- plot_bcerror_heatmap(bcerr_coords, split_by_type = FALSE)
+  p <- plot_bcerror_heatmap(bcerr_coords, split_by_group = FALSE)
 
   # Should return single ggplot
   expect_s3_class(p, "gg")
@@ -50,7 +52,7 @@ test_that("plot_bcerror_heatmap shows Type I and Type II separately", {
   expect_true("Type II" %in% bcerr_with_type$trna_type)
 
   # Plot should work
-  p <- plot_bcerror_heatmap(bcerr_coords, split_by_type = TRUE)
+  p <- plot_bcerror_heatmap(bcerr_coords, split_by_group = TRUE)
   expect_s3_class(p, "patchwork")
 })
 
@@ -71,7 +73,7 @@ test_that("plot_bcerror_heatmap shows all Sprinzl labels", {
     dplyr::filter(grepl("^nuc-", ref))
 
   # Get single plot to test labels
-  p <- plot_bcerror_heatmap(bcerr_coords, split_by_type = FALSE)
+  p <- plot_bcerror_heatmap(bcerr_coords, split_by_group = FALSE)
 
   # Build plot to access x-axis
   built <- ggplot2::ggplot_build(p)
@@ -88,7 +90,7 @@ test_that("Internal function converts -1 to NA in labels", {
     dplyr::filter(!is.na(global_index)) |>
     dplyr::filter(grepl("^nuc-", ref))
 
-  p <- plot_bcerror_heatmap(bcerr_coords, split_by_type = FALSE)
+  p <- plot_bcerror_heatmap(bcerr_coords, split_by_group = FALSE)
 
   # Plot should build without errors (implementation converts "-1" to "NA")
   built <- ggplot2::ggplot_build(p)

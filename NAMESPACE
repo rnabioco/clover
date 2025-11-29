@@ -3,6 +3,7 @@
 export(CloverSE)
 export(aa_props)
 export(add_global_coords)
+export(available_coord_groups)
 export(available_organisms)
 export(classify_trna_type)
 export(clover_example)

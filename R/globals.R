@@ -18,10 +18,15 @@ globalVariables(c(
   "trna_type",
   "start",
   "end",
+  "xmin",
+  "xmax",
   "trna_id",
   "seq_index",
   "sprinzl_index",
   "residue",
+  # Coordinate groups
+  "offset",
+  "type",
   # Structure visualization
   "x",
   "y",

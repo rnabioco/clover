@@ -14,21 +14,60 @@
     show_regions,
     title_suffix = NULL
 ) {
-  # Get ALL axis labels for all global indices
+  # Filter to positions where at least one tRNA has non-NA data
+  positions_with_data <- plot_data |>
+    dplyr::filter(!is.na(.data[[value]])) |>
+    dplyr::pull(global_index) |>
+    unique()
+
+  plot_data <- plot_data |>
+    dplyr::filter(global_index %in% positions_with_data)
+
+  # Get axis labels for positions with data
   all_indices <- sort(unique(plot_data$global_index))
 
   labels_lookup <- plot_data |>
     dplyr::distinct(global_index, sprinzl_label) |>
     dplyr::mutate(
-      sprinzl_label = ifelse(sprinzl_label == "-1", "NA", sprinzl_label)
+      sprinzl_label = dplyr::if_else(
+        is.na(sprinzl_label) | sprinzl_label == "-1",
+        "",
+        sprinzl_label
+      )
     )
 
-  # Create full label vector with NA for missing positions
+  # Create label vector for positions with data
   axis_labels <- sapply(all_indices, function(idx) {
     label <- labels_lookup$sprinzl_label[labels_lookup$global_index == idx]
-    if (length(label) == 0) "NA" else label[1]
+    if (length(label) == 0) "" else label[1]
   })
-  names(axis_labels) <- all_indices
+
+  # Compute region bounds BEFORE converting global_index to factor
+  if (show_regions) {
+    regions <- get_region_bounds(plot_data)
+
+    # Convert numeric positions to factor-based positions for discrete scale
+    # Factor levels are at positions 1, 2, 3, ... so we map global_index to those
+    index_to_position <- setNames(seq_along(all_indices), all_indices)
+
+    regions <- regions |>
+      dplyr::filter(start %in% all_indices, end %in% all_indices) |>
+      dplyr::mutate(
+        xmin = index_to_position[as.character(start)] - 0.5,
+        xmax = index_to_position[as.character(end)] + 0.5
+      )
+  }
+
+  # Convert global_index to factor to use discrete scale (omits empty positions)
+  plot_data <- plot_data |>
+    dplyr::mutate(global_index = factor(global_index, levels = all_indices))
+
+  # Simplify tRNA labels: strip "nuc-tRNA-" prefix if no mito tRNAs present
+  has_mito <- any(grepl("^mito-", plot_data$ref))
+  if (!has_mito) {
+    plot_data <- plot_data |>
+      dplyr::mutate(ref = sub("^nuc-tRNA-", "", ref))
+  }
 
   # Build plot
   p <- ggplot(
@@ -40,13 +79,13 @@
     )
   ) +
     geom_tile() +
+    coord_fixed(ratio = 1) +
     scale_fill_viridis_c(
       option = "magma",
       na.value = "grey90",
       name = value
     ) +
-    scale_x_continuous(
-      breaks = as.numeric(names(axis_labels)),
+    scale_x_discrete(
       labels = axis_labels,
       expand = c(0, 0)
     ) +
@@ -69,15 +108,13 @@
   }
 
   # Add region annotations if requested
-  if (show_regions) {
-    regions <- get_region_bounds(plot_data)
-
+  if (show_regions && nrow(regions) > 0) {
     p <- p +
       geom_rect(
         data = regions,
         aes(
-          xmin = start - 0.5,
-          xmax = end + 0.5,
+          xmin = xmin,
+          xmax = xmax,
           ymin = -Inf,
           ymax = Inf,
           fill = NULL
@@ -96,11 +133,9 @@
 #' Plot base-calling error heatmap with global coordinates
 #'
 #' Creates a heatmap visualization of base-calling error rates across tRNA
-#' positions. Splits into separate plots for Type I (standard) and Type II
-#' (extended variable loop) tRNAs, stacked vertically.
-#'
-#' Type II tRNAs (Leu, Ser, Tyr, SeC) have extended variable loops with 9-24
-#' extra nucleotides and are displayed in a separate heatmap.
+#' positions. When data contains offset and type columns (from
+#' [add_global_coords()]), splits into separate panels for each coordinate
+#' group to ensure proper Sprinzl position alignment.
 #'
 #' @param bcerror Tibble with base-calling error data. Must have global
 #'   coordinates added via [add_global_coords()].
@@ -108,11 +143,12 @@
 #'   Can use "mis", "ins", "del", or any numeric column.
 #' @param show_regions Logical. If TRUE, adds grey boxes around structural
 #'   regions (acceptor-stem, D-loop, etc.).
-#' @param split_by_type Logical. If TRUE (default), returns stacked plots for
-#'   Type I and Type II tRNAs. If FALSE, returns single plot with all tRNAs.
+#' @param split_by_group Logical. If TRUE (default), returns stacked plots for
+#'   each offset×type group. If FALSE, returns single plot with all tRNAs.
 #'
-#' @return A patchwork object with Type I and Type II heatmaps stacked
-#'   vertically (if split_by_type=TRUE), or a single ggplot object (if FALSE).
+#' @return A patchwork object with separate heatmaps for each coordinate group
+#'   stacked vertically (if split_by_group=TRUE), or a single ggplot object
+#'   (if FALSE).
 #'
 #'   All Sprinzl position labels are shown on the x-axis. Positions without
 #'   Sprinzl labels display "NA".
@@ -123,16 +159,16 @@
 #' bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz")) |>
 #'   add_global_coords("sacCer")
 #'
-#' # Get stacked plots for Type I and Type II (default)
+#' # Get stacked plots for each offset×type group (default)
 #' plot_bcerror_heatmap(bcerr)
 #'
-#' # Single plot with all tRNAs
-#' plot_bcerror_heatmap(bcerr, split_by_type = FALSE)
+#' # Single plot with all tRNAs (may have alignment issues across groups)
+#' plot_bcerror_heatmap(bcerr, split_by_group = FALSE)
 plot_bcerror_heatmap <- function(
     bcerror,
     value = "error_rate",
     show_regions = TRUE,
-    split_by_type = TRUE
+    split_by_group = TRUE
 ) {
   if (!"global_index" %in% names(bcerror)) {
     stop("bcerror must have global coordinates. Use add_global_coords() first.")
@@ -142,22 +178,45 @@ plot_bcerror_heatmap <- function(
   plot_data <- bcerror |>
     dplyr::filter(!is.na(global_index))
 
-  # Add tRNA type classification
-  plot_data <- plot_data |>
-    dplyr::mutate(
-      trna_type = classify_trna_type(ref)
-    )
+  if (split_by_group && "offset" %in% names(plot_data) && "type" %in% names(plot_data)) {
+    # Split by offset×type groups for proper alignment
+    groups <- plot_data |>
+      dplyr::distinct(offset, type) |>
+      dplyr::arrange(type, offset)
 
-  if (split_by_type) {
-    # Split into Type I and Type II
+    # Create a plot for each group
+    plots <- lapply(seq_len(nrow(groups)), function(i) {
+      grp_offset <- groups$offset[i]
+      grp_type <- groups$type[i]
+
+      grp_data <- plot_data |>
+        dplyr::filter(offset == grp_offset, type == grp_type)
+
+      n_trnas <- length(unique(grp_data$ref))
+
+      # Create descriptive title
+      type_label <- ifelse(grp_type == "type1", "Type I", "Type II")
+      title <- sprintf("%s (offset %s) - %d tRNAs",
+                       type_label,
+                       ifelse(grp_offset >= 0, paste0("+", grp_offset), grp_offset),
+                       n_trnas)
+
+      .plot_heatmap_internal(grp_data, value, show_regions, title)
+    })
+
+    # Stack vertically using patchwork
+    patchwork::wrap_plots(plots, ncol = 1)
+  } else if (split_by_group) {
+    # Fallback to Type I/II split if offset/type columns missing
+    plot_data <- plot_data |>
+      dplyr::mutate(trna_type = classify_trna_type(ref))
+
     type1_data <- plot_data |> dplyr::filter(trna_type == "Type I")
     type2_data <- plot_data |> dplyr::filter(trna_type == "Type II")
 
-    # Create two separate plots
     p_type1 <- .plot_heatmap_internal(type1_data, value, show_regions, "Type I")
     p_type2 <- .plot_heatmap_internal(type2_data, value, show_regions, "Type II")
 
-    # Stack vertically using patchwork
     patchwork::wrap_plots(p_type1, p_type2, ncol = 1)
   } else {
     # Single plot (old behavior)
