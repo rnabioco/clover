@@ -9,6 +9,46 @@ Track development progress and session notes for clover.
 
 ## Recent Sessions
 
+### 2025-11-25 - Offset×Type Coordinate System Integration
+
+**Work completed:**
+- Integrated new offset×type coordinate grouping from tRNAs-in-space
+- Replaced single unified coordinate files with grouped files per organism
+- Each organism now has 3-7 coordinate files (grouped by offset and type):
+  - E. coli: 5 groups (82 tRNAs)
+  - Yeast: 4 groups (268 tRNAs)
+  - Human: 7 groups (421 tRNAs)
+- Added auto-classification: tRNAs automatically matched to correct coordinate group
+- Created lookup tables (`{organism}_trna_groups.tsv`) for fast group assignment
+- Updated Modomics files with enhanced tRNAs-in-space mappings
+- Position 55 now aligns correctly (single global_index per group)
+- All 112 tests pass with 0 errors, 0 warnings
+
+**Key API changes:**
+- `load_global_coords()` now returns `offset` and `type` columns
+- `add_global_coords()` auto-classifies tRNAs (warns about unmatched SeC/mito/iMet)
+- `available_coord_groups()` new function to list groups per organism
+- `get_global_labels()` returns list when multiple groups present
+
+**Files added/modified:**
+- `inst/extdata/coords/` - 16 new grouped coordinate files
+- `inst/extdata/coords/*_trna_groups.tsv` - lookup tables (3 files)
+- `inst/extdata/modomics/*.tsv.gz` - updated Modomics files
+- `R/coordinates.R` - major rewrite with auto-classification
+- `R/globals.R` - added offset/type globals
+- `tests/testthat/test-coordinates.R` - expanded to 46 tests
+
+**Excluded tRNAs:**
+- SeC (selenocysteine) - structurally incompatible
+- Mitochondrial - different architecture
+- Initiator Met - different structural features
+
+**Next steps:**
+- Merge feature/global-tRNA-coordinates to devel
+- Update vignette with new coordinate groups
+
+---
+
 ### 2025-11-24 - Heatmap Type Splitting Enhancement
 
 **Work completed:**

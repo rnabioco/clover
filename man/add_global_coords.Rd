@@ -4,23 +4,30 @@
 \alias{add_global_coords}
 \title{Add global coordinates to base-calling error data}
 \usage{
-add_global_coords(bcerror, coords)
+add_global_coords(bcerror, organism)
 }
 \arguments{
 \item{bcerror}{Tibble of bcerror data from \code{\link[=read_bcerror]{read_bcerror()}}}
 
-\item{coords}{Tibble of global coordinates from \code{\link[=load_global_coords]{load_global_coords()}},
-or a character string specifying an organism name.}
+\item{organism}{Character string specifying the organism name.}
 }
 \value{
 The input bcerror tibble with additional columns:
-\code{global_index}, \code{sprinzl_label}, \code{region}, and \code{is_adapter}.
+\code{global_index}, \code{sprinzl_label}, \code{region}, \code{offset}, \code{type}, and \code{is_adapter}.
 }
 \description{
 Join bcerror data with global coordinates to enable cross-tRNA comparisons.
-Matches on tRNA ID and sequence position.
+Automatically classifies each tRNA into the correct coordinate group
+based on pre-computed lookup tables.
 }
 \details{
+\strong{Auto-Classification}:
+
+Each tRNA is automatically matched to the appropriate coordinate group
+(offset + type combination) using pre-computed lookup tables. tRNAs not
+found in any group (e.g., SeC, mitochondrial, initiator Met) will have
+NA values for coordinate columns.
+
 \strong{Adapter Offset Handling}:
 
 The join accounts for a 24-nucleotide adapter sequence present at the
@@ -31,13 +38,6 @@ Reference FASTA structure: \verb{[24nt adapter][73nt mature tRNA][33nt tail]}
 \item \strong{bcerror positions}: 1-based from start of full reference (adapter + tRNA + tail)
 \item \strong{coordinate seq_index}: 1-based from start of mature tRNA sequence
 \item \strong{Offset applied}: seq_index + 24 matches bcerror position
-}
-
-Example:
-\itemize{
-\item bcerror pos=25 (first tRNA nucleotide) → coords seq_index=1 (Sprinzl position 1)
-\item bcerror pos=1-24 (adapter) → no coordinate match (NA values, is_adapter=TRUE)
-\item bcerror pos=98-130 (tail) → no coordinate match (NA values, is_adapter=TRUE)
 }
 }
 \examples{

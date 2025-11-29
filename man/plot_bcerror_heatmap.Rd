@@ -8,7 +8,7 @@ plot_bcerror_heatmap(
   bcerror,
   value = "error_rate",
   show_regions = TRUE,
-  split_by_type = TRUE
+  split_by_group = TRUE
 )
 }
 \arguments{
@@ -21,32 +21,30 @@ Can use "mis", "ins", "del", or any numeric column.}
 \item{show_regions}{Logical. If TRUE, adds grey boxes around structural
 regions (acceptor-stem, D-loop, etc.).}
 
-\item{split_by_type}{Logical. If TRUE (default), returns stacked plots for
-Type I and Type II tRNAs. If FALSE, returns single plot with all tRNAs.}
+\item{split_by_group}{Logical. If TRUE (default), returns stacked plots for
+each offset×type group. If FALSE, returns single plot with all tRNAs.}
 }
 \value{
-A patchwork object with Type I and Type II heatmaps stacked
-vertically (if split_by_type=TRUE), or a single ggplot object (if FALSE).
+A patchwork object with separate heatmaps for each coordinate group
+stacked vertically (if split_by_group=TRUE), or a single ggplot object
+(if FALSE).
 
 All Sprinzl position labels are shown on the x-axis. Positions without
 Sprinzl labels display "NA".
 }
 \description{
 Creates a heatmap visualization of base-calling error rates across tRNA
-positions. Splits into separate plots for Type I (standard) and Type II
-(extended variable loop) tRNAs, stacked vertically.
-}
-\details{
-Type II tRNAs (Leu, Ser, Tyr, SeC) have extended variable loops with 9-24
-extra nucleotides and are displayed in a separate heatmap.
+positions. When data contains offset and type columns (from
+\code{\link[=add_global_coords]{add_global_coords()}}), splits into separate panels for each coordinate
+group to ensure proper Sprinzl position alignment.
 }
 \examples{
 bcerr <- read_bcerror(clover_example("yeast/grande.bcerr.tsv.gz")) |>
   add_global_coords("sacCer")
 
-# Get stacked plots for Type I and Type II (default)
+# Get stacked plots for each offset×type group (default)
 plot_bcerror_heatmap(bcerr)
 
-# Single plot with all tRNAs
-plot_bcerror_heatmap(bcerr, split_by_type = FALSE)
+# Single plot with all tRNAs (may have alignment issues across groups)
+plot_bcerror_heatmap(bcerr, split_by_group = FALSE)
 }

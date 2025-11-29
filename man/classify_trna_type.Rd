@@ -14,8 +14,12 @@ Character vector of "Type I" or "Type II"
 }
 \description{
 Type II tRNAs have extended variable loops (9-24 extra nucleotides). These
-include Leucine, Serine, Tyrosine, and Selenocysteine tRNAs. All other
-tRNAs are Type I with standard 73-77 nucleotide length.
+include Leucine, Serine, and Tyrosine tRNAs. All other nuclear tRNAs are
+Type I with standard 73-77 nucleotide length.
+}
+\details{
+Note: Selenocysteine (SeC), mitochondrial, and initiator Met tRNAs are
+excluded from the coordinate system entirely due to structural incompatibility.
 }
 \examples{
 # Type II tRNAs

@@ -11,13 +11,16 @@ get_global_labels(coords)
 }
 \value{
 A named character vector where names are global indices and
-values are Sprinzl labels.
+values are Sprinzl labels. If multiple groups present, returns a list
+of named vectors keyed by "offset_type".
 }
 \description{
 Returns a mapping of global indices to Sprinzl labels for axis annotation.
+When coordinates contain multiple groups, returns labels from each group
+separately since global indices have different meanings per group.
 }
 \examples{
-coords <- load_global_coords("sacCer")
+coords <- load_global_coords("sacCer", type = "type1", offset = 0)
 labels <- get_global_labels(coords)
 head(labels)
 }

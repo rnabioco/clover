@@ -4,14 +4,24 @@
 \alias{load_global_coords}
 \title{Load global tRNA coordinates}
 \usage{
-load_global_coords(organism = "sacCer", path = NULL)
+load_global_coords(
+  organism = "sacCer",
+  type = NULL,
+  offset = NULL,
+  path = NULL
+)
 }
 \arguments{
 \item{organism}{Character string specifying the organism. One of
 "ecoliK12" (E. coli K12), "sacCer" (S. cerevisiae), or "hg38" (H. sapiens).}
 
+\item{type}{Optional. Filter to specific tRNA type: "type1" (standard) or
+"type2" (extended variable arm - Leu, Ser, Tyr).}
+
+\item{offset}{Optional. Filter to specific labeling offset (integer).}
+
 \item{path}{Optional path to a custom coordinate file. If provided,
-\code{organism} is ignored.}
+other parameters are ignored.}
 }
 \value{
 A tibble with columns:
@@ -23,6 +33,8 @@ A tibble with columns:
 \item{residue}{Nucleotide at this position}
 \item{global_index}{Global coordinate for cross-tRNA alignment (1..K)}
 \item{region}{Structural region (e.g., "D-loop", "anticodon-stem")}
+\item{offset}{Labeling offset for this coordinate group}
+\item{type}{Structural type ("type1" or "type2")}
 }
 }
 \description{
@@ -30,7 +42,19 @@ Load pre-computed global coordinate mappings for tRNAs. These coordinates
 enable alignment of tRNAs with different sequences onto a common axis
 based on their structural positions (Sprinzl coordinates).
 }
+\details{
+tRNAs are grouped by structural type (Type I vs Type II) and labeling
+offset to ensure proper Sprinzl position alignment. By default, all
+groups are loaded and combined. Use \code{type} and \code{offset} parameters
+to load specific groups.
+}
 \examples{
+# Load all coordinate groups for yeast
 coords <- load_global_coords("sacCer")
-head(coords)
+
+# Load only Type I tRNAs
+coords_type1 <- load_global_coords("sacCer", type = "type1")
+
+# Load specific group
+coords_grp <- load_global_coords("sacCer", type = "type1", offset = 0)
 }
