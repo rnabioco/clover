@@ -9,6 +9,8 @@
 #' @importFrom forcats fct_rev
 #' @importFrom stringr str_extract str_detect
 #' @importFrom scales squish
+#' @importFrom yaml read_yaml
+#' @importFrom rlang check_installed .data
 #'
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #' @import SummarizedExperiment

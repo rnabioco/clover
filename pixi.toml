@@ -6,13 +6,17 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
+setup = "Rscript -e \"if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/'); pak::local_install_dev_deps(); pak::pak(c('devtools', 'roxygen2', 'usethis', 'pkgdown', 'rnabioco/rbitemplate'))\""
+document = "Rscript -e \"devtools::document()\""
+test = "Rscript -e \"devtools::test()\""
+check = "Rscript -e \"devtools::check()\""
 
 [dependencies]
 r-base = ">=4.5.2,<4.6"
-r-devtools = ">=2.4.6,<3"
-r-testthat = ">=3.3.2,<4"
-r-roxygen2 = ">=7.3.3,<8"
-r-pkgdown = ">=2.2.0,<3"
-r-tidyverse = ">=2.0.0,<3"
-r-scales = ">=1.4.0,<2"
 zlib = ">=1.3.1,<2"
+r-xml2 = ">=1.3"
+r-curl = ">=6.0"
+r-openssl = ">=2.0"
+r-httr2 = ">=1.0"
+r-gitcreds = ">=0.1"
+r-gh = ">=1.4"

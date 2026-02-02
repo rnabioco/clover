@@ -21,5 +21,27 @@ globalVariables(c(
   "suffix_order",
   "sort_key",
   "value",
-  "label"
+  "label",
+  "tRNA",
+  "counts_charged",
+  "counts_uncharged",
+  "cpm_charged",
+  "cpm_uncharged",
+  "sample_id",
+  "total_count",
+  "pos1",
+  "pos2",
+
+  "odds_ratio",
+  "log_odds_ratio",
+  "p_value",
+  "total_obs",
+  "from",
+  "to",
+  "or_numerator",
+  "or_denominator",
+  "ror",
+  "log_ror",
+  "condition",
+  "charge_status"
 ))
