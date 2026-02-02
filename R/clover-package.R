@@ -7,6 +7,8 @@
 #' @importFrom tidyr separate
 #' @importFrom readr read_tsv
 #' @importFrom forcats fct_rev
+#' @importFrom stringr str_extract str_detect
+#' @importFrom scales squish
 #'
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #' @import SummarizedExperiment

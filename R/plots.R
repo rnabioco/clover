@@ -63,6 +63,127 @@ plot_bcerror <- function(tbl, data, title_suffix, include_legend = TRUE) {
     )
 }
 
+#' Plot a delta-signal modification heatmap.
+#'
+#' Create a diverging heatmap of modification signal changes (e.g., mutant
+#' minus wild-type) across tRNA families and Sprinzl positions. Rows can be
+#' optionally clustered using Ward's D2 hierarchical clustering.
+#'
+#' @param data A data frame with at least three columns: one for tRNA
+#'   family/reference (y-axis), one for Sprinzl position labels (x-axis),
+#'   and one for the fill value.
+#' @param value_col Column name (string) for fill values. Default `"value"`.
+#' @param ref_col Column name (string) for tRNA families (y-axis). Default
+#'   `"ref"`.
+#' @param cluster Logical; cluster rows with Ward's D2? Default `TRUE`.
+#' @param color_limits Numeric vector of length 2 giving symmetric limits
+#'   for the color scale. Default `c(-0.25, 0.25)`.
+#' @param color_low Color for negative values. Default `"#0072B2"` (blue).
+#' @param color_high Color for positive values. Default `"#D55E00"` (red).
+#' @param na_value Color for missing positions. Default `"gray80"`.
+#' @param square Logical; use `coord_fixed(ratio = 1)`? Default `TRUE`.
+#'
+#' @return A ggplot object.
+#'
+#' @export
+#'
+#' @examples
+#' df <- tidyr::expand_grid(
+#'   ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
+#'   sprinzl_label = as.character(1:10)
+#' )
+#' df$value <- rnorm(nrow(df), sd = 0.1)
+#' plot_mod_heatmap(df)
+plot_mod_heatmap <- function(
+    data,
+    value_col = "value",
+    ref_col = "ref",
+    cluster = TRUE,
+    color_limits = c(-0.25, 0.25),
+    color_low = "#0072B2",
+    color_high = "#D55E00",
+    na_value = "gray80",
+    square = TRUE) {
+  # --- order x-axis by Sprinzl position ---
+  data$sprinzl_label <- order_sprinzl_positions(data$sprinzl_label)
+
+  # --- cluster rows ---
+  refs <- unique(data[[ref_col]])
+
+  if (cluster && length(refs) > 1) {
+    wide <- data |>
+      dplyr::select(
+        dplyr::all_of(c(ref_col, "sprinzl_label", value_col))
+      ) |>
+      tidyr::pivot_wider(
+        names_from = sprinzl_label,
+        values_from = dplyr::all_of(value_col),
+        values_fill = 0
+      ) |>
+      as.data.frame()
+
+    rownames(wide) <- wide[[ref_col]]
+    mat <- as.matrix(wide[, -1, drop = FALSE])
+    mat[is.na(mat)] <- 0
+
+    hc <- stats::hclust(stats::dist(mat), method = "ward.D2")
+    ref_order <- rownames(mat)[hc$order]
+  } else {
+    ref_order <- refs
+  }
+
+  # --- complete grid so missing cells show as gray ---
+  all_positions <- levels(data$sprinzl_label)
+  complete_grid <- tidyr::expand_grid(
+    !!ref_col := ref_order,
+    sprinzl_label = all_positions
+  )
+
+  plot_data <- dplyr::left_join(
+    complete_grid,
+    data,
+    by = c(ref_col, "sprinzl_label")
+  ) |>
+    dplyr::mutate(
+      sprinzl_label = factor(sprinzl_label, levels = all_positions),
+      !!ref_col := factor(.data[[ref_col]], levels = rev(ref_order))
+    )
+
+  # --- build plot ---
+  p <- ggplot(
+    plot_data,
+    aes(
+      x = sprinzl_label,
+      y = .data[[ref_col]],
+      fill = .data[[value_col]]
+    )
+  ) +
+    geom_tile(color = "white", linewidth = 0.3) +
+    scale_fill_gradient2(
+      low = color_low,
+      mid = "white",
+      high = color_high,
+      midpoint = 0,
+      na.value = na_value,
+      limits = color_limits,
+      oob = scales::squish
+    ) +
+    labs(x = "Sprinzl Position", y = "") +
+    theme_minimal() +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+      panel.grid = element_blank(),
+      legend.position = "bottom",
+      legend.key.width = grid::unit(1.5, "cm")
+    )
+
+  if (square) {
+    p <- p + coord_fixed(ratio = 1)
+  }
+
+  p
+}
+
 # Constants ---------------------------------------------------------------
 
 #' Labels for consensus tRNA secondary structure

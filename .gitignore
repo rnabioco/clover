@@ -7,3 +7,6 @@ docs
 inst/doc
 **/.quarto/
 
+# pixi environments
+.pixi/*
+!.pixi/config.toml
