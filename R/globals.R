@@ -9,5 +9,17 @@ globalVariables(c(
   "error_rate",
   "strand",
   "ACGT",
-  "BC_delta"
+  "BC_delta",
+  "sprinzl_label",
+  "global_index",
+  "region",
+  "residue",
+  "trna_id",
+  "seq_index",
+  "base_num",
+  "suffix",
+  "suffix_order",
+  "sort_key",
+  "value",
+  "label"
 ))
