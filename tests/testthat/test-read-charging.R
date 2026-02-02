@@ -13,7 +13,9 @@ test_that("read_charging reads a TSV file", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 2)
-  expect_true(all(c("tRNA", "counts_charged", "counts_uncharged") %in% names(result)))
+  expect_true(all(
+    c("tRNA", "counts_charged", "counts_uncharged") %in% names(result)
+  ))
   expect_equal(result$counts_charged, c(100, 200))
 })
 
@@ -32,7 +34,9 @@ test_that("read_odds_ratios reads a TSV file", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 2)
-  expect_true(all(c("pos1", "pos2", "odds_ratio", "log_odds_ratio") %in% names(result)))
+  expect_true(all(
+    c("pos1", "pos2", "odds_ratio", "log_odds_ratio") %in% names(result)
+  ))
 })
 
 test_that("read_charging_multi combines samples", {

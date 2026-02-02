@@ -63,8 +63,9 @@ read_pipeline_config <- function(config_path) {
 #' list_pipeline_files(config, types = c("charging", "bcerror"))
 #' }
 list_pipeline_files <- function(
-    config,
-    types = c("charging", "bcerror", "odds_ratios", "align_stats")) {
+  config,
+  types = c("charging", "bcerror", "odds_ratios", "align_stats")
+) {
   types <- match.arg(types, several.ok = TRUE)
 
   suffix_map <- c(
@@ -83,7 +84,10 @@ list_pipeline_files <- function(
       sample_id = sample_ids,
       type = type,
       path = file.path(
-        output_dir, "summary", "tables", sample_ids,
+        output_dir,
+        "summary",
+        "tables",
+        sample_ids,
         paste0(sample_ids, ".", suffix, ".tsv.gz")
       )
     )
@@ -114,8 +118,9 @@ list_pipeline_files <- function(
 #' results$odds_ratios
 #' }
 read_pipeline_results <- function(
-    config_path,
-    types = c("charging", "bcerror", "odds_ratios")) {
+  config_path,
+  types = c("charging", "bcerror", "odds_ratios")
+) {
   types <- match.arg(types, several.ok = TRUE)
 
   config <- read_pipeline_config(config_path)

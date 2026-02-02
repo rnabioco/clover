@@ -5,7 +5,14 @@ test_that("read_sprinzl_coords returns expected columns and types", {
   expect_s3_class(coords, "tbl_df")
   expect_named(
     coords,
-    c("trna_id", "seq_index", "sprinzl_label", "global_index", "region", "residue")
+    c(
+      "trna_id",
+      "seq_index",
+      "sprinzl_label",
+      "global_index",
+      "region",
+      "residue"
+    )
   )
   expect_type(coords$trna_id, "character")
   expect_type(coords$seq_index, "double")
@@ -16,7 +23,6 @@ test_that("read_sprinzl_coords returns expected columns and types", {
 })
 
 test_that("read_sprinzl_coords returns reasonable row count for yeast", {
-
   path <- clover_example("sprinzl/sacCer_global_coords.tsv.gz")
   coords <- read_sprinzl_coords(path)
 

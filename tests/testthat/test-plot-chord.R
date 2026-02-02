@@ -81,7 +81,10 @@ test_that("compute_ror calculates correct values", {
   )
 
   expect_s3_class(result, "tbl_df")
-  expect_named(result, c("pos1", "pos2", "or_numerator", "or_denominator", "log_ror", "ror"))
+  expect_named(
+    result,
+    c("pos1", "pos2", "or_numerator", "or_denominator", "log_ror", "ror")
+  )
   expect_equal(nrow(result), 1)
   # mean(2.0, 2.4) - mean(1.0, 1.2) = 2.2 - 1.1 = 1.1
   expect_equal(result$or_numerator, 2.2)
