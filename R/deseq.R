@@ -152,8 +152,11 @@ build_coldata <- function(count_matrix, sample_info = NULL) {
   if (!is.null(sample_info)) {
     sample_info <- as.data.frame(sample_info)
     coldata <- merge(
-      coldata, sample_info,
-      by = "sample_id", all.x = TRUE, sort = FALSE
+      coldata,
+      sample_info,
+      by = "sample_id",
+      all.x = TRUE,
+      sort = FALSE
     )
     rownames(coldata) <- col_names
   }

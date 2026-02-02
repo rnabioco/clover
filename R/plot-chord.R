@@ -40,17 +40,18 @@
 #' plot_chord_or(or_data)
 #' }
 plot_chord_or <- function(
-    odds_data,
-    or_col = "log_odds_ratio",
-    or_cutoff = 0.5,
-    p_col = "p_value",
-    p_cutoff = 0.05,
-    min_obs = 50,
-    positive_color = "#D55E00",
-    negative_color = "#0072B2",
-    sprinzl_coords = NULL,
-    title = NULL,
-    transparency = 0.4) {
+  odds_data,
+  or_col = "log_odds_ratio",
+  or_cutoff = 0.5,
+  p_col = "p_value",
+  p_cutoff = 0.05,
+  min_obs = 50,
+  positive_color = "#D55E00",
+  negative_color = "#0072B2",
+  sprinzl_coords = NULL,
+  title = NULL,
+  transparency = 0.4
+) {
   rlang::check_installed("circlize", reason = "to create chord diagrams.")
 
   # Filter significant pairs
@@ -106,7 +107,8 @@ plot_chord_or <- function(
       xlim <- circlize::get.cell.meta.data("xlim")
       ylim <- circlize::get.cell.meta.data("ylim")
       circlize::circos.text(
-        mean(xlim), ylim[1] + 0.1,
+        mean(xlim),
+        ylim[1] + 0.1,
         sector_name,
         facing = "clockwise",
         niceFacing = TRUE,
@@ -156,12 +158,13 @@ plot_chord_or <- function(
 #' ror <- compute_ror(combined_or, numerator = "mut", denominator = "wt")
 #' }
 compute_ror <- function(
-    odds_data,
-    condition_col = "condition",
-    numerator,
-    denominator,
-    min_obs = 50,
-    agg_fun = mean) {
+  odds_data,
+  condition_col = "condition",
+  numerator,
+  denominator,
+  min_obs = 50,
+  agg_fun = mean
+) {
   # Filter by minimum observations
   filtered <- odds_data |>
     dplyr::filter(total_obs >= min_obs)
@@ -169,7 +172,9 @@ compute_ror <- function(
   # Aggregate replicates within each condition
   agg <- filtered |>
     dplyr::group_by(
-      .data[[condition_col]], pos1, pos2
+      .data[[condition_col]],
+      pos1,
+      pos2
     ) |>
     dplyr::summarise(
       mean_log_or = agg_fun(log_odds_ratio),
@@ -224,13 +229,14 @@ compute_ror <- function(
 #' plot_chord_ror(ror)
 #' }
 plot_chord_ror <- function(
-    ror_data,
-    ror_cutoff = 0.5,
-    gained_color = "#D55E00",
-    lost_color = "#0072B2",
-    sprinzl_coords = NULL,
-    title = NULL,
-    transparency = 0.4) {
+  ror_data,
+  ror_cutoff = 0.5,
+  gained_color = "#D55E00",
+  lost_color = "#0072B2",
+  sprinzl_coords = NULL,
+  title = NULL,
+  transparency = 0.4
+) {
   rlang::check_installed("circlize", reason = "to create chord diagrams.")
 
   # Filter by ROR cutoff
@@ -282,7 +288,8 @@ plot_chord_ror <- function(
       xlim <- circlize::get.cell.meta.data("xlim")
       ylim <- circlize::get.cell.meta.data("ylim")
       circlize::circos.text(
-        mean(xlim), ylim[1] + 0.1,
+        mean(xlim),
+        ylim[1] + 0.1,
         sector_name,
         facing = "clockwise",
         niceFacing = TRUE,
@@ -321,11 +328,17 @@ plot_chord_ror <- function(
 
     region_palette <- .region_colors()
 
-    grid_col <- vapply(sector_order, function(pos) {
-      rgn <- region_map$region[region_map$sprinzl_label == pos]
-      if (length(rgn) == 0) return("grey70")
-      region_palette[rgn[1]]
-    }, character(1))
+    grid_col <- vapply(
+      sector_order,
+      function(pos) {
+        rgn <- region_map$region[region_map$sprinzl_label == pos]
+        if (length(rgn) == 0) {
+          return("grey70")
+        }
+        region_palette[rgn[1]]
+      },
+      character(1)
+    )
     names(grid_col) <- sector_order
   } else {
     # Sort positions numerically where possible
@@ -345,12 +358,12 @@ plot_chord_ror <- function(
 .region_colors <- function() {
   c(
     "acceptor-stem" = "#E41A1C",
-    "D-stem"        = "#377EB8",
-    "D-loop"        = "#4DAF4A",
-    "AC-stem"       = "#984EA3",
-    "AC-loop"       = "#FF7F00",
+    "D-stem" = "#377EB8",
+    "D-loop" = "#4DAF4A",
+    "AC-stem" = "#984EA3",
+    "AC-loop" = "#FF7F00",
     "variable-loop" = "#A65628",
-    "T-stem"        = "#F781BF",
-    "T-loop"        = "#999999"
+    "T-stem" = "#F781BF",
+    "T-loop" = "#999999"
   )
 }

@@ -99,7 +99,8 @@ test_that("run_deseq and tidy_deseq_results work end-to-end", {
 
   counts <- matrix(
     as.integer(rpois(n_genes * n_samples, lambda = rep(lambdas, n_samples))),
-    nrow = n_genes, ncol = n_samples
+    nrow = n_genes,
+    ncol = n_samples
   )
   rownames(counts) <- paste0("tRNA-", seq_len(n_genes))
   colnames(counts) <- c("wt1", "wt2", "wt3", "mut1", "mut2", "mut3")

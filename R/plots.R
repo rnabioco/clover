@@ -95,15 +95,16 @@ plot_bcerror <- function(tbl, data, title_suffix, include_legend = TRUE) {
 #' df$value <- rnorm(nrow(df), sd = 0.1)
 #' plot_mod_heatmap(df)
 plot_mod_heatmap <- function(
-    data,
-    value_col = "value",
-    ref_col = "ref",
-    cluster = TRUE,
-    color_limits = c(-0.25, 0.25),
-    color_low = "#0072B2",
-    color_high = "#D55E00",
-    na_value = "gray80",
-    square = TRUE) {
+  data,
+  value_col = "value",
+  ref_col = "ref",
+  cluster = TRUE,
+  color_limits = c(-0.25, 0.25),
+  color_low = "#0072B2",
+  color_high = "#D55E00",
+  na_value = "gray80",
+  square = TRUE
+) {
   # --- order x-axis by Sprinzl position ---
   data$sprinzl_label <- order_sprinzl_positions(data$sprinzl_label)
 
