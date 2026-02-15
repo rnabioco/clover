@@ -25,3 +25,5 @@
 ^pixi\.toml$
 ^pixi\.lock$
 ^\.pixi$
+^[.]?air[.]toml$
+^\.claude$
