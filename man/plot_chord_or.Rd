@@ -14,6 +14,7 @@ plot_chord_or(
   positive_color = "#D55E00",
   negative_color = "#0072B2",
   sprinzl_coords = NULL,
+  mods = NULL,
   title = NULL,
   transparency = 0.4
 )
@@ -44,6 +45,11 @@ Default \code{"#0072B2"} (blue).}
 
 \item{sprinzl_coords}{An optional tibble from \code{\link[=read_sprinzl_coords]{read_sprinzl_coords()}} used
 to order sectors by Sprinzl position and color by structural region.}
+
+\item{mods}{An optional tibble of modification annotations (e.g., from
+\code{\link[=fetch_modomics_mods]{fetch_modomics_mods()}}) with columns \code{pos} (seq_index) and \code{mod1}.
+When provided along with \code{sprinzl_coords}, modification positions are
+highlighted as an annotation ring.}
 
 \item{title}{Optional plot title.}
 

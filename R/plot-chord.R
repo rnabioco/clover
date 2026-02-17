@@ -25,6 +25,10 @@
 #'   Default `"#0072B2"` (blue).
 #' @param sprinzl_coords An optional tibble from [read_sprinzl_coords()] used
 #'   to order sectors by Sprinzl position and color by structural region.
+#' @param mods An optional tibble of modification annotations (e.g., from
+#'   [fetch_modomics_mods()]) with columns `pos` (seq_index) and `mod1`.
+#'   When provided along with `sprinzl_coords`, modification positions are
+#'   highlighted as an annotation ring.
 #' @param title Optional plot title.
 #' @param transparency Transparency for chord colors (0 = opaque, 1 = fully
 #'   transparent). Default `0.4`.
@@ -49,6 +53,7 @@ plot_chord_or <- function(
   positive_color = "#D55E00",
   negative_color = "#0072B2",
   sprinzl_coords = NULL,
+  mods = NULL,
   title = NULL,
   transparency = 0.4
 ) {
@@ -83,43 +88,53 @@ plot_chord_or <- function(
     negative_color
   )
 
+  # Map to Sprinzl labels if coords provided
+  if (!is.null(sprinzl_coords)) {
+    chord_df <- .map_to_sprinzl(chord_df, sprinzl_coords)
+    # Update chord_colors to match filtered rows
+    chord_colors <- chord_colors[seq_len(nrow(chord_df))]
+  }
+
   # Set up sectors and grid colors
   setup <- .setup_chord_sectors(chord_df, sprinzl_coords)
+
+  # Build adjacency matrix so all sectors appear (even without chords)
+  adj_mat <- .build_adjacency_matrix(chord_df, setup$order)
+
+  # Map chord colors to match adjacency matrix links
+  col_mat <- .build_color_matrix(
+    chord_df,
+    chord_colors,
+    setup$order,
+    transparency
+  )
 
   # Draw chord diagram
   circlize::circos.clear()
   circlize::circos.par(start.degree = 90, gap.degree = 2)
 
   circlize::chordDiagram(
-    chord_df,
+    adj_mat,
     order = setup$order,
     grid.col = setup$grid_col,
-    col = chord_colors,
-    transparency = transparency,
+    col = col_mat,
+    transparency = 0,
     annotationTrack = "grid",
     preAllocateTracks = list(track.height = 0.05)
   )
 
   # Add sector labels
-  circlize::circos.track(
-    track.index = 1,
-    ylim = c(0, 1),
-    panel.fun = function(x, y) {
-      sector_name <- circlize::get.cell.meta.data("sector.index")
-      xlim <- circlize::get.cell.meta.data("xlim")
-      ylim <- circlize::get.cell.meta.data("ylim")
-      circlize::circos.text(
-        mean(xlim),
-        ylim[1] + 0.1,
-        sector_name,
-        facing = "clockwise",
-        niceFacing = TRUE,
-        adj = c(0, 0.5),
-        cex = 0.6
-      )
-    },
-    bg.border = NA
-  )
+  .add_sector_labels()
+
+  # Add annotation rings when sprinzl coords provided
+  if (!is.null(sprinzl_coords)) {
+    .add_region_ring(setup$regions)
+    .add_nucleotide_ring(setup$residues)
+
+    if (!is.null(mods)) {
+      .add_modification_ring(mods, sprinzl_coords, setup$order)
+    }
+  }
 
   if (!is.null(title)) {
     graphics::title(title)
@@ -217,6 +232,10 @@ compute_ror <- function(
 #'   Default `"#0072B2"` (blue).
 #' @param sprinzl_coords An optional tibble from [read_sprinzl_coords()] used
 #'   to order sectors and color by structural region.
+#' @param mods An optional tibble of modification annotations (e.g., from
+#'   [fetch_modomics_mods()]) with columns `pos` (seq_index) and `mod1`.
+#'   When provided along with `sprinzl_coords`, modification positions are
+#'   highlighted as an annotation ring.
 #' @param title Optional plot title.
 #' @param transparency Transparency for chord colors. Default `0.4`.
 #'
@@ -236,6 +255,7 @@ plot_chord_ror <- function(
   gained_color = "#D55E00",
   lost_color = "#0072B2",
   sprinzl_coords = NULL,
+  mods = NULL,
   title = NULL,
   transparency = 0.4
 ) {
@@ -265,24 +285,219 @@ plot_chord_ror <- function(
     lost_color
   )
 
+  # Map to Sprinzl labels if coords provided
+  if (!is.null(sprinzl_coords)) {
+    chord_df <- .map_to_sprinzl(chord_df, sprinzl_coords)
+    chord_colors <- chord_colors[seq_len(nrow(chord_df))]
+  }
+
   # Set up sectors and grid colors
   setup <- .setup_chord_sectors(chord_df, sprinzl_coords)
+
+  # Build adjacency matrix so all sectors appear (even without chords)
+  adj_mat <- .build_adjacency_matrix(chord_df, setup$order)
+
+  # Map chord colors to match adjacency matrix links
+  col_mat <- .build_color_matrix(
+    chord_df,
+    chord_colors,
+    setup$order,
+    transparency
+  )
 
   # Draw chord diagram
   circlize::circos.clear()
   circlize::circos.par(start.degree = 90, gap.degree = 2)
 
   circlize::chordDiagram(
-    chord_df,
+    adj_mat,
     order = setup$order,
     grid.col = setup$grid_col,
-    col = chord_colors,
-    transparency = transparency,
+    col = col_mat,
+    transparency = 0,
     annotationTrack = "grid",
     preAllocateTracks = list(track.height = 0.05)
   )
 
   # Add sector labels
+  .add_sector_labels()
+
+  # Add annotation rings when sprinzl coords provided
+  if (!is.null(sprinzl_coords)) {
+    .add_region_ring(setup$regions)
+    .add_nucleotide_ring(setup$residues)
+
+    if (!is.null(mods)) {
+      .add_modification_ring(mods, sprinzl_coords, setup$order)
+    }
+  }
+
+  if (!is.null(title)) {
+    graphics::title(title)
+  }
+
+  circlize::circos.clear()
+  invisible(NULL)
+}
+
+# Internal helpers -----------------------------------------------------------
+
+#' Map pos1/pos2 from seq_index to Sprinzl labels.
+#'
+#' @param chord_df Data frame with `from` and `to` columns (seq_index as
+#'   character).
+#' @param sprinzl_coords Tibble from [read_sprinzl_coords()].
+#'
+#' @return `chord_df` with `from`/`to` replaced by Sprinzl labels. Rows
+#'   where either position has no Sprinzl mapping are dropped.
+#' @noRd
+.map_to_sprinzl <- function(chord_df, sprinzl_coords) {
+  lookup <- sprinzl_coords |>
+    dplyr::select(seq_index, sprinzl_label) |>
+    dplyr::distinct(seq_index, .keep_all = TRUE) |>
+    dplyr::filter(!is.na(sprinzl_label))
+
+  chord_df$from_idx <- as.numeric(chord_df$from)
+  chord_df$to_idx <- as.numeric(chord_df$to)
+
+  chord_df <- chord_df |>
+    dplyr::left_join(lookup, by = c("from_idx" = "seq_index")) |>
+    dplyr::rename(from_label = sprinzl_label) |>
+    dplyr::left_join(lookup, by = c("to_idx" = "seq_index")) |>
+    dplyr::rename(to_label = sprinzl_label)
+
+  # Drop pairs where either position has no mapping
+
+  chord_df <- chord_df |>
+    dplyr::filter(!is.na(from_label), !is.na(to_label))
+
+  chord_df$from <- chord_df$from_label
+  chord_df$to <- chord_df$to_label
+
+  chord_df |>
+    dplyr::select(-from_idx, -to_idx, -from_label, -to_label)
+}
+
+#' Set up chord diagram sectors from position pairs.
+#' @noRd
+.setup_chord_sectors <- function(chord_df, sprinzl_coords = NULL) {
+  if (!is.null(sprinzl_coords)) {
+    # Use ALL non-NA Sprinzl positions as sectors
+    all_labels <- sprinzl_coords |>
+      dplyr::filter(!is.na(sprinzl_label)) |>
+      dplyr::pull(sprinzl_label) |>
+      unique()
+
+    ordered <- order_sprinzl_positions(all_labels)
+    sector_order <- levels(ordered)
+
+    # Build region mapping for the outer ring
+    region_map <- sprinzl_coords |>
+      dplyr::filter(!is.na(sprinzl_label)) |>
+      dplyr::select(sprinzl_label, region) |>
+      dplyr::distinct(sprinzl_label, .keep_all = TRUE)
+
+    regions <- stats::setNames(region_map$region, region_map$sprinzl_label)
+
+    # Build residue mapping for the nucleotide ring
+    residue_map <- sprinzl_coords |>
+      dplyr::filter(!is.na(sprinzl_label)) |>
+      dplyr::select(sprinzl_label, residue) |>
+      dplyr::distinct(sprinzl_label, .keep_all = TRUE)
+
+    residues <- stats::setNames(
+      residue_map$residue,
+      residue_map$sprinzl_label
+    )
+
+    # Neutral grid colors; region coloring goes on outer ring
+    grid_col <- rep("grey90", length(sector_order))
+    names(grid_col) <- sector_order
+  } else {
+    all_positions <- unique(c(chord_df$from, chord_df$to))
+    # Sort positions numerically where possible
+    sector_order <- all_positions[order(
+      suppressWarnings(as.numeric(all_positions)),
+      all_positions
+    )]
+    grid_col <- rep("grey70", length(sector_order))
+    names(grid_col) <- sector_order
+    regions <- NULL
+    residues <- NULL
+  }
+
+  list(
+    order = sector_order,
+    grid_col = grid_col,
+    regions = regions,
+    residues = residues
+  )
+}
+
+#' Build adjacency matrix from chord data.
+#'
+#' Creates a square matrix with all sector positions as rows/columns.
+#' Positions without connections have all-zero rows/columns but still
+#' appear as sectors in the diagram.
+#' @noRd
+.build_adjacency_matrix <- function(chord_df, sector_order) {
+  n <- length(sector_order)
+  mat <- matrix(0, nrow = n, ncol = n)
+  rownames(mat) <- sector_order
+  colnames(mat) <- sector_order
+
+  for (i in seq_len(nrow(chord_df))) {
+    ri <- match(chord_df$from[i], sector_order)
+    ci <- match(chord_df$to[i], sector_order)
+    if (!is.na(ri) && !is.na(ci)) {
+      mat[ri, ci] <- chord_df$value[i]
+    }
+  }
+
+  mat
+}
+
+#' Build color matrix for adjacency matrix chord diagram.
+#'
+#' Maps per-chord colors into a matrix matching the adjacency matrix,
+#' with transparency already applied.
+#' @noRd
+.build_color_matrix <- function(
+  chord_df,
+  chord_colors,
+  sector_order,
+  transparency
+) {
+  n <- length(sector_order)
+  # Default: fully transparent (no chord)
+  col_mat <- matrix(
+    grDevices::rgb(1, 1, 1, alpha = 0),
+    nrow = n,
+    ncol = n
+  )
+  rownames(col_mat) <- sector_order
+  colnames(col_mat) <- sector_order
+
+  for (i in seq_len(nrow(chord_df))) {
+    ri <- match(chord_df$from[i], sector_order)
+    ci <- match(chord_df$to[i], sector_order)
+    if (!is.na(ri) && !is.na(ci)) {
+      base_col <- grDevices::col2rgb(chord_colors[i]) / 255
+      col_mat[ri, ci] <- grDevices::rgb(
+        base_col[1],
+        base_col[2],
+        base_col[3],
+        alpha = 1 - transparency
+      )
+    }
+  }
+
+  col_mat
+}
+
+#' Add sector labels to chord diagram.
+#' @noRd
+.add_sector_labels <- function() {
   circlize::circos.track(
     track.index = 1,
     ylim = c(0, 1),
@@ -302,58 +517,130 @@ plot_chord_ror <- function(
     },
     bg.border = NA
   )
-
-  if (!is.null(title)) {
-    graphics::title(title)
-  }
-
-  circlize::circos.clear()
-  invisible(NULL)
 }
 
-# Internal helpers -----------------------------------------------------------
-
-#' Set up chord diagram sectors from position pairs.
+#' Add outer ring colored by structural region.
 #' @noRd
-.setup_chord_sectors <- function(chord_df, sprinzl_coords = NULL) {
-  all_positions <- unique(c(chord_df$from, chord_df$to))
+.add_region_ring <- function(regions) {
+  region_palette <- .region_colors()
 
-  if (!is.null(sprinzl_coords)) {
-    # Use Sprinzl ordering
-    ordered <- order_sprinzl_positions(all_positions)
-    sector_order <- levels(ordered)
-    sector_order <- sector_order[sector_order %in% all_positions]
+  circlize::circos.track(
+    ylim = c(0, 1),
+    track.height = 0.05,
+    bg.border = NA,
+    panel.fun = function(x, y) {
+      sector_name <- circlize::get.cell.meta.data("sector.index")
+      xlim <- circlize::get.cell.meta.data("xlim")
+      ylim <- circlize::get.cell.meta.data("ylim")
 
-    # Color sectors by structural region
-    region_map <- sprinzl_coords |>
-      dplyr::select(sprinzl_label, region) |>
-      dplyr::distinct(sprinzl_label, .keep_all = TRUE)
+      rgn <- regions[sector_name]
+      col <- if (is.na(rgn)) "grey70" else region_palette[rgn]
 
-    region_palette <- .region_colors()
+      circlize::circos.rect(
+        xlim[1],
+        ylim[1],
+        xlim[2],
+        ylim[2],
+        col = col,
+        border = NA
+      )
+    }
+  )
 
-    grid_col <- vapply(
-      sector_order,
-      function(pos) {
-        rgn <- region_map$region[region_map$sprinzl_label == pos]
-        if (length(rgn) == 0) {
-          return("grey70")
-        }
-        region_palette[rgn[1]]
-      },
-      character(1)
-    )
-    names(grid_col) <- sector_order
-  } else {
-    # Sort positions numerically where possible
-    sector_order <- all_positions[order(
-      suppressWarnings(as.numeric(all_positions)),
-      all_positions
-    )]
-    grid_col <- rep("grey70", length(sector_order))
-    names(grid_col) <- sector_order
-  }
+  # Add legend for regions present in the data
+  present_regions <- unique(stats::na.omit(regions))
+  legend_colors <- region_palette[present_regions]
 
-  list(order = sector_order, grid_col = grid_col)
+  # Deduplicate colors (e.g., acceptor-stem and acceptor-tail share a color)
+  unique_colors <- !duplicated(legend_colors)
+  legend_labels <- present_regions[unique_colors]
+  legend_cols <- legend_colors[unique_colors]
+
+  graphics::legend(
+    "bottomleft",
+    legend = legend_labels,
+    fill = legend_cols,
+    border = NA,
+    bty = "n",
+    cex = 0.7
+  )
+}
+
+#' Add ring colored by reference nucleotide.
+#' @noRd
+.add_nucleotide_ring <- function(residues) {
+  nuc_palette <- .nucleotide_colors()
+
+  circlize::circos.track(
+    ylim = c(0, 1),
+    track.height = 0.05,
+    bg.border = NA,
+    panel.fun = function(x, y) {
+      sector_name <- circlize::get.cell.meta.data("sector.index")
+      xlim <- circlize::get.cell.meta.data("xlim")
+      ylim <- circlize::get.cell.meta.data("ylim")
+
+      nuc <- residues[sector_name]
+      col <- if (is.na(nuc)) "grey90" else nuc_palette[nuc]
+
+      circlize::circos.rect(
+        xlim[1],
+        ylim[1],
+        xlim[2],
+        ylim[2],
+        col = col,
+        border = NA
+      )
+    }
+  )
+}
+
+#' Add ring highlighting modification positions.
+#' @noRd
+.add_modification_ring <- function(mods, sprinzl_coords, sector_order) {
+  # Map mod positions (seq_index) to Sprinzl labels
+  lookup <- sprinzl_coords |>
+    dplyr::select(seq_index, sprinzl_label) |>
+    dplyr::distinct(seq_index, .keep_all = TRUE) |>
+    dplyr::filter(!is.na(sprinzl_label))
+
+  mod_mapped <- mods |>
+    dplyr::inner_join(lookup, by = c("pos" = "seq_index"))
+
+  mod_labels <- unique(mod_mapped$sprinzl_label)
+
+  circlize::circos.track(
+    ylim = c(0, 1),
+    track.height = 0.05,
+    bg.border = NA,
+    panel.fun = function(x, y) {
+      sector_name <- circlize::get.cell.meta.data("sector.index")
+      xlim <- circlize::get.cell.meta.data("xlim")
+      ylim <- circlize::get.cell.meta.data("ylim")
+
+      if (sector_name %in% mod_labels) {
+        circlize::circos.rect(
+          xlim[1],
+          ylim[1],
+          xlim[2],
+          ylim[2],
+          col = "#E41A1C",
+          border = NA
+        )
+      }
+    }
+  )
+}
+
+#' Named color palette for nucleotides.
+#' @noRd
+.nucleotide_colors <- function() {
+  c(
+    "A" = "#4DAF4A",
+    "C" = "#377EB8",
+    "G" = "#FFD92F",
+    "U" = "#E41A1C"
+  )
 }
 
 #' Named color palette for tRNA structural regions.
@@ -361,12 +648,15 @@ plot_chord_ror <- function(
 .region_colors <- function() {
   c(
     "acceptor-stem" = "#E41A1C",
+    "acceptor-tail" = "#E41A1C",
     "D-stem" = "#377EB8",
     "D-loop" = "#4DAF4A",
-    "AC-stem" = "#984EA3",
-    "AC-loop" = "#FF7F00",
-    "variable-loop" = "#A65628",
+    "anticodon-stem" = "#984EA3",
+    "anticodon-loop" = "#FF7F00",
+    "variable-region" = "#A65628",
+    "variable-arm" = "#A65628",
     "T-stem" = "#F781BF",
-    "T-loop" = "#999999"
+    "T-loop" = "#999999",
+    "unknown" = "grey70"
   )
 }

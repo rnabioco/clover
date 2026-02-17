@@ -273,14 +273,9 @@ since the basecaller misidentifies modified nucleotides.
 #| label: fig-bcerror-mods
 #| fig.cap: "Base-calling error profiles with known modification positions marked."
 #| fig.height: 7
-# Strip "host-" prefix from bcerror refs to match MODOMICS ref names
-bcerror_summary_stripped <- bcerror_summary |>
-  mutate(ref_stripped = sub("^host-", "", ref))
-
 # Filter mods to tRNAs in our plot set
 mods_plot <- mods |>
-  filter(ref %in% sub("^host-", "", plot_trnas)) |>
-  mutate(ref = paste0("host-", ref))
+  filter(ref %in% plot_trnas)
 
 bcerror_summary |>
   filter(ref %in% plot_trnas) |>
