@@ -115,7 +115,7 @@ create_clover <- function(
 #' Read FASTA reference
 #'
 #' @examples
-#' fa <- clover_example("yeast/trna-ref.fa.gz")
+#' fa <- clover_example("ecoli/validated.fa.gz")
 #' read_fasta(fa)
 #'
 #' @param fa path to fasta file

@@ -21,7 +21,7 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item RNA Bioscience Initiative (https://ror.org/03wmf1y16) [funder, copyright holder]
+  \item RNA Bioscience Initiative (\href{https://ror.org/03wmf1y16}{ROR}) [funder, copyright holder]
 }
 
 }

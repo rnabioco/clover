@@ -253,14 +253,15 @@ test_that("fetch_modomics_mods returns expected structure with mocked API", {
   expect_equal(result$ref[1], "tRNA-Ala-AGC-1")
 })
 
-test_that("fetch_modomics_mods works with yeast data", {
+test_that("fetch_modomics_mods works with ecoli data", {
+  skip_on_cran()
   skip_if_not_installed("httr2")
   skip_if_not_installed("jsonlite")
   skip_if_not_installed("pwalign")
   skip_if_offline()
 
-  fa <- clover_example("yeast/trna-ref.fa.gz")
-  mods <- fetch_modomics_mods(fa, "Saccharomyces cerevisiae")
+  fa <- read_fasta(clover_example("ecoli/validated.fa.gz"))
+  mods <- fetch_modomics_mods(fa[3], "Escherichia coli")
 
   expect_s3_class(mods, "tbl_df")
   expect_named(mods, c("ref", "pos", "mod_full", "mod1"))
@@ -278,8 +279,8 @@ test_that("modomics_organisms returns expected organisms", {
 test_that("modomics_mods works with E. coli data", {
   skip_if_not_installed("pwalign")
 
-  fa <- clover_example("ecoli/validated.fa.gz")
-  mods <- modomics_mods(fa, "Escherichia coli")
+  fa <- read_fasta(clover_example("ecoli/validated.fa.gz"))
+  mods <- modomics_mods(fa[3], "Escherichia coli")
 
   expect_s3_class(mods, "tbl_df")
   expect_named(mods, c("ref", "pos", "mod_full", "mod1"))
