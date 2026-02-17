@@ -158,8 +158,7 @@ ratio_diff <- compute_charging_diffs(
   denominator = "ctl",
   min_count = 50,
   n_top = 20
-) |>
-  mutate(tRNA = forcats::fct_reorder(tRNA, diff))
+)
 
 ggplot(ratio_diff, aes(x = diff, y = tRNA)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +

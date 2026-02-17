@@ -55,7 +55,7 @@ A tibble with columns:
 
 - tRNA:
 
-  tRNA identifier.
+  tRNA identifier (factor ordered by `diff`).
 
 - ratio_numerator:
 
