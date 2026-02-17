@@ -140,5 +140,5 @@ read_fasta <- function(fa) {
 #' @return A tibble.
 #' @export
 read_mod_annotations <- function(mods) {
-  readr::read_tsv(mods)
+  readr::read_tsv(mods, show_col_types = FALSE)
 }
