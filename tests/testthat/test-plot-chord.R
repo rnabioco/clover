@@ -12,7 +12,12 @@ test_that("plot_chord_or runs without error", {
   pdf(nullfile())
   on.exit(dev.off(), add = TRUE)
 
-  result <- plot_chord_or(odds_data, or_cutoff = 0.5)
+  result <- plot_chord_or(
+    odds_data,
+    or_cutoff = 0.5,
+    p_cutoff = 0.05,
+    min_obs = 50
+  )
   expect_null(result)
 })
 
@@ -60,7 +65,13 @@ test_that("plot_chord_or works with sprinzl_coords", {
   pdf(nullfile())
   on.exit(dev.off(), add = TRUE)
 
-  result <- plot_chord_or(odds_data, sprinzl_coords = sprinzl)
+  result <- plot_chord_or(
+    odds_data,
+    or_cutoff = 0.5,
+    p_cutoff = 0.05,
+    min_obs = 50,
+    sprinzl_coords = sprinzl
+  )
   expect_null(result)
 })
 
@@ -180,6 +191,9 @@ test_that("plot_chord_or renders with mods annotation ring", {
 
   result <- plot_chord_or(
     odds_data,
+    or_cutoff = 0.5,
+    p_cutoff = 0.05,
+    min_obs = 50,
     sprinzl_coords = sprinzl,
     mods = mods
   )
@@ -238,7 +252,8 @@ test_that("compute_ror calculates correct values", {
   result <- compute_ror(
     odds_data,
     numerator = "mut",
-    denominator = "wt"
+    denominator = "wt",
+    min_obs = 50
   )
 
   expect_s3_class(result, "tbl_df")
@@ -315,4 +330,40 @@ test_that(".map_to_sprinzl drops pairs with no mapping", {
   expect_equal(nrow(mapped), 1)
   expect_equal(mapped$from, "1")
   expect_equal(mapped$to, "3")
+})
+
+test_that(".equalize_sectors produces equal total widths", {
+  mat <- matrix(0, 3, 3, dimnames = list(c("A", "B", "C"), c("A", "B", "C")))
+  mat["A", "B"] <- 2
+  mat["A", "C"] <- 1
+
+  eq <- clover:::.equalize_sectors(mat)
+  totals <- rowSums(eq$mat) + colSums(eq$mat)
+  expect_equal(length(unique(totals)), 1)
+  expect_false(any(diag(eq$link_visible)))
+  expect_true(all(eq$link_visible[
+    row(eq$link_visible) != col(eq$link_visible)
+  ]))
+})
+
+test_that(".equalize_sectors handles all-zero matrix", {
+  mat <- matrix(0, 3, 3, dimnames = list(c("A", "B", "C"), c("A", "B", "C")))
+
+  eq <- clover:::.equalize_sectors(mat)
+  totals <- rowSums(eq$mat) + colSums(eq$mat)
+  expect_equal(length(unique(totals)), 1)
+  expect_true(all(totals > 0))
+})
+
+test_that(".add_chord_legend renders without error", {
+  pdf(nullfile())
+  on.exit(dev.off(), add = TRUE)
+
+  plot.new()
+  expect_no_error(
+    clover:::.add_chord_legend(
+      labels = c("Co-occurring", "Exclusive"),
+      colors = c("#D55E00", "#0072B2")
+    )
+  )
 })

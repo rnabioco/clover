@@ -14,11 +14,11 @@
 #' @param or_col Column name (string) for the odds ratio value.
 #'   Default `"log_odds_ratio"`.
 #' @param or_cutoff Minimum absolute value of `or_col` for a chord to be
-#'   drawn. Default `0.5`.
+#'   drawn. Default `1.0`.
 #' @param p_col Column name (string) for the p-value. Default `"p_value"`.
-#' @param p_cutoff Maximum p-value for a chord to be drawn. Default `0.05`.
+#' @param p_cutoff Maximum p-value for a chord to be drawn. Default `0.01`.
 #' @param min_obs Minimum number of observations (`total_obs`) for a pair
-#'   to be included. Default `50`.
+#'   to be included. Default `100`.
 #' @param positive_color Color for positive odds ratios (co-occurrence).
 #'   Default `"#D55E00"` (vermillion).
 #' @param negative_color Color for negative odds ratios (exclusion).
@@ -46,10 +46,10 @@
 plot_chord_or <- function(
   odds_data,
   or_col = "log_odds_ratio",
-  or_cutoff = 0.5,
+  or_cutoff = 1.0,
   p_col = "p_value",
-  p_cutoff = 0.05,
-  min_obs = 50,
+  p_cutoff = 0.01,
+  min_obs = 100,
   positive_color = "#D55E00",
   negative_color = "#0072B2",
   sprinzl_coords = NULL,
@@ -101,6 +101,9 @@ plot_chord_or <- function(
   # Build adjacency matrix so all sectors appear (even without chords)
   adj_mat <- .build_adjacency_matrix(chord_df, setup$order)
 
+  # Equalize sector widths with diagonal padding
+  eq <- .equalize_sectors(adj_mat)
+
   # Map chord colors to match adjacency matrix links
   col_mat <- .build_color_matrix(
     chord_df,
@@ -108,23 +111,34 @@ plot_chord_or <- function(
     setup$order,
     transparency
   )
+  # Pad color matrix diagonal to match equalized adjacency matrix
+  diag(col_mat) <- grDevices::rgb(1, 1, 1, alpha = 0)
 
   # Draw chord diagram
   circlize::circos.clear()
   circlize::circos.par(start.degree = 90, gap.degree = 2)
 
   circlize::chordDiagram(
-    adj_mat,
+    eq$mat,
     order = setup$order,
     grid.col = setup$grid_col,
     col = col_mat,
     transparency = 0,
     annotationTrack = "grid",
-    preAllocateTracks = list(track.height = 0.05)
+    preAllocateTracks = list(track.height = 0.05),
+    reduce = -1,
+    self.link = 1,
+    link.visible = eq$link_visible
   )
 
   # Add sector labels
   .add_sector_labels()
+
+  # Add chord color legend
+  .add_chord_legend(
+    labels = c("Co-occurring", "Exclusive"),
+    colors = c(positive_color, negative_color)
+  )
 
   # Add annotation rings when sprinzl coords provided
   if (!is.null(sprinzl_coords)) {
@@ -157,7 +171,7 @@ plot_chord_or <- function(
 #' @param numerator Value of `condition_col` for the numerator condition.
 #' @param denominator Value of `condition_col` for the denominator condition.
 #' @param min_obs Minimum `total_obs` for a pair to be included.
-#'   Default `50`.
+#'   Default `100`.
 #' @param agg_fun Function to aggregate replicate log odds ratios.
 #'   Default `mean`.
 #'
@@ -179,7 +193,7 @@ compute_ror <- function(
   condition_col = "condition",
   numerator,
   denominator,
-  min_obs = 50,
+  min_obs = 100,
   agg_fun = mean
 ) {
   # Filter by minimum observations
@@ -297,6 +311,9 @@ plot_chord_ror <- function(
   # Build adjacency matrix so all sectors appear (even without chords)
   adj_mat <- .build_adjacency_matrix(chord_df, setup$order)
 
+  # Equalize sector widths with diagonal padding
+  eq <- .equalize_sectors(adj_mat)
+
   # Map chord colors to match adjacency matrix links
   col_mat <- .build_color_matrix(
     chord_df,
@@ -304,23 +321,34 @@ plot_chord_ror <- function(
     setup$order,
     transparency
   )
+  # Pad color matrix diagonal to match equalized adjacency matrix
+  diag(col_mat) <- grDevices::rgb(1, 1, 1, alpha = 0)
 
   # Draw chord diagram
   circlize::circos.clear()
   circlize::circos.par(start.degree = 90, gap.degree = 2)
 
   circlize::chordDiagram(
-    adj_mat,
+    eq$mat,
     order = setup$order,
     grid.col = setup$grid_col,
     col = col_mat,
     transparency = 0,
     annotationTrack = "grid",
-    preAllocateTracks = list(track.height = 0.05)
+    preAllocateTracks = list(track.height = 0.05),
+    reduce = -1,
+    self.link = 1,
+    link.visible = eq$link_visible
   )
 
   # Add sector labels
   .add_sector_labels()
+
+  # Add chord color legend
+  .add_chord_legend(
+    labels = c("Gained", "Lost"),
+    colors = c(gained_color, lost_color)
+  )
 
   # Add annotation rings when sprinzl coords provided
   if (!is.null(sprinzl_coords)) {
@@ -629,6 +657,50 @@ plot_chord_ror <- function(
         )
       }
     }
+  )
+}
+
+#' Equalize sector widths by adding diagonal padding.
+#'
+#' Computes per-sector diagonal values so that every sector occupies the
+#' same total width in the chord diagram (off-diagonal links + diagonal
+#' padding = constant).
+#'
+#' @param mat Square adjacency matrix from `.build_adjacency_matrix()`.
+#' @return A list with `mat` (padded matrix) and `link_visible` (logical
+#'   matrix; `FALSE` on diagonal entries used for padding).
+#' @noRd
+.equalize_sectors <- function(mat) {
+  n <- nrow(mat)
+  link_total <- rowSums(mat) + colSums(mat)
+  # Diagonal entries contribute to both row and column sums, so each
+  # adds 2 * diag[i] to sector width. Solve for equal total widths:
+  # link_total[i] + 2 * diag[i] = target
+  target <- max(link_total) + 2
+  diag_pad <- (target - link_total) / 2
+
+  diag(mat) <- diag_pad
+
+  link_visible <- matrix(TRUE, nrow = n, ncol = n)
+  rownames(link_visible) <- rownames(mat)
+  colnames(link_visible) <- colnames(mat)
+  diag(link_visible) <- FALSE
+
+  list(mat = mat, link_visible = link_visible)
+}
+
+#' Add a legend for chord colors.
+#' @param labels Character vector of legend labels.
+#' @param colors Character vector of colors matching `labels`.
+#' @noRd
+.add_chord_legend <- function(labels, colors) {
+  graphics::legend(
+    "bottomright",
+    legend = labels,
+    fill = colors,
+    border = NA,
+    bty = "n",
+    cex = 0.7
   )
 }
 

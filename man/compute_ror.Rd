@@ -9,7 +9,7 @@ compute_ror(
   condition_col = "condition",
   numerator,
   denominator,
-  min_obs = 50,
+  min_obs = 100,
   agg_fun = mean
 )
 }
@@ -25,7 +25,7 @@ Default \code{"condition"}.}
 \item{denominator}{Value of \code{condition_col} for the denominator condition.}
 
 \item{min_obs}{Minimum \code{total_obs} for a pair to be included.
-Default \code{50}.}
+Default \code{100}.}
 
 \item{agg_fun}{Function to aggregate replicate log odds ratios.
 Default \code{mean}.}
