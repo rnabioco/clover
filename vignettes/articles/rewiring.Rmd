@@ -121,15 +121,19 @@ plot_pcoa_rewiring(pcoa, scores)
 
 ## Network visualization
 
-Build a modification network from the ROR data and visualize it as an arc
-diagram.
+Build a chord diagram from the ROR data to visualize modification rewiring
+between positions.
 
 ```{r}
-#| label: fig-arc-diagram
-#| fig.cap: "Arc diagram of modification rewiring network."
+#| label: fig-chord-ror
+#| fig.cap: "Chord diagram of modification rewiring between control and infected conditions."
+#| fig.width: 6
 #| fig.height: 6
-graph <- build_or_network(ror)
-plot_arc_diagram(graph, title = "Modification rewiring: inf vs ctl")
+ror_agg <- ror |>
+  dplyr::group_by(pos1, pos2) |>
+  dplyr::summarise(log_ror = mean(ror), .groups = "drop")
+
+plot_chord_ror(ror_agg, title = "Modification rewiring: inf vs ctl")
 ```
 
 ## Session info
