@@ -270,6 +270,61 @@ plot_mod_heatmap(
 )
 ```
 
+## Modification annotations from MODOMICS
+
+The [MODOMICS](https://genesilico.pl/modomics/) database catalogs known RNA
+modifications. `fetch_modomics_mods()` downloads tRNA modification data for a
+given organism and maps the modification positions onto your reference
+sequences using pairwise alignment.
+
+```{r}
+#| label: modomics-fetch
+#| message: true
+fasta_path <- S4Vectors::metadata(se)$config$fasta
+mods <- fetch_modomics_mods(fasta_path, organism = "Escherichia coli")
+mods
+```
+
+We can overlay known modifications onto the base-calling error profiles.
+Positions with known modifications often correspond to elevated error rates,
+since the basecaller misidentifies modified nucleotides.
+
+```{r}
+#| label: fig-bcerror-mods
+#| fig.cap: "Base-calling error profiles with known modification positions marked."
+#| fig.height: 7
+# Strip "host-" prefix from bcerror refs to match MODOMICS ref names
+bcerror_summary_stripped <- bcerror_summary |>
+  mutate(ref_stripped = sub("^host-", "", ref))
+
+# Filter mods to tRNAs in our plot set
+mods_plot <- mods |>
+  filter(ref %in% sub("^host-", "", plot_trnas)) |>
+  mutate(ref = paste0("host-", ref))
+
+bcerror_summary |>
+  filter(ref %in% plot_trnas) |>
+  ggplot(aes(x = pos, y = mean_error, color = condition)) +
+  geom_line(linewidth = 0.5) +
+  geom_point(size = 0.8) +
+  geom_vline(
+    data = mods_plot,
+    aes(xintercept = pos),
+    linetype = "dashed",
+    color = "grey40",
+    alpha = 0.5
+  ) +
+  facet_wrap(~ref, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
+  labs(
+    x = "Position",
+    y = "Mean base-calling error rate",
+    title = "Error profiles with known modification sites (dashed lines)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
 ## Modification co-occurrence (odds ratios)
 
 Odds ratios measure whether modifications at pairs of positions tend to
