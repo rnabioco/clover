@@ -65,7 +65,7 @@ modomics_mods <- function(fasta, organism, min_identity = 0.7) {
     "Processing {nrow(modomics_seqs)} MODOMICS sequence{?s}."
   )
 
-  modomics_entries <- lapply(
+  modomics_entries <- purrr::map(
     seq_len(nrow(modomics_seqs)),
     function(i) {
       mods <- extract_mod_positions(
@@ -213,7 +213,7 @@ fetch_modomics_mods <- function(
     "Processing {nrow(modomics_seqs)} MODOMICS sequence{?s}."
   )
 
-  modomics_entries <- lapply(
+  modomics_entries <- purrr::map(
     seq_len(nrow(modomics_seqs)),
     function(i) {
       mods <- extract_mod_positions(
@@ -256,22 +256,19 @@ fetch_modomics_modifications <- function(cache_dir = NULL) {
   entries <- jsonlite::fromJSON(raw_json, simplifyVector = FALSE)
 
   tbl <- dplyr::tibble(
-    new_abbrev = vapply(
+    new_abbrev = purrr::map_chr(
       entries,
-      \(e) e$new_abbrev %||% NA_character_,
-      character(1)
+      \(e) e$new_abbrev %||% NA_character_
     ),
-    short_name = vapply(
+    short_name = purrr::map_chr(
       entries,
-      \(e) e$short_name %||% NA_character_,
-      character(1)
+      \(e) e$short_name %||% NA_character_
     ),
-    name = vapply(
+    name = purrr::map_chr(
       entries,
-      \(e) e$name %||% NA_character_,
-      character(1)
+      \(e) e$name %||% NA_character_
     ),
-    reference_moiety = vapply(
+    reference_moiety = purrr::map_chr(
       entries,
       function(e) {
         rm_val <- e$reference_moiety
@@ -280,8 +277,7 @@ fetch_modomics_modifications <- function(cache_dir = NULL) {
         }
         base <- rm_val[[1]]
         if (base %in% c("A", "U", "G", "C", "T")) base else NA_character_
-      },
-      character(1)
+      }
     )
   )
 
@@ -313,20 +309,17 @@ fetch_modomics_sequences <- function(organism, cache_dir = NULL) {
   }
 
   dplyr::tibble(
-    subtype = vapply(
+    subtype = purrr::map_chr(
       entries,
-      \(e) e$subtype %||% NA_character_,
-      character(1)
+      \(e) e$subtype %||% NA_character_
     ),
-    anticodon = vapply(
+    anticodon = purrr::map_chr(
       entries,
-      \(e) e$anticodon %||% NA_character_,
-      character(1)
+      \(e) e$anticodon %||% NA_character_
     ),
-    seq = vapply(
+    seq = purrr::map_chr(
       entries,
-      \(e) e$seq %||% NA_character_,
-      character(1)
+      \(e) e$seq %||% NA_character_
     )
   )
 }
@@ -408,7 +401,7 @@ strip_modifications <- function(seq, mod_dict) {
   chars <- strsplit(seq, "")[[1]]
   standard_bases <- c("A", "U", "G", "C")
 
-  result <- vapply(
+  result <- purrr::map_chr(
     chars,
     function(ch) {
       if (ch %in% standard_bases) {
@@ -420,9 +413,7 @@ strip_modifications <- function(seq, mod_dict) {
       } else {
         "N"
       }
-    },
-    character(1),
-    USE.NAMES = FALSE
+    }
   )
 
   paste0(result, collapse = "")

@@ -94,7 +94,7 @@ read_multi <- function(paths, reader) {
     cli_abort("{.arg paths} must be a named character vector.")
   }
 
-  tbls <- lapply(names(paths), function(sid) {
+  tbls <- purrr::map(names(paths), function(sid) {
     tbl <- reader(paths[[sid]])
     tbl$sample_id <- sid
     tbl

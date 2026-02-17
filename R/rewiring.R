@@ -84,7 +84,9 @@ calculate_rewiring_scores <- function(mat) {
     isodecoder = rownames(mat),
     euclidean_magnitude = sqrt(rowSums(mat^2)),
     mean_abs_change = rowMeans(abs(mat)),
-    max_abs_change = apply(abs(mat), 1, max),
+    max_abs_change = purrr::map_dbl(seq_len(nrow(mat)), \(i) {
+      max(abs(mat[i, ]))
+    }),
     n_nonzero = rowSums(mat != 0)
   ) |>
     dplyr::arrange(dplyr::desc(euclidean_magnitude))

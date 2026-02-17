@@ -85,7 +85,7 @@ list_pipeline_files <- function(
   sample_ids <- config$samples$sample_id
   output_dir <- config$output_dir
 
-  rows <- lapply(types, function(type) {
+  rows <- purrr::map(types, function(type) {
     suffix <- suffix_map[[type]]
     tibble::tibble(
       sample_id = sample_ids,
@@ -139,12 +139,12 @@ read_pipeline_results <- function(
     odds_ratios = read_odds_ratios
   )
 
-  results <- lapply(types, function(type) {
+  results <- purrr::map(types, function(type) {
     type_files <- files[files$type == type, ]
     paths <- stats::setNames(type_files$path, type_files$sample_id)
 
     # Skip types where no files exist
-    existing <- vapply(paths, file.exists, logical(1))
+    existing <- purrr::map_lgl(paths, file.exists)
     if (!any(existing)) {
       return(NULL)
     }
@@ -156,7 +156,7 @@ read_pipeline_results <- function(
       read_odds_ratios_multi(paths)
     } else {
       # Generic reader: read each file and bind with sample_id
-      tbls <- lapply(names(paths), function(sid) {
+      tbls <- purrr::map(names(paths), function(sid) {
         tbl <- reader_map[[type]](paths[[sid]])
         tbl$sample_id <- sid
         tbl
@@ -224,10 +224,9 @@ parse_samples <- function(cfg, config_dir) {
   if (is.list(samples_entry)) {
     tibble::tibble(
       sample_id = names(samples_entry),
-      data_path = vapply(
+      data_path = purrr::map_chr(
         samples_entry,
-        function(x) resolve_path(as.character(x), config_dir),
-        character(1)
+        function(x) resolve_path(as.character(x), config_dir)
       )
     )
   } else {
