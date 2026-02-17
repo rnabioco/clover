@@ -1,3 +1,153 @@
+#' Map cached MODOMICS modifications onto reference sequences
+#'
+#' Uses bundled MODOMICS data to map known tRNA modification
+#' positions onto user-provided reference sequences using pairwise
+#' alignment. No internet connection is required for organisms
+#' included in the package (see [modomics_organisms()]). For other
+#' organisms, falls back to [fetch_modomics_mods()].
+#'
+#' @param fasta Path to a FASTA file or a
+#'   [Biostrings::DNAStringSet] object containing reference tRNA
+#'   sequences.
+#' @param organism Character string specifying the organism name
+#'   as used in MODOMICS (e.g., `"Saccharomyces cerevisiae"`,
+#'   `"Escherichia coli"`).
+#' @param min_identity Minimum alignment identity (0--1) required
+#'   to accept a match between a MODOMICS sequence and a reference
+#'   sequence. Default `0.7`.
+#'
+#' @return A tibble with columns:
+#'   - `ref`: reference sequence name from the FASTA
+#'   - `pos`: 1-based position in the reference sequence
+#'   - `mod_full`: full modification name
+#'     (e.g., "1-methyladenosine")
+#'   - `mod1`: short modification name (e.g., "m1A")
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' fa <- clover_example("ecoli/validated.fa.gz")
+#' mods <- modomics_mods(fa, "Escherichia coli")
+#' mods
+#' }
+modomics_mods <- function(fasta, organism, min_identity = 0.7) {
+  rlang::check_installed("pwalign")
+
+  if (is.character(fasta)) {
+    fasta <- read_fasta(fasta)
+  }
+
+  mod_dict <- .load_cached_modifications()
+  modomics_seqs <- .load_cached_sequences(organism)
+
+  if (is.null(modomics_seqs)) {
+    cli::cli_inform(
+      c(
+        "i" = "No cached data for {.val {organism}}.",
+        "i" = "Falling back to {.fn fetch_modomics_mods}."
+      )
+    )
+    return(fetch_modomics_mods(
+      fasta,
+      organism,
+      min_identity = min_identity
+    ))
+  }
+
+  if (nrow(modomics_seqs) == 0) {
+    cli::cli_abort(
+      "No tRNA sequences found in MODOMICS for {.val {organism}}."
+    )
+  }
+
+  cli::cli_inform(
+    "Processing {nrow(modomics_seqs)} MODOMICS sequence{?s}."
+  )
+
+  modomics_entries <- lapply(
+    seq_len(nrow(modomics_seqs)),
+    function(i) {
+      mods <- .extract_mod_positions(
+        modomics_seqs$seq[i],
+        mod_dict
+      )
+      plain_seq <- .strip_modifications(
+        modomics_seqs$seq[i],
+        mod_dict
+      )
+      list(
+        subtype = modomics_seqs$subtype[i],
+        anticodon = modomics_seqs$anticodon[i],
+        mods = mods,
+        plain_seq = plain_seq
+      )
+    }
+  )
+
+  cli::cli_inform(
+    "Matching MODOMICS sequences to reference FASTA."
+  )
+
+  result <- .match_modomics_to_refs(
+    modomics_entries,
+    fasta,
+    min_identity
+  )
+
+  cli::cli_inform(
+    "Found {nrow(result)} modification annotation{?s}."
+  )
+  result
+}
+
+#' List organisms with cached MODOMICS data
+#'
+#' Returns the names of organisms for which MODOMICS tRNA
+#' modification data is bundled with the package. These organisms
+#' can be used with [modomics_mods()] without internet access.
+#'
+#' @return A character vector of organism names.
+#'
+#' @export
+#'
+#' @examples
+#' modomics_organisms()
+modomics_organisms <- function() {
+  modomics_dir <- system.file(
+    "extdata",
+    "modomics",
+    package = "clover"
+  )
+  rds_files <- list.files(modomics_dir, pattern = "\\.rds$")
+  rds_files <- rds_files[rds_files != "modifications.rds"]
+  gsub("_", " ", tools::file_path_sans_ext(rds_files))
+}
+
+.load_cached_modifications <- function() {
+  path <- system.file(
+    "extdata",
+    "modomics",
+    "modifications.rds",
+    package = "clover"
+  )
+  readRDS(path)
+}
+
+.load_cached_sequences <- function(organism) {
+  fname <- paste0(gsub(" ", "_", organism), ".rds")
+  path <- system.file(
+    "extdata",
+    "modomics",
+    fname,
+    package = "clover"
+  )
+  if (path == "") {
+    return(NULL)
+  }
+  readRDS(path)
+}
+
 #' Fetch tRNA modification annotations from MODOMICS
 #'
 #' Downloads tRNA modification data from the

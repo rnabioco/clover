@@ -266,3 +266,48 @@ test_that("fetch_modomics_mods works with yeast data", {
   expect_named(mods, c("ref", "pos", "mod_full", "mod1"))
   expect_gt(nrow(mods), 0)
 })
+
+test_that("modomics_organisms returns expected organisms", {
+  orgs <- modomics_organisms()
+  expect_type(orgs, "character")
+  expect_contains(orgs, "Escherichia coli")
+  expect_contains(orgs, "Saccharomyces cerevisiae")
+  expect_contains(orgs, "Homo sapiens")
+})
+
+test_that("modomics_mods works with E. coli data", {
+  skip_if_not_installed("pwalign")
+
+  fa <- clover_example("ecoli/validated.fa.gz")
+  mods <- modomics_mods(fa, "Escherichia coli")
+
+  expect_s3_class(mods, "tbl_df")
+  expect_named(mods, c("ref", "pos", "mod_full", "mod1"))
+  expect_gt(nrow(mods), 0)
+})
+
+test_that("modomics_mods falls back for unsupported organism", {
+  skip_if_not_installed("pwalign")
+
+  ref_seq <- Biostrings::DNAStringSet("ATGTCGATGTCGA")
+  names(ref_seq) <- "tRNA-Ala-AGC-1"
+
+  local_mocked_bindings(
+    fetch_modomics_mods = function(fasta, organism, ...) {
+      dplyr::tibble(
+        ref = "tRNA-Ala-AGC-1",
+        pos = 1L,
+        mod_full = "mock",
+        mod1 = "m"
+      )
+    }
+  )
+
+  expect_message(
+    result <- modomics_mods(ref_seq, "Unknown organism"),
+    "No cached data"
+  )
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("ref", "pos", "mod_full", "mod1"))
+})

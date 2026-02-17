@@ -25,3 +25,4 @@
 ^[.]?air[.]toml$
 ^\.claude$
 ^\.clang-format$
+^data-raw$
