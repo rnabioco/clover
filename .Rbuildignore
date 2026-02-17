@@ -8,11 +8,9 @@
 ^vignettes/articles/*_files$
 ^vignettes/articles$
 ^inst/extdata/*\.pod5$
-^inst/extdata/yeast/*\.pod5$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-^inst/extdata/yeast/*\.bam$
 ^LICENSE\.md$
 ^[\.]?air\.toml$
 ^CLAUDE\.md$
