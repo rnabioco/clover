@@ -99,5 +99,17 @@ globalVariables(c(
   "se_numerator",
   "se_denominator",
   # plot_bcerror_profile
-  "mean_error"
+  "mean_error",
+  # plot_mod_heatmap annotations
+  ".label_display",
+  ".text_color",
+  # .add_region_shading
+  ".xmin",
+  ".xmax",
+  ".seg_id",
+  ".region_change",
+  # plot_abundance_charging
+  "significant",
+  "quadrant",
+  "log2FoldChange"
 ))

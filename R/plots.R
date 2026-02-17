@@ -8,6 +8,67 @@ theme_markdown_axes <- function() {
   )
 }
 
+# Internal helpers for heatmap -------------------------------------------------
+
+#' Choose text color for contrast against a diverging fill.
+#' @noRd
+.compute_text_color <- function(values, color_limits) {
+  threshold <- 0.4 * (color_limits[2] - color_limits[1]) / 2
+  ifelse(
+    is.na(values) | abs(values) <= threshold,
+    "black",
+    "white"
+  )
+}
+
+#' Cluster refs using Ward's D2 on a wide value matrix.
+#' @noRd
+.cluster_refs <- function(data, ref_col, value_col) {
+  wide <- data |>
+    dplyr::select(
+      dplyr::all_of(c(ref_col, "sprinzl_label", value_col))
+    ) |>
+    tidyr::pivot_wider(
+      names_from = sprinzl_label,
+      values_from = dplyr::all_of(value_col),
+      values_fill = 0
+    ) |>
+    as.data.frame()
+
+  rownames(wide) <- wide[[ref_col]]
+  mat <- as.matrix(wide[, -1, drop = FALSE])
+  mat[is.na(mat)] <- 0
+
+  hc <- stats::hclust(stats::dist(mat), method = "ward.D2")
+  rownames(mat)[hc$order]
+}
+
+#' Cluster refs within groups, returning ordered refs and group sizes.
+#' @return A list with `ref_order` (character) and `group_sizes` (named
+#'   integer vector with cumulative counts at each group boundary).
+#' @noRd
+.cluster_refs_by_group <- function(data, ref_col, value_col, group_col) {
+  groups <- unique(data[[group_col]])
+  groups <- sort(groups)
+
+  ref_order <- character(0)
+  group_sizes <- integer(0)
+
+  for (g in groups) {
+    group_data <- data[data[[group_col]] == g, , drop = FALSE]
+    refs <- unique(group_data[[ref_col]])
+    if (length(refs) > 1) {
+      ordered <- .cluster_refs(group_data, ref_col, value_col)
+    } else {
+      ordered <- refs
+    }
+    ref_order <- c(ref_order, ordered)
+    group_sizes <- c(group_sizes, stats::setNames(length(ref_order), g))
+  }
+
+  list(ref_order = ref_order, group_sizes = group_sizes)
+}
+
 #' Plot a delta-signal modification heatmap.
 #'
 #' Create a diverging heatmap of modification signal changes (e.g., mutant
@@ -27,6 +88,21 @@ theme_markdown_axes <- function() {
 #' @param color_high Color for positive values. Default `"#D55E00"` (red).
 #' @param na_value Color for missing positions. Default `"gray80"`.
 #' @param square Logical; use `coord_fixed(ratio = 1)`? Default `TRUE`.
+#' @param label_col Column name (string) with text labels to overlay on
+#'   tiles (e.g., nucleotide letters). Default `NULL` (no labels).
+#' @param label_min Minimum `abs(value)` to show a label. Default `0.05`.
+#' @param label_size Font size for tile labels. Default `2.5`.
+#' @param highlight_col Column name (string) of a logical column; `TRUE`
+#'   cells get a dot overlay. Default `NULL` (no dots).
+#' @param highlight_size Dot size for highlighted cells. Default `0.8`.
+#' @param highlight_offset Numeric vector of length 2 giving x/y offsets
+#'   from tile center for highlight dots. Default `c(-0.35, 0.35)`.
+#' @param group_col Column name (string) for group-aware clustering. When
+#'   provided, rows are clustered within each group and horizontal divider
+#'   lines separate groups. Default `NULL`.
+#' @param divider_linewidth Line width for group dividers. Default `0.8`.
+#' @param caption Explanatory text displayed below the plot. Default
+#'   `NULL`.
 #'
 #' @return A ggplot object.
 #'
@@ -48,7 +124,16 @@ plot_mod_heatmap <- function(
   color_low = "#0072B2",
   color_high = "#D55E00",
   na_value = "gray80",
-  square = TRUE
+  square = TRUE,
+  label_col = NULL,
+  label_min = 0.05,
+  label_size = 2.5,
+  highlight_col = NULL,
+  highlight_size = 0.8,
+  highlight_offset = c(-0.35, 0.35),
+  group_col = NULL,
+  divider_linewidth = 0.8,
+  caption = NULL
 ) {
   # --- order x-axis by Sprinzl position ---
   data$sprinzl_label <- order_sprinzl_positions(data$sprinzl_label)
@@ -56,26 +141,16 @@ plot_mod_heatmap <- function(
   # --- cluster rows ---
   refs <- unique(data[[ref_col]])
 
-  if (cluster && length(refs) > 1) {
-    wide <- data |>
-      dplyr::select(
-        dplyr::all_of(c(ref_col, "sprinzl_label", value_col))
-      ) |>
-      tidyr::pivot_wider(
-        names_from = sprinzl_label,
-        values_from = dplyr::all_of(value_col),
-        values_fill = 0
-      ) |>
-      as.data.frame()
-
-    rownames(wide) <- wide[[ref_col]]
-    mat <- as.matrix(wide[, -1, drop = FALSE])
-    mat[is.na(mat)] <- 0
-
-    hc <- stats::hclust(stats::dist(mat), method = "ward.D2")
-    ref_order <- rownames(mat)[hc$order]
+  if (cluster && length(refs) > 1 && !is.null(group_col)) {
+    grouped <- .cluster_refs_by_group(data, ref_col, value_col, group_col)
+    ref_order <- grouped$ref_order
+    group_sizes <- grouped$group_sizes
+  } else if (cluster && length(refs) > 1) {
+    ref_order <- .cluster_refs(data, ref_col, value_col)
+    group_sizes <- NULL
   } else {
     ref_order <- refs
+    group_sizes <- NULL
   }
 
   # --- complete grid so missing cells show as gray ---
@@ -114,13 +189,81 @@ plot_mod_heatmap <- function(
       limits = color_limits,
       oob = scales::squish
     ) +
-    labs(x = "Sprinzl Position", y = "") +
+    labs(x = "Sprinzl Position", y = "", caption = caption) +
     cowplot::theme_cowplot() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
       legend.position = "bottom",
       legend.key.width = grid::unit(1.5, "cm")
     )
+
+  # --- text labels ---
+  if (!is.null(label_col)) {
+    plot_data <- dplyr::mutate(
+      plot_data,
+      .label_display = dplyr::if_else(
+        is.na(.data[[value_col]]) | abs(.data[[value_col]]) < label_min,
+        NA_character_,
+        as.character(.data[[label_col]])
+      ),
+      .text_color = .compute_text_color(.data[[value_col]], color_limits)
+    )
+
+    p <- p +
+      geom_text(
+        data = plot_data,
+        aes(label = .data$.label_display, color = .data$.text_color),
+        size = label_size,
+        fontface = "bold",
+        na.rm = TRUE,
+        inherit.aes = TRUE,
+        show.legend = FALSE
+      ) +
+      scale_color_identity()
+  }
+
+  # --- highlight dots ---
+  if (!is.null(highlight_col)) {
+    highlight_data <- plot_data[
+      !is.na(plot_data[[highlight_col]]) &
+        plot_data[[highlight_col]] == TRUE &
+        !is.na(plot_data[[value_col]]),
+    ]
+
+    if (nrow(highlight_data) > 0) {
+      p <- p +
+        geom_point(
+          data = highlight_data,
+          aes(
+            x = as.numeric(sprinzl_label) + highlight_offset[1],
+            y = as.numeric(.data[[ref_col]]) + highlight_offset[2]
+          ),
+          color = "black",
+          size = highlight_size,
+          inherit.aes = FALSE
+        )
+    }
+  }
+
+  # --- group dividers ---
+  if (!is.null(group_sizes)) {
+    n_refs <- length(ref_order)
+    for (i in seq_along(group_sizes)[-length(group_sizes)]) {
+      # y-axis is reversed, so divider is at n_refs - boundary + 0.5
+      boundary <- group_sizes[i]
+      p <- p +
+        geom_hline(
+          yintercept = n_refs - boundary + 0.5,
+          color = "black",
+          linewidth = divider_linewidth
+        )
+    }
+  }
+
+  # --- caption theme ---
+  if (!is.null(caption)) {
+    p <- p + theme(plot.caption = element_text(hjust = 0))
+  }
 
   if (square) {
     p <- p + coord_fixed(ratio = 1)
@@ -425,4 +568,212 @@ plot_bcerror_profile <- function(
     ) +
     cowplot::theme_minimal_hgrid() +
     theme(legend.position = "top")
+}
+
+# Modification landscape helpers -----------------------------------------------
+
+#' Create region shading layers from position-region data.
+#' @return A list of `geom_rect()` layers.
+#' @noRd
+.add_region_shading <- function(data, pos_col, region_col) {
+  region_data <- data |>
+    dplyr::filter(!is.na(.data[[region_col]])) |>
+    dplyr::distinct(.data[[pos_col]], .data[[region_col]]) |>
+    dplyr::arrange(.data[[pos_col]])
+
+  if (nrow(region_data) == 0) {
+    return(list())
+  }
+
+  region_data <- dplyr::mutate(
+    region_data,
+    .region_change = .data[[region_col]] !=
+      dplyr::lag(
+        .data[[region_col]],
+        default = ""
+      ),
+    .seg_id = cumsum(.data$.region_change)
+  )
+
+  region_segs <- region_data |>
+    dplyr::group_by(.data$.seg_id, .data[[region_col]]) |>
+    dplyr::summarise(
+      .xmin = min(.data[[pos_col]]) - 0.5,
+      .xmax = max(.data[[pos_col]]) + 0.5,
+      .groups = "drop"
+    )
+
+  palette <- .region_colors()
+
+  lapply(seq_len(nrow(region_segs)), function(i) {
+    seg <- region_segs[i, ]
+    fill <- unname(
+      palette[match(seg[[region_col]], names(palette))]
+    )
+    if (is.na(fill)) {
+      fill <- "grey70"
+    }
+    geom_rect(
+      data = seg,
+      aes(xmin = .data$.xmin, xmax = .data$.xmax, ymin = -Inf, ymax = Inf),
+      fill = fill,
+      alpha = 0.15,
+      inherit.aes = FALSE
+    )
+  })
+}
+
+#' Build a secondary x-axis with Sprinzl labels.
+#' @return A list with `$scale` and `$theme` elements to add to a ggplot.
+#' @noRd
+.create_sprinzl_axis <- function(data, pos_col, sprinzl_col, mod_col = NULL) {
+  pos_map <- data |>
+    dplyr::distinct(.data[[pos_col]], .data[[sprinzl_col]]) |>
+    dplyr::filter(!is.na(.data[[sprinzl_col]])) |>
+    dplyr::arrange(.data[[pos_col]])
+
+  sec_breaks <- pos_map[[pos_col]]
+  sec_labels <- as.character(pos_map[[sprinzl_col]])
+
+  have_ggtext <- rlang::is_installed("ggtext")
+
+  if (!is.null(mod_col) && have_ggtext) {
+    mod_map <- data |>
+      dplyr::distinct(.data[[pos_col]], .data[[mod_col]]) |>
+      dplyr::filter(!is.na(.data[[mod_col]]))
+
+    mod_positions <- mod_map[[pos_col]][
+      !is.na(mod_map[[mod_col]]) & mod_map[[mod_col]] == TRUE
+    ]
+
+    sec_labels <- ifelse(
+      sec_breaks %in% mod_positions,
+      sprintf("<span style='color:#D55E00'>**%s**</span>", sec_labels),
+      sec_labels
+    )
+
+    theme_el <- ggtext::element_markdown(
+      angle = 45,
+      size = 7,
+      hjust = 0
+    )
+  } else {
+    theme_el <- element_text(angle = 45, size = 7, hjust = 0)
+  }
+
+  list(
+    scale = scale_x_continuous(
+      sec.axis = ggplot2::sec_axis(
+        ~.,
+        breaks = sec_breaks,
+        labels = sec_labels,
+        name = "Sprinzl Position"
+      )
+    ),
+    theme = theme(axis.text.x.top = theme_el)
+  )
+}
+
+#' Plot per-tRNA modification landscape profiles.
+#'
+#' Create a stacked panel plot showing multiple metrics along the tRNA
+#' sequence. Each metric gets its own panel sharing a common x-axis.
+#' Optionally adds structural region background shading and a secondary
+#' x-axis with Sprinzl position labels.
+#'
+#' @param data A data frame with a position column and one or more
+#'   metric columns to plot.
+#' @param metrics Character vector of column names to plot as stacked
+#'   panels (one panel per metric).
+#' @param pos_col Column name (string) for x-axis positions. Default
+#'   `"pos"`.
+#' @param region_col Optional column name (string) for structural
+#'   region labels, used for background shading. Default `NULL`.
+#' @param sprinzl_col Optional column name (string) for Sprinzl
+#'   position labels shown on a secondary x-axis. Default `NULL`.
+#' @param mod_col Optional column name (string) of a logical column;
+#'   `TRUE` positions are highlighted on the Sprinzl axis (requires
+#'   ggtext). Default `NULL`.
+#' @param title Plot title. Default `NULL`.
+#' @param heights Numeric vector of relative panel heights. Default
+#'   `NULL` (equal heights).
+#'
+#' @return A patchwork object combining stacked ggplot panels.
+#'
+#' @export
+#'
+#' @examples
+#' df <- data.frame(
+#'   pos = rep(1:20, 2),
+#'   condition = rep(c("ctl", "mut"), each = 20),
+#'   error_rate = runif(40, 0, 0.3),
+#'   signal = rnorm(40, sd = 0.1)
+#' )
+#' plot_mod_landscape(df, metrics = c("error_rate", "signal"))
+plot_mod_landscape <- function(
+  data,
+  metrics,
+  pos_col = "pos",
+  region_col = NULL,
+  sprinzl_col = NULL,
+  mod_col = NULL,
+  title = NULL,
+  heights = NULL
+) {
+  rlang::check_installed(
+    "patchwork",
+    reason = "to stack landscape panels."
+  )
+
+  region_layers <- if (!is.null(region_col)) {
+    .add_region_shading(data, pos_col, region_col)
+  } else {
+    list()
+  }
+
+  n_metrics <- length(metrics)
+  panels <- vector("list", n_metrics)
+
+  for (i in seq_along(metrics)) {
+    metric <- metrics[i]
+    is_first <- i == 1
+    is_last <- i == n_metrics
+
+    p <- ggplot(data, aes(x = .data[[pos_col]], y = .data[[metric]])) +
+      region_layers +
+      geom_line(linewidth = 0.5) +
+      geom_point(size = 0.8) +
+      labs(y = metric) +
+      cowplot::theme_minimal_hgrid()
+
+    if (!is_last) {
+      p <- p +
+        labs(x = NULL) +
+        theme(axis.text.x = element_blank())
+    } else {
+      p <- p + labs(x = "Position")
+    }
+
+    # Add Sprinzl secondary axis to top panel
+    if (is_first && !is.null(sprinzl_col)) {
+      sprinzl_axis <- .create_sprinzl_axis(
+        data,
+        pos_col,
+        sprinzl_col,
+        mod_col
+      )
+      p <- p + sprinzl_axis$scale + sprinzl_axis$theme
+    }
+
+    panels[[i]] <- p
+  }
+
+  combined <- patchwork::wrap_plots(panels, ncol = 1, heights = heights)
+
+  if (!is.null(title)) {
+    combined <- combined +
+      patchwork::plot_annotation(title = title)
+  }
+
+  combined
 }
