@@ -106,6 +106,133 @@ read_odds_ratios_multi <- function(paths) {
   dplyr::bind_rows(tbls)
 }
 
+# Charging ratio comparison ------------------------------------------------------
+
+#' Compute charging ratio differences between conditions.
+#'
+#' Compare per-tRNA charging ratios (charged / total) between two
+#' conditions, summarizing replicates with mean and standard error and
+#' computing the between-condition difference with propagated SE.
+#'
+#' @param charging_data A tibble from [read_charging_multi()] with an
+#'   added condition column. Must contain `tRNA`, `counts_charged`,
+#'   `counts_uncharged`, `sample_id`, and the column named by
+#'   `condition_col`.
+#' @param condition_col Column name (string) for condition labels.
+#'   Default `"condition"`.
+#' @param numerator Value of `condition_col` for the numerator
+#'   condition.
+#' @param denominator Value of `condition_col` for the denominator
+#'   condition.
+#' @param min_count Minimum total reads (charged + uncharged) per tRNA
+#'   per sample to include. Default `50`.
+#' @param n_top If non-`NULL`, keep only the top `n_top` tRNAs by
+#'   total abundance across all samples. Default `NULL` (keep all).
+#'
+#' @return A tibble with columns:
+#' \describe{
+#'   \item{tRNA}{tRNA identifier.}
+#'   \item{ratio_numerator}{Mean charging ratio for the numerator
+#'     condition.}
+#'   \item{ratio_denominator}{Mean charging ratio for the denominator
+#'     condition.}
+#'   \item{se_numerator}{Standard error of the numerator ratio.}
+#'   \item{se_denominator}{Standard error of the denominator ratio.}
+#'   \item{diff}{Difference: `ratio_numerator - ratio_denominator`.}
+#'   \item{se_diff}{Propagated SE:
+#'     `sqrt(se_numerator^2 + se_denominator^2)`.}
+#' }
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' paths <- c(
+#'   ctl1 = "ctl1.charging.cpm.tsv.gz",
+#'   ctl2 = "ctl2.charging.cpm.tsv.gz",
+#'   inf1 = "inf1.charging.cpm.tsv.gz",
+#'   inf2 = "inf2.charging.cpm.tsv.gz"
+#' )
+#' charging <- read_charging_multi(paths)
+#' charging$condition <- ifelse(
+#'   grepl("ctl", charging$sample_id), "ctl", "inf"
+#' )
+#' diffs <- compute_charging_diffs(
+#'   charging,
+#'   numerator = "inf",
+#'   denominator = "ctl"
+#' )
+#' }
+compute_charging_diffs <- function(
+  charging_data,
+  condition_col = "condition",
+  numerator,
+
+  denominator,
+  min_count = 50,
+  n_top = NULL
+) {
+  if (!condition_col %in% names(charging_data)) {
+    cli_abort(
+      "Column {.val {condition_col}} not found in {.arg charging_data}."
+    )
+  }
+
+  # Filter uncharged variants and compute per-sample charging ratio
+  ratios <- charging_data |>
+    dplyr::filter(!grepl("-uncharged$", tRNA)) |>
+    dplyr::mutate(
+      total = counts_charged + counts_uncharged,
+      charging_ratio = counts_charged / total
+    ) |>
+    dplyr::filter(total >= min_count)
+
+  # Optionally keep only top N tRNAs by total abundance
+
+  if (!is.null(n_top)) {
+    top_trnas <- ratios |>
+      dplyr::group_by(tRNA) |>
+      dplyr::summarise(total = sum(total), .groups = "drop") |>
+      dplyr::slice_max(total, n = n_top) |>
+      dplyr::pull(tRNA)
+
+    ratios <- ratios |>
+      dplyr::filter(tRNA %in% top_trnas)
+  }
+
+  # Summarize by tRNA and condition
+  ratio_summary <- ratios |>
+    dplyr::group_by(tRNA, .data[[condition_col]]) |>
+    dplyr::summarise(
+      mean_ratio = mean(charging_ratio),
+      se_ratio = stats::sd(charging_ratio) / sqrt(dplyr::n()),
+      .groups = "drop"
+    )
+
+  # Pivot wider by condition
+  wide <- ratio_summary |>
+    tidyr::pivot_wider(
+      names_from = dplyr::all_of(condition_col),
+      values_from = c(mean_ratio, se_ratio)
+    )
+
+  num_ratio <- paste0("mean_ratio_", numerator)
+  den_ratio <- paste0("mean_ratio_", denominator)
+  num_se <- paste0("se_ratio_", numerator)
+  den_se <- paste0("se_ratio_", denominator)
+
+  wide |>
+    dplyr::transmute(
+      tRNA,
+      ratio_numerator = .data[[num_ratio]],
+      ratio_denominator = .data[[den_ratio]],
+      se_numerator = .data[[num_se]],
+      se_denominator = .data[[den_se]],
+      diff = .data[[num_ratio]] - .data[[den_ratio]],
+      se_diff = sqrt(.data[[num_se]]^2 + .data[[den_se]]^2)
+    )
+}
+
 # Odds ratio computation from mod_calls -----------------------------------------
 
 #' Compute pairwise modification co-occurrence odds ratios.

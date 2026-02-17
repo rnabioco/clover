@@ -79,5 +79,16 @@ globalVariables(c(
   "col_name",
   "count",
   # compute_ror
-  "mean_log_or"
+  "mean_log_or",
+  # compute_charging_diffs
+  "charging_ratio",
+  "mean_ratio",
+  "se_ratio",
+  "total",
+  "diff",
+  "se_diff",
+  "ratio_numerator",
+  "ratio_denominator",
+  "se_numerator",
+  "se_denominator"
 ))

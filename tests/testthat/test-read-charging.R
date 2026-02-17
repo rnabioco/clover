@@ -100,6 +100,69 @@ test_that("read_charging works with ecoli test data", {
   ))
 })
 
+test_that("compute_charging_diffs returns expected columns", {
+  config_path <- clover_example("ecoli/config.yaml")
+  config <- read_pipeline_config(config_path)
+  files <- list_pipeline_files(config, types = "charging")
+  paths <- setNames(files$path, files$sample_id)
+  charging <- read_charging_multi(paths)
+  charging$condition <- ifelse(grepl("ctl", charging$sample_id), "ctl", "inf")
+
+  result <- compute_charging_diffs(
+    charging,
+    numerator = "inf",
+    denominator = "ctl",
+    min_count = 50
+  )
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(
+    result,
+    c(
+      "tRNA",
+      "ratio_numerator",
+      "ratio_denominator",
+      "se_numerator",
+      "se_denominator",
+      "diff",
+      "se_diff"
+    )
+  )
+  expect_true(nrow(result) > 0)
+})
+
+test_that("compute_charging_diffs n_top limits rows", {
+  config_path <- clover_example("ecoli/config.yaml")
+  config <- read_pipeline_config(config_path)
+  files <- list_pipeline_files(config, types = "charging")
+  paths <- setNames(files$path, files$sample_id)
+  charging <- read_charging_multi(paths)
+  charging$condition <- ifelse(grepl("ctl", charging$sample_id), "ctl", "inf")
+
+  result <- compute_charging_diffs(
+    charging,
+    numerator = "inf",
+    denominator = "ctl",
+    n_top = 5
+  )
+
+  expect_lte(nrow(result), 5)
+})
+
+test_that("compute_charging_diffs errors when condition column missing", {
+  charging <- tibble::tibble(
+    tRNA = "tRNA-Ala-AGC-1",
+    counts_charged = 100,
+    counts_uncharged = 50,
+    sample_id = "s1"
+  )
+
+  expect_snapshot(
+    compute_charging_diffs(charging, numerator = "a", denominator = "b"),
+    error = TRUE
+  )
+})
+
 test_that("read_odds_ratios works with ecoli test data", {
   path <- clover_example(
     "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
