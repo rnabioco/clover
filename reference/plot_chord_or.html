@@ -71,6 +71,7 @@ ratio.</p>
 <span>  positive_color <span class="op">=</span> <span class="st">"#D55E00"</span>,</span>
 <span>  negative_color <span class="op">=</span> <span class="st">"#0072B2"</span>,</span>
 <span>  sprinzl_coords <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mods <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  title <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  transparency <span class="op">=</span> <span class="fl">0.4</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -122,6 +123,13 @@ Default <code>"#0072B2"</code> (blue).</p></dd>
 <dt id="arg-sprinzl-coords">sprinzl_coords<a class="anchor" aria-label="anchor" href="#arg-sprinzl-coords"></a></dt>
 <dd><p>An optional tibble from <code><a href="read_sprinzl_coords.html">read_sprinzl_coords()</a></code> used
 to order sectors by Sprinzl position and color by structural region.</p></dd>
+
+
+<dt id="arg-mods">mods<a class="anchor" aria-label="anchor" href="#arg-mods"></a></dt>
+<dd><p>An optional tibble of modification annotations (e.g., from
+<code><a href="fetch_modomics_mods.html">fetch_modomics_mods()</a></code>) with columns <code>pos</code> (seq_index) and <code>mod1</code>.
+When provided along with <code>sprinzl_coords</code>, modification positions are
+highlighted as an annotation ring.</p></dd>
 
 
 <dt id="arg-title">title<a class="anchor" aria-label="anchor" href="#arg-title"></a></dt>

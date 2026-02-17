@@ -19,6 +19,7 @@ plot_chord_or(
   positive_color = "#D55E00",
   negative_color = "#0072B2",
   sprinzl_coords = NULL,
+  mods = NULL,
   title = NULL,
   transparency = 0.4
 )
@@ -71,6 +72,14 @@ plot_chord_or(
   [`read_sprinzl_coords()`](https://rnabioco.github.io/clover/reference/read_sprinzl_coords.md)
   used to order sectors by Sprinzl position and color by structural
   region.
+
+- mods:
+
+  An optional tibble of modification annotations (e.g., from
+  [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md))
+  with columns `pos` (seq_index) and `mod1`. When provided along with
+  `sprinzl_coords`, modification positions are highlighted as an
+  annotation ring.
 
 - title:
 

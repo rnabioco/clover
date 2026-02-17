@@ -333,14 +333,9 @@ Positions with known modifications often correspond to elevated error
 rates, since the basecaller misidentifies modified nucleotides.
 
 ``` r
-# Strip "host-" prefix from bcerror refs to match MODOMICS ref names
-bcerror_summary_stripped <- bcerror_summary |>
-  mutate(ref_stripped = sub("^host-", "", ref))
-
 # Filter mods to tRNAs in our plot set
 mods_plot <- mods |>
-  filter(ref %in% sub("^host-", "", plot_trnas)) |>
-  mutate(ref = paste0("host-", ref))
+  filter(ref %in% plot_trnas)
 
 bcerror_summary |>
   filter(ref %in% plot_trnas) |>
