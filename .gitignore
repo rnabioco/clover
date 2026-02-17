@@ -9,6 +9,11 @@ inst/doc
 figure/
 *.html
 
+# compiled code
+src/*.o
+src/*.so
+src/*.dll
+
 # pixi environments
 .pixi/*
 !.pixi/config.toml

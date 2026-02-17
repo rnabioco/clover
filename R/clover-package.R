@@ -2,6 +2,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @useDynLib clover, .registration = TRUE
 #' @importFrom dplyr select mutate left_join across everything
 #' @import ggplot2
 #' @importFrom tidyr separate

@@ -289,36 +289,22 @@ compute_odds_ratios <- function(mod_calls_path, refs = NULL, min_reads = 10) {
       next
     }
 
-    # Compute Fisher's test for each pair
-    for (i in seq_along(pos_cols)[-length(pos_cols)]) {
-      for (j in (i + 1):length(pos_cols)) {
-        p1 <- pos_cols[i]
-        p2 <- pos_cols[j]
+    # Compute Fisher's test for each pair via C++
+    int_mat <- as.matrix(mat_data[, pos_cols, drop = FALSE])
+    storage.mode(int_mat) <- "integer"
 
-        tbl <- table(
-          factor(mat_data[[p1]], levels = c(0, 1)),
-          factor(mat_data[[p2]], levels = c(0, 1))
-        )
+    pair_results <- pairwise_fisher_exact(int_mat)
 
-        if (any(rowSums(tbl) == 0) || any(colSums(tbl) == 0)) {
-          next
-        }
-
-        ft <- tryCatch(stats::fisher.test(tbl), error = function(e) NULL)
-        if (is.null(ft)) {
-          next
-        }
-
-        results[[length(results) + 1]] <- tibble::tibble(
-          ref = r,
-          pos1 = p1,
-          pos2 = p2,
-          odds_ratio = ft$estimate,
-          log_odds_ratio = log(ft$estimate + 1e-10),
-          p_value = ft$p.value,
-          total_obs = nrow(mat_data)
-        )
-      }
+    if (nrow(pair_results) > 0) {
+      results[[length(results) + 1]] <- tibble::tibble(
+        ref = r,
+        pos1 = pos_cols[pair_results$pos1],
+        pos2 = pos_cols[pair_results$pos2],
+        odds_ratio = pair_results$odds_ratio,
+        log_odds_ratio = pair_results$log_odds_ratio,
+        p_value = pair_results$p_value,
+        total_obs = pair_results$total_obs
+      )
     }
   }
 

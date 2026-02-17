@@ -8,6 +8,8 @@
 
 * `compute_charging_diffs()` compares per-tRNA charging ratios between two conditions, returning mean ratios, standard errors, and the between-condition difference with propagated SE.
 
+* `compute_odds_ratios()` now uses a C++ implementation (via cpp11) for the pairwise Fisher's exact test inner loop, dramatically improving performance on large datasets. The odds ratio is now computed as the sample odds ratio with Haldane correction for zero cells, rather than the conditional MLE.
+
 * `fetch_modomics_mods()` downloads tRNA modification annotations from the MODOMICS database and maps them onto reference sequences using pairwise alignment (#11).
 
 * `plot_volcano()` creates a labeled volcano plot from `tidy_deseq_results()` output, with significant points highlighted and labeled using ggrepel.
