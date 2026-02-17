@@ -36,11 +36,6 @@ reference:
     - modomics_organisms
     - fetch_modomics_mods
 
-  - title: Variables
-    contents:
-    - aa_props
-    - trna_consensus_labels
-
   - title: Utilities
     contents:
     - clover_example
