@@ -18,5 +18,5 @@ Useful links:
 
 Other contributors:
 
-- RNA Bioscience Initiative (https://ror.org/03wmf1y16) \[funder,
+- RNA Bioscience Initiative ([ROR](https://ror.org/03wmf1y16)) \[funder,
   copyright holder\]

@@ -50,8 +50,8 @@ A tibble with columns:
 
 ``` r
 if (FALSE) { # \dontrun{
-fa <- clover_example("yeast/trna-ref.fa.gz")
-mods <- fetch_modomics_mods(fa, "Saccharomyces cerevisiae")
+fa <- clover_example("ecoli/validated.fa.gz")
+mods <- fetch_modomics_mods(fa, "Escherichia coli")
 mods
 } # }
 ```
