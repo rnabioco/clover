@@ -118,13 +118,17 @@ plot_chord_or <- function(
   circlize::circos.clear()
   circlize::circos.par(start.degree = 90, gap.degree = 2)
 
+  # When sprinzl_coords are provided, region/nucleotide rings replace the
+  # default grid track; otherwise keep the grid as the only sector indicator.
+  annotation_track <- if (!is.null(sprinzl_coords)) c() else "grid"
+
   circlize::chordDiagram(
     eq$mat,
     order = setup$order,
     grid.col = setup$grid_col,
     col = col_mat,
     transparency = 0,
-    annotationTrack = "grid",
+    annotationTrack = annotation_track,
     preAllocateTracks = list(track.height = 0.05),
     reduce = -1,
     self.link = 1,
@@ -328,13 +332,17 @@ plot_chord_ror <- function(
   circlize::circos.clear()
   circlize::circos.par(start.degree = 90, gap.degree = 2)
 
+  # When sprinzl_coords are provided, region/nucleotide rings replace the
+  # default grid track; otherwise keep the grid as the only sector indicator.
+  annotation_track <- if (!is.null(sprinzl_coords)) c() else "grid"
+
   circlize::chordDiagram(
     eq$mat,
     order = setup$order,
     grid.col = setup$grid_col,
     col = col_mat,
     transparency = 0,
-    annotationTrack = "grid",
+    annotationTrack = annotation_track,
     preAllocateTracks = list(track.height = 0.05),
     reduce = -1,
     self.link = 1,
