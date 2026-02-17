@@ -2,6 +2,60 @@
 
 ## clover 0.0.0.9000
 
+- New color palette functions
+  [`aa_colors()`](https://rnabioco.github.io/clover/reference/aa_colors.md)
+  and
+  [`charging_colors()`](https://rnabioco.github.io/clover/reference/charging_colors.md)
+  provide named color vectors for amino acids and tRNA charging states.
+
+- New statistical utility functions
+  [`calc_fold_change()`](https://rnabioco.github.io/clover/reference/calc_fold_change.md),
+  [`cohens_d()`](https://rnabioco.github.io/clover/reference/cohens_d.md),
+  [`propagate_error_ratio()`](https://rnabioco.github.io/clover/reference/propagate_error_ratio.md),
+  and
+  [`propagate_error_diff()`](https://rnabioco.github.io/clover/reference/propagate_error_diff.md)
+  for common tRNA analysis calculations.
+
+- New
+  [`trna_regions()`](https://rnabioco.github.io/clover/reference/trna_regions.md)
+  returns a named list mapping canonical tRNA structural region names to
+  Sprinzl position integers.
+
+- [`aggregate_or_isodecoder()`](https://rnabioco.github.io/clover/reference/aggregate_or_isodecoder.md)
+  collapses per-gene odds ratios to isodecoder level by averaging across
+  gene copies.
+
+- [`build_or_network()`](https://rnabioco.github.io/clover/reference/build_or_network.md)
+  constructs a tidygraph network from pairwise odds ratio or ROR data,
+  with node centrality metrics.
+
+- [`calculate_rewiring_scores()`](https://rnabioco.github.io/clover/reference/calculate_rewiring_scores.md)
+  summarizes per-isodecoder rewiring magnitude from a ROR matrix.
+
+- [`clean_odds_ratios()`](https://rnabioco.github.io/clover/reference/clean_odds_ratios.md)
+  prepares odds ratio data for downstream analysis by capping infinite
+  log odds ratio values.
+
+- [`compute_ror_isodecoder()`](https://rnabioco.github.io/clover/reference/compute_ror_isodecoder.md)
+  compares isodecoder-level odds ratios between two conditions with
+  z-score significance testing.
+
+- [`perform_pcoa()`](https://rnabioco.github.io/clover/reference/perform_pcoa.md)
+  runs classical multidimensional scaling on a rewiring matrix for
+  dimensionality reduction.
+
+- [`plot_arc_diagram()`](https://rnabioco.github.io/clover/reference/plot_arc_diagram.md)
+  creates a circular arc diagram from a tidygraph network built by
+  [`build_or_network()`](https://rnabioco.github.io/clover/reference/build_or_network.md).
+
+- [`plot_pcoa_rewiring()`](https://rnabioco.github.io/clover/reference/plot_pcoa_rewiring.md)
+  creates a scatter plot of PCoA coordinates colored by rewiring
+  magnitude and labeled with top isodecoders.
+
+- [`prepare_rewiring_matrix()`](https://rnabioco.github.io/clover/reference/prepare_rewiring_matrix.md)
+  builds a wide matrix from isodecoder-level relative odds ratios
+  suitable for PCoA analysis.
+
 - [`plot_abundance_charging()`](https://rnabioco.github.io/clover/reference/plot_abundance_charging.md)
   creates a scatter plot comparing tRNA abundance changes (from DESeq2)
   with charging ratio changes, with significant points colored by
