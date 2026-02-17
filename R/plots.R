@@ -136,7 +136,7 @@ plot_mod_heatmap <- function(
 #' [ggrepel::geom_text_repel()].
 #'
 #' @param data A tibble from [tidy_deseq_results()] with at least
-#'   `log2FoldChange`, `pvalue`, and `significant` columns.
+#'   `log2FoldChange`, `padj`, and `significant` columns.
 #' @param lab_col Column name (string) used for point labels. Default
 #'   `"tRNA"`.
 #' @param padj_cutoff Numeric; draws a dashed horizontal line at
@@ -176,7 +176,7 @@ plot_volcano <- function(
 ) {
   rlang::check_installed("ggrepel", reason = "to label significant points.")
 
-  p <- ggplot(data, aes(x = log2FoldChange, y = -log10(pvalue))) +
+  p <- ggplot(data, aes(x = log2FoldChange, y = -log10(padj))) +
     geom_point(
       aes(color = significant),
       size = point_size,

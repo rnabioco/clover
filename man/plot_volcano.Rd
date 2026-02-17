@@ -17,7 +17,7 @@ plot_volcano(
 }
 \arguments{
 \item{data}{A tibble from \code{\link[=tidy_deseq_results]{tidy_deseq_results()}} with at least
-\code{log2FoldChange}, \code{pvalue}, and \code{significant} columns.}
+\code{log2FoldChange}, \code{padj}, and \code{significant} columns.}
 
 \item{lab_col}{Column name (string) used for point labels. Default
 \code{"tRNA"}.}
