@@ -2,7 +2,7 @@
 title: "Analyzing *E. coli* tRNAs during T4 phage infection"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{ecoli-phage}
+  %\VignetteIndexEntry{clover}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -323,42 +323,6 @@ plot_chord_ror(
   mods = mods_glu,
   title = "Modification rewiring: inf vs ctl (Glu-TTC-1-1)"
 )
-```
-
-## Loading data step by step
-
-For more control, you can load each data type individually instead of using
-`create_clover()`.
-
-```{r}
-#| label: stepwise-loading
-# Parse the pipeline config
-config <- read_pipeline_config(clover_example("ecoli/config.yaml"))
-config$samples
-
-# List expected output files
-files <- list_pipeline_files(
-  config,
-  types = c("charging", "bcerror", "odds_ratios")
-)
-files
-
-# Read individual files
-charging_one <- read_charging(files$path[
-  files$sample_id == "wt-15-ctl-01" &
-    files$type == "charging"
-])
-head(charging_one)
-```
-
-```{r}
-#| label: stepwise-bcerror
-# Read a single bcerror file
-bcerr_one <- read_bcerror(files$path[
-  files$sample_id == "wt-15-ctl-01" &
-    files$type == "bcerror"
-])
-head(bcerr_one)
 ```
 
 ## Session info
