@@ -629,6 +629,18 @@ plot_chord_ror <- function(
       )
     }
   )
+
+  present_nucs <- unique(stats::na.omit(residues))
+  legend_colors <- nuc_palette[present_nucs]
+
+  graphics::legend(
+    "topleft",
+    legend = names(legend_colors),
+    fill = legend_colors,
+    border = NA,
+    bty = "n",
+    cex = 0.7
+  )
 }
 
 #' Add ring highlighting modification positions.
