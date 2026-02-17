@@ -129,6 +129,7 @@ test_that("compute_charging_diffs returns expected columns", {
     )
   )
   expect_true(nrow(result) > 0)
+  expect_s3_class(result$tRNA, "factor")
 })
 
 test_that("compute_charging_diffs n_top limits rows", {
