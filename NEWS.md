@@ -20,6 +20,10 @@
 
 * `plot_arc_diagram()` creates a circular arc diagram from a tidygraph network built by `build_or_network()`.
 
+* `plot_mod_heatmap()` gains new parameters for annotated heatmaps: `label_col` overlays text labels on tiles, `highlight_col` adds dot markers at selected cells, and `group_col` enables group-aware clustering with divider lines between groups. A `caption` parameter adds explanatory text below the plot.
+
+* `plot_mod_landscape()` creates stacked multi-metric profile plots along the tRNA sequence, with optional structural region shading and Sprinzl position secondary axis. Uses patchwork for panel layout.
+
 * `plot_pcoa_rewiring()` creates a scatter plot of PCoA coordinates colored by rewiring magnitude and labeled with top isodecoders.
 
 * `prepare_rewiring_matrix()` builds a wide matrix from isodecoder-level relative odds ratios suitable for PCoA analysis.
