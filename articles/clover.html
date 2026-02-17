@@ -188,24 +188,558 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <h3 id="top-changing-trnas">Top changing tRNAs<a class="anchor" aria-label="anchor" href="#top-changing-trnas"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">padj</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">pvalue</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">tRNA</span>, <span class="va">log2FoldChange</span>, <span class="va">pvalue</span>, <span class="va">padj</span>, <span class="va">significant</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 5</span></span></span>
-<span><span class="co">#&gt;    tRNA                         log2FoldChange   pvalue     padj significant</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> phage-tRNA-Ile2-CAT                    5.33 2.85<span style="color: #949494;">e</span><span style="color: #BB0000;">-17</span> 5.31<span style="color: #949494;">e</span><span style="color: #BB0000;">-15</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> phage-tRNA-Gln-TTG                     3.68 5.52<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span> 5.13<span style="color: #949494;">e</span><span style="color: #BB0000;">-11</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> phage-tRNA-Arg-TCT                     5.04 3.36<span style="color: #949494;">e</span><span style="color: #BB0000;">- 9</span> 2.09<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> phage-tRNA-Pro-TGG-uncharged           1.80 1.99<span style="color: #949494;">e</span><span style="color: #BB0000;">- 7</span> 9.24<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> phage-tRNA-Pro-TGG                     3.25 2.67<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> 9.91<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> phage-tRNA-Thr-TGT                     4.29 3.73<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> 1.16<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> phage-tRNA-Leu-TAA                     3.75 8.90<span style="color: #949494;">e</span><span style="color: #BB0000;">- 6</span> 2.37<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> phage-tRNA-Leu-TAA-uncharged           2.08 6.40<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span> 1.49<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> phage-tRNA-Ser-TGA                     3.86 9.51<span style="color: #949494;">e</span><span style="color: #BB0000;">- 5</span> 1.97<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span> TRUE       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> phage-tRNA-Arg-TCT-uncharged           1.84 2.56<span style="color: #949494;">e</span><span style="color: #BB0000;">- 4</span> 4.76<span style="color: #949494;">e</span><span style="color: #BB0000;">- 3</span> TRUE</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/tabulate_deseq.html">tabulate_deseq</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
+<div id="keulbfdpbc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#keulbfdpbc table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#keulbfdpbc thead, #keulbfdpbc tbody, #keulbfdpbc tfoot, #keulbfdpbc tr, #keulbfdpbc td, #keulbfdpbc th {
+  border-style: none;
+}
+
+#keulbfdpbc p {
+  margin: 0;
+  padding: 0;
+}
+
+#keulbfdpbc .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#keulbfdpbc .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#keulbfdpbc .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#keulbfdpbc .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#keulbfdpbc .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#keulbfdpbc .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#keulbfdpbc .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#keulbfdpbc .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#keulbfdpbc .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#keulbfdpbc .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#keulbfdpbc .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#keulbfdpbc .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#keulbfdpbc .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#keulbfdpbc .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#keulbfdpbc .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keulbfdpbc .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#keulbfdpbc .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#keulbfdpbc .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#keulbfdpbc .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keulbfdpbc .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#keulbfdpbc .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keulbfdpbc .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#keulbfdpbc .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keulbfdpbc .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#keulbfdpbc .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#keulbfdpbc .gt_left {
+  text-align: left;
+}
+
+#keulbfdpbc .gt_center {
+  text-align: center;
+}
+
+#keulbfdpbc .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#keulbfdpbc .gt_font_normal {
+  font-weight: normal;
+}
+
+#keulbfdpbc .gt_font_bold {
+  font-weight: bold;
+}
+
+#keulbfdpbc .gt_font_italic {
+  font-style: italic;
+}
+
+#keulbfdpbc .gt_super {
+  font-size: 65%;
+}
+
+#keulbfdpbc .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#keulbfdpbc .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#keulbfdpbc .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#keulbfdpbc .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#keulbfdpbc .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#keulbfdpbc .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#keulbfdpbc .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#keulbfdpbc .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#keulbfdpbc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead><tr class="gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="tRNA">tRNA</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="log2FoldChange">log2 FC</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="pvalue">p-value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="padj">Adjusted p-value</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="significant">significant</th>
+    </tr></thead>
+<tbody class="gt_table_body">
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Ile2-CAT</td>
+<td headers="log2FoldChange" class="gt_row gt_right">5.33</td>
+<td headers="pvalue" class="gt_row gt_right">2.85 × 10<sup style="font-size: 65%;">−17</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">5.31 × 10<sup style="font-size: 65%;">−15</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Gln-TTG</td>
+<td headers="log2FoldChange" class="gt_row gt_right">3.68</td>
+<td headers="pvalue" class="gt_row gt_right">5.52 × 10<sup style="font-size: 65%;">−13</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">5.13 × 10<sup style="font-size: 65%;">−11</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Arg-TCT</td>
+<td headers="log2FoldChange" class="gt_row gt_right">5.04</td>
+<td headers="pvalue" class="gt_row gt_right">3.36 × 10<sup style="font-size: 65%;">−9</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">2.09 × 10<sup style="font-size: 65%;">−7</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Pro-TGG-uncharged</td>
+<td headers="log2FoldChange" class="gt_row gt_right">1.80</td>
+<td headers="pvalue" class="gt_row gt_right">1.99 × 10<sup style="font-size: 65%;">−7</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">9.24 × 10<sup style="font-size: 65%;">−6</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Pro-TGG</td>
+<td headers="log2FoldChange" class="gt_row gt_right">3.25</td>
+<td headers="pvalue" class="gt_row gt_right">2.67 × 10<sup style="font-size: 65%;">−6</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">9.91 × 10<sup style="font-size: 65%;">−5</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Thr-TGT</td>
+<td headers="log2FoldChange" class="gt_row gt_right">4.29</td>
+<td headers="pvalue" class="gt_row gt_right">3.73 × 10<sup style="font-size: 65%;">−6</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">1.16 × 10<sup style="font-size: 65%;">−4</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Leu-TAA</td>
+<td headers="log2FoldChange" class="gt_row gt_right">3.75</td>
+<td headers="pvalue" class="gt_row gt_right">8.90 × 10<sup style="font-size: 65%;">−6</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">2.37 × 10<sup style="font-size: 65%;">−4</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Leu-TAA-uncharged</td>
+<td headers="log2FoldChange" class="gt_row gt_right">2.08</td>
+<td headers="pvalue" class="gt_row gt_right">6.40 × 10<sup style="font-size: 65%;">−5</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">1.49 × 10<sup style="font-size: 65%;">−3</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Ser-TGA</td>
+<td headers="log2FoldChange" class="gt_row gt_right">3.86</td>
+<td headers="pvalue" class="gt_row gt_right">9.51 × 10<sup style="font-size: 65%;">−5</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">1.97 × 10<sup style="font-size: 65%;">−3</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+<tr>
+<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Arg-TCT-uncharged</td>
+<td headers="log2FoldChange" class="gt_row gt_right">1.84</td>
+<td headers="pvalue" class="gt_row gt_right">2.56 × 10<sup style="font-size: 65%;">−4</sup>
+</td>
+<td headers="padj" class="gt_row gt_right">4.76 × 10<sup style="font-size: 65%;">−3</sup>
+</td>
+<td headers="significant" class="gt_row gt_center">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -497,45 +1031,46 @@ Modification rewiring between control and infected conditions.
 <span><span class="co">#&gt;  [9] magrittr_2.0.4              compiler_4.5.2             </span></span>
 <span><span class="co">#&gt; [11] rlang_1.1.7                 sass_0.4.10                </span></span>
 <span><span class="co">#&gt; [13] tools_4.5.2                 utf8_1.2.6                 </span></span>
-<span><span class="co">#&gt; [15] yaml_2.3.12                 knitr_1.51                 </span></span>
-<span><span class="co">#&gt; [17] S4Arrays_1.10.1             labeling_0.4.3             </span></span>
-<span><span class="co">#&gt; [19] bit_4.6.0                   DelayedArray_0.36.0        </span></span>
-<span><span class="co">#&gt; [21] xml2_1.5.2                  RColorBrewer_1.1-3         </span></span>
-<span><span class="co">#&gt; [23] abind_1.4-8                 BiocParallel_1.44.0        </span></span>
-<span><span class="co">#&gt; [25] withr_3.0.2                 purrr_1.2.1                </span></span>
-<span><span class="co">#&gt; [27] BiocGenerics_0.56.0         desc_1.4.3                 </span></span>
-<span><span class="co">#&gt; [29] grid_4.5.2                  stats4_4.5.2               </span></span>
-<span><span class="co">#&gt; [31] colorspace_2.1-2            ggplot2_4.0.2              </span></span>
-<span><span class="co">#&gt; [33] scales_1.4.0                SummarizedExperiment_1.40.0</span></span>
-<span><span class="co">#&gt; [35] cli_3.6.5                   rmarkdown_2.30             </span></span>
-<span><span class="co">#&gt; [37] crayon_1.5.3                ragg_1.5.0                 </span></span>
-<span><span class="co">#&gt; [39] generics_0.1.4              tzdb_0.5.0                 </span></span>
-<span><span class="co">#&gt; [41] commonmark_2.0.0            cachem_1.1.0               </span></span>
-<span><span class="co">#&gt; [43] stringr_1.6.0               parallel_4.5.2             </span></span>
-<span><span class="co">#&gt; [45] XVector_0.50.0              matrixStats_1.5.0          </span></span>
-<span><span class="co">#&gt; [47] vctrs_0.7.1                 Matrix_1.7-4               </span></span>
-<span><span class="co">#&gt; [49] jsonlite_2.0.0              litedown_0.9               </span></span>
-<span><span class="co">#&gt; [51] IRanges_2.44.0              hms_1.1.4                  </span></span>
-<span><span class="co">#&gt; [53] S4Vectors_0.48.0            bit64_4.6.0-1              </span></span>
-<span><span class="co">#&gt; [55] ggrepel_0.9.6               systemfonts_1.3.1          </span></span>
-<span><span class="co">#&gt; [57] locfit_1.5-9.12             jquerylib_0.1.4            </span></span>
-<span><span class="co">#&gt; [59] glue_1.8.0                  pkgdown_2.2.0              </span></span>
-<span><span class="co">#&gt; [61] codetools_0.2-20            ggtext_0.1.2               </span></span>
-<span><span class="co">#&gt; [63] cowplot_1.2.0               shape_1.4.6.1              </span></span>
-<span><span class="co">#&gt; [65] stringi_1.8.7               gtable_0.3.6               </span></span>
-<span><span class="co">#&gt; [67] GenomicRanges_1.62.1        tibble_3.3.1               </span></span>
-<span><span class="co">#&gt; [69] pillar_1.11.1               htmltools_0.5.9            </span></span>
-<span><span class="co">#&gt; [71] Seqinfo_1.0.0               circlize_0.4.17            </span></span>
-<span><span class="co">#&gt; [73] R6_2.6.1                    textshaping_1.0.4          </span></span>
-<span><span class="co">#&gt; [75] vroom_1.7.0                 evaluate_1.0.5             </span></span>
-<span><span class="co">#&gt; [77] lattice_0.22-7              Biobase_2.70.0             </span></span>
-<span><span class="co">#&gt; [79] markdown_2.0                readr_2.1.6                </span></span>
-<span><span class="co">#&gt; [81] gridtext_0.1.5              bslib_0.10.0               </span></span>
-<span><span class="co">#&gt; [83] Rcpp_1.1.1                  SparseArray_1.10.8         </span></span>
-<span><span class="co">#&gt; [85] DESeq2_1.50.2               xfun_0.56                  </span></span>
-<span><span class="co">#&gt; [87] fs_1.6.6                    MatrixGenerics_1.22.0      </span></span>
-<span><span class="co">#&gt; [89] forcats_1.0.1               pkgconfig_2.0.3            </span></span>
-<span><span class="co">#&gt; [91] GlobalOptions_0.1.3</span></span></code></pre></div>
+<span><span class="co">#&gt; [15] yaml_2.3.12                 gt_1.3.0                   </span></span>
+<span><span class="co">#&gt; [17] knitr_1.51                  S4Arrays_1.10.1            </span></span>
+<span><span class="co">#&gt; [19] labeling_0.4.3              htmlwidgets_1.6.4          </span></span>
+<span><span class="co">#&gt; [21] bit_4.6.0                   DelayedArray_0.36.0        </span></span>
+<span><span class="co">#&gt; [23] xml2_1.5.2                  RColorBrewer_1.1-3         </span></span>
+<span><span class="co">#&gt; [25] abind_1.4-8                 BiocParallel_1.44.0        </span></span>
+<span><span class="co">#&gt; [27] withr_3.0.2                 purrr_1.2.1                </span></span>
+<span><span class="co">#&gt; [29] BiocGenerics_0.56.0         desc_1.4.3                 </span></span>
+<span><span class="co">#&gt; [31] grid_4.5.2                  stats4_4.5.2               </span></span>
+<span><span class="co">#&gt; [33] colorspace_2.1-2            ggplot2_4.0.2              </span></span>
+<span><span class="co">#&gt; [35] scales_1.4.0                SummarizedExperiment_1.40.0</span></span>
+<span><span class="co">#&gt; [37] cli_3.6.5                   rmarkdown_2.30             </span></span>
+<span><span class="co">#&gt; [39] crayon_1.5.3                ragg_1.5.0                 </span></span>
+<span><span class="co">#&gt; [41] generics_0.1.4              tzdb_0.5.0                 </span></span>
+<span><span class="co">#&gt; [43] commonmark_2.0.0            cachem_1.1.0               </span></span>
+<span><span class="co">#&gt; [45] stringr_1.6.0               parallel_4.5.2             </span></span>
+<span><span class="co">#&gt; [47] XVector_0.50.0              matrixStats_1.5.0          </span></span>
+<span><span class="co">#&gt; [49] vctrs_0.7.1                 Matrix_1.7-4               </span></span>
+<span><span class="co">#&gt; [51] jsonlite_2.0.0              litedown_0.9               </span></span>
+<span><span class="co">#&gt; [53] IRanges_2.44.0              hms_1.1.4                  </span></span>
+<span><span class="co">#&gt; [55] S4Vectors_0.48.0            bit64_4.6.0-1              </span></span>
+<span><span class="co">#&gt; [57] ggrepel_0.9.6               systemfonts_1.3.1          </span></span>
+<span><span class="co">#&gt; [59] locfit_1.5-9.12             jquerylib_0.1.4            </span></span>
+<span><span class="co">#&gt; [61] glue_1.8.0                  pkgdown_2.2.0              </span></span>
+<span><span class="co">#&gt; [63] codetools_0.2-20            ggtext_0.1.2               </span></span>
+<span><span class="co">#&gt; [65] cowplot_1.2.0               shape_1.4.6.1              </span></span>
+<span><span class="co">#&gt; [67] stringi_1.8.7               gtable_0.3.6               </span></span>
+<span><span class="co">#&gt; [69] GenomicRanges_1.62.1        tibble_3.3.1               </span></span>
+<span><span class="co">#&gt; [71] pillar_1.11.1               htmltools_0.5.9            </span></span>
+<span><span class="co">#&gt; [73] Seqinfo_1.0.0               circlize_0.4.17            </span></span>
+<span><span class="co">#&gt; [75] R6_2.6.1                    textshaping_1.0.4          </span></span>
+<span><span class="co">#&gt; [77] vroom_1.7.0                 evaluate_1.0.5             </span></span>
+<span><span class="co">#&gt; [79] lattice_0.22-7              Biobase_2.70.0             </span></span>
+<span><span class="co">#&gt; [81] markdown_2.0                readr_2.1.6                </span></span>
+<span><span class="co">#&gt; [83] gridtext_0.1.5              bslib_0.10.0               </span></span>
+<span><span class="co">#&gt; [85] Rcpp_1.1.1                  SparseArray_1.10.8         </span></span>
+<span><span class="co">#&gt; [87] DESeq2_1.50.2               xfun_0.56                  </span></span>
+<span><span class="co">#&gt; [89] GlobalOptions_0.1.3         fs_1.6.6                   </span></span>
+<span><span class="co">#&gt; [91] MatrixGenerics_1.22.0       forcats_1.0.1              </span></span>
+<span><span class="co">#&gt; [93] pkgconfig_2.0.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

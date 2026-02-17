@@ -46,6 +46,8 @@
   : Compute ratio of odds ratios between conditions.
 - [`run_deseq()`](https://rnabioco.github.io/clover/reference/run_deseq.md)
   : Run DESeq2 differential analysis.
+- [`tabulate_deseq()`](https://rnabioco.github.io/clover/reference/tabulate_deseq.md)
+  : Tabulate top DESeq2 differential expression results.
 - [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
   : Tidy DESeq2 results into a tibble.
 

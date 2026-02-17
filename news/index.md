@@ -57,4 +57,9 @@
   [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
   output, with significant points highlighted and labeled using ggrepel.
 
+- [`tabulate_deseq()`](https://rnabioco.github.io/clover/reference/tabulate_deseq.md)
+  creates a formatted gt table of the top significant tRNAs from
+  [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
+  output, sorted by p-value.
+
 - Initial CRAN submission.

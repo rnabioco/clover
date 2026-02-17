@@ -121,25 +121,21 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 ### Top changing tRNAs
 
 ``` r
-res |>
-  filter(!is.na(padj)) |>
-  arrange(pvalue) |>
-  head(10) |>
-  select(tRNA, log2FoldChange, pvalue, padj, significant)
-#> # A tibble: 10 × 5
-#>    tRNA                         log2FoldChange   pvalue     padj significant
-#>    <chr>                                 <dbl>    <dbl>    <dbl> <lgl>      
-#>  1 phage-tRNA-Ile2-CAT                    5.33 2.85e-17 5.31e-15 TRUE       
-#>  2 phage-tRNA-Gln-TTG                     3.68 5.52e-13 5.13e-11 TRUE       
-#>  3 phage-tRNA-Arg-TCT                     5.04 3.36e- 9 2.09e- 7 TRUE       
-#>  4 phage-tRNA-Pro-TGG-uncharged           1.80 1.99e- 7 9.24e- 6 TRUE       
-#>  5 phage-tRNA-Pro-TGG                     3.25 2.67e- 6 9.91e- 5 TRUE       
-#>  6 phage-tRNA-Thr-TGT                     4.29 3.73e- 6 1.16e- 4 TRUE       
-#>  7 phage-tRNA-Leu-TAA                     3.75 8.90e- 6 2.37e- 4 TRUE       
-#>  8 phage-tRNA-Leu-TAA-uncharged           2.08 6.40e- 5 1.49e- 3 TRUE       
-#>  9 phage-tRNA-Ser-TGA                     3.86 9.51e- 5 1.97e- 3 TRUE       
-#> 10 phage-tRNA-Arg-TCT-uncharged           1.84 2.56e- 4 4.76e- 3 TRUE
+tabulate_deseq(res)
 ```
+
+| tRNA                         | log2 FC | p-value      | Adjusted p-value | significant |
+|------------------------------|---------|--------------|------------------|-------------|
+| phage-tRNA-Ile2-CAT          | 5.33    | 2.85 × 10⁻¹⁷ | 5.31 × 10⁻¹⁵     | TRUE        |
+| phage-tRNA-Gln-TTG           | 3.68    | 5.52 × 10⁻¹³ | 5.13 × 10⁻¹¹     | TRUE        |
+| phage-tRNA-Arg-TCT           | 5.04    | 3.36 × 10⁻⁹  | 2.09 × 10⁻⁷      | TRUE        |
+| phage-tRNA-Pro-TGG-uncharged | 1.80    | 1.99 × 10⁻⁷  | 9.24 × 10⁻⁶      | TRUE        |
+| phage-tRNA-Pro-TGG           | 3.25    | 2.67 × 10⁻⁶  | 9.91 × 10⁻⁵      | TRUE        |
+| phage-tRNA-Thr-TGT           | 4.29    | 3.73 × 10⁻⁶  | 1.16 × 10⁻⁴      | TRUE        |
+| phage-tRNA-Leu-TAA           | 3.75    | 8.90 × 10⁻⁶  | 2.37 × 10⁻⁴      | TRUE        |
+| phage-tRNA-Leu-TAA-uncharged | 2.08    | 6.40 × 10⁻⁵  | 1.49 × 10⁻³      | TRUE        |
+| phage-tRNA-Ser-TGA           | 3.86    | 9.51 × 10⁻⁵  | 1.97 × 10⁻³      | TRUE        |
+| phage-tRNA-Arg-TCT-uncharged | 1.84    | 2.56 × 10⁻⁴  | 4.76 × 10⁻³      | TRUE        |
 
 ## Differential charging analysis
 
@@ -441,43 +437,44 @@ sessionInfo()
 #>  [9] magrittr_2.0.4              compiler_4.5.2             
 #> [11] rlang_1.1.7                 sass_0.4.10                
 #> [13] tools_4.5.2                 utf8_1.2.6                 
-#> [15] yaml_2.3.12                 knitr_1.51                 
-#> [17] S4Arrays_1.10.1             labeling_0.4.3             
-#> [19] bit_4.6.0                   DelayedArray_0.36.0        
-#> [21] xml2_1.5.2                  RColorBrewer_1.1-3         
-#> [23] abind_1.4-8                 BiocParallel_1.44.0        
-#> [25] withr_3.0.2                 purrr_1.2.1                
-#> [27] BiocGenerics_0.56.0         desc_1.4.3                 
-#> [29] grid_4.5.2                  stats4_4.5.2               
-#> [31] colorspace_2.1-2            ggplot2_4.0.2              
-#> [33] scales_1.4.0                SummarizedExperiment_1.40.0
-#> [35] cli_3.6.5                   rmarkdown_2.30             
-#> [37] crayon_1.5.3                ragg_1.5.0                 
-#> [39] generics_0.1.4              tzdb_0.5.0                 
-#> [41] commonmark_2.0.0            cachem_1.1.0               
-#> [43] stringr_1.6.0               parallel_4.5.2             
-#> [45] XVector_0.50.0              matrixStats_1.5.0          
-#> [47] vctrs_0.7.1                 Matrix_1.7-4               
-#> [49] jsonlite_2.0.0              litedown_0.9               
-#> [51] IRanges_2.44.0              hms_1.1.4                  
-#> [53] S4Vectors_0.48.0            bit64_4.6.0-1              
-#> [55] ggrepel_0.9.6               systemfonts_1.3.1          
-#> [57] locfit_1.5-9.12             jquerylib_0.1.4            
-#> [59] glue_1.8.0                  pkgdown_2.2.0              
-#> [61] codetools_0.2-20            ggtext_0.1.2               
-#> [63] cowplot_1.2.0               shape_1.4.6.1              
-#> [65] stringi_1.8.7               gtable_0.3.6               
-#> [67] GenomicRanges_1.62.1        tibble_3.3.1               
-#> [69] pillar_1.11.1               htmltools_0.5.9            
-#> [71] Seqinfo_1.0.0               circlize_0.4.17            
-#> [73] R6_2.6.1                    textshaping_1.0.4          
-#> [75] vroom_1.7.0                 evaluate_1.0.5             
-#> [77] lattice_0.22-7              Biobase_2.70.0             
-#> [79] markdown_2.0                readr_2.1.6                
-#> [81] gridtext_0.1.5              bslib_0.10.0               
-#> [83] Rcpp_1.1.1                  SparseArray_1.10.8         
-#> [85] DESeq2_1.50.2               xfun_0.56                  
-#> [87] fs_1.6.6                    MatrixGenerics_1.22.0      
-#> [89] forcats_1.0.1               pkgconfig_2.0.3            
-#> [91] GlobalOptions_0.1.3
+#> [15] yaml_2.3.12                 gt_1.3.0                   
+#> [17] knitr_1.51                  S4Arrays_1.10.1            
+#> [19] labeling_0.4.3              htmlwidgets_1.6.4          
+#> [21] bit_4.6.0                   DelayedArray_0.36.0        
+#> [23] xml2_1.5.2                  RColorBrewer_1.1-3         
+#> [25] abind_1.4-8                 BiocParallel_1.44.0        
+#> [27] withr_3.0.2                 purrr_1.2.1                
+#> [29] BiocGenerics_0.56.0         desc_1.4.3                 
+#> [31] grid_4.5.2                  stats4_4.5.2               
+#> [33] colorspace_2.1-2            ggplot2_4.0.2              
+#> [35] scales_1.4.0                SummarizedExperiment_1.40.0
+#> [37] cli_3.6.5                   rmarkdown_2.30             
+#> [39] crayon_1.5.3                ragg_1.5.0                 
+#> [41] generics_0.1.4              tzdb_0.5.0                 
+#> [43] commonmark_2.0.0            cachem_1.1.0               
+#> [45] stringr_1.6.0               parallel_4.5.2             
+#> [47] XVector_0.50.0              matrixStats_1.5.0          
+#> [49] vctrs_0.7.1                 Matrix_1.7-4               
+#> [51] jsonlite_2.0.0              litedown_0.9               
+#> [53] IRanges_2.44.0              hms_1.1.4                  
+#> [55] S4Vectors_0.48.0            bit64_4.6.0-1              
+#> [57] ggrepel_0.9.6               systemfonts_1.3.1          
+#> [59] locfit_1.5-9.12             jquerylib_0.1.4            
+#> [61] glue_1.8.0                  pkgdown_2.2.0              
+#> [63] codetools_0.2-20            ggtext_0.1.2               
+#> [65] cowplot_1.2.0               shape_1.4.6.1              
+#> [67] stringi_1.8.7               gtable_0.3.6               
+#> [69] GenomicRanges_1.62.1        tibble_3.3.1               
+#> [71] pillar_1.11.1               htmltools_0.5.9            
+#> [73] Seqinfo_1.0.0               circlize_0.4.17            
+#> [75] R6_2.6.1                    textshaping_1.0.4          
+#> [77] vroom_1.7.0                 evaluate_1.0.5             
+#> [79] lattice_0.22-7              Biobase_2.70.0             
+#> [81] markdown_2.0                readr_2.1.6                
+#> [83] gridtext_0.1.5              bslib_0.10.0               
+#> [85] Rcpp_1.1.1                  SparseArray_1.10.8         
+#> [87] DESeq2_1.50.2               xfun_0.56                  
+#> [89] GlobalOptions_0.1.3         fs_1.6.6                   
+#> [91] MatrixGenerics_1.22.0       forcats_1.0.1              
+#> [93] pkgconfig_2.0.3
 ```
