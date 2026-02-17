@@ -97,6 +97,12 @@ res <- tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
 #| fig.height: 5
 ggplot(res, aes(x = log2FoldChange, y = -log10(pvalue))) +
   geom_point(aes(color = significant), size = 1.5, alpha = 0.7) +
+  ggrepel::geom_text_repel(
+    data = \(x) dplyr::filter(x, significant),
+    aes(label = tRNA),
+    size = 3,
+    max.overlaps = 20
+  ) +
   scale_color_manual(values = c("grey60", "#D55E00")) +
   geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "grey40") +
   labs(
@@ -104,7 +110,7 @@ ggplot(res, aes(x = log2FoldChange, y = -log10(pvalue))) +
     y = "-log10(p-value)",
     title = "Differential tRNA abundance: T4-infected vs control"
   ) +
-  theme_minimal() +
+  cowplot::theme_cowplot() +
   theme(legend.position = "none")
 ```
 
@@ -143,7 +149,7 @@ head(colnames(charge_mat))
 
 ```{r}
 #| label: fig-charging-ratio
-#| fig.cap: "Charging ratios per tRNA across conditions."
+#| fig.cap: "Change in charging ratio (infected - control) per tRNA."
 #| fig.height: 5
 # Calculate charging ratio per tRNA per sample
 charging_ratios <- charging |>
@@ -163,29 +169,37 @@ ratio_summary <- charging_ratios |>
     .groups = "drop"
   )
 
-# Plot top tRNAs by abundance
+# Top tRNAs by abundance
 top_trnas <- charging_ratios |>
   group_by(tRNA) |>
   summarise(total = sum(counts_charged + counts_uncharged)) |>
+
   slice_max(total, n = 20) |>
   pull(tRNA)
 
-ratio_summary |>
+# Calculate difference (infected - control) with propagated SE
+ratio_diff <- ratio_summary |>
   filter(tRNA %in% top_trnas) |>
-  mutate(tRNA = forcats::fct_reorder(tRNA, mean_ratio)) |>
-  ggplot(aes(x = mean_ratio, y = tRNA, color = condition)) +
+  tidyr::pivot_wider(
+    names_from = condition,
+    values_from = c(mean_ratio, se_ratio)
+  ) |>
+  mutate(
+    diff = mean_ratio_inf - mean_ratio_ctl,
+    se_diff = sqrt(se_ratio_ctl^2 + se_ratio_inf^2),
+    tRNA = forcats::fct_reorder(tRNA, diff)
+  )
+
+ggplot(ratio_diff, aes(x = diff, y = tRNA)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
   geom_point(size = 2.5) +
-  geom_linerange(
-    aes(xmin = mean_ratio - se_ratio, xmax = mean_ratio + se_ratio)
-  ) +
-  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
+  geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +
   labs(
-    x = "Charging ratio",
+    x = "Difference in charging ratio (infected - control)",
     y = "",
-    title = "tRNA charging ratios: control vs infected"
+    title = "Change in tRNA charging upon infection"
   ) +
-  theme_minimal() +
-  theme(legend.position = "top")
+  cowplot::theme_minimal_vgrid()
 ```
 
 ## Base-calling error profiles
@@ -238,7 +252,7 @@ bcerror_summary |>
     y = "Mean base-calling error rate",
     title = "Per-position error profiles"
   ) +
-  theme_minimal() +
+  cowplot::theme_minimal_hgrid() +
   theme(legend.position = "top")
 ```
 
@@ -330,7 +344,7 @@ bcerror_summary |>
     y = "Mean base-calling error rate",
     title = "Error profiles with known modification sites (dashed lines)"
   ) +
-  theme_minimal() +
+  cowplot::theme_minimal_hgrid() +
   theme(legend.position = "top")
 ```
 
