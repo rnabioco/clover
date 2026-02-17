@@ -22,63 +22,33 @@ You can install the development version of clover from
 pak::pak("rnabioco/clover")
 ```
 
-## Usage
+## Example
 
 clover reads output from the
 [aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
-and stores the results in a `SummarizedExperiment`. The main entry point
-is `create_clover()`, which reads a pipeline `config.yaml` and loads
-counts, base-calling error rates, and modification co-occurrence data.
+and stores the results in a `SummarizedExperiment`.
 
 ``` r
 library(clover)
 
-sample_info <- data.frame(
-  sample_id = c(
-    "wt-15-ctl-01",
-    "wt-15-ctl-02",
-    "wt-15-ctl-03",
-    "wt-15-inf-01",
-    "wt-15-inf-02",
-    "wt-15-inf-03"
-  ),
-  condition = rep(c("control", "infected"), each = 3)
-)
-
+# Load pipeline results into a SummarizedExperiment
 se <- create_clover(
   config_path = clover_example("ecoli/config.yaml"),
-  sample_info = sample_info
+  sample_info = data.frame(
+    sample_id = c(
+      "wt-15-ctl-01", "wt-15-ctl-02", "wt-15-ctl-03",
+      "wt-15-inf-01", "wt-15-inf-02", "wt-15-inf-03"
+    ),
+    condition = rep(c("control", "infected"), each = 3)
+  )
 )
 
-se
-```
-
-## Analysis
-
-### Differential tRNA abundance
-
-clover wraps DESeq2 to test for differential tRNA abundance between
-conditions.
-
-``` r
+# Differential tRNA abundance with DESeq2
 dds <- run_deseq(se, design = ~condition)
 res <- tidy_deseq_results(dds, contrast = c("condition", "infected", "control"))
-```
+plot_volcano(res)
 
-### Base-calling error profiles
-
-Error rates per tRNA position reveal modification signatures. clover
-provides functions for plotting error profiles and heatmaps annotated
-with Sprinzl structural coordinates.
-
-``` r
-# Error rate line plot for a specific tRNA
-plot_bcerror(
-  S4Vectors::metadata(se)$bcerror,
-  ref = "host-tRNA-Glu-TTC-1-1"
-)
-
-# Heatmap of error rate differences with Sprinzl coordinates
+# Base-calling error heatmap with Sprinzl coordinates
 sprinzl <- read_sprinzl_coords(
   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
 )
@@ -89,39 +59,7 @@ plot_mod_heatmap(
 )
 ```
 
-### Modification co-occurrence
-
-Chord diagrams display pairwise modification co-occurrence (odds ratios)
-within a single sample or changes between conditions (ratio of odds
-ratios).
-
-``` r
-or_data <- S4Vectors::metadata(se)$odds_ratios
-
-# Single-sample chord diagram
-or_single <- or_data |>
-  dplyr::filter(
-    ref == "host-tRNA-Glu-TTC-1-1",
-    sample_id == "wt-15-ctl-01"
-  )
-
-plot_chord_or(or_single, sprinzl_coords = sprinzl)
-
-# Rewiring between conditions
-or_data$condition <- ifelse(
-  grepl("ctl", or_data$sample_id),
-  "control",
-  "infected"
-)
-
-ror <- compute_ror(
-  or_data,
-  numerator = "infected",
-  denominator = "control"
-)
-
-plot_chord_ror(ror, sprinzl_coords = sprinzl)
-```
+See `vignette("clover")` for a complete walkthrough.
 
 ## Related work
 
