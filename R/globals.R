@@ -97,5 +97,7 @@ globalVariables(c(
   "ratio_numerator",
   "ratio_denominator",
   "se_numerator",
-  "se_denominator"
+  "se_denominator",
+  # plot_bcerror_profile
+  "mean_error"
 ))

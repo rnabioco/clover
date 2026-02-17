@@ -1,5 +1,9 @@
 # clover 0.0.0.9000
 
+* `plot_bcerror_profile()` plots per-position base-calling error rates as a faceted line plot, with optional modification position overlay.
+
+* `plot_charging_diffs()` creates a dot plot with error bars showing per-tRNA charging ratio differences between conditions.
+
 * `plot_chord_or()` and `plot_chord_ror()` now convert positions from seq_index to Sprinzl labels when `sprinzl_coords` is provided, display all tRNA positions as sectors for structural context, and add annotation rings for structural region, reference nucleotide, and modification positions (via new `mods` parameter).
 
 * `compute_charging_diffs()` compares per-tRNA charging ratios between two conditions, returning mean ratios, standard errors, and the between-condition difference with propagated SE.

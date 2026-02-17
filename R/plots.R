@@ -264,6 +264,110 @@ plot_volcano <- function(
   p
 }
 
+#' Plot per-tRNA charging ratio differences.
+#'
+#' Create a dot plot with error bars showing the difference in charging
+#' ratio between two conditions for each tRNA. Consumes the tibble
+#' returned by [compute_charging_diffs()].
+#'
+#' @param data A tibble from [compute_charging_diffs()] with at least
+#'   `tRNA` (factor), `diff`, and `se_diff` columns.
+#' @param point_size Numeric size for [ggplot2::geom_point()]. Default
+#'   `2.5`.
+#'
+#' @return A ggplot object.
+#'
+#' @export
+#'
+#' @examples
+#' df <- tibble::tibble(
+#'   tRNA = forcats::fct_inorder(paste0("tRNA-", 1:5)),
+#'   diff = c(-0.1, -0.05, 0.02, 0.08, 0.15),
+#'   se_diff = rep(0.03, 5)
+#' )
+#' plot_charging_diffs(df)
+plot_charging_diffs <- function(data, point_size = 2.5) {
+  ggplot(data, aes(x = diff, y = tRNA)) +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
+    geom_point(size = point_size) +
+    geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +
+    labs(
+      x = "Difference in charging ratio",
+      y = ""
+    ) +
+    cowplot::theme_minimal_vgrid()
+}
+
+#' Plot per-position base-calling error profiles.
+#'
+#' Create a line plot of per-position base-calling error rates, faceted
+#' by tRNA and colored by condition. Optionally overlay vertical dashed
+#' lines at known modification positions.
+#'
+#' @param data A summarized bcerror tibble with columns `ref`, `pos`,
+#'   `condition`, and `mean_error`.
+#' @param refs Character vector of tRNA names to plot (filters
+#'   `data$ref`). If `NULL` (default), all tRNAs are plotted.
+#' @param mods Optional tibble with `ref` and `pos` columns marking
+#'   modification positions (e.g., from [fetch_modomics_mods()]).
+#' @param colors Named character vector of colors for conditions.
+#'   Default `c(ctl = "#0072B2", inf = "#D55E00")`.
+#' @param ncol Number of columns for [ggplot2::facet_wrap()]. Default
+#'   `1`.
+#'
+#' @return A ggplot object.
+#'
+#' @export
+#'
+#' @examples
+#' df <- tidyr::expand_grid(
+#'   ref = c("tRNA-Ala", "tRNA-Gly"),
+#'   pos = 1:20,
+#'   condition = c("ctl", "inf")
+#' )
+#' df$mean_error <- runif(nrow(df), 0, 0.3)
+#' plot_bcerror_profile(df)
+plot_bcerror_profile <- function(
+  data,
+  refs = NULL,
+  mods = NULL,
+  colors = c(ctl = "#0072B2", inf = "#D55E00"),
+  ncol = 1
+) {
+  if (!is.null(refs)) {
+    data <- dplyr::filter(data, ref %in% refs)
+  }
+
+  p <- ggplot(data, aes(x = pos, y = mean_error, color = condition)) +
+    geom_line(linewidth = 0.5) +
+    geom_point(size = 0.8)
+
+  if (!is.null(mods)) {
+    if (!is.null(refs)) {
+      mods <- dplyr::filter(mods, ref %in% refs)
+    }
+    p <- p +
+      geom_vline(
+        data = mods,
+        aes(xintercept = pos),
+        linetype = "dashed",
+        color = "grey40",
+        alpha = 0.5,
+        inherit.aes = FALSE
+      )
+  }
+
+  p +
+    facet_wrap(~ref, ncol = ncol, scales = "free_y") +
+    scale_color_manual(values = colors) +
+    labs(
+      x = "Position",
+      y = "Mean base-calling error rate"
+    ) +
+    cowplot::theme_minimal_hgrid() +
+    theme(legend.position = "top")
+}
+
 # Constants ---------------------------------------------------------------
 
 #' Labels for consensus tRNA secondary structure

@@ -70,6 +70,61 @@ test_that("plot_volcano works with no significant points", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("plot_charging_diffs returns a ggplot object", {
+  df <- tibble::tibble(
+    tRNA = forcats::fct_inorder(paste0("tRNA-", 1:5)),
+    diff = c(-0.1, -0.05, 0.02, 0.08, 0.15),
+    se_diff = rep(0.03, 5)
+  )
+  p <- plot_charging_diffs(df)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_charging_diffs respects point_size", {
+  df <- tibble::tibble(
+    tRNA = forcats::fct_inorder(paste0("tRNA-", 1:3)),
+    diff = c(-0.1, 0.0, 0.1),
+    se_diff = rep(0.02, 3)
+  )
+  p <- plot_charging_diffs(df, point_size = 4)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_bcerror_profile returns a ggplot object", {
+  df <- tidyr::expand_grid(
+    ref = c("tRNA-Ala", "tRNA-Gly"),
+    pos = 1:20,
+    condition = c("ctl", "inf")
+  )
+  df$mean_error <- runif(nrow(df), 0, 0.3)
+  p <- plot_bcerror_profile(df)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_bcerror_profile filters by refs", {
+  df <- tidyr::expand_grid(
+    ref = c("tRNA-Ala", "tRNA-Gly", "tRNA-Ser"),
+    pos = 1:10,
+    condition = c("ctl", "inf")
+  )
+  df$mean_error <- runif(nrow(df), 0, 0.3)
+  p <- plot_bcerror_profile(df, refs = c("tRNA-Ala", "tRNA-Gly"))
+  expect_s3_class(p, "ggplot")
+  expect_equal(length(unique(p$data$ref)), 2)
+})
+
+test_that("plot_bcerror_profile overlays modification positions", {
+  df <- tidyr::expand_grid(
+    ref = "tRNA-Ala",
+    pos = 1:20,
+    condition = c("ctl", "inf")
+  )
+  df$mean_error <- runif(nrow(df), 0, 0.3)
+  mods <- tibble::tibble(ref = "tRNA-Ala", pos = c(5, 10, 15))
+  p <- plot_bcerror_profile(df, mods = mods)
+  expect_s3_class(p, "ggplot")
+})
+
 test_that("plot_mod_heatmap works with a single row", {
   df <- data.frame(
     ref = rep("tRNA-Ala", 5),
