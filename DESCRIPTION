@@ -27,15 +27,20 @@ Imports:
     scales,
     stringr,
     SummarizedExperiment,
+    tibble,
     tidyr,
     yaml
 Suggests:
     circlize,
     DESeq2,
+    httr2,
+    jsonlite,
     knitr,
+    pwalign,
     quarto,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 VignetteBuilder: quarto, knitr
 bioCViews: RNASeq, Visualization
 Config/Needs/dev: devtools, roxygen2, pkgdown

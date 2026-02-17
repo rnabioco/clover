@@ -20,6 +20,10 @@ reference:
     contents:
     - starts_with("plot_")
 
+  - title: MODOMICS
+    contents:
+    - fetch_modomics_mods
+
   - title: Variables
     contents:
     - aa_props

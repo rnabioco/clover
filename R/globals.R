@@ -68,5 +68,16 @@ globalVariables(c(
   "chrom",
   "within_alignment",
   "call_code",
-  "modified"
+  "modified",
+  # modomics
+  "mod_full",
+  "mod1",
+  "subtype",
+  "anticodon",
+  "seq",
+  # charging_count_matrix
+  "col_name",
+  "count",
+  # compute_ror
+  "mean_log_or"
 ))
