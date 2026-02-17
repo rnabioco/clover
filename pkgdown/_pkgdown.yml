@@ -24,6 +24,7 @@ reference:
     - compute_odds_ratios
     - compute_ror
     - run_deseq
+    - tabulate_deseq
     - tidy_deseq_results
 
   - title: Plot

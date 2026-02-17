@@ -37,6 +37,7 @@ Suggests:
     DESeq2,
     ggrepel,
     ggtext,
+    gt,
     httr2,
     jsonlite,
     knitr,

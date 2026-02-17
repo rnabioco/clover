@@ -104,11 +104,7 @@ plot_volcano(res)
 
 ```{r}
 #| label: top-trnas
-res |>
-  filter(!is.na(padj)) |>
-  arrange(pvalue) |>
-  head(10) |>
-  select(tRNA, log2FoldChange, pvalue, padj, significant)
+tabulate_deseq(res)
 ```
 
 ## Differential charging analysis
