@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   clover: clover.html
-last_built: 2026-02-17T14:48Z
+last_built: 2026-02-17T14:58Z
 urls:
   reference: https://rnabioco.github.io/clover/reference
   article: https://rnabioco.github.io/clover/articles

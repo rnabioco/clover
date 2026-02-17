@@ -115,7 +115,6 @@ function_name <- function(arg) {
 ### Bioconductor
 
 - SummarizedExperiment
-- GenomicRanges
 - Biostrings
 
 ### Tidyverse
