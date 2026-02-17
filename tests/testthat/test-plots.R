@@ -33,6 +33,7 @@ test_that("plot_mod_heatmap works without clustering", {
 
 test_that("plot_volcano returns a ggplot object", {
   skip_if_not_installed("ggrepel")
+  skip_if_not_installed("ggtext")
   res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:10),
     log2FoldChange = rnorm(10),
@@ -46,6 +47,7 @@ test_that("plot_volcano returns a ggplot object", {
 
 test_that("plot_volcano works with custom lab_col", {
   skip_if_not_installed("ggrepel")
+  skip_if_not_installed("ggtext")
   res <- tibble::tibble(
     gene = paste0("gene-", 1:5),
     log2FoldChange = rnorm(5),
@@ -59,6 +61,7 @@ test_that("plot_volcano works with custom lab_col", {
 
 test_that("plot_volcano works with no significant points", {
   skip_if_not_installed("ggrepel")
+  skip_if_not_installed("ggtext")
   res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:5),
     log2FoldChange = rnorm(5),
@@ -72,6 +75,7 @@ test_that("plot_volcano works with no significant points", {
 
 test_that("plot_abundance_charging returns a ggplot object", {
   skip_if_not_installed("ggrepel")
+  skip_if_not_installed("ggtext")
   deseq_res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:6),
     log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
@@ -88,6 +92,7 @@ test_that("plot_abundance_charging returns a ggplot object", {
 
 test_that("plot_abundance_charging handles no significant points", {
   skip_if_not_installed("ggrepel")
+  skip_if_not_installed("ggtext")
   deseq_res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:5),
     log2FoldChange = rnorm(5),
@@ -104,6 +109,7 @@ test_that("plot_abundance_charging handles no significant points", {
 
 test_that("plot_abundance_charging respects custom padj_cutoff", {
   skip_if_not_installed("ggrepel")
+  skip_if_not_installed("ggtext")
   deseq_res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:5),
     log2FoldChange = c(1, -1, 0.5, -0.5, 2),
