@@ -17,7 +17,10 @@
   `sprinzl_coords` is provided, display all tRNA positions as sectors
   for structural context, and add annotation rings for structural
   region, reference nucleotide, and modification positions (via new
-  `mods` parameter).
+  `mods` parameter). Sectors now have equal widths for consistent visual
+  comparison, a chord color legend is displayed, and default
+  significance cutoffs are tighter (`or_cutoff = 1.0`,
+  `p_cutoff = 0.01`, `min_obs = 100`) to reduce visual clutter.
 
 - [`compute_charging_diffs()`](https://rnabioco.github.io/clover/reference/compute_charging_diffs.md)
   compares per-tRNA charging ratios between two conditions, returning

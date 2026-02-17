@@ -336,12 +336,17 @@ or_single <- or_data |>
 sprinzl_glu <- sprinzl |>
   filter(trna_id == "tRNA-Glu-UUC-1-1")
 
+# Filter modifications for this tRNA
+mods_glu <- mods |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1")
+
 plot_chord_or(
   or_single,
-  or_cutoff = 0.5,
-  p_cutoff = 0.05,
-  min_obs = 30,
+  or_cutoff = 1.0,
+  p_cutoff = 0.01,
+  min_obs = 100,
   sprinzl_coords = sprinzl_glu,
+  mods = mods_glu,
   title = "host-tRNA-Glu-TTC-1-1 (ctl-01)"
 )
 ```
@@ -369,13 +374,14 @@ ror <- compute_ror(
   or_with_cond,
   numerator = "inf",
   denominator = "ctl",
-  min_obs = 30
+  min_obs = 100
 )
 
 plot_chord_ror(
   ror,
   ror_cutoff = 0.5,
   sprinzl_coords = sprinzl_glu,
+  mods = mods_glu,
   title = "Modification rewiring: inf vs ctl (Glu-TTC-1-1)"
 )
 ```

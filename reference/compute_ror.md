@@ -12,7 +12,7 @@ compute_ror(
   condition_col = "condition",
   numerator,
   denominator,
-  min_obs = 50,
+  min_obs = 100,
   agg_fun = mean
 )
 ```
@@ -38,7 +38,7 @@ compute_ror(
 
 - min_obs:
 
-  Minimum `total_obs` for a pair to be included. Default `50`.
+  Minimum `total_obs` for a pair to be included. Default `100`.
 
 - agg_fun:
 
