@@ -2,8 +2,6 @@
 
 ``` r
 library(clover)
-#> Warning: replacing previous import 'S4Arrays::makeNindexFromArrayViewport' by
-#> 'DelayedArray::makeNindexFromArrayViewport' when loading 'SummarizedExperiment'
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -19,7 +17,9 @@ with 3 biological replicates per condition.
 
 ## Loading data with `create_clover()`
 
-The simplest way to load pipeline results is with
+The simplest way to load results from the
+[aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
+is with
 [`create_clover()`](https://rnabioco.github.io/clover/reference/create_clover.md),
 which reads a pipeline configuration file and assembles a
 `SummarizedExperiment`.
@@ -101,8 +101,6 @@ counts <- SummarizedExperiment::assay(se, "counts")
 coldata <- as.data.frame(SummarizedExperiment::colData(se))
 
 dds <- run_deseq(counts, coldata, design = ~condition)
-#> Warning in DESeqDataSet(se, design = design, ignoreRank): some variables in
-#> design formula are characters, converting to factors
 #> estimating size factors
 #> estimating dispersions
 #> gene-wise dispersion estimates
@@ -114,8 +112,6 @@ res <- tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
 
 ``` r
 plot_volcano(res)
-#> Warning: Removed 4 rows containing missing values or values outside the scale range
-#> (`geom_point()`).
 ```
 
 ![Volcano plot of differential tRNA abundance (inf vs

@@ -18,8 +18,10 @@ pak::pak("rnabioco/clover")
 
 ## Usage
 
-clover reads output from a tRNA sequencing pipeline and stores the
-results in a `SummarizedExperiment`. The main entry point is
+clover reads output from the
+[aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
+and stores the results in a `SummarizedExperiment`. The main entry point
+is
 [`create_clover()`](https://rnabioco.github.io/clover/reference/create_clover.md),
 which reads a pipeline `config.yaml` and loads counts, base-calling
 error rates, and modification co-occurrence data.
@@ -119,6 +121,8 @@ plot_chord_ror(ror, sprinzl_coords = sprinzl)
 
 ## Related work
 
+- [aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
+  is the Snakemake pipeline that generates the data clover analyzes.
 - [R2easyR](https://github.com/JPSieg/R2easyR) visualizes structure
   probing signals on RNA secondary structure diagrams.
 - [nanoblot](https://github.com/SamDeMario-lab/NanoBlot) facilitates

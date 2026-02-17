@@ -78,8 +78,6 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rnabioco.github.io/clover">clover</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: replacing previous import 'S4Arrays::makeNindexFromArrayViewport' by</span></span>
-<span><span class="co">#&gt; 'DelayedArray::makeNindexFromArrayViewport' when loading 'SummarizedExperiment'</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
@@ -96,9 +94,10 @@ condition.</p>
 <div class="section level2">
 <h2 id="loading-data-with-create_clover">Loading data with <code>create_clover()</code><a class="anchor" aria-label="anchor" href="#loading-data-with-create_clover"></a>
 </h2>
-<p>The simplest way to load pipeline results is with
-<code><a href="../reference/create_clover.html">create_clover()</a></code>, which reads a pipeline configuration file
-and assembles a <code>SummarizedExperiment</code>.</p>
+<p>The simplest way to load results from the <a href="https://github.com/rnabioco/aa-tRNA-seq-pipeline" class="external-link">aa-tRNA-seq-pipeline</a>
+is with <code><a href="../reference/create_clover.html">create_clover()</a></code>, which reads a pipeline
+configuration file and assembles a
+<code>SummarizedExperiment</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">config_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clover_example.html">clover_example</a></span><span class="op">(</span><span class="st">"ecoli/config.yaml"</span><span class="op">)</span></span>
 <span></span>
@@ -177,8 +176,6 @@ uninfected conditions using the DESeq2 wrappers.</p>
 <span><span class="va">coldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_deseq.html">run_deseq</a></span><span class="op">(</span><span class="va">counts</span>, <span class="va">coldata</span>, design <span class="op">=</span> <span class="op">~</span><span class="va">condition</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in DESeqDataSet(se, design = design, ignoreRank): some variables in</span></span>
-<span><span class="co">#&gt; design formula are characters, converting to factors</span></span>
 <span><span class="co">#&gt; estimating size factors</span></span>
 <span><span class="co">#&gt; estimating dispersions</span></span>
 <span><span class="co">#&gt; gene-wise dispersion estimates</span></span>
@@ -187,9 +184,7 @@ uninfected conditions using the DESeq2 wrappers.</p>
 <span><span class="co">#&gt; fitting model and testing</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tidy_deseq_results.html">tidy_deseq_results</a></span><span class="op">(</span><span class="va">dds</span>, contrast <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"condition"</span>, <span class="st">"inf"</span>, <span class="st">"ctl"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_volcano.html">plot_volcano</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 4 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_volcano.html">plot_volcano</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="ecoli-phage_files/figure-html/fig-volcano-1.png" class="r-plt" alt="Volcano plot of differential tRNA abundance (inf vs ctl)." width="960"><p class="caption">
 Volcano plot of differential tRNA abundance (inf vs ctl).
