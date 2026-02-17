@@ -426,3 +426,85 @@ plot_bcerror_profile <- function(
     cowplot::theme_minimal_hgrid() +
     theme(legend.position = "top")
 }
+
+#' Plot PCoA of tRNA rewiring scores.
+#'
+#' Create a scatter plot of PCoA coordinates from
+#' [perform_pcoa()], with points sized by the number of non-zero
+#' comparisons and colored by Euclidean rewiring magnitude. The top
+#' `n_label` isodecoders are labeled with
+#' [ggrepel::geom_text_repel()].
+#'
+#' @param pcoa_result A list from [perform_pcoa()] with elements
+#'   `coordinates` and `variance_explained`.
+#' @param rewiring_scores A tibble from [calculate_rewiring_scores()]
+#'   with at least `isodecoder`, `euclidean_magnitude`, and
+#'   `n_nonzero` columns.
+#' @param title Plot title. Default `"PCoA of tRNA rewiring"`.
+#' @param n_label Number of top isodecoders to label. Default `10`.
+#'
+#' @return A ggplot object.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' mat <- prepare_rewiring_matrix(ror_data)
+#' scores <- calculate_rewiring_scores(mat)
+#' pcoa <- perform_pcoa(mat)
+#' plot_pcoa_rewiring(pcoa, scores)
+#' }
+plot_pcoa_rewiring <- function(
+  pcoa_result,
+  rewiring_scores,
+  title = "PCoA of tRNA rewiring",
+  n_label = 10
+) {
+  rlang::check_installed("ggrepel", reason = "to label top isodecoders.")
+
+  plot_data <- dplyr::left_join(
+    pcoa_result$coordinates,
+    rewiring_scores,
+    by = "isodecoder"
+  )
+
+  top_trnas <- plot_data |>
+    dplyr::arrange(dplyr::desc(euclidean_magnitude)) |>
+    utils::head(n_label) |>
+    dplyr::pull(isodecoder)
+
+  plot_data <- dplyr::mutate(
+    plot_data,
+    label = ifelse(isodecoder %in% top_trnas, isodecoder, NA_character_)
+  )
+
+  ggplot(plot_data, aes(x = PC1, y = PC2)) +
+    geom_point(
+      aes(size = n_nonzero, color = euclidean_magnitude),
+      alpha = 0.7
+    ) +
+    ggrepel::geom_text_repel(
+      aes(label = label),
+      size = 3,
+      max.overlaps = 20,
+      box.padding = 0.5,
+      segment.color = "grey50"
+    ) +
+    scale_color_viridis_c(option = "plasma", name = "Rewiring\nmagnitude") +
+    scale_size_continuous(name = "Non-zero\nchanges", range = c(2, 8)) +
+    labs(
+      title = title,
+      x = paste0(
+        "PC1 (",
+        round(pcoa_result$variance_explained[1], 1),
+        "%)"
+      ),
+      y = paste0(
+        "PC2 (",
+        round(pcoa_result$variance_explained[2], 1),
+        "%)"
+      )
+    ) +
+    cowplot::theme_cowplot() +
+    theme(legend.position = "right")
+}

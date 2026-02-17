@@ -56,3 +56,29 @@ test_that("order_sprinzl_positions handles variable loop labels", {
 
   expect_equal(levels(result), c("47", "47:e1", "47:e2", "48"))
 })
+
+test_that("trna_regions returns named list of integers", {
+  regions <- trna_regions()
+  expect_type(regions, "list")
+  expect_true(all(vapply(regions, is.integer, logical(1))))
+})
+
+test_that("trna_regions contains expected region names", {
+  regions <- trna_regions()
+  expected <- c(
+    "acceptor_stem",
+    "d_arm",
+    "anticodon_stem",
+    "anticodon_loop",
+    "variable_loop",
+    "t_arm",
+    "discriminator",
+    "cca"
+  )
+  expect_named(regions, expected)
+})
+
+test_that("trna_regions CCA positions are 74-76", {
+  regions <- trna_regions()
+  expect_equal(regions$cca, 74L:76L)
+})
