@@ -34,6 +34,7 @@ Imports:
 Suggests:
     circlize,
     DESeq2,
+    ggrepel,
     httr2,
     jsonlite,
     knitr,
