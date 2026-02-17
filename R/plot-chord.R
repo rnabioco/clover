@@ -102,6 +102,7 @@ plot_chord_or <- function(
   # Add sector labels
   circlize::circos.track(
     track.index = 1,
+    ylim = c(0, 1),
     panel.fun = function(x, y) {
       sector_name <- circlize::get.cell.meta.data("sector.index")
       xlim <- circlize::get.cell.meta.data("xlim")
@@ -283,6 +284,7 @@ plot_chord_ror <- function(
   # Add sector labels
   circlize::circos.track(
     track.index = 1,
+    ylim = c(0, 1),
     panel.fun = function(x, y) {
       sector_name <- circlize::get.cell.meta.data("sector.index")
       xlim <- circlize::get.cell.meta.data("xlim")
