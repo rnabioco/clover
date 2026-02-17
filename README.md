@@ -44,20 +44,19 @@ se <- create_clover(
 )
 
 # Differential tRNA abundance with DESeq2
-dds <- run_deseq(se, design = ~condition)
-res <- tidy_deseq_results(dds, contrast = c("condition", "infected", "control"))
+dds <- run_deseq(
+  SummarizedExperiment::assay(se, "counts"),
+  SummarizedExperiment::colData(se),
+  design = ~condition
+)
+res <- tidy_deseq_results(
+  dds,
+  contrast = c("condition", "infected", "control")
+)
 plot_volcano(res)
-
-# Base-calling error heatmap with Sprinzl coordinates
-sprinzl <- read_sprinzl_coords(
-  clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
-)
-
-plot_mod_heatmap(
-  S4Vectors::metadata(se)$bcerror,
-  sprinzl_coords = sprinzl
-)
 ```
+
+<img src="man/figures/README-example-1.png" alt="" width="100%" />
 
 See `vignette("clover")` for a complete walkthrough.
 
