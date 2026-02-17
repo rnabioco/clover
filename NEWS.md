@@ -1,5 +1,29 @@
 # clover 0.0.0.9000
 
+* New color palette functions `aa_colors()` and `charging_colors()` provide named color vectors for amino acids and tRNA charging states.
+
+* New statistical utility functions `calc_fold_change()`, `cohens_d()`, `propagate_error_ratio()`, and `propagate_error_diff()` for common tRNA analysis calculations.
+
+* New `trna_regions()` returns a named list mapping canonical tRNA structural region names to Sprinzl position integers.
+
+* `aggregate_or_isodecoder()` collapses per-gene odds ratios to isodecoder level by averaging across gene copies.
+
+* `build_or_network()` constructs a tidygraph network from pairwise odds ratio or ROR data, with node centrality metrics.
+
+* `calculate_rewiring_scores()` summarizes per-isodecoder rewiring magnitude from a ROR matrix.
+
+* `clean_odds_ratios()` prepares odds ratio data for downstream analysis by capping infinite log odds ratio values.
+
+* `compute_ror_isodecoder()` compares isodecoder-level odds ratios between two conditions with z-score significance testing.
+
+* `perform_pcoa()` runs classical multidimensional scaling on a rewiring matrix for dimensionality reduction.
+
+* `plot_arc_diagram()` creates a circular arc diagram from a tidygraph network built by `build_or_network()`.
+
+* `plot_pcoa_rewiring()` creates a scatter plot of PCoA coordinates colored by rewiring magnitude and labeled with top isodecoders.
+
+* `prepare_rewiring_matrix()` builds a wide matrix from isodecoder-level relative odds ratios suitable for PCoA analysis.
+
 * `plot_abundance_charging()` creates a scatter plot comparing tRNA abundance changes (from DESeq2) with charging ratio changes, with significant points colored by quadrant and labeled with ggrepel.
 
 * `plot_bcerror_profile()` plots per-position base-calling error rates as a faceted line plot, with optional modification position overlay.

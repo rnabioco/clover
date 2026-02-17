@@ -71,3 +71,27 @@ order_sprinzl_positions <- function(labels) {
 
   factor(labels, levels = ordering$label)
 }
+
+#' tRNA structural regions.
+#'
+#' Return a named list mapping canonical tRNA structural region names
+#' to integer vectors of Sprinzl position numbers.
+#'
+#' @return A named list of integer vectors.
+#'
+#' @export
+#'
+#' @examples
+#' trna_regions()
+trna_regions <- function() {
+  list(
+    acceptor_stem = c(1L:7L, 66L:72L),
+    d_arm = 8L:25L,
+    anticodon_stem = c(26L:31L, 39L:44L),
+    anticodon_loop = 32L:38L,
+    variable_loop = 44L:48L,
+    t_arm = 49L:65L,
+    discriminator = 73L,
+    cca = 74L:76L
+  )
+}
