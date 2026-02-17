@@ -1,10 +1,15 @@
 ---
 title: "AA color palette"
-knitr:
-  opts_chunk:
-    collapse: true
-    comment: '#>'
+output: rmarkdown::html_vignette
 ---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 ```{r}
 #| label: load-libs

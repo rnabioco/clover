@@ -1,12 +1,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
-^vignettes/\.quarto$
 ^vignettes/*_files$
 ^README\.Rmd$
 ^\.vscode$
 ^air.toml$
-^vignettes/articles/\.quarto$
 ^vignettes/articles/*_files$
 ^vignettes/articles$
 ^inst/extdata/*\.pod5$
