@@ -10,7 +10,6 @@
 #'
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment
 #' @import SummarizedExperiment
-#' @import GenomicRanges
 #' @import methods
 #' @import S4Vectors
 #'
