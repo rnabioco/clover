@@ -1,5 +1,9 @@
 # clover 0.0.0.9000
 
+* `plot_mod_heatmap()` gains new parameters for annotated heatmaps: `label_col` overlays text labels on tiles, `highlight_col` adds dot markers at selected cells, and `group_col` enables group-aware clustering with divider lines between groups. A `caption` parameter adds explanatory text below the plot.
+
+* `plot_mod_landscape()` creates stacked multi-metric profile plots along the tRNA sequence, with optional structural region shading and Sprinzl position secondary axis. Uses patchwork for panel layout.
+
 * `plot_abundance_charging()` creates a scatter plot comparing tRNA abundance changes (from DESeq2) with charging ratio changes, with significant points colored by quadrant and labeled with ggrepel.
 
 * `plot_bcerror_profile()` plots per-position base-calling error rates as a faceted line plot, with optional modification position overlay.
