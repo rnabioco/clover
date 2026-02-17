@@ -24,7 +24,6 @@ knitr::opts_chunk$set(
 library(clover)
 library(dplyr)
 library(tidyr)
-library(ggplot2)
 ```
 
 ## Overview
@@ -133,16 +132,7 @@ ratio_diff <- compute_charging_diffs(
   n_top = 20
 )
 
-ggplot(ratio_diff, aes(x = diff, y = tRNA)) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
-  geom_point(size = 2.5) +
-  geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +
-  labs(
-    x = "Difference in charging ratio (infected - control)",
-    y = "",
-    title = "Change in tRNA charging upon infection"
-  ) +
-  cowplot::theme_minimal_vgrid()
+plot_charging_diffs(ratio_diff)
 ```
 
 ## Base-calling error profiles
@@ -183,20 +173,7 @@ plot_trnas <- c(
   "host-tRNA-Glu-TTC-1-1"
 )
 
-bcerror_summary |>
-  filter(ref %in% plot_trnas) |>
-  ggplot(aes(x = pos, y = mean_error, color = condition)) +
-  geom_line(linewidth = 0.5) +
-  geom_point(size = 0.8) +
-  facet_wrap(~ref, ncol = 1, scales = "free_y") +
-  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
-  labs(
-    x = "Position",
-    y = "Mean base-calling error rate",
-    title = "Per-position error profiles"
-  ) +
-  cowplot::theme_minimal_hgrid() +
-  theme(legend.position = "top")
+plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
 ```
 
 ### Error rate difference heatmap
@@ -259,31 +236,7 @@ since the basecaller misidentifies modified nucleotides.
 #| label: fig-bcerror-mods
 #| fig.cap: "Base-calling error profiles with known modification positions marked."
 #| fig.height: 7
-# Filter mods to tRNAs in our plot set
-mods_plot <- mods |>
-  filter(ref %in% plot_trnas)
-
-bcerror_summary |>
-  filter(ref %in% plot_trnas) |>
-  ggplot(aes(x = pos, y = mean_error, color = condition)) +
-  geom_line(linewidth = 0.5) +
-  geom_point(size = 0.8) +
-  geom_vline(
-    data = mods_plot,
-    aes(xintercept = pos),
-    linetype = "dashed",
-    color = "grey40",
-    alpha = 0.5
-  ) +
-  facet_wrap(~ref, ncol = 1, scales = "free_y") +
-  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
-  labs(
-    x = "Position",
-    y = "Mean base-calling error rate",
-    title = "Error profiles with known modification sites (dashed lines)"
-  ) +
-  cowplot::theme_minimal_hgrid() +
-  theme(legend.position = "top")
+plot_bcerror_profile(bcerror_summary, refs = plot_trnas, mods = mods)
 ```
 
 ## Modification co-occurrence (odds ratios)
