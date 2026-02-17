@@ -27,6 +27,12 @@
   mean ratios, standard errors, and the between-condition difference
   with propagated SE.
 
+- [`compute_odds_ratios()`](https://rnabioco.github.io/clover/reference/compute_odds_ratios.md)
+  now uses a C++ implementation (via cpp11) for the pairwise Fisher’s
+  exact test inner loop, dramatically improving performance on large
+  datasets. The odds ratio is now computed as the sample odds ratio with
+  Haldane correction for zero cells, rather than the conditional MLE.
+
 - [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md)
   downloads tRNA modification annotations from the MODOMICS database and
   maps them onto reference sequences using pairwise alignment

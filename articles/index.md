@@ -2,5 +2,5 @@
 
 ### All vignettes
 
-- [Analyzing \*E. coli\* tRNAs during T4 phage
-  infection](https://rnabioco.github.io/clover/articles/clover.md):
+- [Introduction to
+  clover](https://rnabioco.github.io/clover/articles/clover.md):

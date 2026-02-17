@@ -1,4 +1,4 @@
-# Analyzing \*E. coli\* tRNAs during T4 phage infection
+# Introduction to clover
 
 ``` r
 library(clover)
