@@ -115,6 +115,12 @@ res <- tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
 ``` r
 ggplot(res, aes(x = log2FoldChange, y = -log10(pvalue))) +
   geom_point(aes(color = significant), size = 1.5, alpha = 0.7) +
+  ggrepel::geom_text_repel(
+    data = \(x) dplyr::filter(x, significant),
+    aes(label = tRNA),
+    size = 3,
+    max.overlaps = 20
+  ) +
   scale_color_manual(values = c("grey60", "#D55E00")) +
   geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "grey40") +
   labs(
@@ -122,7 +128,7 @@ ggplot(res, aes(x = log2FoldChange, y = -log10(pvalue))) +
     y = "-log10(p-value)",
     title = "Differential tRNA abundance: T4-infected vs control"
   ) +
-  theme_minimal() +
+  cowplot::theme_cowplot() +
   theme(legend.position = "none")
 #> Warning: Removed 4 rows containing missing values or values outside the scale range
 #> (`geom_point()`).
@@ -198,35 +204,43 @@ ratio_summary <- charging_ratios |>
     .groups = "drop"
   )
 
-# Plot top tRNAs by abundance
+# Top tRNAs by abundance
 top_trnas <- charging_ratios |>
   group_by(tRNA) |>
   summarise(total = sum(counts_charged + counts_uncharged)) |>
+
   slice_max(total, n = 20) |>
   pull(tRNA)
 
-ratio_summary |>
+# Calculate difference (infected - control) with propagated SE
+ratio_diff <- ratio_summary |>
   filter(tRNA %in% top_trnas) |>
-  mutate(tRNA = forcats::fct_reorder(tRNA, mean_ratio)) |>
-  ggplot(aes(x = mean_ratio, y = tRNA, color = condition)) +
+  tidyr::pivot_wider(
+    names_from = condition,
+    values_from = c(mean_ratio, se_ratio)
+  ) |>
+  mutate(
+    diff = mean_ratio_inf - mean_ratio_ctl,
+    se_diff = sqrt(se_ratio_ctl^2 + se_ratio_inf^2),
+    tRNA = forcats::fct_reorder(tRNA, diff)
+  )
+
+ggplot(ratio_diff, aes(x = diff, y = tRNA)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
   geom_point(size = 2.5) +
-  geom_linerange(
-    aes(xmin = mean_ratio - se_ratio, xmax = mean_ratio + se_ratio)
-  ) +
-  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
+  geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +
   labs(
-    x = "Charging ratio",
+    x = "Difference in charging ratio (infected - control)",
     y = "",
-    title = "tRNA charging ratios: control vs infected"
+    title = "Change in tRNA charging upon infection"
   ) +
-  theme_minimal() +
-  theme(legend.position = "top")
+  cowplot::theme_minimal_vgrid()
 ```
 
-![Charging ratios per tRNA across
-conditions.](ecoli-phage_files/figure-html/fig-charging-ratio-1.png)
+![Change in charging ratio (infected - control) per
+tRNA.](ecoli-phage_files/figure-html/fig-charging-ratio-1.png)
 
-Charging ratios per tRNA across conditions.
+Change in charging ratio (infected - control) per tRNA.
 
 ## Base-calling error profiles
 
@@ -274,7 +288,7 @@ bcerror_summary |>
     y = "Mean base-calling error rate",
     title = "Per-position error profiles"
   ) +
-  theme_minimal() +
+  cowplot::theme_minimal_hgrid() +
   theme(legend.position = "top")
 ```
 
@@ -390,7 +404,7 @@ bcerror_summary |>
     y = "Mean base-calling error rate",
     title = "Error profiles with known modification sites (dashed lines)"
   ) +
-  theme_minimal() +
+  cowplot::theme_minimal_hgrid() +
   theme(legend.position = "top")
 ```
 
@@ -604,43 +618,44 @@ sessionInfo()
 #>  [3] circlize_0.4.17             gtable_0.3.6               
 #>  [5] httr2_1.2.2                 xfun_0.56                  
 #>  [7] bslib_0.10.0                GlobalOptions_0.1.3        
-#>  [9] Biobase_2.70.0              lattice_0.22-7             
-#> [11] tzdb_0.5.0                  vctrs_0.7.1                
-#> [13] tools_4.5.2                 generics_0.1.4             
-#> [15] curl_7.0.0                  parallel_4.5.2             
-#> [17] stats4_4.5.2                tibble_3.3.1               
-#> [19] pkgconfig_2.0.3             Matrix_1.7-4               
-#> [21] RColorBrewer_1.1-3          S7_0.2.1                   
-#> [23] desc_1.4.3                  S4Vectors_0.48.0           
-#> [25] lifecycle_1.0.5             compiler_4.5.2             
-#> [27] farver_2.1.2                stringr_1.6.0              
-#> [29] textshaping_1.0.4           Biostrings_2.78.0          
-#> [31] DESeq2_1.50.2               codetools_0.2-20           
-#> [33] Seqinfo_1.0.0               htmltools_0.5.9            
-#> [35] sass_0.4.10                 yaml_2.3.12                
-#> [37] pillar_1.11.1               pkgdown_2.2.0              
-#> [39] crayon_1.5.3                jquerylib_0.1.4            
-#> [41] BiocParallel_1.44.0         DelayedArray_0.36.0        
-#> [43] cachem_1.1.0                abind_1.4-8                
-#> [45] locfit_1.5-9.12             tidyselect_1.2.1           
-#> [47] digest_0.6.39               stringi_1.8.7              
-#> [49] purrr_1.2.1                 labeling_0.4.3             
-#> [51] forcats_1.0.1               fastmap_1.2.0              
-#> [53] grid_4.5.2                  colorspace_2.1-2           
-#> [55] cli_3.6.5                   SparseArray_1.10.8         
-#> [57] magrittr_2.0.4              S4Arrays_1.10.1            
-#> [59] utf8_1.2.6                  readr_2.1.6                
-#> [61] withr_3.0.2                 rappdirs_0.3.4             
-#> [63] scales_1.4.0                bit64_4.6.0-1              
-#> [65] pwalign_1.6.0               rmarkdown_2.30             
-#> [67] XVector_0.50.0              matrixStats_1.5.0          
-#> [69] bit_4.6.0                   ragg_1.5.0                 
-#> [71] hms_1.1.4                   evaluate_1.0.5             
-#> [73] knitr_1.51                  GenomicRanges_1.62.1       
-#> [75] IRanges_2.44.0              rlang_1.1.7                
-#> [77] Rcpp_1.1.1                  glue_1.8.0                 
-#> [79] BiocGenerics_0.56.0         vroom_1.7.0                
-#> [81] jsonlite_2.0.0              R6_2.6.1                   
-#> [83] MatrixGenerics_1.22.0       systemfonts_1.3.1          
-#> [85] fs_1.6.6
+#>  [9] ggrepel_0.9.6               Biobase_2.70.0             
+#> [11] lattice_0.22-7              tzdb_0.5.0                 
+#> [13] vctrs_0.7.1                 tools_4.5.2                
+#> [15] generics_0.1.4              curl_7.0.0                 
+#> [17] parallel_4.5.2              stats4_4.5.2               
+#> [19] tibble_3.3.1                pkgconfig_2.0.3            
+#> [21] Matrix_1.7-4                RColorBrewer_1.1-3         
+#> [23] S7_0.2.1                    desc_1.4.3                 
+#> [25] S4Vectors_0.48.0            lifecycle_1.0.5            
+#> [27] compiler_4.5.2              farver_2.1.2               
+#> [29] stringr_1.6.0               textshaping_1.0.4          
+#> [31] Biostrings_2.78.0           DESeq2_1.50.2              
+#> [33] codetools_0.2-20            Seqinfo_1.0.0              
+#> [35] htmltools_0.5.9             sass_0.4.10                
+#> [37] yaml_2.3.12                 pillar_1.11.1              
+#> [39] pkgdown_2.2.0               crayon_1.5.3               
+#> [41] jquerylib_0.1.4             BiocParallel_1.44.0        
+#> [43] DelayedArray_0.36.0         cachem_1.1.0               
+#> [45] abind_1.4-8                 locfit_1.5-9.12            
+#> [47] tidyselect_1.2.1            digest_0.6.39              
+#> [49] stringi_1.8.7               purrr_1.2.1                
+#> [51] labeling_0.4.3              forcats_1.0.1              
+#> [53] cowplot_1.2.0               fastmap_1.2.0              
+#> [55] grid_4.5.2                  colorspace_2.1-2           
+#> [57] cli_3.6.5                   SparseArray_1.10.8         
+#> [59] magrittr_2.0.4              S4Arrays_1.10.1            
+#> [61] utf8_1.2.6                  readr_2.1.6                
+#> [63] withr_3.0.2                 rappdirs_0.3.4             
+#> [65] scales_1.4.0                bit64_4.6.0-1              
+#> [67] pwalign_1.6.0               rmarkdown_2.30             
+#> [69] XVector_0.50.0              matrixStats_1.5.0          
+#> [71] bit_4.6.0                   ragg_1.5.0                 
+#> [73] hms_1.1.4                   evaluate_1.0.5             
+#> [75] knitr_1.51                  GenomicRanges_1.62.1       
+#> [77] IRanges_2.44.0              rlang_1.1.7                
+#> [79] Rcpp_1.1.1                  glue_1.8.0                 
+#> [81] BiocGenerics_0.56.0         vroom_1.7.0                
+#> [83] jsonlite_2.0.0              R6_2.6.1                   
+#> [85] MatrixGenerics_1.22.0       systemfonts_1.3.1          
+#> [87] fs_1.6.6
 ```

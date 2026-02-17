@@ -28,8 +28,14 @@ error rates, and modification co-occurrence data.
 library(clover)
 
 sample_info <- data.frame(
-  sample_id = c("wt-15-ctl-01", "wt-15-ctl-02", "wt-15-ctl-03",
-                "wt-15-inf-01", "wt-15-inf-02", "wt-15-inf-03"),
+  sample_id = c(
+    "wt-15-ctl-01",
+    "wt-15-ctl-02",
+    "wt-15-ctl-03",
+    "wt-15-inf-01",
+    "wt-15-inf-02",
+    "wt-15-inf-03"
+  ),
   condition = rep(c("control", "infected"), each = 3)
 )
 
@@ -49,7 +55,7 @@ clover wraps DESeq2 to test for differential tRNA abundance between
 conditions.
 
 ``` r
-dds <- run_deseq(se, design = ~ condition)
+dds <- run_deseq(se, design = ~condition)
 res <- tidy_deseq_results(dds, contrast = c("condition", "infected", "control"))
 ```
 
@@ -97,7 +103,9 @@ plot_chord_or(or_single, sprinzl_coords = sprinzl)
 
 # Rewiring between conditions
 or_data$condition <- ifelse(
-  grepl("ctl", or_data$sample_id), "control", "infected"
+  grepl("ctl", or_data$sample_id),
+  "control",
+  "infected"
 )
 
 ror <- compute_ror(
