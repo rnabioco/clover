@@ -605,7 +605,7 @@ add_region_shading <- function(data, pos_col, region_col) {
 
   palette <- region_colors()
 
-  lapply(seq_len(nrow(region_segs)), function(i) {
+  purrr::map(seq_len(nrow(region_segs)), function(i) {
     seg <- region_segs[i, ]
     fill <- unname(
       palette[match(seg[[region_col]], names(palette))]

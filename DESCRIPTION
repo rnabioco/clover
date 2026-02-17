@@ -21,6 +21,7 @@ Imports:
     forcats,
     ggplot2,
     methods,
+    purrr,
     readr,
     rlang,
     S4Vectors,
