@@ -4,7 +4,7 @@
 
 * `plot_charging_diffs()` creates a dot plot with error bars showing per-tRNA charging ratio differences between conditions.
 
-* `plot_chord_or()` and `plot_chord_ror()` now convert positions from seq_index to Sprinzl labels when `sprinzl_coords` is provided, display all tRNA positions as sectors for structural context, and add annotation rings for structural region, reference nucleotide, and modification positions (via new `mods` parameter).
+* `plot_chord_or()` and `plot_chord_ror()` now convert positions from seq_index to Sprinzl labels when `sprinzl_coords` is provided, display all tRNA positions as sectors for structural context, and add annotation rings for structural region, reference nucleotide, and modification positions (via new `mods` parameter). Sectors now have equal widths for consistent visual comparison, a chord color legend is displayed, and default significance cutoffs are tighter (`or_cutoff = 1.0`, `p_cutoff = 0.01`, `min_obs = 100`) to reduce visual clutter.
 
 * `compute_charging_diffs()` compares per-tRNA charging ratios between two conditions, returning mean ratios, standard errors, and the between-condition difference with propagated SE.
 

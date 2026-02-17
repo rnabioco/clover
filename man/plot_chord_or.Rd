@@ -7,10 +7,10 @@
 plot_chord_or(
   odds_data,
   or_col = "log_odds_ratio",
-  or_cutoff = 0.5,
+  or_cutoff = 1,
   p_col = "p_value",
-  p_cutoff = 0.05,
-  min_obs = 50,
+  p_cutoff = 0.01,
+  min_obs = 100,
   positive_color = "#D55E00",
   negative_color = "#0072B2",
   sprinzl_coords = NULL,
@@ -28,14 +28,14 @@ specified by \code{p_col}), and \code{total_obs}.}
 Default \code{"log_odds_ratio"}.}
 
 \item{or_cutoff}{Minimum absolute value of \code{or_col} for a chord to be
-drawn. Default \code{0.5}.}
+drawn. Default \code{1.0}.}
 
 \item{p_col}{Column name (string) for the p-value. Default \code{"p_value"}.}
 
-\item{p_cutoff}{Maximum p-value for a chord to be drawn. Default \code{0.05}.}
+\item{p_cutoff}{Maximum p-value for a chord to be drawn. Default \code{0.01}.}
 
 \item{min_obs}{Minimum number of observations (\code{total_obs}) for a pair
-to be included. Default \code{50}.}
+to be included. Default \code{100}.}
 
 \item{positive_color}{Color for positive odds ratios (co-occurrence).
 Default \code{"#D55E00"} (vermillion).}
