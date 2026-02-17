@@ -3,9 +3,12 @@
 on:
   push:
     branches: [devel]
+  pull_request:
+  release:
+    types: [published]
   workflow_dispatch:
 
-name: pkgdown
+name: pkgdown.yaml
 
 permissions: read-all
 
@@ -30,7 +33,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: r-lib/pkgdown, local::.
+          extra-packages: any::pkgdown, local::.
           needs: website
 
       - name: Build site
