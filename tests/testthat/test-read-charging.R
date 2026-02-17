@@ -164,6 +164,128 @@ test_that("compute_charging_diffs errors when condition column missing", {
   )
 })
 
+test_that("pairwise_fisher_exact returns correct structure", {
+  mat <- matrix(
+    c(1L, 1L, 0L, 0L, 1L, 0L, 1L, 0L, 1L, 0L, 0L, 1L),
+    nrow = 6,
+    ncol = 2
+  )
+
+  result <- pairwise_fisher_exact(mat)
+
+  expect_s3_class(result, "data.frame")
+  expect_named(
+    result,
+    c("pos1", "pos2", "odds_ratio", "log_odds_ratio", "p_value", "total_obs")
+  )
+  expect_equal(nrow(result), 1)
+  expect_equal(result$pos1, 1L)
+  expect_equal(result$pos2, 2L)
+  expect_equal(result$total_obs, 6L)
+})
+
+test_that("pairwise_fisher_exact p-values match fisher.test", {
+  mat <- matrix(
+    c(
+      1L,
+      1L,
+      1L,
+      1L,
+      1L,
+      0L,
+      0L,
+      0L,
+      0L,
+      0L,
+      1L,
+      1L,
+      1L,
+      1L,
+      0L,
+      1L,
+      0L,
+      0L,
+      0L,
+      0L
+    ),
+    nrow = 10,
+    ncol = 2
+  )
+
+  result <- pairwise_fisher_exact(mat)
+
+  tbl <- table(
+    factor(mat[, 1], levels = c(0, 1)),
+    factor(mat[, 2], levels = c(0, 1))
+  )
+  ft <- fisher.test(tbl)
+
+  expect_equal(result$p_value, ft$p.value, tolerance = 1e-6)
+  expect_equal(result$odds_ratio, 16)
+  expect_equal(result$log_odds_ratio, log(16))
+})
+
+test_that("pairwise_fisher_exact handles multiple column pairs", {
+  mat <- matrix(
+    c(1L, 1L, 0L, 0L, 0L, 0L, 1L, 0L, 1L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 1L, 0L),
+    nrow = 6,
+    ncol = 3
+  )
+
+  result <- pairwise_fisher_exact(mat)
+
+  expect_equal(nrow(result), 3)
+  expect_equal(result$pos1, c(1L, 1L, 2L))
+  expect_equal(result$pos2, c(2L, 3L, 3L))
+})
+
+test_that("pairwise_fisher_exact skips zero-marginal pairs", {
+  mat <- matrix(
+    c(0L, 0L, 0L, 0L, 0L, 0L, 1L, 1L, 0L, 0L, 0L, 0L),
+    nrow = 6,
+    ncol = 2
+  )
+
+  result <- pairwise_fisher_exact(mat)
+
+  expect_equal(nrow(result), 0)
+})
+
+test_that("pairwise_fisher_exact uses Haldane correction for zero cells", {
+  # a=3, b=0, c=2, d=5 -> one cell is zero, Haldane correction applies
+  mat <- matrix(
+    c(
+      1L,
+      1L,
+      1L,
+      0L,
+      0L,
+      0L,
+      0L,
+      0L,
+      0L,
+      0L,
+      1L,
+      1L,
+      1L,
+      0L,
+      0L,
+      1L,
+      1L,
+      0L,
+      0L,
+      0L
+    ),
+    nrow = 10,
+    ncol = 2
+  )
+
+  result <- pairwise_fisher_exact(mat)
+
+  expected_or <- (3 + 0.5) * (5 + 0.5) / ((0 + 0.5) * (2 + 0.5))
+  expect_equal(result$odds_ratio, expected_or)
+})
+
 test_that("read_odds_ratios works with ecoli test data", {
   path <- clover_example(
     "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
