@@ -1,5 +1,13 @@
 # Plotting functions ----------------------------------------------------------
 
+theme_markdown_axes <- function() {
+  rlang::check_installed("ggtext", reason = "to render formatted axis labels.")
+  theme(
+    axis.title.x = ggtext::element_markdown(),
+    axis.title.y = ggtext::element_markdown()
+  )
+}
+
 #' Plot a delta-signal modification heatmap.
 #'
 #' Create a diverging heatmap of modification signal changes (e.g., mutant
@@ -186,17 +194,19 @@ plot_volcano <- function(
         c(FALSE, TRUE)
       )
     ) +
+    geom_vline(xintercept = 0, color = "grey80") +
     geom_hline(
       yintercept = -log10(padj_cutoff),
       linetype = "dashed",
       color = "grey40"
     ) +
     labs(
-      x = "log2 Fold Change",
-      y = "-log10(p-value)"
+      x = "log<sub>2</sub> Fold Change",
+      y = "\u2212log<sub>10</sub>(p-value)"
     ) +
     cowplot::theme_cowplot() +
-    theme(legend.position = "none")
+    theme(legend.position = "none") +
+    theme_markdown_axes()
 
   p
 }
@@ -302,12 +312,13 @@ plot_abundance_charging <- function(
       labels = quad_labels[present]
     ) +
     labs(
-      x = "log2 Fold Change (abundance)",
+      x = "log<sub>2</sub> Fold Change (abundance)",
       y = "Charging ratio difference",
       color = "Abundance / Charging"
     ) +
     cowplot::theme_cowplot() +
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom") +
+    theme_markdown_axes()
 
   p
 }

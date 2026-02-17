@@ -36,6 +36,7 @@ Suggests:
     circlize,
     DESeq2,
     ggrepel,
+    ggtext,
     httr2,
     jsonlite,
     knitr,
