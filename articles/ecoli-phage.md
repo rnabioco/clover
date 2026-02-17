@@ -49,7 +49,7 @@ se <- create_clover(
 se
 #> class: SummarizedExperiment 
 #> dim: 190 6 
-#> metadata(4): config bcerror odds_ratios fasta
+#> metadata(5): config charging bcerror odds_ratios fasta
 #> assays(1): counts
 #> rownames(190): host-tRNA-Ala-GGC-1-1 host-tRNA-Ala-GGC-1-1-uncharged
 #>   ... phage-tRNA-Thr-TGT phage-tRNA-Thr-TGT-uncharged
@@ -62,8 +62,8 @@ The SE object contains:
 
 - **assay “counts”**: abundance count matrix (charged + uncharged reads)
 - **colData**: sample metadata with condition labels
-- **metadata**: raw bcerror, odds ratios, FASTA reference, and pipeline
-  config
+- **metadata**: list with raw charging data, bcerror, odds ratios, FASTA
+  reference, and pipeline config
 
 ``` r
 SummarizedExperiment::assay(se, "counts")[1:5, ]
@@ -149,24 +149,7 @@ levels. We can test whether the ratio of charged to uncharged reads
 changes upon infection.
 
 ``` r
-# Read the raw charging data
-config <- read_pipeline_config(config_path)
-files <- list_pipeline_files(config, types = "charging")
-paths <- setNames(files$path, files$sample_id)
-charging <- read_charging_multi(paths)
-
-# Build charging matrix: separate columns for charged/uncharged per sample
-charge_mat <- charging_count_matrix(charging, min_count = 50)
-charge_coldata <- build_coldata(charge_mat, sample_info)
-
-# Show the matrix structure: each sample has _charged and _uncharged columns
-head(colnames(charge_mat))
-#> [1] "wt-15-ctl-01_charged"   "wt-15-ctl-01_uncharged" "wt-15-ctl-02_charged"  
-#> [4] "wt-15-ctl-02_uncharged" "wt-15-ctl-03_charged"   "wt-15-ctl-03_uncharged"
-```
-
-``` r
-# Add condition labels and compute charging ratio differences
+charging <- S4Vectors::metadata(se)$charging
 charging$condition <- ifelse(grepl("ctl", charging$sample_id), "ctl", "inf")
 
 ratio_diff <- compute_charging_diffs(

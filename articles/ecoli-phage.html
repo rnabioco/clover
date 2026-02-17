@@ -123,7 +123,7 @@ configuration file and assembles a
 <span><span class="va">se</span></span>
 <span><span class="co">#&gt; class: SummarizedExperiment </span></span>
 <span><span class="co">#&gt; dim: 190 6 </span></span>
-<span><span class="co">#&gt; metadata(4): config bcerror odds_ratios fasta</span></span>
+<span><span class="co">#&gt; metadata(5): config charging bcerror odds_ratios fasta</span></span>
 <span><span class="co">#&gt; assays(1): counts</span></span>
 <span><span class="co">#&gt; rownames(190): host-tRNA-Ala-GGC-1-1 host-tRNA-Ala-GGC-1-1-uncharged</span></span>
 <span><span class="co">#&gt;   ... phage-tRNA-Thr-TGT phage-tRNA-Thr-TGT-uncharged</span></span>
@@ -138,8 +138,8 @@ uncharged reads)</li>
 <li>
 <strong>colData</strong>: sample metadata with condition labels</li>
 <li>
-<strong>metadata</strong>: raw bcerror, odds ratios, FASTA
-reference, and pipeline config</li>
+<strong>metadata</strong>: list with raw charging data, bcerror,
+odds ratios, FASTA reference, and pipeline config</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">se</span>, <span class="st">"counts"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span></span>
@@ -221,22 +221,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 charging levels. We can test whether the ratio of charged to uncharged
 reads changes upon infection.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Read the raw charging data</span></span>
-<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_pipeline_config.html">read_pipeline_config</a></span><span class="op">(</span><span class="va">config_path</span><span class="op">)</span></span>
-<span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/list_pipeline_files.html">list_pipeline_files</a></span><span class="op">(</span><span class="va">config</span>, types <span class="op">=</span> <span class="st">"charging"</span><span class="op">)</span></span>
-<span><span class="va">paths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">files</span><span class="op">$</span><span class="va">path</span>, <span class="va">files</span><span class="op">$</span><span class="va">sample_id</span><span class="op">)</span></span>
-<span><span class="va">charging</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_charging_multi.html">read_charging_multi</a></span><span class="op">(</span><span class="va">paths</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Build charging matrix: separate columns for charged/uncharged per sample</span></span>
-<span><span class="va">charge_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/charging_count_matrix.html">charging_count_matrix</a></span><span class="op">(</span><span class="va">charging</span>, min_count <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="va">charge_coldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_coldata.html">build_coldata</a></span><span class="op">(</span><span class="va">charge_mat</span>, <span class="va">sample_info</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Show the matrix structure: each sample has _charged and _uncharged columns</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">charge_mat</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "wt-15-ctl-01_charged"   "wt-15-ctl-01_uncharged" "wt-15-ctl-02_charged"  </span></span>
-<span><span class="co">#&gt; [4] "wt-15-ctl-02_uncharged" "wt-15-ctl-03_charged"   "wt-15-ctl-03_uncharged"</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Add condition labels and compute charging ratio differences</span></span>
+<code class="sourceCode R"><span><span class="va">charging</span> <span class="op">&lt;-</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">charging</span></span>
 <span><span class="va">charging</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"ctl"</span>, <span class="va">charging</span><span class="op">$</span><span class="va">sample_id</span><span class="op">)</span>, <span class="st">"ctl"</span>, <span class="st">"inf"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">ratio_diff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_charging_diffs.html">compute_charging_diffs</a></span><span class="op">(</span></span>
@@ -270,7 +255,7 @@ Change in charging ratio (infected - control) per tRNA.
 <p>Base-calling error rates reflect RNA modifications that cause the
 nanopore basecaller to misidentify bases. Comparing error profiles
 between conditions can reveal modification changes.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bcerror</span> <span class="op">&lt;-</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">bcerror</span></span>
 <span></span>
 <span><span class="co"># Focus on charged tRNAs (not uncharged variants)</span></span>
@@ -288,7 +273,7 @@ between conditions can reveal modification changes.</p>
 <span>    mean_mis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mis</span><span class="op">)</span>,</span>
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot error profiles for a few tRNAs</span></span>
 <span><span class="va">plot_trnas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"host-tRNA-Ala-GGC-1-1"</span>,</span>
@@ -318,7 +303,7 @@ Base-calling error profiles for selected tRNAs.
 <div class="section level3">
 <h3 id="error-rate-difference-heatmap">Error rate difference heatmap<a class="anchor" aria-label="anchor" href="#error-rate-difference-heatmap"></a>
 </h3>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compute delta (inf - ctl)</span></span>
 <span><span class="va">bcerror_delta</span> <span class="op">&lt;-</span> <span class="va">bcerror_summary</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">ref</span>, <span class="va">pos</span>, <span class="va">condition</span>, <span class="va">mean_error</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -364,7 +349,7 @@ catalogs known RNA modifications. <code><a href="../reference/fetch_modomics_mod
 downloads tRNA modification data for a given organism and maps the
 modification positions onto your reference sequences using pairwise
 alignment.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fasta_path</span> <span class="op">&lt;-</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">fasta</span></span>
 <span><span class="va">mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_modomics_mods.html">fetch_modomics_mods</a></span><span class="op">(</span><span class="va">fasta_path</span>, organism <span class="op">=</span> <span class="st">"Escherichia coli"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Fetching MODOMICS modification dictionary.</span></span>
@@ -391,7 +376,7 @@ alignment.</p>
 profiles. Positions with known modifications often correspond to
 elevated error rates, since the basecaller misidentifies modified
 nucleotides.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Filter mods to tRNAs in our plot set</span></span>
 <span><span class="va">mods_plot</span> <span class="op">&lt;-</span> <span class="va">mods</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ref</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">plot_trnas</span><span class="op">)</span></span>
@@ -429,7 +414,7 @@ Base-calling error profiles with known modification positions marked.
 <p>Odds ratios measure whether modifications at pairs of positions tend
 to co-occur on the same read. Positive log odds ratios indicate
 co-occurrence; negative indicate mutual exclusivity.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">or_data</span> <span class="op">&lt;-</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">odds_ratios</span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">or_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 63,823</span></span>
@@ -449,7 +434,7 @@ co-occurrence; negative indicate mutual exclusivity.</p>
 <code>UUC</code>) while the pipeline uses DNA notation (e.g.,
 <code>TTC</code>). The pipeline also adds a <code>host-</code> prefix.
 We need to account for these naming differences when matching.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pick one tRNA and one sample</span></span>
 <span><span class="va">or_single</span> <span class="op">&lt;-</span> <span class="va">or_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
@@ -482,7 +467,7 @@ Modification co-occurrence network for a single tRNA in one sample.
 ratio of odds ratios (ROR). Positive log ROR indicates gained
 modification dependencies in the infected condition; negative indicates
 lost dependencies.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add condition labels</span></span>
 <span><span class="va">or_with_cond</span> <span class="op">&lt;-</span> <span class="va">or_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"ctl"</span>, <span class="va">sample_id</span><span class="op">)</span>, <span class="st">"ctl"</span>, <span class="st">"inf"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -514,7 +499,7 @@ Modification rewiring between control and infected conditions.
 </h2>
 <p>For more control, you can load each data type individually instead of
 using <code><a href="../reference/create_clover.html">create_clover()</a></code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Parse the pipeline config</span></span>
 <span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_pipeline_config.html">read_pipeline_config</a></span><span class="op">(</span><span class="fu"><a href="../reference/clover_example.html">clover_example</a></span><span class="op">(</span><span class="st">"ecoli/config.yaml"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">config</span><span class="op">$</span><span class="va">samples</span></span>
@@ -571,7 +556,7 @@ using <code><a href="../reference/create_clover.html">create_clover()</a></code>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> host-tRNA-Ala-GGC-1…           <span style="text-decoration: underline;">1</span>205             <span style="text-decoration: underline;">3</span>186       <span style="text-decoration: underline;">1</span>873.         <span style="text-decoration: underline;">4</span>953.</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> host-tRNA-Ala-TGC-1…            351              167        546.          260.</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> host-tRNA-Ala-TGC-1…           <span style="text-decoration: underline;">1</span>390             <span style="text-decoration: underline;">2</span>395       <span style="text-decoration: underline;">2</span>161.         <span style="text-decoration: underline;">3</span>723.</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Read a single bcerror file</span></span>
 <span><span class="va">bcerr_one</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_bcerror.html">read_bcerror</a></span><span class="op">(</span><span class="va">files</span><span class="op">$</span><span class="va">path</span><span class="op">[</span></span>
 <span>  <span class="va">files</span><span class="op">$</span><span class="va">sample_id</span> <span class="op">==</span> <span class="st">"wt-15-ctl-01"</span> <span class="op">&amp;</span></span>
@@ -592,7 +577,7 @@ using <code><a href="../reference/create_clover.html">create_clover()</a></code>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>

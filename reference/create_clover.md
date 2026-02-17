@@ -46,13 +46,10 @@ with:
 
 - **assay "counts"**: abundance count matrix (charged + uncharged)
 
-- **assay "charging"**: charging count matrix (charged/uncharged columns
-  per sample), only if `"charging"` is in `types`
-
 - **colData**: sample metadata
 
-- **metadata**: list with `$config`, `$bcerror`, `$odds_ratios`,
-  `$fasta` as available
+- **metadata**: list with `$config`, `$charging`, `$bcerror`,
+  `$odds_ratios`, `$fasta` as available
 
 ## Examples
 
