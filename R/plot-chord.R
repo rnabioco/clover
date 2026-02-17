@@ -63,7 +63,7 @@ plot_chord_or <- function(
     )
 
   if (nrow(sig_data) == 0) {
-    message("No significant pairs found with current cutoffs.")
+    cli_inform("No significant pairs found with current cutoffs.")
     return(invisible(NULL))
   }
 
@@ -244,7 +244,7 @@ plot_chord_ror <- function(
     dplyr::filter(abs(log_ror) >= ror_cutoff)
 
   if (nrow(sig_data) == 0) {
-    message("No pairs exceed the ROR cutoff.")
+    cli_inform("No pairs exceed the ROR cutoff.")
     return(invisible(NULL))
   }
 

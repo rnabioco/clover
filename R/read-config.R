@@ -36,8 +36,8 @@ read_pipeline_config <- function(config_path) {
   # Support both output_dir and output_directory keys
   output_dir_raw <- cfg[["output_dir"]] %||% cfg[["output_directory"]]
   if (is.null(output_dir_raw)) {
-    stop("Config file must contain 'output_dir' or 'output_directory'.",
-      call. = FALSE
+    cli_abort(
+      "Config file must contain {.field output_dir} or {.field output_directory}."
     )
   }
   output_dir <- .resolve_path(output_dir_raw, config_dir)
@@ -211,7 +211,7 @@ read_pipeline_results <- function(
   samples_entry <- cfg[["samples"]]
 
   if (is.null(samples_entry)) {
-    stop("Config file must contain a 'samples' entry.", call. = FALSE)
+    cli_abort("Config file must contain a {.field samples} entry.")
   }
 
   # If samples is a string, treat as path to a TSV file
@@ -231,6 +231,6 @@ read_pipeline_results <- function(
       )
     )
   } else {
-    stop("Unsupported 'samples' format in config file.", call. = FALSE)
+    cli_abort("Unsupported {.field samples} format in config file.")
   }
 }

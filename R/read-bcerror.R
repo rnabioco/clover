@@ -56,9 +56,17 @@ read_bcerror <- function(bcerr_path) {
       ref = as.factor(ref)
     ) |>
     dplyr::select(
-      ref, pos, cov,
-      a_freq, t_freq, g_freq, c_freq,
-      mis, ins, del, error_rate,
+      ref,
+      pos,
+      cov,
+      a_freq,
+      t_freq,
+      g_freq,
+      c_freq,
+      mis,
+      ins,
+      del,
+      error_rate,
       mean_qual
     )
 }

@@ -62,7 +62,7 @@ read_odds_ratios <- function(path) {
 #' }
 read_charging_multi <- function(paths) {
   if (is.null(names(paths))) {
-    stop("'paths' must be a named character vector.", call. = FALSE)
+    cli_abort("{.arg paths} must be a named character vector.")
   }
 
   tbls <- lapply(names(paths), function(sid) {
@@ -94,7 +94,7 @@ read_charging_multi <- function(paths) {
 #' }
 read_odds_ratios_multi <- function(paths) {
   if (is.null(names(paths))) {
-    stop("'paths' must be a named character vector.", call. = FALSE)
+    cli_abort("{.arg paths} must be a named character vector.")
   }
 
   tbls <- lapply(names(paths), function(sid) {
@@ -151,10 +151,14 @@ compute_odds_ratios <- function(mod_calls_path, refs = NULL, min_reads = 10) {
         values_fill = 0L
       )
 
-    if (nrow(mat_data) < min_reads) next
+    if (nrow(mat_data) < min_reads) {
+      next
+    }
 
     pos_cols <- setdiff(names(mat_data), "read_id")
-    if (length(pos_cols) < 2) next
+    if (length(pos_cols) < 2) {
+      next
+    }
 
     # Compute Fisher's test for each pair
     for (i in seq_along(pos_cols)[-length(pos_cols)]) {
@@ -167,10 +171,14 @@ compute_odds_ratios <- function(mod_calls_path, refs = NULL, min_reads = 10) {
           factor(mat_data[[p2]], levels = c(0, 1))
         )
 
-        if (any(rowSums(tbl) == 0) || any(colSums(tbl) == 0)) next
+        if (any(rowSums(tbl) == 0) || any(colSums(tbl) == 0)) {
+          next
+        }
 
         ft <- tryCatch(stats::fisher.test(tbl), error = function(e) NULL)
-        if (is.null(ft)) next
+        if (is.null(ft)) {
+          next
+        }
 
         results[[length(results) + 1]] <- tibble::tibble(
           ref = r,

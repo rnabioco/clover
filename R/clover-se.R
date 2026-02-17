@@ -31,10 +31,11 @@
 #' SummarizedExperiment::colData(se)
 #' }
 create_clover <- function(
-    config_path,
-    types = c("charging", "bcerror", "odds_ratios"),
-    sample_info = NULL,
-    min_count = 10) {
+  config_path,
+  types = c("charging", "bcerror", "odds_ratios"),
+  sample_info = NULL,
+  min_count = 10
+) {
   types <- match.arg(types, several.ok = TRUE)
 
   config <- read_pipeline_config(config_path)
@@ -51,9 +52,7 @@ create_clover <- function(
   }
 
   if (length(assay_list) == 0) {
-    stop("No assay data could be loaded. Check that charging data exists.",
-      call. = FALSE
-    )
+    cli_abort("No assay data could be loaded. Check that charging data exists.")
   }
 
   # Build colData

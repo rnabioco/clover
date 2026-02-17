@@ -10,6 +10,7 @@
 #' @importFrom stringr str_extract str_detect
 #' @importFrom scales squish
 #' @importFrom yaml read_yaml
+#' @importFrom cli cli_abort cli_warn cli_inform
 #' @importFrom rlang check_installed .data
 #'
 #' @importClassesFrom SummarizedExperiment SummarizedExperiment

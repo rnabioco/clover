@@ -36,8 +36,12 @@ test_that("create_clover with sample_info merges metadata", {
 
   sample_info <- data.frame(
     sample_id = c(
-      "wt-15-ctl-01", "wt-15-ctl-02", "wt-15-ctl-03",
-      "wt-15-inf-01", "wt-15-inf-02", "wt-15-inf-03"
+      "wt-15-ctl-01",
+      "wt-15-ctl-02",
+      "wt-15-ctl-03",
+      "wt-15-inf-01",
+      "wt-15-inf-02",
+      "wt-15-inf-03"
     ),
     condition = rep(c("ctl", "inf"), each = 3)
   )

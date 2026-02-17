@@ -9,9 +9,17 @@ test_that("read_bcerror works with new pipeline format", {
   expect_named(
     bcerr,
     c(
-      "ref", "pos", "cov",
-      "a_freq", "t_freq", "g_freq", "c_freq",
-      "mis", "ins", "del", "error_rate",
+      "ref",
+      "pos",
+      "cov",
+      "a_freq",
+      "t_freq",
+      "g_freq",
+      "c_freq",
+      "mis",
+      "ins",
+      "del",
+      "error_rate",
       "mean_qual"
     )
   )
