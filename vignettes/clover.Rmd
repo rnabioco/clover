@@ -135,6 +135,19 @@ ratio_diff <- compute_charging_diffs(
 plot_charging_diffs(ratio_diff)
 ```
 
+### Abundance versus charging
+
+We can visualize the relationship between abundance changes and charging
+ratio changes on a single scatter plot. This highlights tRNAs where
+expression and aminoacylation are coordinately or discordantly affected.
+
+```{r}
+#| label: fig-abundance-charging
+#| fig.cap: "Abundance change versus charging ratio change per tRNA."
+#| fig.height: 6
+plot_abundance_charging(res, ratio_diff)
+```
+
 ## Base-calling error profiles
 
 Base-calling error rates reflect RNA modifications that cause the nanopore
