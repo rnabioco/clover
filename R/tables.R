@@ -11,7 +11,8 @@
 #'   `"ref"`.
 #' @param n Maximum number of rows to display. Default `10`.
 #'
-#' @return A `gt_tbl` object.
+#' @return An interactive `gt_tbl` object with search, sorting, and
+#'   pagination.
 #'
 #' @export
 #'
@@ -51,5 +52,13 @@ tabulate_deseq <- function(data, lab_col = "ref", n = 10) {
       log2FoldChange = "log2 FC",
       pvalue = "p-value",
       padj = "Adjusted p-value"
+    ) |>
+    gt::opt_row_striping() |>
+    gt::opt_interactive(
+      use_search = TRUE,
+      use_sorting = TRUE,
+      use_pagination = TRUE,
+      use_page_size_select = TRUE,
+      page_size_default = 10
     )
 }

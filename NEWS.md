@@ -48,6 +48,6 @@
 
 * `plot_volcano()` creates a labeled volcano plot from `tidy_deseq_results()` output, with significant points highlighted and labeled using ggrepel.
 
-* `tabulate_deseq()` creates a formatted gt table of the top significant tRNAs from `tidy_deseq_results()` output, sorted by p-value.
+* `tabulate_deseq()` creates a formatted gt table of the top significant tRNAs from `tidy_deseq_results()` output, sorted by p-value. The table now includes zebra striping, search, column sorting, and pagination.
 
 * Initial CRAN submission.
