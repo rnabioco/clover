@@ -24,14 +24,19 @@ and stores the results in a `SummarizedExperiment`.
 
 ``` r
 library(clover)
+library(SummarizedExperiment)
 
 # Load pipeline results into a SummarizedExperiment
 se <- create_clover(
   config_path = clover_example("ecoli/config.yaml"),
   sample_info = data.frame(
     sample_id = c(
-      "wt-15-ctl-01", "wt-15-ctl-02", "wt-15-ctl-03",
-      "wt-15-inf-01", "wt-15-inf-02", "wt-15-inf-03"
+      "wt-15-ctl-01",
+      "wt-15-ctl-02",
+      "wt-15-ctl-03",
+      "wt-15-inf-01",
+      "wt-15-inf-02",
+      "wt-15-inf-03"
     ),
     condition = rep(c("control", "infected"), each = 3)
   )
@@ -39,14 +44,16 @@ se <- create_clover(
 
 # Differential tRNA abundance with DESeq2
 dds <- run_deseq(
-  SummarizedExperiment::assay(se, "counts"),
-  SummarizedExperiment::colData(se),
+  assay(se, "counts"),
+  colData(se),
   design = ~condition
 )
+
 res <- tidy_deseq_results(
   dds,
   contrast = c("condition", "infected", "control")
 )
+
 plot_volcano(res)
 ```
 
