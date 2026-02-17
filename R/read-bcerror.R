@@ -4,7 +4,7 @@
 #'
 #' @export
 read_counts <- function(path) {
-  read_tsv(path)
+  readr::read_tsv(path, show_col_types = FALSE)
 }
 
 #' Read base-calling error ("bcerror") TSV files.
@@ -34,7 +34,7 @@ read_counts <- function(path) {
 #' @return A tibble
 #' @export
 read_bcerror <- function(bcerr_path) {
-  raw_tbl <- read_tsv(bcerr_path, show_col_types = FALSE)
+  raw_tbl <- readr::read_tsv(bcerr_path, show_col_types = FALSE)
 
   raw_tbl |>
     dplyr::rename(

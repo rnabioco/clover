@@ -37,7 +37,7 @@ plot_bcerror <- function(tbl, data, title_suffix, include_legend = TRUE) {
   ) +
     geom_tile(
       color = "white",
-      size = 0.1
+      linewidth = 0.1
     ) +
     scale_fill_gradient2(
       low = "#0072B2",
@@ -59,7 +59,7 @@ plot_bcerror <- function(tbl, data, title_suffix, include_legend = TRUE) {
     cowplot::theme_cowplot() +
     theme(
       axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8),
-      legend.pos = ifelse(include_legend, "bottom", "none")
+      legend.position = ifelse(include_legend, "bottom", "none")
     )
 }
 

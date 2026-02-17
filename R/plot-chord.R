@@ -88,78 +88,16 @@ plot_chord_or <- function(
     negative_color
   )
 
-  # Map to Sprinzl labels if coords provided
-  if (!is.null(sprinzl_coords)) {
-    chord_df <- .map_to_sprinzl(chord_df, sprinzl_coords)
-    # Update chord_colors to match filtered rows
-    chord_colors <- chord_colors[seq_len(nrow(chord_df))]
-  }
-
-  # Set up sectors and grid colors
-  setup <- .setup_chord_sectors(chord_df, sprinzl_coords)
-
-  # Build adjacency matrix so all sectors appear (even without chords)
-  adj_mat <- .build_adjacency_matrix(chord_df, setup$order)
-
-  # Equalize sector widths with diagonal padding
-  eq <- .equalize_sectors(adj_mat)
-
-  # Map chord colors to match adjacency matrix links
-  col_mat <- .build_color_matrix(
-    chord_df,
-    chord_colors,
-    setup$order,
-    transparency
+  .render_chord(
+    chord_df = chord_df,
+    chord_colors = chord_colors,
+    sprinzl_coords = sprinzl_coords,
+    mods = mods,
+    title = title,
+    transparency = transparency,
+    legend_labels = c("Co-occurring", "Exclusive"),
+    legend_colors = c(positive_color, negative_color)
   )
-  # Pad color matrix diagonal to match equalized adjacency matrix
-  diag(col_mat) <- grDevices::rgb(1, 1, 1, alpha = 0)
-
-  # Draw chord diagram
-  circlize::circos.clear()
-  circlize::circos.par(start.degree = 90, gap.degree = 2)
-
-  # When sprinzl_coords are provided, region/nucleotide rings replace the
-  # default grid track; otherwise keep the grid as the only sector indicator.
-  annotation_track <- if (!is.null(sprinzl_coords)) c() else "grid"
-
-  circlize::chordDiagram(
-    eq$mat,
-    order = setup$order,
-    grid.col = setup$grid_col,
-    col = col_mat,
-    transparency = 0,
-    annotationTrack = annotation_track,
-    preAllocateTracks = list(track.height = 0.05),
-    reduce = -1,
-    self.link = 1,
-    link.visible = eq$link_visible
-  )
-
-  # Add sector labels
-  .add_sector_labels()
-
-  # Add chord color legend
-  .add_chord_legend(
-    labels = c("Co-occurring", "Exclusive"),
-    colors = c(positive_color, negative_color)
-  )
-
-  # Add annotation rings when sprinzl coords provided
-  if (!is.null(sprinzl_coords)) {
-    .add_region_ring(setup$regions)
-    .add_nucleotide_ring(setup$residues)
-
-    if (!is.null(mods)) {
-      .add_modification_ring(mods, sprinzl_coords, setup$order)
-    }
-  }
-
-  if (!is.null(title)) {
-    graphics::title(title)
-  }
-
-  circlize::circos.clear()
-  invisible(NULL)
 }
 
 #' Compute ratio of odds ratios between conditions.
@@ -303,6 +241,34 @@ plot_chord_ror <- function(
     lost_color
   )
 
+  .render_chord(
+    chord_df = chord_df,
+    chord_colors = chord_colors,
+    sprinzl_coords = sprinzl_coords,
+    mods = mods,
+    title = title,
+    transparency = transparency,
+    legend_labels = c("Gained", "Lost"),
+    legend_colors = c(gained_color, lost_color)
+  )
+}
+
+# Internal helpers -----------------------------------------------------------
+
+#' Render a chord diagram from prepared data.
+#'
+#' Shared rendering logic used by [plot_chord_or()] and [plot_chord_ror()].
+#' @noRd
+.render_chord <- function(
+  chord_df,
+  chord_colors,
+  sprinzl_coords,
+  mods,
+  title,
+  transparency,
+  legend_labels,
+  legend_colors
+) {
   # Map to Sprinzl labels if coords provided
   if (!is.null(sprinzl_coords)) {
     chord_df <- .map_to_sprinzl(chord_df, sprinzl_coords)
@@ -353,10 +319,7 @@ plot_chord_ror <- function(
   .add_sector_labels()
 
   # Add chord color legend
-  .add_chord_legend(
-    labels = c("Gained", "Lost"),
-    colors = c(gained_color, lost_color)
-  )
+  .add_chord_legend(labels = legend_labels, colors = legend_colors)
 
   # Add annotation rings when sprinzl coords provided
   if (!is.null(sprinzl_coords)) {
@@ -375,8 +338,6 @@ plot_chord_ror <- function(
   circlize::circos.clear()
   invisible(NULL)
 }
-
-# Internal helpers -----------------------------------------------------------
 
 #' Map pos1/pos2 from seq_index to Sprinzl labels.
 #'

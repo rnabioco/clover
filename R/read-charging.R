@@ -61,17 +61,7 @@ read_odds_ratios <- function(path) {
 #' charging <- read_charging_multi(paths)
 #' }
 read_charging_multi <- function(paths) {
-  if (is.null(names(paths))) {
-    cli_abort("{.arg paths} must be a named character vector.")
-  }
-
-  tbls <- lapply(names(paths), function(sid) {
-    tbl <- read_charging(paths[[sid]])
-    tbl$sample_id <- sid
-    tbl
-  })
-
-  dplyr::bind_rows(tbls)
+  .read_multi(paths, read_charging)
 }
 
 #' Read odds ratio files for multiple samples.
@@ -93,12 +83,18 @@ read_charging_multi <- function(paths) {
 #' or_data <- read_odds_ratios_multi(paths)
 #' }
 read_odds_ratios_multi <- function(paths) {
+  .read_multi(paths, read_odds_ratios)
+}
+
+# Internal helpers -----------------------------------------------------------
+
+.read_multi <- function(paths, reader) {
   if (is.null(names(paths))) {
     cli_abort("{.arg paths} must be a named character vector.")
   }
 
   tbls <- lapply(names(paths), function(sid) {
-    tbl <- read_odds_ratios(paths[[sid]])
+    tbl <- reader(paths[[sid]])
     tbl$sample_id <- sid
     tbl
   })
