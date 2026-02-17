@@ -158,18 +158,22 @@ conditions.
 
 ## Network visualization
 
-Build a modification network from the ROR data and visualize it as an
-arc diagram.
+Build a chord diagram from the ROR data to visualize modification
+rewiring between positions.
 
 ``` r
-graph <- build_or_network(ror)
-plot_arc_diagram(graph, title = "Modification rewiring: inf vs ctl")
+ror_agg <- ror |>
+  dplyr::group_by(pos1, pos2) |>
+  dplyr::summarise(log_ror = mean(ror), .groups = "drop")
+
+plot_chord_ror(ror_agg, title = "Modification rewiring: inf vs ctl")
 ```
 
-![Arc diagram of modification rewiring
-network.](rewiring_files/figure-html/fig-arc-diagram-1.png)
+![Chord diagram of modification rewiring between control and infected
+conditions.](rewiring_files/figure-html/fig-chord-ror-1.png)
 
-Arc diagram of modification rewiring network.
+Chord diagram of modification rewiring between control and infected
+conditions.
 
 ## Session info
 
@@ -199,49 +203,45 @@ sessionInfo()
 #> [1] dplyr_1.2.0       clover_0.0.0.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0 gtable_0.3.6               
-#>  [3] xfun_0.56                   bslib_0.10.0               
-#>  [5] ggplot2_4.0.2               htmlwidgets_1.6.4          
-#>  [7] ggrepel_0.9.6               Biobase_2.70.0             
-#>  [9] lattice_0.22-7              tzdb_0.5.0                 
-#> [11] vctrs_0.7.1                 tools_4.5.2                
-#> [13] generics_0.1.4              stats4_4.5.2               
-#> [15] parallel_4.5.2              tibble_3.3.1               
-#> [17] pkgconfig_2.0.3             Matrix_1.7-4               
-#> [19] RColorBrewer_1.1-3          S7_0.2.1                   
-#> [21] desc_1.4.3                  S4Vectors_0.48.0           
-#> [23] lifecycle_1.0.5             stringr_1.6.0              
-#> [25] compiler_4.5.2              farver_2.1.2               
-#> [27] textshaping_1.0.4           Biostrings_2.78.0          
-#> [29] ggforce_0.5.0               graphlayouts_1.2.2         
-#> [31] Seqinfo_1.0.0               htmltools_0.5.9            
-#> [33] sass_0.4.10                 yaml_2.3.12                
-#> [35] pkgdown_2.2.0               pillar_1.11.1              
-#> [37] crayon_1.5.3                jquerylib_0.1.4            
-#> [39] tidyr_1.3.2                 MASS_7.3-65                
+#>  [1] SummarizedExperiment_1.40.0 shape_1.4.6.1              
+#>  [3] circlize_0.4.17             gtable_0.3.6               
+#>  [5] xfun_0.56                   bslib_0.10.0               
+#>  [7] ggplot2_4.0.2               GlobalOptions_0.1.3        
+#>  [9] htmlwidgets_1.6.4           ggrepel_0.9.6              
+#> [11] Biobase_2.70.0              lattice_0.22-7             
+#> [13] tzdb_0.5.0                  vctrs_0.7.1                
+#> [15] tools_4.5.2                 generics_0.1.4             
+#> [17] stats4_4.5.2                parallel_4.5.2             
+#> [19] tibble_3.3.1                pkgconfig_2.0.3            
+#> [21] Matrix_1.7-4                RColorBrewer_1.1-3         
+#> [23] S7_0.2.1                    desc_1.4.3                 
+#> [25] S4Vectors_0.48.0            lifecycle_1.0.5            
+#> [27] stringr_1.6.0               compiler_4.5.2             
+#> [29] farver_2.1.2                textshaping_1.0.4          
+#> [31] Biostrings_2.78.0           Seqinfo_1.0.0              
+#> [33] htmltools_0.5.9             sass_0.4.10                
+#> [35] yaml_2.3.12                 pkgdown_2.2.0              
+#> [37] pillar_1.11.1               crayon_1.5.3               
+#> [39] jquerylib_0.1.4             tidyr_1.3.2                
 #> [41] DelayedArray_0.36.0         cachem_1.1.0               
-#> [43] viridis_0.6.5               abind_1.4-8                
-#> [45] tidyselect_1.2.1            digest_0.6.39              
-#> [47] stringi_1.8.7               purrr_1.2.1                
-#> [49] labeling_0.4.3              polyclip_1.10-7            
-#> [51] cowplot_1.2.0               fastmap_1.2.0              
-#> [53] grid_4.5.2                  cli_3.6.5                  
-#> [55] SparseArray_1.10.8          magrittr_2.0.4             
-#> [57] S4Arrays_1.10.1             ggraph_2.2.2               
-#> [59] tidygraph_1.3.1             utf8_1.2.6                 
-#> [61] readr_2.1.6                 withr_3.0.2                
-#> [63] scales_1.4.0                bit64_4.6.0-1              
-#> [65] rmarkdown_2.30              XVector_0.50.0             
-#> [67] matrixStats_1.5.0           igraph_2.2.2               
-#> [69] bit_4.6.0                   gridExtra_2.3              
-#> [71] ragg_1.5.0                  hms_1.1.4                  
-#> [73] memoise_2.0.1               evaluate_1.0.5             
-#> [75] knitr_1.51                  GenomicRanges_1.62.1       
-#> [77] IRanges_2.44.0              viridisLite_0.4.3          
-#> [79] rlang_1.1.7                 Rcpp_1.1.1                 
-#> [81] glue_1.8.0                  tweenr_2.0.3               
-#> [83] BiocGenerics_0.56.0         vroom_1.7.0                
-#> [85] jsonlite_2.0.0              R6_2.6.1                   
-#> [87] MatrixGenerics_1.22.0       systemfonts_1.3.1          
-#> [89] fs_1.6.6
+#> [43] abind_1.4-8                 tidyselect_1.2.1           
+#> [45] digest_0.6.39               stringi_1.8.7              
+#> [47] purrr_1.2.1                 labeling_0.4.3             
+#> [49] cowplot_1.2.0               fastmap_1.2.0              
+#> [51] grid_4.5.2                  colorspace_2.1-2           
+#> [53] cli_3.6.5                   SparseArray_1.10.8         
+#> [55] magrittr_2.0.4              S4Arrays_1.10.1            
+#> [57] utf8_1.2.6                  readr_2.1.6                
+#> [59] withr_3.0.2                 scales_1.4.0               
+#> [61] bit64_4.6.0-1               rmarkdown_2.30             
+#> [63] XVector_0.50.0              matrixStats_1.5.0          
+#> [65] bit_4.6.0                   ragg_1.5.0                 
+#> [67] hms_1.1.4                   evaluate_1.0.5             
+#> [69] knitr_1.51                  GenomicRanges_1.62.1       
+#> [71] IRanges_2.44.0              viridisLite_0.4.3          
+#> [73] rlang_1.1.7                 Rcpp_1.1.1                 
+#> [75] glue_1.8.0                  BiocGenerics_0.56.0        
+#> [77] vroom_1.7.0                 jsonlite_2.0.0             
+#> [79] R6_2.6.1                    MatrixGenerics_1.22.0      
+#> [81] systemfonts_1.3.1           fs_1.6.6
 ```
