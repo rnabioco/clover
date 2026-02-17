@@ -10,11 +10,20 @@ reference:
   - title: Read
     contents:
     - starts_with("read_")
-    - CloverSE
 
   - title: Create
     contents:
     - starts_with("create_")
+
+  - title: Analysis
+    contents:
+    - abundance_count_matrix
+    - build_coldata
+    - charging_count_matrix
+    - compute_odds_ratios
+    - compute_ror
+    - run_deseq
+    - tidy_deseq_results
 
   - title: Plot
     contents:
@@ -32,3 +41,5 @@ reference:
   - title: Utilities
     contents:
     - clover_example
+    - list_pipeline_files
+    - order_sprinzl_positions
