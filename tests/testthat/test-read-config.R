@@ -1,5 +1,5 @@
 test_that("read_pipeline_config parses YAML with inline samples", {
-  tmp <- withr::local_tempdir()
+  tmp <- normalizePath(withr::local_tempdir())
 
   config_text <- paste(
     "samples:",
@@ -80,7 +80,7 @@ test_that("read_pipeline_config handles headerless samples.tsv", {
 })
 
 test_that("read_pipeline_config supports output_directory key", {
-  tmp <- withr::local_tempdir()
+  tmp <- normalizePath(withr::local_tempdir())
 
   config_text <- paste(
     "samples:",
