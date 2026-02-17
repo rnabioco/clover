@@ -32,8 +32,6 @@ test_that("plot_mod_heatmap works without clustering", {
 })
 
 test_that("plot_volcano returns a ggplot object", {
-  skip_if_not_installed("ggrepel")
-  skip_if_not_installed("ggtext")
   res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:10),
     log2FoldChange = rnorm(10),
@@ -46,8 +44,6 @@ test_that("plot_volcano returns a ggplot object", {
 })
 
 test_that("plot_volcano works with custom lab_col", {
-  skip_if_not_installed("ggrepel")
-  skip_if_not_installed("ggtext")
   res <- tibble::tibble(
     gene = paste0("gene-", 1:5),
     log2FoldChange = rnorm(5),
@@ -60,8 +56,6 @@ test_that("plot_volcano works with custom lab_col", {
 })
 
 test_that("plot_volcano works with no significant points", {
-  skip_if_not_installed("ggrepel")
-  skip_if_not_installed("ggtext")
   res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:5),
     log2FoldChange = rnorm(5),
@@ -74,8 +68,6 @@ test_that("plot_volcano works with no significant points", {
 })
 
 test_that("plot_abundance_charging returns a ggplot object", {
-  skip_if_not_installed("ggrepel")
-  skip_if_not_installed("ggtext")
   deseq_res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:6),
     log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
@@ -91,8 +83,6 @@ test_that("plot_abundance_charging returns a ggplot object", {
 })
 
 test_that("plot_abundance_charging handles no significant points", {
-  skip_if_not_installed("ggrepel")
-  skip_if_not_installed("ggtext")
   deseq_res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:5),
     log2FoldChange = rnorm(5),
@@ -108,8 +98,6 @@ test_that("plot_abundance_charging handles no significant points", {
 })
 
 test_that("plot_abundance_charging respects custom padj_cutoff", {
-  skip_if_not_installed("ggrepel")
-  skip_if_not_installed("ggtext")
   deseq_res <- tibble::tibble(
     tRNA = paste0("tRNA-", 1:5),
     log2FoldChange = c(1, -1, 0.5, -0.5, 2),
@@ -306,7 +294,6 @@ test_that(".cluster_refs_by_group clusters within groups", {
 })
 
 test_that("plot_mod_landscape returns a patchwork object", {
-  skip_if_not_installed("patchwork")
   df <- data.frame(
     pos = rep(1:20, 2),
     condition = rep(c("ctl", "mut"), each = 20),
@@ -318,7 +305,6 @@ test_that("plot_mod_landscape returns a patchwork object", {
 })
 
 test_that("plot_mod_landscape works with a single metric", {
-  skip_if_not_installed("patchwork")
   df <- data.frame(
     pos = 1:20,
     error_rate = runif(20, 0, 0.3)
@@ -328,7 +314,6 @@ test_that("plot_mod_landscape works with a single metric", {
 })
 
 test_that("plot_mod_landscape adds region shading", {
-  skip_if_not_installed("patchwork")
   df <- data.frame(
     pos = 1:20,
     metric = runif(20),
@@ -342,7 +327,6 @@ test_that("plot_mod_landscape adds region shading", {
 })
 
 test_that("plot_mod_landscape adds Sprinzl axis", {
-  skip_if_not_installed("patchwork")
   df <- data.frame(
     pos = 1:10,
     metric = runif(10),
@@ -357,7 +341,6 @@ test_that("plot_mod_landscape adds Sprinzl axis", {
 })
 
 test_that("plot_mod_landscape respects custom heights and title", {
-  skip_if_not_installed("patchwork")
   df <- data.frame(
     pos = 1:20,
     m1 = runif(20),
@@ -373,8 +356,6 @@ test_that("plot_mod_landscape respects custom heights and title", {
 })
 
 test_that("plot_pcoa_rewiring returns a ggplot object", {
-  skip_if_not_installed("ggrepel")
-
   mat <- matrix(
     c(1.5, -0.8, 0.3, 2.1, 0.5, -1.2),
     nrow = 3,
