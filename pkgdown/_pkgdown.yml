@@ -20,6 +20,7 @@ reference:
     - abundance_count_matrix
     - build_coldata
     - charging_count_matrix
+    - compute_charging_diffs
     - compute_odds_ratios
     - compute_ror
     - run_deseq

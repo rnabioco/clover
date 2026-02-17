@@ -135,44 +135,17 @@ head(colnames(charge_mat))
 #| label: fig-charging-ratio
 #| fig.cap: "Change in charging ratio (infected - control) per tRNA."
 #| fig.height: 5
-# Calculate charging ratio per tRNA per sample
-charging_ratios <- charging |>
-  filter(!grepl("-uncharged$", tRNA)) |>
-  mutate(
-    charging_ratio = counts_charged / (counts_charged + counts_uncharged),
-    condition = ifelse(grepl("ctl", sample_id), "ctl", "inf")
-  ) |>
-  filter(counts_charged + counts_uncharged >= 50)
+# Add condition labels and compute charging ratio differences
+charging$condition <- ifelse(grepl("ctl", charging$sample_id), "ctl", "inf")
 
-# Summarize by tRNA and condition
-ratio_summary <- charging_ratios |>
-  group_by(tRNA, condition) |>
-  summarise(
-    mean_ratio = mean(charging_ratio),
-    se_ratio = sd(charging_ratio) / sqrt(n()),
-    .groups = "drop"
-  )
-
-# Top tRNAs by abundance
-top_trnas <- charging_ratios |>
-  group_by(tRNA) |>
-  summarise(total = sum(counts_charged + counts_uncharged)) |>
-
-  slice_max(total, n = 20) |>
-  pull(tRNA)
-
-# Calculate difference (infected - control) with propagated SE
-ratio_diff <- ratio_summary |>
-  filter(tRNA %in% top_trnas) |>
-  tidyr::pivot_wider(
-    names_from = condition,
-    values_from = c(mean_ratio, se_ratio)
-  ) |>
-  mutate(
-    diff = mean_ratio_inf - mean_ratio_ctl,
-    se_diff = sqrt(se_ratio_ctl^2 + se_ratio_inf^2),
-    tRNA = forcats::fct_reorder(tRNA, diff)
-  )
+ratio_diff <- compute_charging_diffs(
+  charging,
+  numerator = "inf",
+  denominator = "ctl",
+  min_count = 50,
+  n_top = 20
+) |>
+  mutate(tRNA = forcats::fct_reorder(tRNA, diff))
 
 ggplot(ratio_diff, aes(x = diff, y = tRNA)) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
