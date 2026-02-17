@@ -6,109 +6,118 @@
 [![R-CMD-check](https://github.com/rnabioco/clover/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rnabioco/clover/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-clover facilitates analysis and plotting of nanopore tRNA sequencing
-data.
+clover facilitates analysis and visualization of nanopore tRNA
+sequencing data, including differential expression, base-calling error
+analysis, and modification co-occurrence networks.
 
-🚧 **clover is under active development.** *Caveat emptor*. 🚧
+**clover is under active development.** *Caveat emptor*.
 
 ## Installation
 
 You can install the development version of clover from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/rnabioco/clover) with:
 
 ``` r
 # install.packages("pak")
 pak::pak("rnabioco/clover")
 ```
 
-## Example
+## Usage
 
-clover uses a `SummarizedExperiment::RangedSummarizedExperiment()` to
-store and compute on data associated with nanopore tRNA sequencing
-experiments.
-
-Here’s an example of how to create the object, which includes:
-
-- `fa`: a FASTA file containing the tRNA reference sequences.
-- `pod5`: a list of pod5 files, one per experiment. Merge pod5 files
-  with the [pod5 tool](https://github.com/nanoporetech/pod5-file-format)
-  and `pod5 merge *.pod5`
-- `bam`: a list of BAM files, one per experimetnt, each containing
-  **reads aligned** to the tRNA FASTA reference.
-- `mod_bed` \[*optional*\]: a
-  [BED](https://genome.ucsc.edu/FAQ/FAQformat.html#format1) file
-  containing sites of tRNA modification.
+clover reads output from a tRNA sequencing pipeline and stores the
+results in a `SummarizedExperiment`. The main entry point is
+`create_clover()`, which reads a pipeline `config.yaml` and loads
+counts, base-calling error rates, and modification co-occurrence data.
 
 ``` r
 library(clover)
 
-rse_clover <- create_clover(
-  pod5 = list(
-    "grande" = clover_data("grande.pod5"),
-    "petite" = clover_data("petite.pod5")
-  ),
-  bam = list(
-    "grande" = clover_data("grande.bam"),
-    "petite" = clover_data("petite.bam")
-  ),
-  fa = clover_data("yeast.trna.fa.gz"),
-  mod_bed = clover_data("yeast.trna.mods.bed.gz")
+sample_info <- data.frame(
+  sample_id = c("wt-15-ctl-01", "wt-15-ctl-02", "wt-15-ctl-03",
+                "wt-15-inf-01", "wt-15-inf-02", "wt-15-inf-03"),
+  condition = rep(c("control", "infected"), each = 3)
 )
 
-rse_clover
+se <- create_clover(
+  config_path = clover_example("ecoli/config.yaml"),
+  sample_info = sample_info
+)
+
+se
 ```
 
-## Summary statistics
+## Analysis
 
-The object contains data in the following slots:
+### Differential tRNA abundance
 
-- `exp`: expression levels, per-tRNA.
-- `berror`: base-calling error rates, per-tRNA and per-position.
-
-## Plots
-
-clover provides plotting functions to visualize tRNA-related data.
-
-The plots below illustrate the base-calling error rates and secondary
-structure of a tRNA molecule in the **grande** *S. cerevisiae* strain.
-The error rates are shown as a heatmap, with the x-axis representing the
-position in the tRNA molecule and the y-axis representing the tRNA
-molecule itself.
+clover wraps DESeq2 to test for differential tRNA abundance between
+conditions.
 
 ``` r
-plot_bcerror_heatmap(rse_clover)
+dds <- run_deseq(se, design = ~ condition)
+res <- tidy_deseq_results(dds, contrast = c("condition", "infected", "control"))
 ```
 
-The secondary structure is shown as a dot-bracket diagram, with the
-nucleotides colored by their base-calling error rates
+### Base-calling error profiles
+
+Error rates per tRNA position reveal modification signatures. clover
+provides functions for plotting error profiles and heatmaps annotated
+with Sprinzl structural coordinates.
 
 ``` r
-plot_trna_structure(
-  rse_clover,
-  exp = "grande",
-  seq = "tRNA-Gly-GCC-1-1"
+# Error rate line plot for a specific tRNA
+plot_bcerror(
+  S4Vectors::metadata(se)$bcerror,
+  ref = "host-tRNA-Glu-TTC-1-1"
+)
+
+# Heatmap of error rate differences with Sprinzl coordinates
+sprinzl <- read_sprinzl_coords(
+  clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+)
+
+plot_mod_heatmap(
+  S4Vectors::metadata(se)$bcerror,
+  sprinzl_coords = sprinzl
 )
 ```
 
-## Comparison
+### Modification co-occurrence
 
-clover also provides functions to compare two
-`RangedSummarizedExperiment` objects corresponding to two experiments.
-
-Here we calculate differential expression and modification of tRNAs
-prepared from **grande** and **petite** *S. cerevisiae* strains. The
-**petite** strain lacks mitochondrial DNA and its encoded tRNAs.
+Chord diagrams display pairwise modification co-occurrence (odds ratios)
+within a single sample or changes between conditions (ratio of odds
+ratios).
 
 ``` r
-calc_diff_exp(rse_clover, ref = "grande", exp = "petite")
+or_data <- S4Vectors::metadata(se)$odds_ratios
 
-calc_diff_mod(rse_clover, ref = "grande", exp = "petite")
+# Single-sample chord diagram
+or_single <- or_data |>
+  dplyr::filter(
+    ref == "host-tRNA-Glu-TTC-1-1",
+    sample_id == "wt-15-ctl-01"
+  )
+
+plot_chord_or(or_single, sprinzl_coords = sprinzl)
+
+# Rewiring between conditions
+or_data$condition <- ifelse(
+  grepl("ctl", or_data$sample_id), "control", "infected"
+)
+
+ror <- compute_ror(
+  or_data,
+  numerator = "infected",
+  denominator = "control"
+)
+
+plot_chord_ror(ror, sprinzl_coords = sprinzl)
 ```
 
 ## Related work
 
-- [R2easyR](https://github.com/JPSieg/R2easyR) vizualizes structure
+- [R2easyR](https://github.com/JPSieg/R2easyR) visualizes structure
   probing signals on RNA secondary structure diagrams.
-- [nanoblot](https://github.com/SamDeMario-lab/NanoBlot) faciliates
-  visualization nanopore sequencing data, including a “virtual gel”
+- [nanoblot](https://github.com/SamDeMario-lab/NanoBlot) facilitates
+  visualization of nanopore sequencing data, including a “virtual gel”
   plot.
