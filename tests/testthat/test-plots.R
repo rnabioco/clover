@@ -70,6 +70,65 @@ test_that("plot_volcano works with no significant points", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("plot_abundance_charging returns a ggplot object", {
+  skip_if_not_installed("ggrepel")
+  deseq_res <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:6),
+    log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
+    padj = c(0.01, 0.02, 0.5, 0.6, 0.001, 0.003)
+  )
+  charging_diffs <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:6),
+    diff = c(0.1, -0.1, 0.05, -0.05, -0.2, 0.15),
+    se_diff = rep(0.03, 6)
+  )
+  p <- plot_abundance_charging(deseq_res, charging_diffs)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_abundance_charging handles no significant points", {
+  skip_if_not_installed("ggrepel")
+  deseq_res <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:5),
+    log2FoldChange = rnorm(5),
+    padj = rep(0.8, 5)
+  )
+  charging_diffs <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:5),
+    diff = rnorm(5, sd = 0.1),
+    se_diff = rep(0.03, 5)
+  )
+  p <- plot_abundance_charging(deseq_res, charging_diffs)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_abundance_charging respects custom padj_cutoff", {
+  skip_if_not_installed("ggrepel")
+  deseq_res <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:5),
+    log2FoldChange = c(1, -1, 0.5, -0.5, 2),
+    padj = c(0.005, 0.02, 0.05, 0.1, 0.001)
+  )
+  charging_diffs <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:5),
+    diff = c(0.1, -0.1, 0.05, -0.05, -0.2),
+    se_diff = rep(0.03, 5)
+  )
+  p_strict <- plot_abundance_charging(
+    deseq_res,
+    charging_diffs,
+    padj_cutoff = 0.01
+  )
+  sig_strict <- sum(p_strict$data$significant)
+  p_loose <- plot_abundance_charging(
+    deseq_res,
+    charging_diffs,
+    padj_cutoff = 0.1
+  )
+  sig_loose <- sum(p_loose$data$significant)
+  expect_gt(sig_loose, sig_strict)
+})
+
 test_that("plot_charging_diffs returns a ggplot object", {
   df <- tibble::tibble(
     tRNA = forcats::fct_inorder(paste0("tRNA-", 1:5)),

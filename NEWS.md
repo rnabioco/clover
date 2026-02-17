@@ -1,5 +1,7 @@
 # clover 0.0.0.9000
 
+* `plot_abundance_charging()` creates a scatter plot comparing tRNA abundance changes (from DESeq2) with charging ratio changes, with significant points colored by quadrant and labeled with ggrepel.
+
 * `plot_bcerror_profile()` plots per-position base-calling error rates as a faceted line plot, with optional modification position overlay.
 
 * `plot_charging_diffs()` creates a dot plot with error bars showing per-tRNA charging ratio differences between conditions.

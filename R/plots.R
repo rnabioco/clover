@@ -264,6 +264,117 @@ plot_volcano <- function(
   p
 }
 
+#' Plot abundance changes versus charging ratio changes.
+#'
+#' Creates a scatter plot comparing tRNA abundance changes (from DESeq2)
+#' with charging ratio changes on a single plot. Significant points are
+#' colored by quadrant and labeled with
+#' [ggrepel::geom_text_repel()].
+#'
+#' @param deseq_res A tibble from [tidy_deseq_results()] with at least
+#'   `tRNA`, `log2FoldChange`, and `padj` columns.
+#' @param charging_diffs A tibble from [compute_charging_diffs()] with
+#'   at least `tRNA` and `diff` columns.
+#' @param lab_col Column name (string) used for point labels. Default
+#'   `"tRNA"`.
+#' @param padj_cutoff Numeric; significance threshold for `padj`.
+#'   Default `0.05`.
+#' @param max_overlaps Maximum number of overlapping labels passed to
+#'   [ggrepel::geom_text_repel()]. Default `20`.
+#' @param point_size Numeric size for [ggplot2::geom_point()]. Default
+#'   `2`.
+#' @param label_size Numeric size for [ggrepel::geom_text_repel()].
+#'   Default `3`.
+#'
+#' @return A ggplot object.
+#'
+#' @export
+#'
+#' @examples
+#' deseq_res <- tibble::tibble(
+#'   tRNA = paste0("tRNA-", 1:6),
+#'   log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
+#'   padj = c(0.01, 0.02, 0.5, 0.6, 0.001, 0.003)
+#' )
+#' charging_diffs <- tibble::tibble(
+#'   tRNA = paste0("tRNA-", 1:6),
+#'   diff = c(0.1, -0.1, 0.05, -0.05, -0.2, 0.15),
+#'   se_diff = rep(0.03, 6)
+#' )
+#' plot_abundance_charging(deseq_res, charging_diffs)
+plot_abundance_charging <- function(
+  deseq_res,
+  charging_diffs,
+  lab_col = "tRNA",
+  padj_cutoff = 0.05,
+  max_overlaps = 20,
+  point_size = 2,
+  label_size = 3
+) {
+  rlang::check_installed("ggrepel", reason = "to label significant points.")
+
+  data <- dplyr::inner_join(deseq_res, charging_diffs, by = "tRNA")
+
+  data <- dplyr::mutate(
+    data,
+    significant = !is.na(.data$padj) & .data$padj < padj_cutoff,
+    quadrant = dplyr::case_when(
+      !significant ~ "ns",
+      log2FoldChange >= 0 & diff >= 0 ~ "up_up",
+      log2FoldChange < 0 & diff < 0 ~ "down_down",
+      log2FoldChange >= 0 & diff < 0 ~ "up_down",
+      log2FoldChange < 0 & diff >= 0 ~ "down_up"
+    )
+  )
+
+  quad_colors <- c(
+    up_up = "#D55E00",
+    down_down = "#0072B2",
+    up_down = "#CC79A7",
+    down_up = "#009E73",
+    ns = "grey60"
+  )
+
+  quad_labels <- c(
+    up_up = "Up / Up",
+    down_down = "Down / Down",
+    up_down = "Up / Down",
+    down_up = "Down / Up",
+    ns = "NS"
+  )
+
+  # Only include quadrants present in the data
+  present <- intersect(names(quad_colors), unique(data$quadrant))
+
+  p <- ggplot(data, aes(x = log2FoldChange, y = diff)) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+    geom_point(
+      aes(color = quadrant),
+      size = point_size,
+      alpha = 0.7
+    ) +
+    ggrepel::geom_text_repel(
+      data = function(x) dplyr::filter(x, .data$significant),
+      aes(label = .data[[lab_col]]),
+      size = label_size,
+      max.overlaps = max_overlaps
+    ) +
+    scale_color_manual(
+      values = quad_colors[present],
+      labels = quad_labels[present]
+    ) +
+    labs(
+      x = "log2 Fold Change (abundance)",
+      y = "Charging ratio difference",
+      color = "Abundance / Charging"
+    ) +
+    cowplot::theme_cowplot() +
+    theme(legend.position = "bottom")
+
+  p
+}
+
 #' Plot per-tRNA charging ratio differences.
 #'
 #' Create a dot plot with error bars showing the difference in charging
