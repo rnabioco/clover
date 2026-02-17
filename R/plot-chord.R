@@ -54,9 +54,10 @@ plot_chord_or <- function(
 ) {
   rlang::check_installed("circlize", reason = "to create chord diagrams.")
 
-  # Filter significant pairs
+  # Filter significant pairs (drop Inf values that break circlize)
   sig_data <- odds_data |>
     dplyr::filter(
+      is.finite(.data[[or_col]]),
       abs(.data[[or_col]]) >= or_cutoff,
       .data[[p_col]] <= p_cutoff,
       total_obs >= min_obs
@@ -240,9 +241,9 @@ plot_chord_ror <- function(
 ) {
   rlang::check_installed("circlize", reason = "to create chord diagrams.")
 
-  # Filter by ROR cutoff
+  # Filter by ROR cutoff (drop Inf values that break circlize)
   sig_data <- ror_data |>
-    dplyr::filter(abs(log_ror) >= ror_cutoff)
+    dplyr::filter(is.finite(log_ror), abs(log_ror) >= ror_cutoff)
 
   if (nrow(sig_data) == 0) {
     cli_inform("No pairs exceed the ROR cutoff.")
