@@ -6,6 +6,7 @@ docs
 *.tsv
 inst/doc
 **/.quarto/
+figure/
 
 # pixi environments
 .pixi/*

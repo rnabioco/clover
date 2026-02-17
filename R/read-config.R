@@ -33,7 +33,14 @@ read_pipeline_config <- function(config_path) {
   samples <- .parse_samples(cfg, config_dir)
 
   # Resolve paths relative to config directory
-  output_dir <- .resolve_path(cfg[["output_dir"]], config_dir)
+  # Support both output_dir and output_directory keys
+  output_dir_raw <- cfg[["output_dir"]] %||% cfg[["output_directory"]]
+  if (is.null(output_dir_raw)) {
+    stop("Config file must contain 'output_dir' or 'output_directory'.",
+      call. = FALSE
+    )
+  }
+  output_dir <- .resolve_path(output_dir_raw, config_dir)
   fasta <- .resolve_path(cfg[["fasta"]], config_dir)
 
   list(
@@ -136,6 +143,13 @@ read_pipeline_results <- function(
     type_files <- files[files$type == type, ]
     paths <- stats::setNames(type_files$path, type_files$sample_id)
 
+    # Skip types where no files exist
+    existing <- vapply(paths, file.exists, logical(1))
+    if (!any(existing)) {
+      return(NULL)
+    }
+    paths <- paths[existing]
+
     if (type == "charging") {
       read_charging_multi(paths)
     } else if (type == "odds_ratios") {
@@ -156,12 +170,34 @@ read_pipeline_results <- function(
 
 # Internal helpers -----------------------------------------------------------
 
+#' Read a samples TSV file, handling both headered and headerless formats.
+#'
+#' The pipeline's samples.tsv is headerless (two columns: sample_id, data_path).
+#' This function auto-detects whether the file has a header by checking if
+#' the first line contains "sample_id".
+#' @noRd
+.read_samples_tsv <- function(path) {
+  first_line <- readLines(path, n = 1)
+  has_header <- grepl("sample_id", first_line, fixed = TRUE)
+
+  if (has_header) {
+    readr::read_tsv(path, show_col_types = FALSE)
+  } else {
+    readr::read_tsv(
+      path,
+      col_names = c("sample_id", "data_path"),
+      show_col_types = FALSE
+    )
+  }
+}
+
 #' Resolve a path relative to a base directory.
 #' @noRd
 .resolve_path <- function(path, base_dir) {
   if (is.null(path)) {
     return(NULL)
   }
+  path <- as.character(path)
   if (startsWith(path, "/") || startsWith(path, "~")) {
     normalizePath(path, mustWork = FALSE)
   } else {
@@ -179,10 +215,9 @@ read_pipeline_results <- function(
   }
 
   # If samples is a string, treat as path to a TSV file
-
   if (is.character(samples_entry) && length(samples_entry) == 1) {
     samples_path <- .resolve_path(samples_entry, config_dir)
-    return(readr::read_tsv(samples_path, show_col_types = FALSE))
+    return(.read_samples_tsv(samples_path))
   }
 
   # If samples is a list/map, convert to tibble

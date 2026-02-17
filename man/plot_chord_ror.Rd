@@ -28,7 +28,8 @@ Default \code{"#D55E00"} (vermillion).}
 Default \code{"#0072B2"} (blue).}
 
 \item{sprinzl_coords}{An optional tibble from \code{\link[=read_sprinzl_coords]{read_sprinzl_coords()}} used
-to order sectors and color by structural region.}
+to map numeric positions to Sprinzl labels, order sectors, and color by
+structural region.}
 
 \item{title}{Optional plot title.}
 

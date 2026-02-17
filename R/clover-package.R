@@ -16,6 +16,7 @@
 #' @import SummarizedExperiment
 #' @import GenomicRanges
 #' @import methods
+#' @import S4Vectors
 #'
 ## usethis namespace: end
 NULL

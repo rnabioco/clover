@@ -86,3 +86,30 @@ test_that("read_odds_ratios_multi errors on unnamed paths", {
     "named character vector"
   )
 })
+
+test_that("read_charging works with ecoli test data", {
+  path <- clover_example(
+    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.charging.cpm.tsv.gz"
+  )
+  result <- read_charging(path)
+
+  expect_s3_class(result, "tbl_df")
+  expect_true(nrow(result) > 0)
+  expect_true(all(
+    c("tRNA", "counts_charged", "counts_uncharged") %in% names(result)
+  ))
+})
+
+test_that("read_odds_ratios works with ecoli test data", {
+  path <- clover_example(
+    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+  )
+  result <- read_odds_ratios(path)
+
+  expect_s3_class(result, "tbl_df")
+  expect_true(nrow(result) > 0)
+  expect_true(all(
+    c("ref", "pos1", "pos2", "odds_ratio", "log_odds_ratio") %in%
+      names(result)
+  ))
+})

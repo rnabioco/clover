@@ -9,6 +9,9 @@ read_fasta(fa)
 \arguments{
 \item{fa}{path to fasta file}
 }
+\value{
+A \link[Biostrings:XStringSet-class]{Biostrings::DNAStringSet}.
+}
 \description{
 Read FASTA reference
 }

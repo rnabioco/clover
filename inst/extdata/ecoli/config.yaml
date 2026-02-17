@@ -1,0 +1,13 @@
+samples: samples.tsv
+output_directory: "."
+fasta: validated.fa.gz
+
+reference:
+  mode: validate
+
+adapters:
+  three_prime:
+    - name: charged
+      seq: "GGCTTCTTCTTGCTCTTCCAACCTTGCCTTAAAAAAAAAA"
+    - name: uncharged
+      seq: "GGCTTCTTCTTGCTCTTATGGAAGGTAGGCAAAAAAAAAA"
