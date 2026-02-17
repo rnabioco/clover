@@ -42,6 +42,7 @@ Suggests:
     igraph,
     jsonlite,
     knitr,
+    patchwork,
     pwalign,
     rmarkdown,
     testthat (>= 3.0.0),

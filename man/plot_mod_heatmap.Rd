@@ -13,7 +13,16 @@ plot_mod_heatmap(
   color_low = "#0072B2",
   color_high = "#D55E00",
   na_value = "gray80",
-  square = TRUE
+  square = TRUE,
+  label_col = NULL,
+  label_min = 0.05,
+  label_size = 2.5,
+  highlight_col = NULL,
+  highlight_size = 0.8,
+  highlight_offset = c(-0.35, 0.35),
+  group_col = NULL,
+  divider_linewidth = 0.8,
+  caption = NULL
 )
 }
 \arguments{
@@ -38,6 +47,30 @@ for the color scale. Default \code{c(-0.25, 0.25)}.}
 \item{na_value}{Color for missing positions. Default \code{"gray80"}.}
 
 \item{square}{Logical; use \code{coord_fixed(ratio = 1)}? Default \code{TRUE}.}
+
+\item{label_col}{Column name (string) with text labels to overlay on
+tiles (e.g., nucleotide letters). Default \code{NULL} (no labels).}
+
+\item{label_min}{Minimum \code{abs(value)} to show a label. Default \code{0.05}.}
+
+\item{label_size}{Font size for tile labels. Default \code{2.5}.}
+
+\item{highlight_col}{Column name (string) of a logical column; \code{TRUE}
+cells get a dot overlay. Default \code{NULL} (no dots).}
+
+\item{highlight_size}{Dot size for highlighted cells. Default \code{0.8}.}
+
+\item{highlight_offset}{Numeric vector of length 2 giving x/y offsets
+from tile center for highlight dots. Default \code{c(-0.35, 0.35)}.}
+
+\item{group_col}{Column name (string) for group-aware clustering. When
+provided, rows are clustered within each group and horizontal divider
+lines separate groups. Default \code{NULL}.}
+
+\item{divider_linewidth}{Line width for group dividers. Default \code{0.8}.}
+
+\item{caption}{Explanatory text displayed below the plot. Default
+\code{NULL}.}
 }
 \value{
 A ggplot object.
