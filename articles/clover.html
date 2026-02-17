@@ -316,15 +316,14 @@ positions.
 <h2 id="modification-annotations-from-modomics">Modification annotations from MODOMICS<a class="anchor" aria-label="anchor" href="#modification-annotations-from-modomics"></a>
 </h2>
 <p>The <a href="https://genesilico.pl/modomics/" class="external-link">MODOMICS</a> database
-catalogs known RNA modifications. <code><a href="../reference/fetch_modomics_mods.html">fetch_modomics_mods()</a></code>
-downloads tRNA modification data for a given organism and maps the
-modification positions onto your reference sequences using pairwise
-alignment.</p>
+catalogs known RNA modifications. <code><a href="../reference/modomics_mods.html">modomics_mods()</a></code> maps
+known tRNA modification positions onto your reference sequences using
+pairwise alignment. Data for common organisms is bundled with the
+package (see <code><a href="../reference/modomics_organisms.html">modomics_organisms()</a></code>), so no internet
+connection is needed.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fasta_path</span> <span class="op">&lt;-</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">fasta</span></span>
-<span><span class="va">mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fetch_modomics_mods.html">fetch_modomics_mods</a></span><span class="op">(</span><span class="va">fasta_path</span>, organism <span class="op">=</span> <span class="st">"Escherichia coli"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Fetching MODOMICS modification dictionary.</span></span>
-<span><span class="co">#&gt; Fetching MODOMICS tRNA sequences for <span style="color: #0000BB;">"Escherichia coli"</span>.</span></span>
+<span><span class="va">mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modomics_mods.html">modomics_mods</a></span><span class="op">(</span><span class="va">fasta_path</span>, organism <span class="op">=</span> <span class="st">"Escherichia coli"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Processing 182 MODOMICS sequences.</span></span>
 <span><span class="co">#&gt; Matching MODOMICS sequences to reference FASTA.</span></span>
 <span><span class="co">#&gt; Found 695 modification annotations.</span></span>
@@ -478,48 +477,47 @@ Modification rewiring between control and infected conditions.
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;  [1] SummarizedExperiment_1.40.0 shape_1.4.6.1              </span></span>
 <span><span class="co">#&gt;  [3] circlize_0.4.17             gtable_0.3.6               </span></span>
-<span><span class="co">#&gt;  [5] httr2_1.2.2                 xfun_0.56                  </span></span>
-<span><span class="co">#&gt;  [7] bslib_0.10.0                ggplot2_4.0.2              </span></span>
-<span><span class="co">#&gt;  [9] GlobalOptions_0.1.3         ggrepel_0.9.6              </span></span>
-<span><span class="co">#&gt; [11] Biobase_2.70.0              lattice_0.22-7             </span></span>
-<span><span class="co">#&gt; [13] tzdb_0.5.0                  vctrs_0.7.1                </span></span>
-<span><span class="co">#&gt; [15] tools_4.5.2                 generics_0.1.4             </span></span>
-<span><span class="co">#&gt; [17] curl_7.0.0                  stats4_4.5.2               </span></span>
-<span><span class="co">#&gt; [19] parallel_4.5.2              tibble_3.3.1               </span></span>
-<span><span class="co">#&gt; [21] pkgconfig_2.0.3             Matrix_1.7-4               </span></span>
-<span><span class="co">#&gt; [23] RColorBrewer_1.1-3          S7_0.2.1                   </span></span>
-<span><span class="co">#&gt; [25] desc_1.4.3                  S4Vectors_0.48.0           </span></span>
-<span><span class="co">#&gt; [27] lifecycle_1.0.5             stringr_1.6.0              </span></span>
-<span><span class="co">#&gt; [29] compiler_4.5.2              farver_2.1.2               </span></span>
-<span><span class="co">#&gt; [31] textshaping_1.0.4           Biostrings_2.78.0          </span></span>
-<span><span class="co">#&gt; [33] DESeq2_1.50.2               codetools_0.2-20           </span></span>
-<span><span class="co">#&gt; [35] Seqinfo_1.0.0               htmltools_0.5.9            </span></span>
-<span><span class="co">#&gt; [37] sass_0.4.10                 yaml_2.3.12                </span></span>
-<span><span class="co">#&gt; [39] pillar_1.11.1               pkgdown_2.2.0              </span></span>
-<span><span class="co">#&gt; [41] crayon_1.5.3                jquerylib_0.1.4            </span></span>
-<span><span class="co">#&gt; [43] BiocParallel_1.44.0         DelayedArray_0.36.0        </span></span>
-<span><span class="co">#&gt; [45] cachem_1.1.0                abind_1.4-8                </span></span>
-<span><span class="co">#&gt; [47] locfit_1.5-9.12             tidyselect_1.2.1           </span></span>
-<span><span class="co">#&gt; [49] digest_0.6.39               stringi_1.8.7              </span></span>
-<span><span class="co">#&gt; [51] purrr_1.2.1                 forcats_1.0.1              </span></span>
-<span><span class="co">#&gt; [53] labeling_0.4.3              cowplot_1.2.0              </span></span>
-<span><span class="co">#&gt; [55] fastmap_1.2.0               grid_4.5.2                 </span></span>
-<span><span class="co">#&gt; [57] colorspace_2.1-2            cli_3.6.5                  </span></span>
-<span><span class="co">#&gt; [59] SparseArray_1.10.8          magrittr_2.0.4             </span></span>
-<span><span class="co">#&gt; [61] S4Arrays_1.10.1             utf8_1.2.6                 </span></span>
-<span><span class="co">#&gt; [63] readr_2.1.6                 withr_3.0.2                </span></span>
-<span><span class="co">#&gt; [65] rappdirs_0.3.4              scales_1.4.0               </span></span>
-<span><span class="co">#&gt; [67] bit64_4.6.0-1               pwalign_1.6.0              </span></span>
-<span><span class="co">#&gt; [69] rmarkdown_2.30              XVector_0.50.0             </span></span>
-<span><span class="co">#&gt; [71] matrixStats_1.5.0           bit_4.6.0                  </span></span>
-<span><span class="co">#&gt; [73] ragg_1.5.0                  hms_1.1.4                  </span></span>
-<span><span class="co">#&gt; [75] evaluate_1.0.5              knitr_1.51                 </span></span>
-<span><span class="co">#&gt; [77] GenomicRanges_1.62.1        IRanges_2.44.0             </span></span>
-<span><span class="co">#&gt; [79] rlang_1.1.7                 Rcpp_1.1.1                 </span></span>
-<span><span class="co">#&gt; [81] glue_1.8.0                  BiocGenerics_0.56.0        </span></span>
-<span><span class="co">#&gt; [83] vroom_1.7.0                 jsonlite_2.0.0             </span></span>
-<span><span class="co">#&gt; [85] R6_2.6.1                    MatrixGenerics_1.22.0      </span></span>
-<span><span class="co">#&gt; [87] systemfonts_1.3.1           fs_1.6.6</span></span></code></pre></div>
+<span><span class="co">#&gt;  [5] xfun_0.56                   bslib_0.10.0               </span></span>
+<span><span class="co">#&gt;  [7] ggplot2_4.0.2               GlobalOptions_0.1.3        </span></span>
+<span><span class="co">#&gt;  [9] ggrepel_0.9.6               Biobase_2.70.0             </span></span>
+<span><span class="co">#&gt; [11] lattice_0.22-7              tzdb_0.5.0                 </span></span>
+<span><span class="co">#&gt; [13] vctrs_0.7.1                 tools_4.5.2                </span></span>
+<span><span class="co">#&gt; [15] generics_0.1.4              stats4_4.5.2               </span></span>
+<span><span class="co">#&gt; [17] parallel_4.5.2              tibble_3.3.1               </span></span>
+<span><span class="co">#&gt; [19] pkgconfig_2.0.3             Matrix_1.7-4               </span></span>
+<span><span class="co">#&gt; [21] RColorBrewer_1.1-3          S7_0.2.1                   </span></span>
+<span><span class="co">#&gt; [23] desc_1.4.3                  S4Vectors_0.48.0           </span></span>
+<span><span class="co">#&gt; [25] lifecycle_1.0.5             stringr_1.6.0              </span></span>
+<span><span class="co">#&gt; [27] compiler_4.5.2              farver_2.1.2               </span></span>
+<span><span class="co">#&gt; [29] textshaping_1.0.4           Biostrings_2.78.0          </span></span>
+<span><span class="co">#&gt; [31] DESeq2_1.50.2               codetools_0.2-20           </span></span>
+<span><span class="co">#&gt; [33] Seqinfo_1.0.0               htmltools_0.5.9            </span></span>
+<span><span class="co">#&gt; [35] sass_0.4.10                 yaml_2.3.12                </span></span>
+<span><span class="co">#&gt; [37] pillar_1.11.1               pkgdown_2.2.0              </span></span>
+<span><span class="co">#&gt; [39] crayon_1.5.3                jquerylib_0.1.4            </span></span>
+<span><span class="co">#&gt; [41] BiocParallel_1.44.0         DelayedArray_0.36.0        </span></span>
+<span><span class="co">#&gt; [43] cachem_1.1.0                abind_1.4-8                </span></span>
+<span><span class="co">#&gt; [45] locfit_1.5-9.12             tidyselect_1.2.1           </span></span>
+<span><span class="co">#&gt; [47] digest_0.6.39               stringi_1.8.7              </span></span>
+<span><span class="co">#&gt; [49] purrr_1.2.1                 forcats_1.0.1              </span></span>
+<span><span class="co">#&gt; [51] labeling_0.4.3              cowplot_1.2.0              </span></span>
+<span><span class="co">#&gt; [53] fastmap_1.2.0               grid_4.5.2                 </span></span>
+<span><span class="co">#&gt; [55] colorspace_2.1-2            cli_3.6.5                  </span></span>
+<span><span class="co">#&gt; [57] SparseArray_1.10.8          magrittr_2.0.4             </span></span>
+<span><span class="co">#&gt; [59] S4Arrays_1.10.1             utf8_1.2.6                 </span></span>
+<span><span class="co">#&gt; [61] readr_2.1.6                 withr_3.0.2                </span></span>
+<span><span class="co">#&gt; [63] scales_1.4.0                bit64_4.6.0-1              </span></span>
+<span><span class="co">#&gt; [65] pwalign_1.6.0               rmarkdown_2.30             </span></span>
+<span><span class="co">#&gt; [67] XVector_0.50.0              matrixStats_1.5.0          </span></span>
+<span><span class="co">#&gt; [69] bit_4.6.0                   ragg_1.5.0                 </span></span>
+<span><span class="co">#&gt; [71] hms_1.1.4                   evaluate_1.0.5             </span></span>
+<span><span class="co">#&gt; [73] knitr_1.51                  GenomicRanges_1.62.1       </span></span>
+<span><span class="co">#&gt; [75] IRanges_2.44.0              rlang_1.1.7                </span></span>
+<span><span class="co">#&gt; [77] Rcpp_1.1.1                  glue_1.8.0                 </span></span>
+<span><span class="co">#&gt; [79] BiocGenerics_0.56.0         vroom_1.7.0                </span></span>
+<span><span class="co">#&gt; [81] jsonlite_2.0.0              R6_2.6.1                   </span></span>
+<span><span class="co">#&gt; [83] MatrixGenerics_1.22.0       systemfonts_1.3.1          </span></span>
+<span><span class="co">#&gt; [85] fs_1.6.6</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

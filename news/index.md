@@ -38,6 +38,15 @@
   maps them onto reference sequences using pairwise alignment
   ([\#11](https://github.com/rnabioco/clover/issues/11)).
 
+- [`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md)
+  maps MODOMICS tRNA modifications onto reference sequences using
+  bundled data, eliminating the need for internet access. Use
+  [`modomics_organisms()`](https://rnabioco.github.io/clover/reference/modomics_organisms.md)
+  to list organisms with cached data. Falls back to
+  [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md)
+  for unsupported organisms
+  ([\#11](https://github.com/rnabioco/clover/issues/11)).
+
 - [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md)
   creates a labeled volcano plot from
   [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)

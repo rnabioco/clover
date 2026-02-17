@@ -136,6 +136,10 @@ for a complete walkthrough.
 
 ## MODOMICS
 
+- [`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md)
+  : Map cached MODOMICS modifications onto reference sequences
+- [`modomics_organisms()`](https://rnabioco.github.io/clover/reference/modomics_organisms.md)
+  : List organisms with cached MODOMICS data
 - [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md)
   : Fetch tRNA modification annotations from MODOMICS
 

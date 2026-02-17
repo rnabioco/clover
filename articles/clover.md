@@ -253,16 +253,16 @@ positions.
 
 The [MODOMICS](https://genesilico.pl/modomics/) database catalogs known
 RNA modifications.
-[`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md)
-downloads tRNA modification data for a given organism and maps the
-modification positions onto your reference sequences using pairwise
-alignment.
+[`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md)
+maps known tRNA modification positions onto your reference sequences
+using pairwise alignment. Data for common organisms is bundled with the
+package (see
+[`modomics_organisms()`](https://rnabioco.github.io/clover/reference/modomics_organisms.md)),
+so no internet connection is needed.
 
 ``` r
 fasta_path <- S4Vectors::metadata(se)$config$fasta
-mods <- fetch_modomics_mods(fasta_path, organism = "Escherichia coli")
-#> Fetching MODOMICS modification dictionary.
-#> Fetching MODOMICS tRNA sequences for "Escherichia coli".
+mods <- modomics_mods(fasta_path, organism = "Escherichia coli")
 #> Processing 182 MODOMICS sequences.
 #> Matching MODOMICS sequences to reference FASTA.
 #> Found 695 modification annotations.
@@ -421,46 +421,45 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.40.0 shape_1.4.6.1              
 #>  [3] circlize_0.4.17             gtable_0.3.6               
-#>  [5] httr2_1.2.2                 xfun_0.56                  
-#>  [7] bslib_0.10.0                ggplot2_4.0.2              
-#>  [9] GlobalOptions_0.1.3         ggrepel_0.9.6              
-#> [11] Biobase_2.70.0              lattice_0.22-7             
-#> [13] tzdb_0.5.0                  vctrs_0.7.1                
-#> [15] tools_4.5.2                 generics_0.1.4             
-#> [17] curl_7.0.0                  stats4_4.5.2               
-#> [19] parallel_4.5.2              tibble_3.3.1               
-#> [21] pkgconfig_2.0.3             Matrix_1.7-4               
-#> [23] RColorBrewer_1.1-3          S7_0.2.1                   
-#> [25] desc_1.4.3                  S4Vectors_0.48.0           
-#> [27] lifecycle_1.0.5             stringr_1.6.0              
-#> [29] compiler_4.5.2              farver_2.1.2               
-#> [31] textshaping_1.0.4           Biostrings_2.78.0          
-#> [33] DESeq2_1.50.2               codetools_0.2-20           
-#> [35] Seqinfo_1.0.0               htmltools_0.5.9            
-#> [37] sass_0.4.10                 yaml_2.3.12                
-#> [39] pillar_1.11.1               pkgdown_2.2.0              
-#> [41] crayon_1.5.3                jquerylib_0.1.4            
-#> [43] BiocParallel_1.44.0         DelayedArray_0.36.0        
-#> [45] cachem_1.1.0                abind_1.4-8                
-#> [47] locfit_1.5-9.12             tidyselect_1.2.1           
-#> [49] digest_0.6.39               stringi_1.8.7              
-#> [51] purrr_1.2.1                 forcats_1.0.1              
-#> [53] labeling_0.4.3              cowplot_1.2.0              
-#> [55] fastmap_1.2.0               grid_4.5.2                 
-#> [57] colorspace_2.1-2            cli_3.6.5                  
-#> [59] SparseArray_1.10.8          magrittr_2.0.4             
-#> [61] S4Arrays_1.10.1             utf8_1.2.6                 
-#> [63] readr_2.1.6                 withr_3.0.2                
-#> [65] rappdirs_0.3.4              scales_1.4.0               
-#> [67] bit64_4.6.0-1               pwalign_1.6.0              
-#> [69] rmarkdown_2.30              XVector_0.50.0             
-#> [71] matrixStats_1.5.0           bit_4.6.0                  
-#> [73] ragg_1.5.0                  hms_1.1.4                  
-#> [75] evaluate_1.0.5              knitr_1.51                 
-#> [77] GenomicRanges_1.62.1        IRanges_2.44.0             
-#> [79] rlang_1.1.7                 Rcpp_1.1.1                 
-#> [81] glue_1.8.0                  BiocGenerics_0.56.0        
-#> [83] vroom_1.7.0                 jsonlite_2.0.0             
-#> [85] R6_2.6.1                    MatrixGenerics_1.22.0      
-#> [87] systemfonts_1.3.1           fs_1.6.6
+#>  [5] xfun_0.56                   bslib_0.10.0               
+#>  [7] ggplot2_4.0.2               GlobalOptions_0.1.3        
+#>  [9] ggrepel_0.9.6               Biobase_2.70.0             
+#> [11] lattice_0.22-7              tzdb_0.5.0                 
+#> [13] vctrs_0.7.1                 tools_4.5.2                
+#> [15] generics_0.1.4              stats4_4.5.2               
+#> [17] parallel_4.5.2              tibble_3.3.1               
+#> [19] pkgconfig_2.0.3             Matrix_1.7-4               
+#> [21] RColorBrewer_1.1-3          S7_0.2.1                   
+#> [23] desc_1.4.3                  S4Vectors_0.48.0           
+#> [25] lifecycle_1.0.5             stringr_1.6.0              
+#> [27] compiler_4.5.2              farver_2.1.2               
+#> [29] textshaping_1.0.4           Biostrings_2.78.0          
+#> [31] DESeq2_1.50.2               codetools_0.2-20           
+#> [33] Seqinfo_1.0.0               htmltools_0.5.9            
+#> [35] sass_0.4.10                 yaml_2.3.12                
+#> [37] pillar_1.11.1               pkgdown_2.2.0              
+#> [39] crayon_1.5.3                jquerylib_0.1.4            
+#> [41] BiocParallel_1.44.0         DelayedArray_0.36.0        
+#> [43] cachem_1.1.0                abind_1.4-8                
+#> [45] locfit_1.5-9.12             tidyselect_1.2.1           
+#> [47] digest_0.6.39               stringi_1.8.7              
+#> [49] purrr_1.2.1                 forcats_1.0.1              
+#> [51] labeling_0.4.3              cowplot_1.2.0              
+#> [53] fastmap_1.2.0               grid_4.5.2                 
+#> [55] colorspace_2.1-2            cli_3.6.5                  
+#> [57] SparseArray_1.10.8          magrittr_2.0.4             
+#> [59] S4Arrays_1.10.1             utf8_1.2.6                 
+#> [61] readr_2.1.6                 withr_3.0.2                
+#> [63] scales_1.4.0                bit64_4.6.0-1              
+#> [65] pwalign_1.6.0               rmarkdown_2.30             
+#> [67] XVector_0.50.0              matrixStats_1.5.0          
+#> [69] bit_4.6.0                   ragg_1.5.0                 
+#> [71] hms_1.1.4                   evaluate_1.0.5             
+#> [73] knitr_1.51                  GenomicRanges_1.62.1       
+#> [75] IRanges_2.44.0              rlang_1.1.7                
+#> [77] Rcpp_1.1.1                  glue_1.8.0                 
+#> [79] BiocGenerics_0.56.0         vroom_1.7.0                
+#> [81] jsonlite_2.0.0              R6_2.6.1                   
+#> [83] MatrixGenerics_1.22.0       systemfonts_1.3.1          
+#> [85] fs_1.6.6
 ```
