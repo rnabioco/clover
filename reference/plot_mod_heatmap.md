@@ -16,7 +16,16 @@ plot_mod_heatmap(
   color_low = "#0072B2",
   color_high = "#D55E00",
   na_value = "gray80",
-  square = TRUE
+  square = TRUE,
+  label_col = NULL,
+  label_min = 0.05,
+  label_size = 2.5,
+  highlight_col = NULL,
+  highlight_size = 0.8,
+  highlight_offset = c(-0.35, 0.35),
+  group_col = NULL,
+  divider_linewidth = 0.8,
+  caption = NULL
 )
 ```
 
@@ -60,6 +69,47 @@ plot_mod_heatmap(
 - square:
 
   Logical; use `coord_fixed(ratio = 1)`? Default `TRUE`.
+
+- label_col:
+
+  Column name (string) with text labels to overlay on tiles (e.g.,
+  nucleotide letters). Default `NULL` (no labels).
+
+- label_min:
+
+  Minimum `abs(value)` to show a label. Default `0.05`.
+
+- label_size:
+
+  Font size for tile labels. Default `2.5`.
+
+- highlight_col:
+
+  Column name (string) of a logical column; `TRUE` cells get a dot
+  overlay. Default `NULL` (no dots).
+
+- highlight_size:
+
+  Dot size for highlighted cells. Default `0.8`.
+
+- highlight_offset:
+
+  Numeric vector of length 2 giving x/y offsets from tile center for
+  highlight dots. Default `c(-0.35, 0.35)`.
+
+- group_col:
+
+  Column name (string) for group-aware clustering. When provided, rows
+  are clustered within each group and horizontal divider lines separate
+  groups. Default `NULL`.
+
+- divider_linewidth:
+
+  Line width for group dividers. Default `0.8`.
+
+- caption:
+
+  Explanatory text displayed below the plot. Default `NULL`.
 
 ## Value
 

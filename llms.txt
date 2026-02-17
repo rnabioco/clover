@@ -154,6 +154,8 @@ for a complete walkthrough.
   : Plot a chord diagram of modification rewiring between conditions.
 - [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
   : Plot a delta-signal modification heatmap.
+- [`plot_mod_landscape()`](https://rnabioco.github.io/clover/reference/plot_mod_landscape.md)
+  : Plot per-tRNA modification landscape profiles.
 - [`plot_pcoa_rewiring()`](https://rnabioco.github.io/clover/reference/plot_pcoa_rewiring.md)
   : Plot PCoA of tRNA rewiring scores.
 - [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md)

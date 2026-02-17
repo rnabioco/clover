@@ -61,7 +61,16 @@ optionally clustered using Ward's D2 hierarchical clustering.</p>
 <span>  color_low <span class="op">=</span> <span class="st">"#0072B2"</span>,</span>
 <span>  color_high <span class="op">=</span> <span class="st">"#D55E00"</span>,</span>
 <span>  na_value <span class="op">=</span> <span class="st">"gray80"</span>,</span>
-<span>  square <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  square <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  label_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  label_min <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  label_size <span class="op">=</span> <span class="fl">2.5</span>,</span>
+<span>  highlight_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  highlight_size <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  highlight_offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.35</span>, <span class="fl">0.35</span><span class="op">)</span>,</span>
+<span>  group_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  divider_linewidth <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  caption <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -107,6 +116,48 @@ for the color scale. Default <code>c(-0.25, 0.25)</code>.</p></dd>
 
 <dt id="arg-square">square<a class="anchor" aria-label="anchor" href="#arg-square"></a></dt>
 <dd><p>Logical; use <code>coord_fixed(ratio = 1)</code>? Default <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-label-col">label_col<a class="anchor" aria-label="anchor" href="#arg-label-col"></a></dt>
+<dd><p>Column name (string) with text labels to overlay on
+tiles (e.g., nucleotide letters). Default <code>NULL</code> (no labels).</p></dd>
+
+
+<dt id="arg-label-min">label_min<a class="anchor" aria-label="anchor" href="#arg-label-min"></a></dt>
+<dd><p>Minimum <code>abs(value)</code> to show a label. Default <code>0.05</code>.</p></dd>
+
+
+<dt id="arg-label-size">label_size<a class="anchor" aria-label="anchor" href="#arg-label-size"></a></dt>
+<dd><p>Font size for tile labels. Default <code>2.5</code>.</p></dd>
+
+
+<dt id="arg-highlight-col">highlight_col<a class="anchor" aria-label="anchor" href="#arg-highlight-col"></a></dt>
+<dd><p>Column name (string) of a logical column; <code>TRUE</code>
+cells get a dot overlay. Default <code>NULL</code> (no dots).</p></dd>
+
+
+<dt id="arg-highlight-size">highlight_size<a class="anchor" aria-label="anchor" href="#arg-highlight-size"></a></dt>
+<dd><p>Dot size for highlighted cells. Default <code>0.8</code>.</p></dd>
+
+
+<dt id="arg-highlight-offset">highlight_offset<a class="anchor" aria-label="anchor" href="#arg-highlight-offset"></a></dt>
+<dd><p>Numeric vector of length 2 giving x/y offsets
+from tile center for highlight dots. Default <code>c(-0.35, 0.35)</code>.</p></dd>
+
+
+<dt id="arg-group-col">group_col<a class="anchor" aria-label="anchor" href="#arg-group-col"></a></dt>
+<dd><p>Column name (string) for group-aware clustering. When
+provided, rows are clustered within each group and horizontal divider
+lines separate groups. Default <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-divider-linewidth">divider_linewidth<a class="anchor" aria-label="anchor" href="#arg-divider-linewidth"></a></dt>
+<dd><p>Line width for group dividers. Default <code>0.8</code>.</p></dd>
+
+
+<dt id="arg-caption">caption<a class="anchor" aria-label="anchor" href="#arg-caption"></a></dt>
+<dd><p>Explanatory text displayed below the plot. Default
+<code>NULL</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -48,6 +48,18 @@
   creates a circular arc diagram from a tidygraph network built by
   [`build_or_network()`](https://rnabioco.github.io/clover/reference/build_or_network.md).
 
+- [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
+  gains new parameters for annotated heatmaps: `label_col` overlays text
+  labels on tiles, `highlight_col` adds dot markers at selected cells,
+  and `group_col` enables group-aware clustering with divider lines
+  between groups. A `caption` parameter adds explanatory text below the
+  plot.
+
+- [`plot_mod_landscape()`](https://rnabioco.github.io/clover/reference/plot_mod_landscape.md)
+  creates stacked multi-metric profile plots along the tRNA sequence,
+  with optional structural region shading and Sprinzl position secondary
+  axis. Uses patchwork for panel layout.
+
 - [`plot_pcoa_rewiring()`](https://rnabioco.github.io/clover/reference/plot_pcoa_rewiring.md)
   creates a scatter plot of PCoA coordinates colored by rewiring
   magnitude and labeled with top isodecoders.
