@@ -18,11 +18,17 @@ reference:
   - title: Analysis
     contents:
     - abundance_count_matrix
+    - aggregate_or_isodecoder
     - build_coldata
+    - calculate_rewiring_scores
     - charging_count_matrix
+    - clean_odds_ratios
     - compute_charging_diffs
     - compute_odds_ratios
     - compute_ror
+    - compute_ror_isodecoder
+    - perform_pcoa
+    - prepare_rewiring_matrix
     - run_deseq
     - tabulate_deseq
     - tidy_deseq_results
@@ -31,14 +37,29 @@ reference:
     contents:
     - starts_with("plot_")
 
+  - title: Network
+    contents:
+    - build_or_network
+    - plot_arc_diagram
+
   - title: MODOMICS
     contents:
     - modomics_mods
     - modomics_organisms
     - fetch_modomics_mods
 
+  - title: Statistics
+    contents:
+    - calc_fold_change
+    - cohens_d
+    - propagate_error_diff
+    - propagate_error_ratio
+
   - title: Utilities
     contents:
+    - aa_colors
+    - charging_colors
     - clover_example
     - list_pipeline_files
     - order_sprinzl_positions
+    - trna_regions

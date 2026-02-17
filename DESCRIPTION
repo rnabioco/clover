@@ -34,15 +34,18 @@ LinkingTo: cpp11
 Suggests:
     circlize,
     DESeq2,
+    ggraph,
     ggrepel,
     ggtext,
     gt,
     httr2,
+    igraph,
     jsonlite,
     knitr,
     pwalign,
     rmarkdown,
     testthat (>= 3.0.0),
+    tidygraph,
     withr
 VignetteBuilder: knitr
 bioCViews: RNASeq, Visualization
