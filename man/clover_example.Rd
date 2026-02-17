@@ -13,6 +13,6 @@ clover_example(path)
 Provide working directory for clover example files.
 }
 \examples{
-clover_example("yeast/grande.bcerr.tsv.gz")
+clover_example("ecoli/config.yaml")
 
 }

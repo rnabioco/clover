@@ -26,10 +26,10 @@ test_that("read_pipeline_config parses YAML with inline samples", {
   expect_true(startsWith(cfg$fasta, tmp))
 })
 
-test_that("read_pipeline_config parses YAML with TSV sample file", {
+test_that("read_pipeline_config parses YAML with TSV sample file (headered)", {
   tmp <- withr::local_tempdir()
 
-  # Create a samples TSV
+  # Create a samples TSV with header
   samples_tsv <- file.path(tmp, "samples.tsv")
   writeLines(
     c("sample_id\tdata_path", "s1\tdata/s1.pod5", "s2\tdata/s2.pod5"),
@@ -52,6 +52,52 @@ test_that("read_pipeline_config parses YAML with TSV sample file", {
   expect_true("sample_id" %in% names(cfg$samples))
 })
 
+test_that("read_pipeline_config handles headerless samples.tsv", {
+  tmp <- withr::local_tempdir()
+
+  # Create a headerless samples TSV (real pipeline format)
+  samples_tsv <- file.path(tmp, "samples.tsv")
+  writeLines(
+    c("s1\t/data/s1.pod5", "s2\t/data/s2.pod5"),
+    samples_tsv
+  )
+
+  config_text <- paste(
+    "samples: samples.tsv",
+    "output_dir: results",
+    "fasta: ref/trna.fa",
+    sep = "\n"
+  )
+  config_path <- file.path(tmp, "config.yaml")
+  writeLines(config_text, config_path)
+
+  cfg <- read_pipeline_config(config_path)
+
+  expect_s3_class(cfg$samples, "tbl_df")
+  expect_equal(nrow(cfg$samples), 2)
+  expect_named(cfg$samples, c("sample_id", "data_path"))
+  expect_equal(cfg$samples$sample_id, c("s1", "s2"))
+})
+
+test_that("read_pipeline_config supports output_directory key", {
+  tmp <- withr::local_tempdir()
+
+  config_text <- paste(
+    "samples:",
+    "  sample1: data/s1.pod5",
+    "output_directory: results",
+    "fasta: ref/trna.fa",
+    sep = "\n"
+  )
+  config_path <- file.path(tmp, "config.yaml")
+  writeLines(config_text, config_path)
+
+  cfg <- read_pipeline_config(config_path)
+
+  expect_true(startsWith(cfg$output_dir, tmp))
+  expect_true(grepl("results$", cfg$output_dir))
+})
+
 test_that("read_pipeline_config resolves absolute paths correctly", {
   tmp <- withr::local_tempdir()
 
@@ -68,6 +114,15 @@ test_that("read_pipeline_config resolves absolute paths correctly", {
   cfg <- read_pipeline_config(config_path)
 
   expect_equal(cfg$output_dir, "/absolute/path/results")
+})
+
+test_that("read_pipeline_config works with ecoli test data", {
+  config_path <- clover_example("ecoli/config.yaml")
+  cfg <- read_pipeline_config(config_path)
+
+  expect_type(cfg, "list")
+  expect_equal(nrow(cfg$samples), 6)
+  expect_true(all(grepl("^wt-15-", cfg$samples$sample_id)))
 })
 
 test_that("list_pipeline_files constructs correct paths", {

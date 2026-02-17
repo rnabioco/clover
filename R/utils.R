@@ -3,7 +3,7 @@
 #' @param path path to file
 #'
 #' @examples
-#' clover_example("yeast/grande.bcerr.tsv.gz")
+#' clover_example("ecoli/config.yaml")
 #'
 #' @export
 clover_example <- function(path) {

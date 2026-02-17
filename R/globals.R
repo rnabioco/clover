@@ -4,7 +4,6 @@ globalVariables(c(
   "mis",
   "ins",
   "del",
-  "ref",
   "q_std",
   "error_rate",
   "strand",
@@ -31,7 +30,6 @@ globalVariables(c(
   "total_count",
   "pos1",
   "pos2",
-
   "odds_ratio",
   "log_odds_ratio",
   "p_value",
@@ -43,5 +41,32 @@ globalVariables(c(
   "ror",
   "log_ror",
   "condition",
-  "charge_status"
+  "charge_status",
+  # New pipeline bcerror column names (pre-rename)
+  "Reference",
+  "Position",
+  "Spanning_Reads",
+  "A_Freq",
+  "T_Freq",
+  "G_Freq",
+  "C_Freq",
+  "MismatchFreq",
+  "InsertionFreq",
+  "DeletionFreq",
+  "BCErrorFreq",
+  "MeanQual",
+  # New derived names
+  "a_freq",
+  "t_freq",
+  "g_freq",
+  "c_freq",
+  "cov",
+  "mean_qual",
+  # compute_odds_ratios
+  "read_id",
+  "ref_position",
+  "chrom",
+  "within_alignment",
+  "call_code",
+  "modified"
 ))

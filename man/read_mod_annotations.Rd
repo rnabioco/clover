@@ -9,6 +9,9 @@ read_mod_annotations(mods)
 \arguments{
 \item{mods}{path to modifications file}
 }
+\value{
+A tibble.
+}
 \description{
 TSV file with 4 columns:
 }

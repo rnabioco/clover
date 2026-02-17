@@ -1,0 +1,390 @@
+---
+title: "Analyzing *E. coli* tRNAs during T4 phage infection"
+vignette: >
+  %\VignetteIndexEntry{ecoli-phage}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+    fig.width: 10
+    fig.height: 6
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(clover)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+## Overview
+
+This vignette demonstrates clover's analysis workflow using *E. coli* tRNA
+sequencing data from a T4 phage infection time-course experiment. The test
+dataset includes 6 samples: 3 uninfected controls (`ctl`) and 3 T4-infected
+(`inf`) wild-type *E. coli* at 15 minutes post-infection, with 3 biological
+replicates per condition.
+
+## Loading data with `create_clover()`
+
+The simplest way to load pipeline results is with `create_clover()`, which
+reads a pipeline configuration file and assembles a `SummarizedExperiment`.
+
+```{r}
+#| label: create-se
+config_path <- clover_example("ecoli/config.yaml")
+
+sample_info <- data.frame(
+  sample_id = c(
+    "wt-15-ctl-01", "wt-15-ctl-02", "wt-15-ctl-03",
+    "wt-15-inf-01", "wt-15-inf-02", "wt-15-inf-03"
+  ),
+  condition = rep(c("ctl", "inf"), each = 3),
+  replicate = rep(1:3, 2)
+)
+
+se <- create_clover(
+  config_path,
+  types = c("charging", "bcerror", "odds_ratios"),
+  sample_info = sample_info
+)
+
+se
+```
+
+The SE object contains:
+
+- **assay "counts"**: abundance count matrix (charged + uncharged reads)
+- **colData**: sample metadata with condition labels
+- **metadata**: raw bcerror, odds ratios, FASTA reference, and pipeline config
+
+```{r}
+#| label: inspect-se
+SummarizedExperiment::assay(se, "counts")[1:5, ]
+SummarizedExperiment::colData(se)
+```
+
+## Differential tRNA abundance
+
+We can test for differential tRNA abundance between infected and uninfected
+conditions using the DESeq2 wrappers.
+
+```{r}
+#| label: deseq-abundance
+counts <- SummarizedExperiment::assay(se, "counts")
+coldata <- as.data.frame(SummarizedExperiment::colData(se))
+
+dds <- run_deseq(counts, coldata, design = ~condition)
+res <- tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
+```
+
+```{r}
+#| label: fig-volcano
+#| fig.cap: "Volcano plot of differential tRNA abundance (inf vs ctl)."
+#| fig.height: 5
+ggplot(res, aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point(aes(color = significant), size = 1.5, alpha = 0.7) +
+  scale_color_manual(values = c("grey60", "#D55E00")) +
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "grey40") +
+  labs(
+    x = "log2 Fold Change (inf / ctl)",
+    y = "-log10(p-value)",
+    title = "Differential tRNA abundance: T4-infected vs control"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+### Top changing tRNAs
+
+```{r}
+#| label: top-trnas
+res |>
+  filter(!is.na(padj)) |>
+  arrange(pvalue) |>
+  head(10) |>
+  select(tRNA, log2FoldChange, pvalue, padj, significant)
+```
+
+## Differential charging analysis
+
+A unique feature of nanopore tRNA-seq is the ability to measure charging
+levels. We can test whether the ratio of charged to uncharged reads changes
+upon infection.
+
+```{r}
+#| label: charging-analysis
+# Read the raw charging data
+config <- read_pipeline_config(config_path)
+files <- list_pipeline_files(config, types = "charging")
+paths <- setNames(files$path, files$sample_id)
+charging <- read_charging_multi(paths)
+
+# Build charging matrix: separate columns for charged/uncharged per sample
+charge_mat <- charging_count_matrix(charging, min_count = 50)
+charge_coldata <- build_coldata(charge_mat, sample_info)
+
+# Show the matrix structure: each sample has _charged and _uncharged columns
+head(colnames(charge_mat))
+```
+
+```{r}
+#| label: fig-charging-ratio
+#| fig.cap: "Charging ratios per tRNA across conditions."
+#| fig.height: 5
+# Calculate charging ratio per tRNA per sample
+charging_ratios <- charging |>
+  filter(!grepl("-uncharged$", tRNA)) |>
+  mutate(
+    charging_ratio = counts_charged / (counts_charged + counts_uncharged),
+    condition = ifelse(grepl("ctl", sample_id), "ctl", "inf")
+  ) |>
+  filter(counts_charged + counts_uncharged >= 50)
+
+# Summarize by tRNA and condition
+ratio_summary <- charging_ratios |>
+  group_by(tRNA, condition) |>
+  summarise(
+    mean_ratio = mean(charging_ratio),
+    se_ratio = sd(charging_ratio) / sqrt(n()),
+    .groups = "drop"
+  )
+
+# Plot top tRNAs by abundance
+top_trnas <- charging_ratios |>
+  group_by(tRNA) |>
+  summarise(total = sum(counts_charged + counts_uncharged)) |>
+  slice_max(total, n = 20) |>
+  pull(tRNA)
+
+ratio_summary |>
+  filter(tRNA %in% top_trnas) |>
+  mutate(tRNA = forcats::fct_reorder(tRNA, mean_ratio)) |>
+  ggplot(aes(x = mean_ratio, y = tRNA, color = condition)) +
+  geom_point(size = 2.5) +
+  geom_linerange(
+    aes(xmin = mean_ratio - se_ratio, xmax = mean_ratio + se_ratio)
+  ) +
+  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
+  labs(
+    x = "Charging ratio",
+    y = "",
+    title = "tRNA charging ratios: control vs infected"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
+## Base-calling error profiles
+
+Base-calling error rates reflect RNA modifications that cause the nanopore
+basecaller to misidentify bases. Comparing error profiles between conditions
+can reveal modification changes.
+
+```{r}
+#| label: bcerror-data
+bcerror <- S4Vectors::metadata(se)$bcerror
+
+# Focus on charged tRNAs (not uncharged variants)
+bcerror_charged <- bcerror |>
+  filter(!grepl("-uncharged$", ref))
+
+# Calculate mean error rate per position per condition
+bcerror_charged <- bcerror_charged |>
+  mutate(condition = ifelse(grepl("ctl", sample_id), "ctl", "inf"))
+
+bcerror_summary <- bcerror_charged |>
+  group_by(ref, pos, condition) |>
+  summarise(
+    mean_error = mean(error_rate),
+    mean_mis = mean(mis),
+    .groups = "drop"
+  )
+```
+
+```{r}
+#| label: fig-bcerror-profile
+#| fig.cap: "Base-calling error profiles for selected tRNAs."
+#| fig.height: 7
+# Plot error profiles for a few tRNAs
+plot_trnas <- c(
+  "host-tRNA-Ala-GGC-1-1",
+  "host-tRNA-Asp-GTC-1-1",
+  "host-tRNA-Glu-TTC-1-1"
+)
+
+bcerror_summary |>
+  filter(ref %in% plot_trnas) |>
+  ggplot(aes(x = pos, y = mean_error, color = condition)) +
+  geom_line(linewidth = 0.5) +
+  geom_point(size = 0.8) +
+  facet_wrap(~ref, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
+  labs(
+    x = "Position",
+    y = "Mean base-calling error rate",
+    title = "Per-position error profiles"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top")
+```
+
+### Error rate difference heatmap
+
+```{r}
+#| label: fig-bcerror-delta
+#| fig.cap: "Difference in mean base-calling error (inf - ctl) across all tRNAs and positions."
+#| fig.height: 5
+# Compute delta (inf - ctl)
+bcerror_delta <- bcerror_summary |>
+  select(ref, pos, condition, mean_error) |>
+  pivot_wider(names_from = condition, values_from = mean_error) |>
+  mutate(delta = inf - ctl)
+
+# Add Sprinzl coordinates for position ordering
+sprinzl <- read_sprinzl_coords(
+  clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+)
+
+# Match tRNA names: strip "host-" prefix
+bcerror_delta <- bcerror_delta |>
+  mutate(trna_id = sub("^host-", "", ref))
+
+# Join with sprinzl coords to get structural labels
+bcerror_sprinzl <- bcerror_delta |>
+  left_join(
+    sprinzl |> select(trna_id, seq_index, sprinzl_label),
+    by = c("trna_id", "pos" = "seq_index")
+  ) |>
+  filter(!is.na(sprinzl_label))
+
+plot_mod_heatmap(
+  bcerror_sprinzl,
+  value_col = "delta",
+  ref_col = "ref",
+  color_limits = c(-0.1, 0.1)
+)
+```
+
+## Modification co-occurrence (odds ratios)
+
+Odds ratios measure whether modifications at pairs of positions tend to
+co-occur on the same read. Positive log odds ratios indicate co-occurrence;
+negative indicate mutual exclusivity.
+
+```{r}
+#| label: odds-ratios-data
+or_data <- S4Vectors::metadata(se)$odds_ratios
+glimpse(or_data)
+```
+
+### Chord diagram: single sample
+
+The Sprinzl coordinate files use RNA anticodon notation (e.g., `UUC`) while
+the pipeline uses DNA notation (e.g., `TTC`). The pipeline also adds a
+`host-` prefix. We need to account for these naming differences when matching.
+
+```{r}
+#| label: fig-chord-single
+#| fig.cap: "Modification co-occurrence network for a single tRNA in one sample."
+#| fig.height: 6
+#| fig.width: 6
+#| error: false
+#| warning: false
+# Pick one tRNA and one sample
+or_single <- or_data |>
+  filter(
+    ref == "host-tRNA-Glu-TTC-1-1",
+    sample_id == "wt-15-ctl-01"
+  )
+
+# Get sprinzl coords: note UUC (RNA) vs TTC (DNA) in anticodon
+sprinzl_glu <- sprinzl |>
+  filter(trna_id == "tRNA-Glu-UUC-1-1")
+
+plot_chord_or(
+  or_single,
+  or_cutoff = 0.5,
+  p_cutoff = 0.05,
+  min_obs = 30,
+  sprinzl_coords = sprinzl_glu,
+  title = "host-tRNA-Glu-TTC-1-1 (ctl-01)"
+)
+```
+
+### Chord diagram: modification rewiring between conditions
+
+We can compare modification networks between conditions using the ratio of
+odds ratios (ROR). Positive log ROR indicates gained modification dependencies
+in the infected condition; negative indicates lost dependencies.
+
+```{r}
+#| label: fig-chord-ror
+#| fig.cap: "Modification rewiring between control and infected conditions."
+#| fig.height: 6
+#| fig.width: 6
+#| error: false
+#| warning: false
+# Add condition labels
+or_with_cond <- or_data |>
+  mutate(condition = ifelse(grepl("ctl", sample_id), "ctl", "inf")) |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1")
+
+# Compute ratio of odds ratios
+ror <- compute_ror(
+  or_with_cond,
+  numerator = "inf",
+  denominator = "ctl",
+  min_obs = 30
+)
+
+plot_chord_ror(
+  ror,
+  ror_cutoff = 0.5,
+  sprinzl_coords = sprinzl_glu,
+  title = "Modification rewiring: inf vs ctl (Glu-TTC-1-1)"
+)
+```
+
+## Loading data step by step
+
+For more control, you can load each data type individually instead of using
+`create_clover()`.
+
+```{r}
+#| label: stepwise-loading
+# Parse the pipeline config
+config <- read_pipeline_config(clover_example("ecoli/config.yaml"))
+config$samples
+
+# List expected output files
+files <- list_pipeline_files(
+  config,
+  types = c("charging", "bcerror", "odds_ratios")
+)
+files
+
+# Read individual files
+charging_one <- read_charging(files$path[files$sample_id == "wt-15-ctl-01" &
+  files$type == "charging"])
+head(charging_one)
+```
+
+```{r}
+#| label: stepwise-bcerror
+# Read a single bcerror file
+bcerr_one <- read_bcerror(files$path[files$sample_id == "wt-15-ctl-01" &
+  files$type == "bcerror"])
+head(bcerr_one)
+```
+
+## Session info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```
