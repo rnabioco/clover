@@ -12,7 +12,7 @@ theme_markdown_axes <- function() {
 
 #' Choose text color for contrast against a diverging fill.
 #' @noRd
-.compute_text_color <- function(values, color_limits) {
+compute_text_color <- function(values, color_limits) {
   threshold <- 0.4 * (color_limits[2] - color_limits[1]) / 2
   ifelse(
     is.na(values) | abs(values) <= threshold,
@@ -23,7 +23,7 @@ theme_markdown_axes <- function() {
 
 #' Cluster refs using Ward's D2 on a wide value matrix.
 #' @noRd
-.cluster_refs <- function(data, ref_col, value_col) {
+cluster_refs <- function(data, ref_col, value_col) {
   wide <- data |>
     dplyr::select(
       dplyr::all_of(c(ref_col, "sprinzl_label", value_col))
@@ -47,7 +47,7 @@ theme_markdown_axes <- function() {
 #' @return A list with `ref_order` (character) and `group_sizes` (named
 #'   integer vector with cumulative counts at each group boundary).
 #' @noRd
-.cluster_refs_by_group <- function(data, ref_col, value_col, group_col) {
+cluster_refs_by_group <- function(data, ref_col, value_col, group_col) {
   groups <- unique(data[[group_col]])
   groups <- sort(groups)
 
@@ -58,7 +58,7 @@ theme_markdown_axes <- function() {
     group_data <- data[data[[group_col]] == g, , drop = FALSE]
     refs <- unique(group_data[[ref_col]])
     if (length(refs) > 1) {
-      ordered <- .cluster_refs(group_data, ref_col, value_col)
+      ordered <- cluster_refs(group_data, ref_col, value_col)
     } else {
       ordered <- refs
     }
@@ -142,11 +142,11 @@ plot_mod_heatmap <- function(
   refs <- unique(data[[ref_col]])
 
   if (cluster && length(refs) > 1 && !is.null(group_col)) {
-    grouped <- .cluster_refs_by_group(data, ref_col, value_col, group_col)
+    grouped <- cluster_refs_by_group(data, ref_col, value_col, group_col)
     ref_order <- grouped$ref_order
     group_sizes <- grouped$group_sizes
   } else if (cluster && length(refs) > 1) {
-    ref_order <- .cluster_refs(data, ref_col, value_col)
+    ref_order <- cluster_refs(data, ref_col, value_col)
     group_sizes <- NULL
   } else {
     ref_order <- refs
@@ -206,7 +206,7 @@ plot_mod_heatmap <- function(
         NA_character_,
         as.character(.data[[label_col]])
       ),
-      .text_color = .compute_text_color(.data[[value_col]], color_limits)
+      .text_color = compute_text_color(.data[[value_col]], color_limits)
     )
 
     p <- p +
@@ -575,7 +575,7 @@ plot_bcerror_profile <- function(
 #' Create region shading layers from position-region data.
 #' @return A list of `geom_rect()` layers.
 #' @noRd
-.add_region_shading <- function(data, pos_col, region_col) {
+add_region_shading <- function(data, pos_col, region_col) {
   region_data <- data |>
     dplyr::filter(!is.na(.data[[region_col]])) |>
     dplyr::distinct(.data[[pos_col]], .data[[region_col]]) |>
@@ -603,7 +603,7 @@ plot_bcerror_profile <- function(
       .groups = "drop"
     )
 
-  palette <- .region_colors()
+  palette <- region_colors()
 
   lapply(seq_len(nrow(region_segs)), function(i) {
     seg <- region_segs[i, ]
@@ -626,7 +626,7 @@ plot_bcerror_profile <- function(
 #' Build a secondary x-axis with Sprinzl labels.
 #' @return A list with `$scale` and `$theme` elements to add to a ggplot.
 #' @noRd
-.create_sprinzl_axis <- function(data, pos_col, sprinzl_col, mod_col = NULL) {
+create_sprinzl_axis <- function(data, pos_col, sprinzl_col, mod_col = NULL) {
   pos_map <- data |>
     dplyr::distinct(.data[[pos_col]], .data[[sprinzl_col]]) |>
     dplyr::filter(!is.na(.data[[sprinzl_col]])) |>
@@ -726,7 +726,7 @@ plot_mod_landscape <- function(
   )
 
   region_layers <- if (!is.null(region_col)) {
-    .add_region_shading(data, pos_col, region_col)
+    add_region_shading(data, pos_col, region_col)
   } else {
     list()
   }
@@ -756,7 +756,7 @@ plot_mod_landscape <- function(
 
     # Add Sprinzl secondary axis to top panel
     if (is_first && !is.null(sprinzl_col)) {
-      sprinzl_axis <- .create_sprinzl_axis(
+      sprinzl_axis <- create_sprinzl_axis(
         data,
         pos_col,
         sprinzl_col,

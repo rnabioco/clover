@@ -78,9 +78,9 @@ globalVariables(c(
   "count",
   # compute_ror
   "mean_log_or",
-  # .add_modification_ring
+  # add_modification_ring
   "pos",
-  # .map_to_sprinzl
+  # map_to_sprinzl
   "from_idx",
   "to_idx",
   "from_label",
@@ -101,7 +101,7 @@ globalVariables(c(
   # plot_mod_heatmap annotations
   ".label_display",
   ".text_color",
-  # .add_region_shading
+  # add_region_shading
   ".xmin",
   ".xmax",
   ".seg_id",

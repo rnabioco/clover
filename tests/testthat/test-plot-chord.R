@@ -108,7 +108,7 @@ test_that("plot_chord_or converts positions to Sprinzl labels", {
     value = c(1.2, 0.8),
     stringsAsFactors = FALSE
   )
-  mapped <- clover:::.map_to_sprinzl(chord_df, sprinzl)
+  mapped <- clover:::map_to_sprinzl(chord_df, sprinzl)
   expect_equal(mapped$from, c("1", "2"))
   expect_equal(mapped$to, c("20a", "34"))
 })
@@ -134,7 +134,7 @@ test_that("plot_chord_or shows all Sprinzl positions as sectors", {
     residue = c("A", "G", "C", "U", "A")
   )
 
-  setup <- clover:::.setup_chord_sectors(
+  setup <- clover:::setup_chord_sectors(
     data.frame(from = "1", to = "3", value = 1.5),
     sprinzl
   )
@@ -152,7 +152,7 @@ test_that(".setup_chord_sectors returns residues", {
     residue = c("A", "G", "C", "U")
   )
 
-  setup <- clover:::.setup_chord_sectors(
+  setup <- clover:::setup_chord_sectors(
     data.frame(from = "1", to = "3", value = 1.0),
     sprinzl
   )
@@ -325,7 +325,7 @@ test_that(".map_to_sprinzl drops pairs with no mapping", {
     stringsAsFactors = FALSE
   )
 
-  mapped <- clover:::.map_to_sprinzl(chord_df, sprinzl)
+  mapped <- clover:::map_to_sprinzl(chord_df, sprinzl)
   # Row with to=2 should be dropped (NA sprinzl_label)
   expect_equal(nrow(mapped), 1)
   expect_equal(mapped$from, "1")
@@ -337,7 +337,7 @@ test_that(".equalize_sectors produces equal total widths", {
   mat["A", "B"] <- 2
   mat["A", "C"] <- 1
 
-  eq <- clover:::.equalize_sectors(mat)
+  eq <- clover:::equalize_sectors(mat)
   totals <- rowSums(eq$mat) + colSums(eq$mat)
   expect_equal(length(unique(totals)), 1)
   expect_false(any(diag(eq$link_visible)))
@@ -349,7 +349,7 @@ test_that(".equalize_sectors produces equal total widths", {
 test_that(".equalize_sectors handles all-zero matrix", {
   mat <- matrix(0, 3, 3, dimnames = list(c("A", "B", "C"), c("A", "B", "C")))
 
-  eq <- clover:::.equalize_sectors(mat)
+  eq <- clover:::equalize_sectors(mat)
   totals <- rowSums(eq$mat) + colSums(eq$mat)
   expect_equal(length(unique(totals)), 1)
   expect_true(all(totals > 0))
@@ -361,7 +361,7 @@ test_that(".add_chord_legend renders without error", {
 
   plot.new()
   expect_no_error(
-    clover:::.add_chord_legend(
+    clover:::add_chord_legend(
       labels = c("Co-occurring", "Exclusive"),
       colors = c("#D55E00", "#0072B2")
     )

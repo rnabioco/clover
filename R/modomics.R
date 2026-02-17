@@ -38,8 +38,8 @@ modomics_mods <- function(fasta, organism, min_identity = 0.7) {
     fasta <- read_fasta(fasta)
   }
 
-  mod_dict <- .load_cached_modifications()
-  modomics_seqs <- .load_cached_sequences(organism)
+  mod_dict <- load_cached_modifications()
+  modomics_seqs <- load_cached_sequences(organism)
 
   if (is.null(modomics_seqs)) {
     cli::cli_inform(
@@ -68,11 +68,11 @@ modomics_mods <- function(fasta, organism, min_identity = 0.7) {
   modomics_entries <- lapply(
     seq_len(nrow(modomics_seqs)),
     function(i) {
-      mods <- .extract_mod_positions(
+      mods <- extract_mod_positions(
         modomics_seqs$seq[i],
         mod_dict
       )
-      plain_seq <- .strip_modifications(
+      plain_seq <- strip_modifications(
         modomics_seqs$seq[i],
         mod_dict
       )
@@ -89,7 +89,7 @@ modomics_mods <- function(fasta, organism, min_identity = 0.7) {
     "Matching MODOMICS sequences to reference FASTA."
   )
 
-  result <- .match_modomics_to_refs(
+  result <- match_modomics_to_refs(
     modomics_entries,
     fasta,
     min_identity
@@ -124,7 +124,7 @@ modomics_organisms <- function() {
   gsub("_", " ", tools::file_path_sans_ext(rds_files))
 }
 
-.load_cached_modifications <- function() {
+load_cached_modifications <- function() {
   path <- system.file(
     "extdata",
     "modomics",
@@ -134,7 +134,7 @@ modomics_organisms <- function() {
   readRDS(path)
 }
 
-.load_cached_sequences <- function(organism) {
+load_cached_sequences <- function(organism) {
   fname <- paste0(gsub(" ", "_", organism), ".rds")
   path <- system.file(
     "extdata",
@@ -196,12 +196,12 @@ fetch_modomics_mods <- function(
   }
 
   cli::cli_inform("Fetching MODOMICS modification dictionary.")
-  mod_dict <- .fetch_modomics_modifications(cache_dir)
+  mod_dict <- fetch_modomics_modifications(cache_dir)
 
   cli::cli_inform(
     "Fetching MODOMICS tRNA sequences for {.val {organism}}."
   )
-  modomics_seqs <- .fetch_modomics_sequences(organism, cache_dir)
+  modomics_seqs <- fetch_modomics_sequences(organism, cache_dir)
 
   if (nrow(modomics_seqs) == 0) {
     cli::cli_abort(
@@ -216,11 +216,11 @@ fetch_modomics_mods <- function(
   modomics_entries <- lapply(
     seq_len(nrow(modomics_seqs)),
     function(i) {
-      mods <- .extract_mod_positions(
+      mods <- extract_mod_positions(
         modomics_seqs$seq[i],
         mod_dict
       )
-      plain_seq <- .strip_modifications(
+      plain_seq <- strip_modifications(
         modomics_seqs$seq[i],
         mod_dict
       )
@@ -237,7 +237,7 @@ fetch_modomics_mods <- function(
     "Matching MODOMICS sequences to reference FASTA."
   )
 
-  result <- .match_modomics_to_refs(
+  result <- match_modomics_to_refs(
     modomics_entries,
     fasta,
     min_identity
@@ -249,9 +249,9 @@ fetch_modomics_mods <- function(
   result
 }
 
-.fetch_modomics_modifications <- function(cache_dir = NULL) {
+fetch_modomics_modifications <- function(cache_dir = NULL) {
   url <- "https://genesilico.pl/modomics/api/modifications?format=json"
-  raw_json <- .load_or_fetch(url, cache_dir, "modomics_modifications")
+  raw_json <- load_or_fetch(url, cache_dir, "modomics_modifications")
 
   entries <- jsonlite::fromJSON(raw_json, simplifyVector = FALSE)
 
@@ -288,7 +288,7 @@ fetch_modomics_mods <- function(
   tbl[!is.na(tbl$new_abbrev) & nchar(tbl$new_abbrev) > 0, ]
 }
 
-.fetch_modomics_sequences <- function(organism, cache_dir = NULL) {
+fetch_modomics_sequences <- function(organism, cache_dir = NULL) {
   url <- paste0(
     "https://genesilico.pl/modomics/api/sequences",
     "?RNAtype=tRNA",
@@ -300,7 +300,7 @@ fetch_modomics_mods <- function(
     "modomics_sequences_",
     gsub(" ", "_", organism)
   )
-  raw_json <- .load_or_fetch(url, cache_dir, cache_key)
+  raw_json <- load_or_fetch(url, cache_dir, cache_key)
 
   entries <- jsonlite::fromJSON(raw_json, simplifyVector = FALSE)
 
@@ -331,7 +331,7 @@ fetch_modomics_mods <- function(
   )
 }
 
-.load_or_fetch <- function(url, cache_dir, cache_key) {
+load_or_fetch <- function(url, cache_dir, cache_key) {
   if (!is.null(cache_dir)) {
     cache_file <- file.path(cache_dir, paste0(cache_key, ".rds"))
     if (file.exists(cache_file)) {
@@ -367,7 +367,7 @@ fetch_modomics_mods <- function(
   data
 }
 
-.extract_mod_positions <- function(seq, mod_dict) {
+extract_mod_positions <- function(seq, mod_dict) {
   if (is.na(seq) || nchar(seq) == 0) {
     return(dplyr::tibble(
       pos = integer(),
@@ -400,7 +400,7 @@ fetch_modomics_mods <- function(
   dplyr::tibble(pos = pos, mod_full = mod_full, mod1 = mod1)
 }
 
-.strip_modifications <- function(seq, mod_dict) {
+strip_modifications <- function(seq, mod_dict) {
   if (is.na(seq) || nchar(seq) == 0) {
     return("")
   }
@@ -428,7 +428,7 @@ fetch_modomics_mods <- function(
   paste0(result, collapse = "")
 }
 
-.match_modomics_to_refs <- function(
+match_modomics_to_refs <- function(
   modomics_entries,
   fasta,
   min_identity
@@ -449,7 +449,7 @@ fetch_modomics_mods <- function(
     dna_seq <- gsub("U", "T", entry$plain_seq)
     modomics_dna <- Biostrings::DNAString(dna_seq)
 
-    candidate_idx <- .find_aa_candidates(
+    candidate_idx <- find_aa_candidates(
       entry$subtype,
       fasta_names
     )
@@ -489,7 +489,7 @@ fetch_modomics_mods <- function(
     best_aln <- alns[best]
     best_ref <- fasta_names[candidate_idx[best]]
 
-    transferred <- .transfer_positions(best_aln, entry$mods)
+    transferred <- transfer_positions(best_aln, entry$mods)
     if (nrow(transferred) > 0) {
       transferred$ref <- best_ref
       results[[i]] <- transferred
@@ -511,7 +511,7 @@ fetch_modomics_mods <- function(
     dplyr::select(ref, pos, mod_full, mod1)
 }
 
-.find_aa_candidates <- function(subtype, fasta_names) {
+find_aa_candidates <- function(subtype, fasta_names) {
   patterns <- subtype
   if (subtype == "Ini") {
     patterns <- c("Ini", "iMet", "Met")
@@ -527,7 +527,7 @@ fetch_modomics_mods <- function(
   candidate_idx
 }
 
-.transfer_positions <- function(alignment, mod_positions) {
+transfer_positions <- function(alignment, mod_positions) {
   aln_pattern_str <- as.character(
     pwalign::alignedPattern(alignment)
   )

@@ -88,7 +88,7 @@ plot_chord_or <- function(
     negative_color
   )
 
-  .render_chord(
+  render_chord(
     chord_df = chord_df,
     chord_colors = chord_colors,
     sprinzl_coords = sprinzl_coords,
@@ -241,7 +241,7 @@ plot_chord_ror <- function(
     lost_color
   )
 
-  .render_chord(
+  render_chord(
     chord_df = chord_df,
     chord_colors = chord_colors,
     sprinzl_coords = sprinzl_coords,
@@ -259,7 +259,7 @@ plot_chord_ror <- function(
 #'
 #' Shared rendering logic used by [plot_chord_or()] and [plot_chord_ror()].
 #' @noRd
-.render_chord <- function(
+render_chord <- function(
   chord_df,
   chord_colors,
   sprinzl_coords,
@@ -271,21 +271,21 @@ plot_chord_ror <- function(
 ) {
   # Map to Sprinzl labels if coords provided
   if (!is.null(sprinzl_coords)) {
-    chord_df <- .map_to_sprinzl(chord_df, sprinzl_coords)
+    chord_df <- map_to_sprinzl(chord_df, sprinzl_coords)
     chord_colors <- chord_colors[seq_len(nrow(chord_df))]
   }
 
   # Set up sectors and grid colors
-  setup <- .setup_chord_sectors(chord_df, sprinzl_coords)
+  setup <- setup_chord_sectors(chord_df, sprinzl_coords)
 
   # Build adjacency matrix so all sectors appear (even without chords)
-  adj_mat <- .build_adjacency_matrix(chord_df, setup$order)
+  adj_mat <- build_adjacency_matrix(chord_df, setup$order)
 
   # Equalize sector widths with diagonal padding
-  eq <- .equalize_sectors(adj_mat)
+  eq <- equalize_sectors(adj_mat)
 
   # Map chord colors to match adjacency matrix links
-  col_mat <- .build_color_matrix(
+  col_mat <- build_color_matrix(
     chord_df,
     chord_colors,
     setup$order,
@@ -316,18 +316,18 @@ plot_chord_ror <- function(
   )
 
   # Add sector labels
-  .add_sector_labels()
+  add_sector_labels()
 
   # Add chord color legend
-  .add_chord_legend(labels = legend_labels, colors = legend_colors)
+  add_chord_legend(labels = legend_labels, colors = legend_colors)
 
   # Add annotation rings when sprinzl coords provided
   if (!is.null(sprinzl_coords)) {
-    .add_region_ring(setup$regions)
-    .add_nucleotide_ring(setup$residues)
+    add_region_ring(setup$regions)
+    add_nucleotide_ring(setup$residues)
 
     if (!is.null(mods)) {
-      .add_modification_ring(mods, sprinzl_coords, setup$order)
+      add_modification_ring(mods, sprinzl_coords, setup$order)
     }
   }
 
@@ -348,7 +348,7 @@ plot_chord_ror <- function(
 #' @return `chord_df` with `from`/`to` replaced by Sprinzl labels. Rows
 #'   where either position has no Sprinzl mapping are dropped.
 #' @noRd
-.map_to_sprinzl <- function(chord_df, sprinzl_coords) {
+map_to_sprinzl <- function(chord_df, sprinzl_coords) {
   lookup <- sprinzl_coords |>
     dplyr::select(pos, sprinzl_label) |>
     dplyr::distinct(pos, .keep_all = TRUE) |>
@@ -377,7 +377,7 @@ plot_chord_ror <- function(
 
 #' Set up chord diagram sectors from position pairs.
 #' @noRd
-.setup_chord_sectors <- function(chord_df, sprinzl_coords = NULL) {
+setup_chord_sectors <- function(chord_df, sprinzl_coords = NULL) {
   if (!is.null(sprinzl_coords)) {
     # Use ALL non-NA Sprinzl positions as sectors
     all_labels <- sprinzl_coords |>
@@ -437,7 +437,7 @@ plot_chord_ror <- function(
 #' Positions without connections have all-zero rows/columns but still
 #' appear as sectors in the diagram.
 #' @noRd
-.build_adjacency_matrix <- function(chord_df, sector_order) {
+build_adjacency_matrix <- function(chord_df, sector_order) {
   n <- length(sector_order)
   mat <- matrix(0, nrow = n, ncol = n)
   rownames(mat) <- sector_order
@@ -459,7 +459,7 @@ plot_chord_ror <- function(
 #' Maps per-chord colors into a matrix matching the adjacency matrix,
 #' with transparency already applied.
 #' @noRd
-.build_color_matrix <- function(
+build_color_matrix <- function(
   chord_df,
   chord_colors,
   sector_order,
@@ -494,7 +494,7 @@ plot_chord_ror <- function(
 
 #' Add sector labels to chord diagram.
 #' @noRd
-.add_sector_labels <- function() {
+add_sector_labels <- function() {
   circlize::circos.track(
     track.index = 1,
     ylim = c(0, 1),
@@ -518,8 +518,8 @@ plot_chord_ror <- function(
 
 #' Add outer ring colored by structural region.
 #' @noRd
-.add_region_ring <- function(regions) {
-  region_palette <- .region_colors()
+add_region_ring <- function(regions) {
+  region_palette <- region_colors()
 
   circlize::circos.track(
     ylim = c(0, 1),
@@ -565,8 +565,8 @@ plot_chord_ror <- function(
 
 #' Add ring colored by reference nucleotide.
 #' @noRd
-.add_nucleotide_ring <- function(residues) {
-  nuc_palette <- .nucleotide_colors()
+add_nucleotide_ring <- function(residues) {
+  nuc_palette <- nucleotide_colors()
 
   circlize::circos.track(
     ylim = c(0, 1),
@@ -606,7 +606,7 @@ plot_chord_ror <- function(
 
 #' Add ring highlighting modification positions.
 #' @noRd
-.add_modification_ring <- function(mods, sprinzl_coords, sector_order) {
+add_modification_ring <- function(mods, sprinzl_coords, sector_order) {
   # Map mod positions to Sprinzl labels
   lookup <- sprinzl_coords |>
     dplyr::select(pos, sprinzl_label) |>
@@ -647,11 +647,11 @@ plot_chord_ror <- function(
 #' same total width in the chord diagram (off-diagonal links + diagonal
 #' padding = constant).
 #'
-#' @param mat Square adjacency matrix from `.build_adjacency_matrix()`.
+#' @param mat Square adjacency matrix from `build_adjacency_matrix()`.
 #' @return A list with `mat` (padded matrix) and `link_visible` (logical
 #'   matrix; `FALSE` on diagonal entries used for padding).
 #' @noRd
-.equalize_sectors <- function(mat) {
+equalize_sectors <- function(mat) {
   n <- nrow(mat)
   link_total <- rowSums(mat) + colSums(mat)
   # Diagonal entries contribute to both row and column sums, so each
@@ -674,7 +674,7 @@ plot_chord_ror <- function(
 #' @param labels Character vector of legend labels.
 #' @param colors Character vector of colors matching `labels`.
 #' @noRd
-.add_chord_legend <- function(labels, colors) {
+add_chord_legend <- function(labels, colors) {
   graphics::legend(
     "bottomright",
     legend = labels,
@@ -687,7 +687,7 @@ plot_chord_ror <- function(
 
 #' Named color palette for nucleotides.
 #' @noRd
-.nucleotide_colors <- function() {
+nucleotide_colors <- function() {
   c(
     "A" = "#4DAF4A",
     "C" = "#377EB8",
@@ -698,7 +698,7 @@ plot_chord_ror <- function(
 
 #' Named color palette for tRNA structural regions.
 #' @noRd
-.region_colors <- function() {
+region_colors <- function() {
   c(
     "acceptor-stem" = "#E41A1C",
     "acceptor-tail" = "#E41A1C",
