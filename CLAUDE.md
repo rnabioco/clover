@@ -5,8 +5,7 @@ R package for analyzing and visualizing nanopore tRNA sequencing data.
 ## Session Workflow (READ FIRST)
 
 **At session start:**
-1. Read `PROJECT_TRACKER.md` to understand current state and recent work
-2. Review `R/` directory to understand existing patterns before adding code
+1. Review `R/` directory to understand existing patterns before adding code
 
 **Before creating new functions:**
 1. Check existing files in `R/` for similar functionality
@@ -21,11 +20,7 @@ R package for analyzing and visualizing nanopore tRNA sequencing data.
 - [ ] NAMESPACE updated if exports changed
 
 **At session end:**
-1. Update `PROJECT_TRACKER.md` with:
-   - Work completed this session
-   - Any issues encountered
-   - Suggested next steps
-2. Commit all changes with descriptive message
+1. Commit all changes with descriptive message
 
 **File size limits:**
 - No files > 5MB to git
