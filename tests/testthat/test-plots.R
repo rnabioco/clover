@@ -256,13 +256,13 @@ test_that("plot_mod_heatmap adds caption", {
   expect_identical(p$labels$caption, "Test caption")
 })
 
-test_that(".compute_text_color returns correct colors", {
+test_that("compute_text_color returns correct colors", {
   values <- c(0.01, -0.01, 0.2, -0.2, NA)
-  colors <- .compute_text_color(values, c(-0.25, 0.25))
+  colors <- compute_text_color(values, c(-0.25, 0.25))
   expect_equal(colors, c("black", "black", "white", "white", "black"))
 })
 
-test_that(".cluster_refs returns ordered refs", {
+test_that("cluster_refs returns ordered refs", {
   df <- tidyr::expand_grid(
     ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
     sprinzl_label = as.character(1:5)
@@ -270,12 +270,12 @@ test_that(".cluster_refs returns ordered refs", {
   df$value <- rnorm(nrow(df), sd = 0.1)
   df$sprinzl_label <- order_sprinzl_positions(df$sprinzl_label)
 
-  result <- .cluster_refs(df, "ref", "value")
+  result <- cluster_refs(df, "ref", "value")
   expect_length(result, 3)
   expect_setequal(result, paste0("tRNA-", c("Ala", "Gly", "Ser")))
 })
 
-test_that(".cluster_refs_by_group clusters within groups", {
+test_that("cluster_refs_by_group clusters within groups", {
   df <- tidyr::expand_grid(
     ref = paste0("tRNA-", c("Ala", "Gly", "Ser", "Leu")),
     sprinzl_label = as.character(1:5)
@@ -284,7 +284,7 @@ test_that(".cluster_refs_by_group clusters within groups", {
   df$group <- rep(c("A", "A", "B", "B"), each = 5)
   df$sprinzl_label <- order_sprinzl_positions(df$sprinzl_label)
 
-  result <- .cluster_refs_by_group(df, "ref", "value", "group")
+  result <- cluster_refs_by_group(df, "ref", "value", "group")
   expect_named(result, c("ref_order", "group_sizes"))
   expect_length(result$ref_order, 4)
   expect_length(result$group_sizes, 2)

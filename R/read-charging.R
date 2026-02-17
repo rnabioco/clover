@@ -62,7 +62,7 @@ read_odds_ratios <- function(path) {
 #' charging <- read_charging_multi(paths)
 #' }
 read_charging_multi <- function(paths) {
-  .read_multi(paths, read_charging)
+  read_multi(paths, read_charging)
 }
 
 #' Read odds ratio files for multiple samples.
@@ -84,12 +84,12 @@ read_charging_multi <- function(paths) {
 #' or_data <- read_odds_ratios_multi(paths)
 #' }
 read_odds_ratios_multi <- function(paths) {
-  .read_multi(paths, read_odds_ratios)
+  read_multi(paths, read_odds_ratios)
 }
 
 # Internal helpers -----------------------------------------------------------
 
-.read_multi <- function(paths, reader) {
+read_multi <- function(paths, reader) {
   if (is.null(names(paths))) {
     cli_abort("{.arg paths} must be a named character vector.")
   }

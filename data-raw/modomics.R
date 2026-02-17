@@ -18,7 +18,7 @@ dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Cache modification dictionary
 cli::cli_inform("Fetching MODOMICS modification dictionary.")
-mod_dict <- .fetch_modomics_modifications()
+mod_dict <- fetch_modomics_modifications()
 saveRDS(mod_dict, file.path(out_dir, "modifications.rds"))
 cli::cli_inform(
   "Saved {nrow(mod_dict)} modification{?s} to modifications.rds."
@@ -27,7 +27,7 @@ cli::cli_inform(
 # Cache per-organism tRNA sequences
 for (org in organisms) {
   cli::cli_inform("Fetching tRNA sequences for {.val {org}}.")
-  seqs <- .fetch_modomics_sequences(org)
+  seqs <- fetch_modomics_sequences(org)
 
   if (nrow(seqs) == 0) {
     cli::cli_warn("No tRNA sequences found for {.val {org}}, skipping.")

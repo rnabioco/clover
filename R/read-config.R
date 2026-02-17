@@ -30,7 +30,7 @@ read_pipeline_config <- function(config_path) {
   cfg <- yaml::read_yaml(config_path)
 
   # Parse samples: either inline YAML list or external TSV file
-  samples <- .parse_samples(cfg, config_dir)
+  samples <- parse_samples(cfg, config_dir)
 
   # Resolve paths relative to config directory
   # Support both output_dir and output_directory keys
@@ -40,8 +40,8 @@ read_pipeline_config <- function(config_path) {
       "Config file must contain {.field output_dir} or {.field output_directory}."
     )
   }
-  output_dir <- .resolve_path(output_dir_raw, config_dir)
-  fasta <- .resolve_path(cfg[["fasta"]], config_dir)
+  output_dir <- resolve_path(output_dir_raw, config_dir)
+  fasta <- resolve_path(cfg[["fasta"]], config_dir)
 
   list(
     samples = samples,
@@ -176,7 +176,7 @@ read_pipeline_results <- function(
 #' This function auto-detects whether the file has a header by checking if
 #' the first line contains "sample_id".
 #' @noRd
-.read_samples_tsv <- function(path) {
+read_samples_tsv <- function(path) {
   first_line <- readLines(path, n = 1)
   has_header <- grepl("sample_id", first_line, fixed = TRUE)
 
@@ -193,7 +193,7 @@ read_pipeline_results <- function(
 
 #' Resolve a path relative to a base directory.
 #' @noRd
-.resolve_path <- function(path, base_dir) {
+resolve_path <- function(path, base_dir) {
   if (is.null(path)) {
     return(NULL)
   }
@@ -207,7 +207,7 @@ read_pipeline_results <- function(
 
 #' Parse sample information from config.
 #' @noRd
-.parse_samples <- function(cfg, config_dir) {
+parse_samples <- function(cfg, config_dir) {
   samples_entry <- cfg[["samples"]]
 
   if (is.null(samples_entry)) {
@@ -216,8 +216,8 @@ read_pipeline_results <- function(
 
   # If samples is a string, treat as path to a TSV file
   if (is.character(samples_entry) && length(samples_entry) == 1) {
-    samples_path <- .resolve_path(samples_entry, config_dir)
-    return(.read_samples_tsv(samples_path))
+    samples_path <- resolve_path(samples_entry, config_dir)
+    return(read_samples_tsv(samples_path))
   }
 
   # If samples is a list/map, convert to tibble
@@ -226,7 +226,7 @@ read_pipeline_results <- function(
       sample_id = names(samples_entry),
       data_path = vapply(
         samples_entry,
-        function(x) .resolve_path(as.character(x), config_dir),
+        function(x) resolve_path(as.character(x), config_dir),
         character(1)
       )
     )
