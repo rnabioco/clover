@@ -16,11 +16,9 @@
 #'
 #' @return A [SummarizedExperiment::SummarizedExperiment] with:
 #'   - **assay "counts"**: abundance count matrix (charged + uncharged)
-#'   - **assay "charging"**: charging count matrix (charged/uncharged columns
-#'     per sample), only if `"charging"` is in `types`
 #'   - **colData**: sample metadata
-#'   - **metadata**: list with `$config`, `$bcerror`, `$odds_ratios`, `$fasta`
-#'     as available
+#'   - **metadata**: list with `$config`, `$charging`, `$bcerror`,
+#'     `$odds_ratios`, `$fasta` as available
 #'
 #' @export
 #'
@@ -89,6 +87,9 @@ create_clover <- function(
 
   # Build metadata list
   meta <- list(config = config)
+  if ("charging" %in% types && !is.null(results$charging)) {
+    meta$charging <- results$charging
+  }
   if ("bcerror" %in% types && !is.null(results$bcerror)) {
     meta$bcerror <- results$bcerror
   }
