@@ -16,7 +16,8 @@ tabulate_deseq(data, lab_col = "ref", n = 10)
 \item{n}{Maximum number of rows to display. Default \code{10}.}
 }
 \value{
-A \code{gt_tbl} object.
+An interactive \code{gt_tbl} object with search, sorting, and
+pagination.
 }
 \description{
 Create a formatted gt table of the top significant tRNAs from
