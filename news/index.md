@@ -2,6 +2,11 @@
 
 ## clover 0.0.0.9000
 
+- [`compute_charging_diffs()`](https://rnabioco.github.io/clover/reference/compute_charging_diffs.md)
+  compares per-tRNA charging ratios between two conditions, returning
+  mean ratios, standard errors, and the between-condition difference
+  with propagated SE.
+
 - [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md)
   downloads tRNA modification annotations from the MODOMICS database and
   maps them onto reference sequences using pairwise alignment

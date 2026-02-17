@@ -38,6 +38,8 @@
   : Build column metadata for DESeq2.
 - [`charging_count_matrix()`](https://rnabioco.github.io/clover/reference/charging_count_matrix.md)
   : Build a charging count matrix for differential charging analysis.
+- [`compute_charging_diffs()`](https://rnabioco.github.io/clover/reference/compute_charging_diffs.md)
+  : Compute charging ratio differences between conditions.
 - [`compute_odds_ratios()`](https://rnabioco.github.io/clover/reference/compute_odds_ratios.md)
   : Compute pairwise modification co-occurrence odds ratios.
 - [`compute_ror()`](https://rnabioco.github.io/clover/reference/compute_ror.md)
