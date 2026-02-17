@@ -37,7 +37,7 @@ total abundance across all samples. Default \code{NULL} (keep all).}
 \value{
 A tibble with columns:
 \describe{
-\item{tRNA}{tRNA identifier.}
+\item{tRNA}{tRNA identifier (factor ordered by \code{diff}).}
 \item{ratio_numerator}{Mean charging ratio for the numerator
 condition.}
 \item{ratio_denominator}{Mean charging ratio for the denominator

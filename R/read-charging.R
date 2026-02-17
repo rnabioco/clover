@@ -131,7 +131,7 @@ read_odds_ratios_multi <- function(paths) {
 #'
 #' @return A tibble with columns:
 #' \describe{
-#'   \item{tRNA}{tRNA identifier.}
+#'   \item{tRNA}{tRNA identifier (factor ordered by `diff`).}
 #'   \item{ratio_numerator}{Mean charging ratio for the numerator
 #'     condition.}
 #'   \item{ratio_denominator}{Mean charging ratio for the denominator
@@ -230,7 +230,9 @@ compute_charging_diffs <- function(
       se_denominator = .data[[den_se]],
       diff = .data[[num_ratio]] - .data[[den_ratio]],
       se_diff = sqrt(.data[[num_se]]^2 + .data[[den_se]]^2)
-    )
+    ) |>
+    dplyr::filter(!is.na(diff)) |>
+    dplyr::mutate(tRNA = forcats::fct_reorder(tRNA, diff))
 }
 
 # Odds ratio computation from mod_calls -----------------------------------------
