@@ -28,11 +28,9 @@ to be retained in count matrices. Default \code{10}.}
 A \link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment} with:
 \itemize{
 \item \strong{assay "counts"}: abundance count matrix (charged + uncharged)
-\item \strong{assay "charging"}: charging count matrix (charged/uncharged columns
-per sample), only if \code{"charging"} is in \code{types}
 \item \strong{colData}: sample metadata
-\item \strong{metadata}: list with \verb{$config}, \verb{$bcerror}, \verb{$odds_ratios}, \verb{$fasta}
-as available
+\item \strong{metadata}: list with \verb{$config}, \verb{$charging}, \verb{$bcerror},
+\verb{$odds_ratios}, \verb{$fasta} as available
 }
 }
 \description{

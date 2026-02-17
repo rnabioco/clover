@@ -19,10 +19,11 @@ test_that("create_clover builds SE from ecoli test data", {
   expect_true("sample_id" %in% names(cd))
   expect_equal(nrow(cd), 6)
 
-  # Check metadata has bcerror
+  # Check metadata has charging and bcerror
   meta <- S4Vectors::metadata(se)
   expect_true("config" %in% names(meta))
-  expect_true("bcerror" %in% names(meta))
+  expect_s3_class(meta$charging, "tbl_df")
+  expect_true(nrow(meta$charging) > 0)
   expect_s3_class(meta$bcerror, "tbl_df")
   expect_true(nrow(meta$bcerror) > 0)
 
