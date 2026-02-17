@@ -24,9 +24,8 @@ test_that("read_bcerror works with new pipeline format", {
     )
   )
 
-  # ref should be a factor
-
-  expect_true(is.factor(bcerr$ref))
+  # ref should be character
+  expect_type(bcerr$ref, "character")
   # pos should be integer
   expect_true(is.integer(bcerr$pos))
   # error_rate, mis, ins, del should be numeric
@@ -34,5 +33,5 @@ test_that("read_bcerror works with new pipeline format", {
   expect_true(is.numeric(bcerr$mis))
 
   # 5 charged + 5 uncharged tRNAs in subset data
-  expect_equal(length(levels(bcerr$ref)), 10)
+  expect_equal(length(unique(bcerr$ref)), 10)
 })

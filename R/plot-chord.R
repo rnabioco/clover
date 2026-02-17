@@ -26,9 +26,9 @@
 #' @param sprinzl_coords An optional tibble from [read_sprinzl_coords()] used
 #'   to order sectors by Sprinzl position and color by structural region.
 #' @param mods An optional tibble of modification annotations (e.g., from
-#'   [fetch_modomics_mods()]) with columns `pos` (seq_index) and `mod1`.
-#'   When provided along with `sprinzl_coords`, modification positions are
-#'   highlighted as an annotation ring.
+#'   [fetch_modomics_mods()]) with columns `pos` and `mod1`. When provided
+#'   along with `sprinzl_coords`, modification positions are highlighted
+#'   as an annotation ring.
 #' @param title Optional plot title.
 #' @param transparency Transparency for chord colors (0 = opaque, 1 = fully
 #'   transparent). Default `0.4`.
@@ -189,9 +189,9 @@ compute_ror <- function(
 #' @param sprinzl_coords An optional tibble from [read_sprinzl_coords()] used
 #'   to order sectors and color by structural region.
 #' @param mods An optional tibble of modification annotations (e.g., from
-#'   [fetch_modomics_mods()]) with columns `pos` (seq_index) and `mod1`.
-#'   When provided along with `sprinzl_coords`, modification positions are
-#'   highlighted as an annotation ring.
+#'   [fetch_modomics_mods()]) with columns `pos` and `mod1`. When provided
+#'   along with `sprinzl_coords`, modification positions are highlighted
+#'   as an annotation ring.
 #' @param title Optional plot title.
 #' @param transparency Transparency for chord colors. Default `0.4`.
 #'
@@ -339,9 +339,9 @@ plot_chord_ror <- function(
   invisible(NULL)
 }
 
-#' Map pos1/pos2 from seq_index to Sprinzl labels.
+#' Map pos1/pos2 to Sprinzl labels.
 #'
-#' @param chord_df Data frame with `from` and `to` columns (seq_index as
+#' @param chord_df Data frame with `from` and `to` columns (position as
 #'   character).
 #' @param sprinzl_coords Tibble from [read_sprinzl_coords()].
 #'
@@ -350,17 +350,17 @@ plot_chord_ror <- function(
 #' @noRd
 .map_to_sprinzl <- function(chord_df, sprinzl_coords) {
   lookup <- sprinzl_coords |>
-    dplyr::select(seq_index, sprinzl_label) |>
-    dplyr::distinct(seq_index, .keep_all = TRUE) |>
+    dplyr::select(pos, sprinzl_label) |>
+    dplyr::distinct(pos, .keep_all = TRUE) |>
     dplyr::filter(!is.na(sprinzl_label))
 
   chord_df$from_idx <- as.numeric(chord_df$from)
   chord_df$to_idx <- as.numeric(chord_df$to)
 
   chord_df <- chord_df |>
-    dplyr::left_join(lookup, by = c("from_idx" = "seq_index")) |>
+    dplyr::left_join(lookup, by = c("from_idx" = "pos")) |>
     dplyr::rename(from_label = sprinzl_label) |>
-    dplyr::left_join(lookup, by = c("to_idx" = "seq_index")) |>
+    dplyr::left_join(lookup, by = c("to_idx" = "pos")) |>
     dplyr::rename(to_label = sprinzl_label)
 
   # Drop pairs where either position has no mapping
@@ -607,14 +607,14 @@ plot_chord_ror <- function(
 #' Add ring highlighting modification positions.
 #' @noRd
 .add_modification_ring <- function(mods, sprinzl_coords, sector_order) {
-  # Map mod positions (seq_index) to Sprinzl labels
+  # Map mod positions to Sprinzl labels
   lookup <- sprinzl_coords |>
-    dplyr::select(seq_index, sprinzl_label) |>
-    dplyr::distinct(seq_index, .keep_all = TRUE) |>
+    dplyr::select(pos, sprinzl_label) |>
+    dplyr::distinct(pos, .keep_all = TRUE) |>
     dplyr::filter(!is.na(sprinzl_label))
 
   mod_mapped <- mods |>
-    dplyr::inner_join(lookup, by = c("pos" = "seq_index"))
+    dplyr::inner_join(lookup, by = "pos")
 
   mod_labels <- unique(mod_mapped$sprinzl_label)
 

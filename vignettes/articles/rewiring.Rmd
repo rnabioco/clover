@@ -1,0 +1,140 @@
+---
+title: "Modification rewiring analysis"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10,
+  fig.height = 6,
+  warning = FALSE
+)
+```
+
+```{r}
+#| label: setup
+#| message: false
+library(clover)
+library(dplyr)
+```
+
+## Overview
+
+This article demonstrates clover's modification rewiring analysis workflow.
+"Rewiring" refers to changes in modification co-occurrence patterns between
+conditions — some position pairs may gain or lose coordinated modification.
+
+The workflow operates at the **isodecoder** level, collapsing gene copies
+to increase statistical power. It uses the same *E. coli* T4 phage infection
+dataset as the main vignette.
+
+## Load data
+
+```{r}
+#| label: load-data
+config_path <- clover_example("ecoli/config.yaml")
+
+sample_info <- data.frame(
+  sample_id = c(
+    "wt-15-ctl-01",
+    "wt-15-ctl-02",
+    "wt-15-ctl-03",
+    "wt-15-inf-01",
+    "wt-15-inf-02",
+    "wt-15-inf-03"
+  ),
+  condition = rep(c("ctl", "inf"), each = 3)
+)
+
+se <- create_clover(
+  config_path,
+  types = c("charging", "odds_ratios"),
+  sample_info = sample_info
+)
+
+or_data <- S4Vectors::metadata(se)$odds_ratios
+or_data$condition <- ifelse(grepl("ctl", or_data$sample_id), "ctl", "inf")
+```
+
+## Clean and aggregate odds ratios
+
+The raw odds ratios may contain infinite values from zero-cell contingency
+tables. `clean_odds_ratios()` caps these at a reasonable threshold.
+
+```{r}
+#| label: clean-or
+or_clean <- clean_odds_ratios(or_data)
+glimpse(or_clean)
+```
+
+Next, collapse per-gene odds ratios to the isodecoder level. This averages
+across gene copies (e.g., `tRNA-Glu-TTC-1-1` and `tRNA-Glu-TTC-2-1` become
+`tRNA-Glu-TTC`).
+
+```{r}
+#| label: aggregate-isodecoder
+or_ctl <- or_clean |>
+  filter(condition == "ctl") |>
+  aggregate_or_isodecoder()
+
+or_inf <- or_clean |>
+  filter(condition == "inf") |>
+  aggregate_or_isodecoder()
+
+or_ctl
+```
+
+## Compare conditions with relative odds ratios
+
+`compute_ror_isodecoder()` computes the relative odds ratio (ROR) between
+two conditions with z-score significance testing.
+
+```{r}
+#| label: compute-ror
+ror <- compute_ror_isodecoder(or_inf, or_ctl)
+ror
+```
+
+## Rewiring scores and dimensionality reduction
+
+Build a matrix of ROR values (isodecoders × position pairs) and compute
+per-isodecoder rewiring scores.
+
+```{r}
+#| label: rewiring-matrix
+mat <- prepare_rewiring_matrix(ror)
+scores <- calculate_rewiring_scores(mat)
+scores |> arrange(desc(euclidean_magnitude))
+```
+
+Run PCoA for dimensionality reduction and visualize the result.
+
+```{r}
+#| label: fig-pcoa
+#| fig.cap: "PCoA of tRNA modification rewiring between control and infected conditions."
+#| fig.height: 6
+pcoa <- perform_pcoa(mat)
+plot_pcoa_rewiring(pcoa, scores)
+```
+
+## Network visualization
+
+Build a modification network from the ROR data and visualize it as an arc
+diagram.
+
+```{r}
+#| label: fig-arc-diagram
+#| fig.cap: "Arc diagram of modification rewiring network."
+#| fig.height: 6
+graph <- build_or_network(ror)
+plot_arc_diagram(graph, title = "Modification rewiring: inf vs ctl")
+```
+
+## Session info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```

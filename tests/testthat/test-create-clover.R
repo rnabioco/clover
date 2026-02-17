@@ -29,7 +29,7 @@ test_that("create_clover builds SE from ecoli test data", {
 
   # Check rowData
   rd <- as.data.frame(SummarizedExperiment::rowData(se))
-  expect_true("tRNA" %in% names(rd))
+  expect_true("ref" %in% names(rd))
 })
 
 test_that("create_clover with sample_info merges metadata", {

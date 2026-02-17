@@ -10,7 +10,7 @@ read_charging(path)
 \item{path}{Path to a \verb{\{sample\}.charging.cpm.tsv.gz} file.}
 }
 \value{
-A tibble with columns including \code{tRNA}, \code{counts_charged},
+A tibble with columns including \code{ref}, \code{counts_charged},
 \code{counts_uncharged}, \code{cpm_charged}, \code{cpm_uncharged}, and \code{total_count}.
 }
 \description{

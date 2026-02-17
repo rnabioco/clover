@@ -1,8 +1,17 @@
-#' Read counts from file
+#' Read a counts TSV file.
 #'
-#' @param path path to file
+#' Read a per-tRNA counts file produced by the tRNA sequencing pipeline.
+#'
+#' @param path Path to a counts TSV file (may be gzipped).
+#'
+#' @return A tibble.
 #'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' counts <- read_counts("sample1.counts.tsv.gz")
+#' }
 read_counts <- function(path) {
   readr::read_tsv(path, show_col_types = FALSE)
 }
@@ -52,8 +61,7 @@ read_bcerror <- function(bcerr_path) {
       mean_qual = MeanQual
     ) |>
     dplyr::mutate(
-      pos = as.integer(pos),
-      ref = as.factor(ref)
+      pos = as.integer(pos)
     ) |>
     dplyr::select(
       ref,

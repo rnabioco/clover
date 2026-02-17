@@ -7,7 +7,7 @@
 plot_abundance_charging(
   deseq_res,
   charging_diffs,
-  lab_col = "tRNA",
+  lab_col = "ref",
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 2,
@@ -16,13 +16,13 @@ plot_abundance_charging(
 }
 \arguments{
 \item{deseq_res}{A tibble from \code{\link[=tidy_deseq_results]{tidy_deseq_results()}} with at least
-\code{tRNA}, \code{log2FoldChange}, and \code{padj} columns.}
+\code{ref}, \code{log2FoldChange}, and \code{padj} columns.}
 
 \item{charging_diffs}{A tibble from \code{\link[=compute_charging_diffs]{compute_charging_diffs()}} with
-at least \code{tRNA} and \code{diff} columns.}
+at least \code{ref} and \code{diff} columns.}
 
 \item{lab_col}{Column name (string) used for point labels. Default
-\code{"tRNA"}.}
+\code{"ref"}.}
 
 \item{padj_cutoff}{Numeric; significance threshold for \code{padj}.
 Default \code{0.05}.}
@@ -47,12 +47,12 @@ colored by quadrant and labeled with
 }
 \examples{
 deseq_res <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:6),
+  ref = paste0("tRNA-", 1:6),
   log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
   padj = c(0.01, 0.02, 0.5, 0.6, 0.001, 0.003)
 )
 charging_diffs <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:6),
+  ref = paste0("tRNA-", 1:6),
   diff = c(0.1, -0.1, 0.05, -0.05, -0.2, 0.15),
   se_diff = rep(0.03, 6)
 )

@@ -209,8 +209,8 @@ bcerror_delta <- bcerror_delta |>
 # Join with sprinzl coords to get structural labels
 bcerror_sprinzl <- bcerror_delta |>
   left_join(
-    sprinzl |> select(trna_id, seq_index, sprinzl_label),
-    by = c("trna_id", "pos" = "seq_index")
+    sprinzl |> select(trna_id, pos, sprinzl_label),
+    by = c("trna_id", "pos")
   ) |>
   filter(!is.na(sprinzl_label))
 
@@ -219,6 +219,43 @@ plot_mod_heatmap(
   value_col = "delta",
   ref_col = "ref",
   color_limits = c(-0.1, 0.1)
+)
+```
+
+### Modification landscape
+
+For a detailed per-position view of a single tRNA, `plot_mod_landscape()`
+stacks multiple metrics into aligned panels. Here we show the error rate
+difference and mismatch difference for one tRNA.
+
+```{r}
+#| label: fig-mod-landscape
+#| fig.cap: "Modification landscape for tRNA-Glu-TTC-1-1."
+#| fig.height: 5
+glu_delta <- bcerror_sprinzl |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1")
+
+glu_landscape <- bcerror_charged |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1") |>
+  group_by(pos, condition) |>
+  summarise(
+    mean_error = mean(error_rate),
+    mean_mis = mean(mis),
+    .groups = "drop"
+  ) |>
+  pivot_wider(
+    names_from = condition,
+    values_from = c(mean_error, mean_mis)
+  ) |>
+  mutate(
+    delta_error = mean_error_inf - mean_error_ctl,
+    delta_mis = mean_mis_inf - mean_mis_ctl
+  )
+
+plot_mod_landscape(
+  glu_landscape,
+  metrics = c("delta_error", "delta_mis"),
+  title = "host-tRNA-Glu-TTC-1-1"
 )
 ```
 
@@ -334,6 +371,12 @@ plot_chord_ror(
   title = "Modification rewiring: inf vs ctl (Glu-TTC-1-1)"
 )
 ```
+
+## Next steps
+
+For isodecoder-level modification rewiring analysis — including odds ratio
+aggregation, ratio of odds ratios, dimensionality reduction, and network
+visualization — see `vignette("rewiring", package = "clover")`.
 
 ## Session info
 

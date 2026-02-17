@@ -2,13 +2,21 @@
 % Please edit documentation in R/read-bcerror.R
 \name{read_counts}
 \alias{read_counts}
-\title{Read counts from file}
+\title{Read a counts TSV file.}
 \usage{
 read_counts(path)
 }
 \arguments{
-\item{path}{path to file}
+\item{path}{Path to a counts TSV file (may be gzipped).}
+}
+\value{
+A tibble.
 }
 \description{
-Read counts from file
+Read a per-tRNA counts file produced by the tRNA sequencing pipeline.
+}
+\examples{
+\dontrun{
+counts <- read_counts("sample1.counts.tsv.gz")
+}
 }

@@ -1,5 +1,7 @@
 # clover 0.0.0.9000
 
+* Column naming is now standardized across the package: charging data and DESeq2 results use `ref` instead of `tRNA` for the tRNA reference name, and Sprinzl coordinates use `pos` instead of `seq_index` for the 1-based position in the tRNA body. The default `lab_col` parameter in `plot_volcano()`, `plot_abundance_charging()`, and `tabulate_deseq()` changed from `"tRNA"` to `"ref"`. `read_bcerror()` now returns `ref` as character instead of factor.
+
 * New color palette functions `aa_colors()` and `charging_colors()` provide named color vectors for amino acids and tRNA charging states.
 
 * New statistical utility functions `calc_fold_change()`, `cohens_d()`, `propagate_error_ratio()`, and `propagate_error_diff()` for common tRNA analysis calculations.

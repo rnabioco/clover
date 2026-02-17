@@ -281,7 +281,7 @@ plot_mod_heatmap <- function(
 #' @param data A tibble from [tidy_deseq_results()] with at least
 #'   `log2FoldChange`, `padj`, and `significant` columns.
 #' @param lab_col Column name (string) used for point labels. Default
-#'   `"tRNA"`.
+#'   `"ref"`.
 #' @param padj_cutoff Numeric; draws a dashed horizontal line at
 #'   `-log10(padj_cutoff)`. Default `0.05`.
 #' @param max_overlaps Maximum number of overlapping labels passed to
@@ -300,7 +300,7 @@ plot_mod_heatmap <- function(
 #'
 #' @examples
 #' res <- tibble::tibble(
-#'   tRNA = paste0("tRNA-", 1:10),
+#'   ref = paste0("tRNA-", 1:10),
 #'   log2FoldChange = rnorm(10),
 #'   pvalue = c(rep(0.001, 3), rep(0.5, 7)),
 #'   padj = c(rep(0.01, 3), rep(0.8, 7)),
@@ -309,7 +309,7 @@ plot_mod_heatmap <- function(
 #' plot_volcano(res)
 plot_volcano <- function(
   data,
-  lab_col = "tRNA",
+  lab_col = "ref",
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 1.5,
@@ -362,11 +362,11 @@ plot_volcano <- function(
 #' [ggrepel::geom_text_repel()].
 #'
 #' @param deseq_res A tibble from [tidy_deseq_results()] with at least
-#'   `tRNA`, `log2FoldChange`, and `padj` columns.
+#'   `ref`, `log2FoldChange`, and `padj` columns.
 #' @param charging_diffs A tibble from [compute_charging_diffs()] with
-#'   at least `tRNA` and `diff` columns.
+#'   at least `ref` and `diff` columns.
 #' @param lab_col Column name (string) used for point labels. Default
-#'   `"tRNA"`.
+#'   `"ref"`.
 #' @param padj_cutoff Numeric; significance threshold for `padj`.
 #'   Default `0.05`.
 #' @param max_overlaps Maximum number of overlapping labels passed to
@@ -382,12 +382,12 @@ plot_volcano <- function(
 #'
 #' @examples
 #' deseq_res <- tibble::tibble(
-#'   tRNA = paste0("tRNA-", 1:6),
+#'   ref = paste0("tRNA-", 1:6),
 #'   log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
 #'   padj = c(0.01, 0.02, 0.5, 0.6, 0.001, 0.003)
 #' )
 #' charging_diffs <- tibble::tibble(
-#'   tRNA = paste0("tRNA-", 1:6),
+#'   ref = paste0("tRNA-", 1:6),
 #'   diff = c(0.1, -0.1, 0.05, -0.05, -0.2, 0.15),
 #'   se_diff = rep(0.03, 6)
 #' )
@@ -395,7 +395,7 @@ plot_volcano <- function(
 plot_abundance_charging <- function(
   deseq_res,
   charging_diffs,
-  lab_col = "tRNA",
+  lab_col = "ref",
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 2,
@@ -403,7 +403,7 @@ plot_abundance_charging <- function(
 ) {
   rlang::check_installed("ggrepel", reason = "to label significant points.")
 
-  data <- dplyr::inner_join(deseq_res, charging_diffs, by = "tRNA")
+  data <- dplyr::inner_join(deseq_res, charging_diffs, by = "ref")
 
   data <- dplyr::mutate(
     data,
@@ -473,7 +473,7 @@ plot_abundance_charging <- function(
 #' returned by [compute_charging_diffs()].
 #'
 #' @param data A tibble from [compute_charging_diffs()] with at least
-#'   `tRNA` (factor), `diff`, and `se_diff` columns.
+#'   `ref` (factor), `diff`, and `se_diff` columns.
 #' @param point_size Numeric size for [ggplot2::geom_point()]. Default
 #'   `2.5`.
 #'
@@ -483,13 +483,13 @@ plot_abundance_charging <- function(
 #'
 #' @examples
 #' df <- tibble::tibble(
-#'   tRNA = forcats::fct_inorder(paste0("tRNA-", 1:5)),
+#'   ref = forcats::fct_inorder(paste0("tRNA-", 1:5)),
 #'   diff = c(-0.1, -0.05, 0.02, 0.08, 0.15),
 #'   se_diff = rep(0.03, 5)
 #' )
 #' plot_charging_diffs(df)
 plot_charging_diffs <- function(data, point_size = 2.5) {
-  ggplot(data, aes(x = diff, y = tRNA)) +
+  ggplot(data, aes(x = diff, y = ref)) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
     geom_point(size = point_size) +
     geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +

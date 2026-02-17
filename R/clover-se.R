@@ -69,7 +69,7 @@ create_clover <- function(
   # Build rowData from tRNA names
   trna_names <- rownames(count_mat)
   row_data <- S4Vectors::DataFrame(
-    tRNA = trna_names,
+    ref = trna_names,
     row.names = trna_names
   )
 
@@ -109,8 +109,6 @@ create_clover <- function(
 
   se
 }
-
-.CloverSE <- setClass("CloverExperiment", contains = "SummarizedExperiment")
 
 #' Read FASTA reference
 #'
