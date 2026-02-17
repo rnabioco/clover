@@ -57,6 +57,8 @@
   : Plot a chord diagram of modification rewiring between conditions.
 - [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
   : Plot a delta-signal modification heatmap.
+- [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md)
+  : Plot a volcano plot of differential expression results.
 
 ## MODOMICS
 

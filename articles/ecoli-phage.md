@@ -113,23 +113,7 @@ res <- tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
 ```
 
 ``` r
-ggplot(res, aes(x = log2FoldChange, y = -log10(pvalue))) +
-  geom_point(aes(color = significant), size = 1.5, alpha = 0.7) +
-  ggrepel::geom_text_repel(
-    data = \(x) dplyr::filter(x, significant),
-    aes(label = tRNA),
-    size = 3,
-    max.overlaps = 20
-  ) +
-  scale_color_manual(values = c("grey60", "#D55E00")) +
-  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "grey40") +
-  labs(
-    x = "log2 Fold Change (inf / ctl)",
-    y = "-log10(p-value)",
-    title = "Differential tRNA abundance: T4-infected vs control"
-  ) +
-  cowplot::theme_cowplot() +
-  theme(legend.position = "none")
+plot_volcano(res)
 #> Warning: Removed 4 rows containing missing values or values outside the scale range
 #> (`geom_point()`).
 ```

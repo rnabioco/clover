@@ -7,4 +7,9 @@
   maps them onto reference sequences using pairwise alignment
   ([\#11](https://github.com/rnabioco/clover/issues/11)).
 
+- [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md)
+  creates a labeled volcano plot from
+  [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
+  output, with significant points highlighted and labeled using ggrepel.
+
 - Initial CRAN submission.
