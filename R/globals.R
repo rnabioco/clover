@@ -109,7 +109,37 @@ globalVariables(c(
   ".seg_id",
   ".region_change",
   # plot_abundance_charging
-  "significant",
   "quadrant",
-  "log2FoldChange"
+  "log2FoldChange",
+  # odds-ratios
+  "isodecoder",
+  "log_or_clean",
+  "mean_or",
+  "sd_log_or",
+  "min_pval",
+  "n_copies",
+  "mean_log_or_num",
+  "mean_log_or_den",
+  "se_num",
+  "se_den",
+  "ror_se",
+  "z_score",
+  "p_adj",
+  "ci_lower",
+  "ci_upper",
+  "significant",
+  # rewiring
+  "comparison",
+  "euclidean_magnitude",
+  "mean_abs_change",
+  "max_abs_change",
+  "n_nonzero",
+  "PC1",
+  "PC2",
+  # plot-network
+  "edge_type",
+  "weight",
+  "degree",
+  "betweenness",
+  "position"
 ))
