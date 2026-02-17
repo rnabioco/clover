@@ -5,6 +5,7 @@
 ^README\.Rmd$
 ^\.vscode$
 ^air.toml$
+^ext$
 ^vignettes/articles/*_files$
 ^vignettes/articles$
 ^inst/extdata/*\.pod5$
