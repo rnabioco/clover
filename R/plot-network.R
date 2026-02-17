@@ -103,16 +103,16 @@ plot_arc_diagram <- function(
 
   ggraph::ggraph(graph, layout = "linear", circular = TRUE) +
     ggraph::geom_edge_arc(
-      aes(edge_width = weight, edge_alpha = weight),
-      data = function(x) dplyr::filter(x, edge_type == "co-occurring"),
-      color = co_color,
+      aes(
+        edge_width = weight,
+        edge_alpha = weight,
+        edge_colour = edge_type
+      ),
       strength = 0.5
     ) +
-    ggraph::geom_edge_arc(
-      aes(edge_width = weight, edge_alpha = weight),
-      data = function(x) dplyr::filter(x, edge_type == "exclusive"),
-      color = ex_color,
-      strength = 0.5
+    ggraph::scale_edge_colour_manual(
+      values = c("co-occurring" = co_color, "exclusive" = ex_color),
+      name = "Edge type"
     ) +
     ggraph::geom_node_point(aes(size = degree), color = "grey30") +
     ggraph::geom_node_text(aes(label = position), repel = TRUE, size = 3) +
