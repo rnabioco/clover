@@ -37,8 +37,10 @@ replicates per condition.
 
 ## Loading data with `create_clover()`
 
-The simplest way to load pipeline results is with `create_clover()`, which
-reads a pipeline configuration file and assembles a `SummarizedExperiment`.
+The simplest way to load results from the
+[aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
+is with `create_clover()`, which reads a pipeline configuration file and
+assembles a `SummarizedExperiment`.
 
 ```{r}
 #| label: create-se
