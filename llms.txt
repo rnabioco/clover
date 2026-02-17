@@ -184,6 +184,10 @@ plot_chord_ror(ror, sprinzl_coords = sprinzl)
 
 - [`plot_bcerror()`](https://rnabioco.github.io/clover/reference/plot_bcerror.md)
   : Plot base-calling error in a heatmap.
+- [`plot_bcerror_profile()`](https://rnabioco.github.io/clover/reference/plot_bcerror_profile.md)
+  : Plot per-position base-calling error profiles.
+- [`plot_charging_diffs()`](https://rnabioco.github.io/clover/reference/plot_charging_diffs.md)
+  : Plot per-tRNA charging ratio differences.
 - [`plot_chord_or()`](https://rnabioco.github.io/clover/reference/plot_chord_or.md)
   : Plot a chord diagram of modification co-occurrence.
 - [`plot_chord_ror()`](https://rnabioco.github.io/clover/reference/plot_chord_ror.md)

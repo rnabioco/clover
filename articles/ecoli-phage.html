@@ -79,8 +79,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rnabioco.github.io/clover">clover</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -232,16 +231,7 @@ reads changes upon infection.</p>
 <span>  n_top <span class="op">=</span> <span class="fl">20</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">ratio_diff</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">diff</span>, y <span class="op">=</span> <span class="va">tRNA</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"gray50"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_linerange</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">diff</span> <span class="op">-</span> <span class="va">se_diff</span>, xmax <span class="op">=</span> <span class="va">diff</span> <span class="op">+</span> <span class="va">se_diff</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="st">"Difference in charging ratio (infected - control)"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">""</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Change in tRNA charging upon infection"</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_minimal_grid.html" class="external-link">theme_minimal_vgrid</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_charging_diffs.html">plot_charging_diffs</a></span><span class="op">(</span><span class="va">ratio_diff</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="ecoli-phage_files/figure-html/fig-charging-ratio-1.png" class="r-plt" alt="Change in charging ratio (infected - control) per tRNA." width="960"><p class="caption">
 Change in charging ratio (infected - control) per tRNA.
@@ -280,20 +270,7 @@ between conditions can reveal modification changes.</p>
 <span>  <span class="st">"host-tRNA-Glu-TTC-1-1"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">bcerror_summary</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ref</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">plot_trnas</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pos</span>, y <span class="op">=</span> <span class="va">mean_error</span>, color <span class="op">=</span> <span class="va">condition</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">ref</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>ctl <span class="op">=</span> <span class="st">"#0072B2"</span>, inf <span class="op">=</span> <span class="st">"#D55E00"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="st">"Position"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"Mean base-calling error rate"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Per-position error profiles"</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_minimal_grid.html" class="external-link">theme_minimal_hgrid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_bcerror_profile.html">plot_bcerror_profile</a></span><span class="op">(</span><span class="va">bcerror_summary</span>, refs <span class="op">=</span> <span class="va">plot_trnas</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="ecoli-phage_files/figure-html/fig-bcerror-profile-1.png" class="r-plt" alt="Base-calling error profiles for selected tRNAs." width="960"><p class="caption">
 Base-calling error profiles for selected tRNAs.
@@ -376,31 +353,7 @@ profiles. Positions with known modifications often correspond to
 elevated error rates, since the basecaller misidentifies modified
 nucleotides.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Filter mods to tRNAs in our plot set</span></span>
-<span><span class="va">mods_plot</span> <span class="op">&lt;-</span> <span class="va">mods</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ref</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">plot_trnas</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">bcerror_summary</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ref</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">plot_trnas</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pos</span>, y <span class="op">=</span> <span class="va">mean_error</span>, color <span class="op">=</span> <span class="va">condition</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_vline</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">mods_plot</span>,</span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="va">pos</span><span class="op">)</span>,</span>
-<span>    linetype <span class="op">=</span> <span class="st">"dashed"</span>,</span>
-<span>    color <span class="op">=</span> <span class="st">"grey40"</span>,</span>
-<span>    alpha <span class="op">=</span> <span class="fl">0.5</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">ref</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>ctl <span class="op">=</span> <span class="st">"#0072B2"</span>, inf <span class="op">=</span> <span class="st">"#D55E00"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="st">"Position"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"Mean base-calling error rate"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"Error profiles with known modification sites (dashed lines)"</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/theme_minimal_grid.html" class="external-link">theme_minimal_hgrid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_bcerror_profile.html">plot_bcerror_profile</a></span><span class="op">(</span><span class="va">bcerror_summary</span>, refs <span class="op">=</span> <span class="va">plot_trnas</span>, mods <span class="op">=</span> <span class="va">mods</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="ecoli-phage_files/figure-html/fig-bcerror-mods-1.png" class="r-plt" alt="Base-calling error profiles with known modification positions marked." width="960"><p class="caption">
 Base-calling error profiles with known modification positions marked.
@@ -599,53 +552,53 @@ using <code><a href="../reference/create_clover.html">create_clover()</a></code>
 <span><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt; [1] ggplot2_4.0.2     tidyr_1.3.2       dplyr_1.2.0       clover_0.0.0.9000</span></span>
+<span><span class="co">#&gt; [1] tidyr_1.3.2       dplyr_1.2.0       clover_0.0.0.9000</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] SummarizedExperiment_1.40.0 shape_1.4.6.1              </span></span>
-<span><span class="co">#&gt;  [3] circlize_0.4.17             gtable_0.3.6               </span></span>
-<span><span class="co">#&gt;  [5] httr2_1.2.2                 xfun_0.56                  </span></span>
-<span><span class="co">#&gt;  [7] bslib_0.10.0                GlobalOptions_0.1.3        </span></span>
-<span><span class="co">#&gt;  [9] ggrepel_0.9.6               Biobase_2.70.0             </span></span>
-<span><span class="co">#&gt; [11] lattice_0.22-7              tzdb_0.5.0                 </span></span>
-<span><span class="co">#&gt; [13] vctrs_0.7.1                 tools_4.5.2                </span></span>
-<span><span class="co">#&gt; [15] generics_0.1.4              curl_7.0.0                 </span></span>
-<span><span class="co">#&gt; [17] parallel_4.5.2              stats4_4.5.2               </span></span>
-<span><span class="co">#&gt; [19] tibble_3.3.1                pkgconfig_2.0.3            </span></span>
-<span><span class="co">#&gt; [21] Matrix_1.7-4                RColorBrewer_1.1-3         </span></span>
-<span><span class="co">#&gt; [23] S7_0.2.1                    desc_1.4.3                 </span></span>
-<span><span class="co">#&gt; [25] S4Vectors_0.48.0            lifecycle_1.0.5            </span></span>
-<span><span class="co">#&gt; [27] compiler_4.5.2              farver_2.1.2               </span></span>
-<span><span class="co">#&gt; [29] stringr_1.6.0               textshaping_1.0.4          </span></span>
-<span><span class="co">#&gt; [31] Biostrings_2.78.0           DESeq2_1.50.2              </span></span>
-<span><span class="co">#&gt; [33] codetools_0.2-20            Seqinfo_1.0.0              </span></span>
-<span><span class="co">#&gt; [35] htmltools_0.5.9             sass_0.4.10                </span></span>
-<span><span class="co">#&gt; [37] yaml_2.3.12                 pillar_1.11.1              </span></span>
-<span><span class="co">#&gt; [39] pkgdown_2.2.0               crayon_1.5.3               </span></span>
-<span><span class="co">#&gt; [41] jquerylib_0.1.4             BiocParallel_1.44.0        </span></span>
-<span><span class="co">#&gt; [43] DelayedArray_0.36.0         cachem_1.1.0               </span></span>
-<span><span class="co">#&gt; [45] abind_1.4-8                 locfit_1.5-9.12            </span></span>
-<span><span class="co">#&gt; [47] tidyselect_1.2.1            digest_0.6.39              </span></span>
-<span><span class="co">#&gt; [49] stringi_1.8.7               purrr_1.2.1                </span></span>
-<span><span class="co">#&gt; [51] labeling_0.4.3              forcats_1.0.1              </span></span>
-<span><span class="co">#&gt; [53] cowplot_1.2.0               fastmap_1.2.0              </span></span>
-<span><span class="co">#&gt; [55] grid_4.5.2                  colorspace_2.1-2           </span></span>
-<span><span class="co">#&gt; [57] cli_3.6.5                   SparseArray_1.10.8         </span></span>
-<span><span class="co">#&gt; [59] magrittr_2.0.4              S4Arrays_1.10.1            </span></span>
-<span><span class="co">#&gt; [61] utf8_1.2.6                  readr_2.1.6                </span></span>
-<span><span class="co">#&gt; [63] withr_3.0.2                 rappdirs_0.3.4             </span></span>
-<span><span class="co">#&gt; [65] scales_1.4.0                bit64_4.6.0-1              </span></span>
-<span><span class="co">#&gt; [67] pwalign_1.6.0               rmarkdown_2.30             </span></span>
-<span><span class="co">#&gt; [69] XVector_0.50.0              matrixStats_1.5.0          </span></span>
-<span><span class="co">#&gt; [71] bit_4.6.0                   ragg_1.5.0                 </span></span>
-<span><span class="co">#&gt; [73] hms_1.1.4                   evaluate_1.0.5             </span></span>
-<span><span class="co">#&gt; [75] knitr_1.51                  GenomicRanges_1.62.1       </span></span>
-<span><span class="co">#&gt; [77] IRanges_2.44.0              rlang_1.1.7                </span></span>
-<span><span class="co">#&gt; [79] Rcpp_1.1.1                  glue_1.8.0                 </span></span>
-<span><span class="co">#&gt; [81] BiocGenerics_0.56.0         vroom_1.7.0                </span></span>
-<span><span class="co">#&gt; [83] jsonlite_2.0.0              R6_2.6.1                   </span></span>
-<span><span class="co">#&gt; [85] MatrixGenerics_1.22.0       systemfonts_1.3.1          </span></span>
-<span><span class="co">#&gt; [87] fs_1.6.6</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] tidyselect_1.2.1            farver_2.1.2               </span></span>
+<span><span class="co">#&gt;  [3] Biostrings_2.78.0           S7_0.2.1                   </span></span>
+<span><span class="co">#&gt;  [5] fastmap_1.2.0               digest_0.6.39              </span></span>
+<span><span class="co">#&gt;  [7] lifecycle_1.0.5             pwalign_1.6.0              </span></span>
+<span><span class="co">#&gt;  [9] magrittr_2.0.4              compiler_4.5.2             </span></span>
+<span><span class="co">#&gt; [11] rlang_1.1.7                 sass_0.4.10                </span></span>
+<span><span class="co">#&gt; [13] tools_4.5.2                 utf8_1.2.6                 </span></span>
+<span><span class="co">#&gt; [15] yaml_2.3.12                 knitr_1.51                 </span></span>
+<span><span class="co">#&gt; [17] S4Arrays_1.10.1             labeling_0.4.3             </span></span>
+<span><span class="co">#&gt; [19] bit_4.6.0                   curl_7.0.0                 </span></span>
+<span><span class="co">#&gt; [21] DelayedArray_0.36.0         RColorBrewer_1.1-3         </span></span>
+<span><span class="co">#&gt; [23] abind_1.4-8                 BiocParallel_1.44.0        </span></span>
+<span><span class="co">#&gt; [25] withr_3.0.2                 purrr_1.2.1                </span></span>
+<span><span class="co">#&gt; [27] BiocGenerics_0.56.0         desc_1.4.3                 </span></span>
+<span><span class="co">#&gt; [29] grid_4.5.2                  stats4_4.5.2               </span></span>
+<span><span class="co">#&gt; [31] colorspace_2.1-2            ggplot2_4.0.2              </span></span>
+<span><span class="co">#&gt; [33] scales_1.4.0                SummarizedExperiment_1.40.0</span></span>
+<span><span class="co">#&gt; [35] cli_3.6.5                   rmarkdown_2.30             </span></span>
+<span><span class="co">#&gt; [37] crayon_1.5.3                ragg_1.5.0                 </span></span>
+<span><span class="co">#&gt; [39] generics_0.1.4              tzdb_0.5.0                 </span></span>
+<span><span class="co">#&gt; [41] cachem_1.1.0                stringr_1.6.0              </span></span>
+<span><span class="co">#&gt; [43] parallel_4.5.2              XVector_0.50.0             </span></span>
+<span><span class="co">#&gt; [45] matrixStats_1.5.0           vctrs_0.7.1                </span></span>
+<span><span class="co">#&gt; [47] Matrix_1.7-4                jsonlite_2.0.0             </span></span>
+<span><span class="co">#&gt; [49] IRanges_2.44.0              hms_1.1.4                  </span></span>
+<span><span class="co">#&gt; [51] S4Vectors_0.48.0            bit64_4.6.0-1              </span></span>
+<span><span class="co">#&gt; [53] ggrepel_0.9.6               systemfonts_1.3.1          </span></span>
+<span><span class="co">#&gt; [55] locfit_1.5-9.12             jquerylib_0.1.4            </span></span>
+<span><span class="co">#&gt; [57] glue_1.8.0                  pkgdown_2.2.0              </span></span>
+<span><span class="co">#&gt; [59] codetools_0.2-20            cowplot_1.2.0              </span></span>
+<span><span class="co">#&gt; [61] stringi_1.8.7               gtable_0.3.6               </span></span>
+<span><span class="co">#&gt; [63] shape_1.4.6.1               GenomicRanges_1.62.1       </span></span>
+<span><span class="co">#&gt; [65] tibble_3.3.1                pillar_1.11.1              </span></span>
+<span><span class="co">#&gt; [67] rappdirs_0.3.4              htmltools_0.5.9            </span></span>
+<span><span class="co">#&gt; [69] Seqinfo_1.0.0               circlize_0.4.17            </span></span>
+<span><span class="co">#&gt; [71] R6_2.6.1                    httr2_1.2.2                </span></span>
+<span><span class="co">#&gt; [73] textshaping_1.0.4           vroom_1.7.0                </span></span>
+<span><span class="co">#&gt; [75] evaluate_1.0.5              lattice_0.22-7             </span></span>
+<span><span class="co">#&gt; [77] Biobase_2.70.0              readr_2.1.6                </span></span>
+<span><span class="co">#&gt; [79] bslib_0.10.0                Rcpp_1.1.1                 </span></span>
+<span><span class="co">#&gt; [81] SparseArray_1.10.8          DESeq2_1.50.2              </span></span>
+<span><span class="co">#&gt; [83] xfun_0.56                   fs_1.6.6                   </span></span>
+<span><span class="co">#&gt; [85] MatrixGenerics_1.22.0       forcats_1.0.1              </span></span>
+<span><span class="co">#&gt; [87] pkgconfig_2.0.3             GlobalOptions_0.1.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

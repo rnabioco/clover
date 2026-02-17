@@ -4,7 +4,6 @@
 library(clover)
 library(dplyr)
 library(tidyr)
-library(ggplot2)
 ```
 
 ## Overview
@@ -160,16 +159,7 @@ ratio_diff <- compute_charging_diffs(
   n_top = 20
 )
 
-ggplot(ratio_diff, aes(x = diff, y = tRNA)) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
-  geom_point(size = 2.5) +
-  geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +
-  labs(
-    x = "Difference in charging ratio (infected - control)",
-    y = "",
-    title = "Change in tRNA charging upon infection"
-  ) +
-  cowplot::theme_minimal_vgrid()
+plot_charging_diffs(ratio_diff)
 ```
 
 ![Change in charging ratio (infected - control) per
@@ -211,20 +201,7 @@ plot_trnas <- c(
   "host-tRNA-Glu-TTC-1-1"
 )
 
-bcerror_summary |>
-  filter(ref %in% plot_trnas) |>
-  ggplot(aes(x = pos, y = mean_error, color = condition)) +
-  geom_line(linewidth = 0.5) +
-  geom_point(size = 0.8) +
-  facet_wrap(~ref, ncol = 1, scales = "free_y") +
-  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
-  labs(
-    x = "Position",
-    y = "Mean base-calling error rate",
-    title = "Per-position error profiles"
-  ) +
-  cowplot::theme_minimal_hgrid() +
-  theme(legend.position = "top")
+plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
 ```
 
 ![Base-calling error profiles for selected
@@ -311,31 +288,7 @@ Positions with known modifications often correspond to elevated error
 rates, since the basecaller misidentifies modified nucleotides.
 
 ``` r
-# Filter mods to tRNAs in our plot set
-mods_plot <- mods |>
-  filter(ref %in% plot_trnas)
-
-bcerror_summary |>
-  filter(ref %in% plot_trnas) |>
-  ggplot(aes(x = pos, y = mean_error, color = condition)) +
-  geom_line(linewidth = 0.5) +
-  geom_point(size = 0.8) +
-  geom_vline(
-    data = mods_plot,
-    aes(xintercept = pos),
-    linetype = "dashed",
-    color = "grey40",
-    alpha = 0.5
-  ) +
-  facet_wrap(~ref, ncol = 1, scales = "free_y") +
-  scale_color_manual(values = c(ctl = "#0072B2", inf = "#D55E00")) +
-  labs(
-    x = "Position",
-    y = "Mean base-calling error rate",
-    title = "Error profiles with known modification sites (dashed lines)"
-  ) +
-  cowplot::theme_minimal_hgrid() +
-  theme(legend.position = "top")
+plot_bcerror_profile(bcerror_summary, refs = plot_trnas, mods = mods)
 ```
 
 ![Base-calling error profiles with known modification positions
@@ -541,51 +494,51 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ggplot2_4.0.2     tidyr_1.3.2       dplyr_1.2.0       clover_0.0.0.9000
+#> [1] tidyr_1.3.2       dplyr_1.2.0       clover_0.0.0.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0 shape_1.4.6.1              
-#>  [3] circlize_0.4.17             gtable_0.3.6               
-#>  [5] httr2_1.2.2                 xfun_0.56                  
-#>  [7] bslib_0.10.0                GlobalOptions_0.1.3        
-#>  [9] ggrepel_0.9.6               Biobase_2.70.0             
-#> [11] lattice_0.22-7              tzdb_0.5.0                 
-#> [13] vctrs_0.7.1                 tools_4.5.2                
-#> [15] generics_0.1.4              curl_7.0.0                 
-#> [17] parallel_4.5.2              stats4_4.5.2               
-#> [19] tibble_3.3.1                pkgconfig_2.0.3            
-#> [21] Matrix_1.7-4                RColorBrewer_1.1-3         
-#> [23] S7_0.2.1                    desc_1.4.3                 
-#> [25] S4Vectors_0.48.0            lifecycle_1.0.5            
-#> [27] compiler_4.5.2              farver_2.1.2               
-#> [29] stringr_1.6.0               textshaping_1.0.4          
-#> [31] Biostrings_2.78.0           DESeq2_1.50.2              
-#> [33] codetools_0.2-20            Seqinfo_1.0.0              
-#> [35] htmltools_0.5.9             sass_0.4.10                
-#> [37] yaml_2.3.12                 pillar_1.11.1              
-#> [39] pkgdown_2.2.0               crayon_1.5.3               
-#> [41] jquerylib_0.1.4             BiocParallel_1.44.0        
-#> [43] DelayedArray_0.36.0         cachem_1.1.0               
-#> [45] abind_1.4-8                 locfit_1.5-9.12            
-#> [47] tidyselect_1.2.1            digest_0.6.39              
-#> [49] stringi_1.8.7               purrr_1.2.1                
-#> [51] labeling_0.4.3              forcats_1.0.1              
-#> [53] cowplot_1.2.0               fastmap_1.2.0              
-#> [55] grid_4.5.2                  colorspace_2.1-2           
-#> [57] cli_3.6.5                   SparseArray_1.10.8         
-#> [59] magrittr_2.0.4              S4Arrays_1.10.1            
-#> [61] utf8_1.2.6                  readr_2.1.6                
-#> [63] withr_3.0.2                 rappdirs_0.3.4             
-#> [65] scales_1.4.0                bit64_4.6.0-1              
-#> [67] pwalign_1.6.0               rmarkdown_2.30             
-#> [69] XVector_0.50.0              matrixStats_1.5.0          
-#> [71] bit_4.6.0                   ragg_1.5.0                 
-#> [73] hms_1.1.4                   evaluate_1.0.5             
-#> [75] knitr_1.51                  GenomicRanges_1.62.1       
-#> [77] IRanges_2.44.0              rlang_1.1.7                
-#> [79] Rcpp_1.1.1                  glue_1.8.0                 
-#> [81] BiocGenerics_0.56.0         vroom_1.7.0                
-#> [83] jsonlite_2.0.0              R6_2.6.1                   
-#> [85] MatrixGenerics_1.22.0       systemfonts_1.3.1          
-#> [87] fs_1.6.6
+#>  [1] tidyselect_1.2.1            farver_2.1.2               
+#>  [3] Biostrings_2.78.0           S7_0.2.1                   
+#>  [5] fastmap_1.2.0               digest_0.6.39              
+#>  [7] lifecycle_1.0.5             pwalign_1.6.0              
+#>  [9] magrittr_2.0.4              compiler_4.5.2             
+#> [11] rlang_1.1.7                 sass_0.4.10                
+#> [13] tools_4.5.2                 utf8_1.2.6                 
+#> [15] yaml_2.3.12                 knitr_1.51                 
+#> [17] S4Arrays_1.10.1             labeling_0.4.3             
+#> [19] bit_4.6.0                   curl_7.0.0                 
+#> [21] DelayedArray_0.36.0         RColorBrewer_1.1-3         
+#> [23] abind_1.4-8                 BiocParallel_1.44.0        
+#> [25] withr_3.0.2                 purrr_1.2.1                
+#> [27] BiocGenerics_0.56.0         desc_1.4.3                 
+#> [29] grid_4.5.2                  stats4_4.5.2               
+#> [31] colorspace_2.1-2            ggplot2_4.0.2              
+#> [33] scales_1.4.0                SummarizedExperiment_1.40.0
+#> [35] cli_3.6.5                   rmarkdown_2.30             
+#> [37] crayon_1.5.3                ragg_1.5.0                 
+#> [39] generics_0.1.4              tzdb_0.5.0                 
+#> [41] cachem_1.1.0                stringr_1.6.0              
+#> [43] parallel_4.5.2              XVector_0.50.0             
+#> [45] matrixStats_1.5.0           vctrs_0.7.1                
+#> [47] Matrix_1.7-4                jsonlite_2.0.0             
+#> [49] IRanges_2.44.0              hms_1.1.4                  
+#> [51] S4Vectors_0.48.0            bit64_4.6.0-1              
+#> [53] ggrepel_0.9.6               systemfonts_1.3.1          
+#> [55] locfit_1.5-9.12             jquerylib_0.1.4            
+#> [57] glue_1.8.0                  pkgdown_2.2.0              
+#> [59] codetools_0.2-20            cowplot_1.2.0              
+#> [61] stringi_1.8.7               gtable_0.3.6               
+#> [63] shape_1.4.6.1               GenomicRanges_1.62.1       
+#> [65] tibble_3.3.1                pillar_1.11.1              
+#> [67] rappdirs_0.3.4              htmltools_0.5.9            
+#> [69] Seqinfo_1.0.0               circlize_0.4.17            
+#> [71] R6_2.6.1                    httr2_1.2.2                
+#> [73] textshaping_1.0.4           vroom_1.7.0                
+#> [75] evaluate_1.0.5              lattice_0.22-7             
+#> [77] Biobase_2.70.0              readr_2.1.6                
+#> [79] bslib_0.10.0                Rcpp_1.1.1                 
+#> [81] SparseArray_1.10.8          DESeq2_1.50.2              
+#> [83] xfun_0.56                   fs_1.6.6                   
+#> [85] MatrixGenerics_1.22.0       forcats_1.0.1              
+#> [87] pkgconfig_2.0.3             GlobalOptions_0.1.3
 ```

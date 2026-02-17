@@ -2,6 +2,14 @@
 
 ## clover 0.0.0.9000
 
+- [`plot_bcerror_profile()`](https://rnabioco.github.io/clover/reference/plot_bcerror_profile.md)
+  plots per-position base-calling error rates as a faceted line plot,
+  with optional modification position overlay.
+
+- [`plot_charging_diffs()`](https://rnabioco.github.io/clover/reference/plot_charging_diffs.md)
+  creates a dot plot with error bars showing per-tRNA charging ratio
+  differences between conditions.
+
 - [`plot_chord_or()`](https://rnabioco.github.io/clover/reference/plot_chord_or.md)
   and
   [`plot_chord_ror()`](https://rnabioco.github.io/clover/reference/plot_chord_ror.md)
