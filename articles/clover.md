@@ -124,19 +124,6 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 tabulate_deseq(res)
 ```
 
-| ref                          | log2 FC | p-value      | Adjusted p-value | significant |
-|------------------------------|---------|--------------|------------------|-------------|
-| phage-tRNA-Ile2-CAT          | 5.33    | 2.85 × 10⁻¹⁷ | 5.31 × 10⁻¹⁵     | TRUE        |
-| phage-tRNA-Gln-TTG           | 3.68    | 5.52 × 10⁻¹³ | 5.13 × 10⁻¹¹     | TRUE        |
-| phage-tRNA-Arg-TCT           | 5.04    | 3.36 × 10⁻⁹  | 2.09 × 10⁻⁷      | TRUE        |
-| phage-tRNA-Pro-TGG-uncharged | 1.80    | 1.99 × 10⁻⁷  | 9.24 × 10⁻⁶      | TRUE        |
-| phage-tRNA-Pro-TGG           | 3.25    | 2.67 × 10⁻⁶  | 9.91 × 10⁻⁵      | TRUE        |
-| phage-tRNA-Thr-TGT           | 4.29    | 3.73 × 10⁻⁶  | 1.16 × 10⁻⁴      | TRUE        |
-| phage-tRNA-Leu-TAA           | 3.75    | 8.90 × 10⁻⁶  | 2.37 × 10⁻⁴      | TRUE        |
-| phage-tRNA-Leu-TAA-uncharged | 2.08    | 6.40 × 10⁻⁵  | 1.49 × 10⁻³      | TRUE        |
-| phage-tRNA-Ser-TGA           | 3.86    | 9.51 × 10⁻⁵  | 1.97 × 10⁻³      | TRUE        |
-| phage-tRNA-Arg-TCT-uncharged | 1.84    | 2.56 × 10⁻⁴  | 4.76 × 10⁻³      | TRUE        |
-
 ## Differential charging analysis
 
 A unique feature of nanopore tRNA-seq is the ability to measure charging
@@ -502,25 +489,26 @@ sessionInfo()
 #> [47] XVector_0.50.0              matrixStats_1.5.0          
 #> [49] vctrs_0.7.1                 Matrix_1.7-4               
 #> [51] jsonlite_2.0.0              litedown_0.9               
-#> [53] IRanges_2.44.0              hms_1.1.4                  
-#> [55] patchwork_1.3.2             S4Vectors_0.48.0           
+#> [53] patchwork_1.3.2             IRanges_2.44.0             
+#> [55] hms_1.1.4                   S4Vectors_0.48.0           
 #> [57] bit64_4.6.0-1               ggrepel_0.9.6              
 #> [59] systemfonts_1.3.1           locfit_1.5-9.12            
 #> [61] jquerylib_0.1.4             glue_1.8.0                 
-#> [63] pkgdown_2.2.0               codetools_0.2-20           
-#> [65] ggtext_0.1.2                cowplot_1.2.0              
-#> [67] shape_1.4.6.1               stringi_1.8.7              
-#> [69] gtable_0.3.6                GenomicRanges_1.62.1       
-#> [71] tibble_3.3.1                pillar_1.11.1              
-#> [73] htmltools_0.5.9             Seqinfo_1.0.0              
-#> [75] circlize_0.4.17             R6_2.6.1                   
-#> [77] textshaping_1.0.4           vroom_1.7.0                
-#> [79] evaluate_1.0.5              lattice_0.22-7             
-#> [81] Biobase_2.70.0              markdown_2.0               
-#> [83] readr_2.1.6                 gridtext_0.1.5             
-#> [85] bslib_0.10.0                Rcpp_1.1.1                 
-#> [87] SparseArray_1.10.8          DESeq2_1.50.2              
-#> [89] xfun_0.56                   GlobalOptions_0.1.3        
-#> [91] fs_1.6.6                    MatrixGenerics_1.22.0      
-#> [93] forcats_1.0.1               pkgconfig_2.0.3
+#> [63] reactR_0.6.1                pkgdown_2.2.0              
+#> [65] codetools_0.2-20            ggtext_0.1.2               
+#> [67] cowplot_1.2.0               shape_1.4.6.1              
+#> [69] stringi_1.8.7               gtable_0.3.6               
+#> [71] GenomicRanges_1.62.1        tibble_3.3.1               
+#> [73] pillar_1.11.1               htmltools_0.5.9            
+#> [75] Seqinfo_1.0.0               circlize_0.4.17            
+#> [77] reactable_0.4.5             R6_2.6.1                   
+#> [79] textshaping_1.0.4           vroom_1.7.0                
+#> [81] evaluate_1.0.5              lattice_0.22-7             
+#> [83] Biobase_2.70.0              markdown_2.0               
+#> [85] readr_2.1.6                 gridtext_0.1.5             
+#> [87] bslib_0.10.0                Rcpp_1.1.1                 
+#> [89] SparseArray_1.10.8          DESeq2_1.50.2              
+#> [91] xfun_0.56                   GlobalOptions_0.1.3        
+#> [93] fs_1.6.6                    MatrixGenerics_1.22.0      
+#> [95] forcats_1.0.1               pkgconfig_2.0.3
 ```

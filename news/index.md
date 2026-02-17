@@ -138,6 +138,7 @@
 - [`tabulate_deseq()`](https://rnabioco.github.io/clover/reference/tabulate_deseq.md)
   creates a formatted gt table of the top significant tRNAs from
   [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
-  output, sorted by p-value.
+  output, sorted by p-value. The table now includes zebra striping,
+  search, column sorting, and pagination.
 
 - Initial CRAN submission.
