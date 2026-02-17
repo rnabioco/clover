@@ -50,7 +50,7 @@ bcerr_path <- clover_example(
 read_bcerror(bcerr_path)
 #> # A tibble: 1,404 × 12
 #>    ref        pos   cov a_freq t_freq g_freq c_freq   mis   ins   del error_rate
-#>    <fct>    <int> <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl>      <dbl>
+#>    <chr>    <int> <dbl>  <dbl>  <dbl>  <dbl>  <dbl> <dbl> <dbl> <dbl>      <dbl>
 #>  1 host-tR…     1     0    0        0   0      0     0        0     0       0   
 #>  2 host-tR…     2     0    0        0   0      0     0        0     0       0   
 #>  3 host-tR…     3     0    0        0   0      0     0        0     0       0   

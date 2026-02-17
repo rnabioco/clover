@@ -4,3 +4,5 @@
 
 - [Introduction to
   clover](https://rnabioco.github.io/clover/articles/clover.md):
+- [Modification rewiring
+  analysis](https://rnabioco.github.io/clover/articles/rewiring.md):

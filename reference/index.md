@@ -9,7 +9,7 @@
 - [`read_charging_multi()`](https://rnabioco.github.io/clover/reference/read_charging_multi.md)
   : Read charging CPM files for multiple samples.
 - [`read_counts()`](https://rnabioco.github.io/clover/reference/read_counts.md)
-  : Read counts from file
+  : Read a counts TSV file.
 - [`read_fasta()`](https://rnabioco.github.io/clover/reference/read_fasta.md)
   : Read FASTA reference
 - [`read_mod_annotations()`](https://rnabioco.github.io/clover/reference/read_mod_annotations.md)

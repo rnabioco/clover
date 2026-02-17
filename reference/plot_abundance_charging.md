@@ -11,7 +11,7 @@ colored by quadrant and labeled with
 plot_abundance_charging(
   deseq_res,
   charging_diffs,
-  lab_col = "tRNA",
+  lab_col = "ref",
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 2,
@@ -25,17 +25,17 @@ plot_abundance_charging(
 
   A tibble from
   [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
-  with at least `tRNA`, `log2FoldChange`, and `padj` columns.
+  with at least `ref`, `log2FoldChange`, and `padj` columns.
 
 - charging_diffs:
 
   A tibble from
   [`compute_charging_diffs()`](https://rnabioco.github.io/clover/reference/compute_charging_diffs.md)
-  with at least `tRNA` and `diff` columns.
+  with at least `ref` and `diff` columns.
 
 - lab_col:
 
-  Column name (string) used for point labels. Default `"tRNA"`.
+  Column name (string) used for point labels. Default `"ref"`.
 
 - padj_cutoff:
 
@@ -67,12 +67,12 @@ A ggplot object.
 
 ``` r
 deseq_res <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:6),
+  ref = paste0("tRNA-", 1:6),
   log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
   padj = c(0.01, 0.02, 0.5, 0.6, 0.001, 0.003)
 )
 charging_diffs <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:6),
+  ref = paste0("tRNA-", 1:6),
   diff = c(0.1, -0.1, 0.05, -0.05, -0.2, 0.15),
   se_diff = rep(0.03, 6)
 )

@@ -18,7 +18,7 @@ read_charging(path)
 
 ## Value
 
-A tibble with columns including `tRNA`, `counts_charged`,
+A tibble with columns including `ref`, `counts_charged`,
 `counts_uncharged`, `cpm_charged`, `cpm_uncharged`, and `total_count`.
 
 ## Examples

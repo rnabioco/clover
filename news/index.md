@@ -2,6 +2,18 @@
 
 ## clover 0.0.0.9000
 
+- Column naming is now standardized across the package: charging data
+  and DESeq2 results use `ref` instead of `tRNA` for the tRNA reference
+  name, and Sprinzl coordinates use `pos` instead of `seq_index` for the
+  1-based position in the tRNA body. The default `lab_col` parameter in
+  [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md),
+  [`plot_abundance_charging()`](https://rnabioco.github.io/clover/reference/plot_abundance_charging.md),
+  and
+  [`tabulate_deseq()`](https://rnabioco.github.io/clover/reference/tabulate_deseq.md)
+  changed from `"tRNA"` to `"ref"`.
+  [`read_bcerror()`](https://rnabioco.github.io/clover/reference/read_bcerror.md)
+  now returns `ref` as character instead of factor.
+
 - New color palette functions
   [`aa_colors()`](https://rnabioco.github.io/clover/reference/aa_colors.md)
   and

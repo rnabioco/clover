@@ -17,7 +17,7 @@ plot_charging_diffs(data, point_size = 2.5)
 
   A tibble from
   [`compute_charging_diffs()`](https://rnabioco.github.io/clover/reference/compute_charging_diffs.md)
-  with at least `tRNA` (factor), `diff`, and `se_diff` columns.
+  with at least `ref` (factor), `diff`, and `se_diff` columns.
 
 - point_size:
 
@@ -33,7 +33,7 @@ A ggplot object.
 
 ``` r
 df <- tibble::tibble(
-  tRNA = forcats::fct_inorder(paste0("tRNA-", 1:5)),
+  ref = forcats::fct_inorder(paste0("tRNA-", 1:5)),
   diff = c(-0.1, -0.05, 0.02, 0.08, 0.15),
   se_diff = rep(0.03, 5)
 )

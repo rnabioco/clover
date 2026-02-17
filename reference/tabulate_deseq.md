@@ -7,7 +7,7 @@ output, sorted by p-value.
 ## Usage
 
 ``` r
-tabulate_deseq(data, lab_col = "tRNA", n = 10)
+tabulate_deseq(data, lab_col = "ref", n = 10)
 ```
 
 ## Arguments
@@ -21,7 +21,7 @@ tabulate_deseq(data, lab_col = "tRNA", n = 10)
 
 - lab_col:
 
-  Column name (string) used for row labels. Default `"tRNA"`.
+  Column name (string) used for row labels. Default `"ref"`.
 
 - n:
 
@@ -35,7 +35,7 @@ A `gt_tbl` object.
 
 ``` r
 res <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:20),
+  ref = paste0("tRNA-", 1:20),
   log2FoldChange = rnorm(20),
   pvalue = runif(20, 0, 0.1),
   padj = runif(20, 0, 0.2),
@@ -48,7 +48,7 @@ if (requireNamespace("gt", quietly = TRUE)) {
 
   
 
-tRNA
+ref
 ```
 
 log2 FC
@@ -59,19 +59,19 @@ Adjusted p-value
 
 significant
 
-tRNA-11
+tRNA-9
 
-0.29
+−0.83
 
 1.47 × 10⁻³
 
 3.58 × 10⁻²
 
-FALSE
+TRUE
 
-tRNA-4
+tRNA-2
 
-0.13
+0.44
 
 5.82 × 10⁻³
 
@@ -79,9 +79,9 @@ tRNA-4
 
 TRUE
 
-tRNA-18
+tRNA-16
 
-−0.21
+−0.01
 
 7.46 × 10⁻³
 
@@ -89,9 +89,9 @@ tRNA-18
 
 FALSE
 
-tRNA-3
+tRNA-1
 
-0.44
+−0.08
 
 1.66 × 10⁻²
 
@@ -99,9 +99,9 @@ tRNA-3
 
 TRUE
 
-tRNA-16
+tRNA-14
 
-−1.43
+0.15
 
 3.60 × 10⁻²
 
@@ -109,9 +109,9 @@ tRNA-16
 
 FALSE
 
-tRNA-13
+tRNA-11
 
-−0.60
+−0.48
 
 4.53 × 10⁻²
 
@@ -119,9 +119,9 @@ tRNA-13
 
 FALSE
 
-tRNA-5
+tRNA-3
 
-−0.83
+0.13
 
 4.59 × 10⁻²
 
@@ -129,9 +129,9 @@ tRNA-5
 
 TRUE
 
-tRNA-10
+tRNA-8
 
-−0.83
+1.46
 
 4.97 × 10⁻²
 
@@ -139,9 +139,9 @@ tRNA-10
 
 TRUE
 
-tRNA-17
+tRNA-15
 
-−0.01
+−1.43
 
 5.03 × 10⁻²
 
@@ -149,9 +149,9 @@ tRNA-17
 
 FALSE
 
-tRNA-9
+tRNA-7
 
-1.46
+−0.75
 
 5.24 × 10⁻²
 

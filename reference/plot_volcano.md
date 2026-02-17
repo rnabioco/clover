@@ -10,7 +10,7 @@ Significant points are labeled with
 ``` r
 plot_volcano(
   data,
-  lab_col = "tRNA",
+  lab_col = "ref",
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 1.5,
@@ -30,7 +30,7 @@ plot_volcano(
 
 - lab_col:
 
-  Column name (string) used for point labels. Default `"tRNA"`.
+  Column name (string) used for point labels. Default `"ref"`.
 
 - padj_cutoff:
 
@@ -71,7 +71,7 @@ A ggplot object.
 
 ``` r
 res <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:10),
+  ref = paste0("tRNA-", 1:10),
   log2FoldChange = rnorm(10),
   pvalue = c(rep(0.001, 3), rep(0.5, 7)),
   padj = c(rep(0.01, 3), rep(0.8, 7)),

@@ -22,7 +22,7 @@ A tibble with columns:
 
 - `trna_id`: tRNA identifier (e.g., `nuc-tRNA-Ala-AGC-1-1`)
 
-- `seq_index`: 1-based position in tRNA body
+- `pos`: 1-based position in tRNA body
 
 - `sprinzl_label`: Sprinzl position (character: "1", "20a", "47:e1",
   etc.)
@@ -40,17 +40,17 @@ path <- clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 coords <- read_sprinzl_coords(path)
 coords
 #> # A tibble: 19,967 × 6
-#>    trna_id              seq_index sprinzl_label global_index region      residue
-#>    <chr>                    <dbl> <chr>                <dbl> <chr>       <chr>  
-#>  1 nuc-tRNA-Ala-AGC-1-1         1 1                        1 acceptor-s… G      
-#>  2 nuc-tRNA-Ala-AGC-1-1         2 2                        2 acceptor-s… G      
-#>  3 nuc-tRNA-Ala-AGC-1-1         3 3                        3 acceptor-s… G      
-#>  4 nuc-tRNA-Ala-AGC-1-1         4 4                        4 acceptor-s… C      
-#>  5 nuc-tRNA-Ala-AGC-1-1         5 5                        5 acceptor-s… G      
-#>  6 nuc-tRNA-Ala-AGC-1-1         6 6                        6 acceptor-s… T      
-#>  7 nuc-tRNA-Ala-AGC-1-1         7 7                        8 acceptor-s… G      
-#>  8 nuc-tRNA-Ala-AGC-1-1         8 8                        9 unknown     T      
-#>  9 nuc-tRNA-Ala-AGC-1-1         9 9                       10 unknown     G      
-#> 10 nuc-tRNA-Ala-AGC-1-1        10 10                      11 D-stem      G      
+#>    trna_id                pos sprinzl_label global_index region        residue
+#>    <chr>                <dbl> <chr>                <dbl> <chr>         <chr>  
+#>  1 nuc-tRNA-Ala-AGC-1-1     1 1                        1 acceptor-stem G      
+#>  2 nuc-tRNA-Ala-AGC-1-1     2 2                        2 acceptor-stem G      
+#>  3 nuc-tRNA-Ala-AGC-1-1     3 3                        3 acceptor-stem G      
+#>  4 nuc-tRNA-Ala-AGC-1-1     4 4                        4 acceptor-stem C      
+#>  5 nuc-tRNA-Ala-AGC-1-1     5 5                        5 acceptor-stem G      
+#>  6 nuc-tRNA-Ala-AGC-1-1     6 6                        6 acceptor-stem T      
+#>  7 nuc-tRNA-Ala-AGC-1-1     7 7                        8 acceptor-stem G      
+#>  8 nuc-tRNA-Ala-AGC-1-1     8 8                        9 unknown       T      
+#>  9 nuc-tRNA-Ala-AGC-1-1     9 9                       10 unknown       G      
+#> 10 nuc-tRNA-Ala-AGC-1-1    10 10                      11 D-stem        G      
 #> # ℹ 19,957 more rows
 ```

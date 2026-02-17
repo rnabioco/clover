@@ -34,6 +34,12 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/clover.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -121,7 +127,7 @@ configuration file and assembles a
 <span><span class="co">#&gt; assays(1): counts</span></span>
 <span><span class="co">#&gt; rownames(190): host-tRNA-Ala-GGC-1-1 host-tRNA-Ala-GGC-1-1-uncharged</span></span>
 <span><span class="co">#&gt;   ... phage-tRNA-Thr-TGT phage-tRNA-Thr-TGT-uncharged</span></span>
-<span><span class="co">#&gt; rowData names(2): tRNA seq_length</span></span>
+<span><span class="co">#&gt; rowData names(2): ref seq_length</span></span>
 <span><span class="co">#&gt; colnames(6): wt-15-ctl-01 wt-15-ctl-02 ... wt-15-inf-02 wt-15-inf-03</span></span>
 <span><span class="co">#&gt; colData names(3): sample_id condition replicate</span></span></code></pre></div>
 <p>The SE object contains:</p>
@@ -640,7 +646,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 </style>
 <table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
 <thead><tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="tRNA">tRNA</th>
+<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="ref">ref</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="log2FoldChange">log2 FC</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="pvalue">p-value</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="padj">Adjusted p-value</th>
@@ -648,7 +654,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
     </tr></thead>
 <tbody class="gt_table_body">
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Ile2-CAT</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Ile2-CAT</td>
 <td headers="log2FoldChange" class="gt_row gt_right">5.33</td>
 <td headers="pvalue" class="gt_row gt_right">2.85 × 10<sup style="font-size: 65%;">−17</sup>
 </td>
@@ -657,7 +663,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Gln-TTG</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Gln-TTG</td>
 <td headers="log2FoldChange" class="gt_row gt_right">3.68</td>
 <td headers="pvalue" class="gt_row gt_right">5.52 × 10<sup style="font-size: 65%;">−13</sup>
 </td>
@@ -666,7 +672,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Arg-TCT</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Arg-TCT</td>
 <td headers="log2FoldChange" class="gt_row gt_right">5.04</td>
 <td headers="pvalue" class="gt_row gt_right">3.36 × 10<sup style="font-size: 65%;">−9</sup>
 </td>
@@ -675,7 +681,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Pro-TGG-uncharged</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Pro-TGG-uncharged</td>
 <td headers="log2FoldChange" class="gt_row gt_right">1.80</td>
 <td headers="pvalue" class="gt_row gt_right">1.99 × 10<sup style="font-size: 65%;">−7</sup>
 </td>
@@ -684,7 +690,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Pro-TGG</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Pro-TGG</td>
 <td headers="log2FoldChange" class="gt_row gt_right">3.25</td>
 <td headers="pvalue" class="gt_row gt_right">2.67 × 10<sup style="font-size: 65%;">−6</sup>
 </td>
@@ -693,7 +699,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Thr-TGT</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Thr-TGT</td>
 <td headers="log2FoldChange" class="gt_row gt_right">4.29</td>
 <td headers="pvalue" class="gt_row gt_right">3.73 × 10<sup style="font-size: 65%;">−6</sup>
 </td>
@@ -702,7 +708,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Leu-TAA</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Leu-TAA</td>
 <td headers="log2FoldChange" class="gt_row gt_right">3.75</td>
 <td headers="pvalue" class="gt_row gt_right">8.90 × 10<sup style="font-size: 65%;">−6</sup>
 </td>
@@ -711,7 +717,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Leu-TAA-uncharged</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Leu-TAA-uncharged</td>
 <td headers="log2FoldChange" class="gt_row gt_right">2.08</td>
 <td headers="pvalue" class="gt_row gt_right">6.40 × 10<sup style="font-size: 65%;">−5</sup>
 </td>
@@ -720,7 +726,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Ser-TGA</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Ser-TGA</td>
 <td headers="log2FoldChange" class="gt_row gt_right">3.86</td>
 <td headers="pvalue" class="gt_row gt_right">9.51 × 10<sup style="font-size: 65%;">−5</sup>
 </td>
@@ -729,7 +735,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 <td headers="significant" class="gt_row gt_center">TRUE</td>
 </tr>
 <tr>
-<td headers="tRNA" class="gt_row gt_left">phage-tRNA-Arg-TCT-uncharged</td>
+<td headers="ref" class="gt_row gt_left">phage-tRNA-Arg-TCT-uncharged</td>
 <td headers="log2FoldChange" class="gt_row gt_right">1.84</td>
 <td headers="pvalue" class="gt_row gt_right">2.56 × 10<sup style="font-size: 65%;">−4</sup>
 </td>
@@ -842,8 +848,8 @@ Base-calling error profiles for selected tRNAs.
 <span><span class="co"># Join with sprinzl coords to get structural labels</span></span>
 <span><span class="va">bcerror_sprinzl</span> <span class="op">&lt;-</span> <span class="va">bcerror_delta</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span></span>
-<span>    <span class="va">sprinzl</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">trna_id</span>, <span class="va">seq_index</span>, <span class="va">sprinzl_label</span><span class="op">)</span>,</span>
-<span>    by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trna_id"</span>, <span class="st">"pos"</span> <span class="op">=</span> <span class="st">"seq_index"</span><span class="op">)</span></span>
+<span>    <span class="va">sprinzl</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">trna_id</span>, <span class="va">pos</span>, <span class="va">sprinzl_label</span><span class="op">)</span>,</span>
+<span>    by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"trna_id"</span>, <span class="st">"pos"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">sprinzl_label</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -860,6 +866,45 @@ positions.
 </p>
 </div>
 </div>
+<div class="section level3">
+<h3 id="modification-landscape">Modification landscape<a class="anchor" aria-label="anchor" href="#modification-landscape"></a>
+</h3>
+<p>For a detailed per-position view of a single tRNA,
+<code><a href="../reference/plot_mod_landscape.html">plot_mod_landscape()</a></code> stacks multiple metrics into aligned
+panels. Here we show the error rate difference and mismatch difference
+for one tRNA.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">glu_delta</span> <span class="op">&lt;-</span> <span class="va">bcerror_sprinzl</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ref</span> <span class="op">==</span> <span class="st">"host-tRNA-Glu-TTC-1-1"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">glu_landscape</span> <span class="op">&lt;-</span> <span class="va">bcerror_charged</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">ref</span> <span class="op">==</span> <span class="st">"host-tRNA-Glu-TTC-1-1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">pos</span>, <span class="va">condition</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    mean_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">error_rate</span><span class="op">)</span>,</span>
+<span>    mean_mis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">mis</span><span class="op">)</span>,</span>
+<span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span></span>
+<span>    names_from <span class="op">=</span> <span class="va">condition</span>,</span>
+<span>    values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">mean_error</span>, <span class="va">mean_mis</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    delta_error <span class="op">=</span> <span class="va">mean_error_inf</span> <span class="op">-</span> <span class="va">mean_error_ctl</span>,</span>
+<span>    delta_mis <span class="op">=</span> <span class="va">mean_mis_inf</span> <span class="op">-</span> <span class="va">mean_mis_ctl</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_mod_landscape.html">plot_mod_landscape</a></span><span class="op">(</span></span>
+<span>  <span class="va">glu_landscape</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"delta_error"</span>, <span class="st">"delta_mis"</span><span class="op">)</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"host-tRNA-Glu-TTC-1-1"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="figure">
+<img src="clover_files/figure-html/fig-mod-landscape-1.png" class="r-plt" alt="Modification landscape for tRNA-Glu-TTC-1-1." width="960"><p class="caption">
+Modification landscape for tRNA-Glu-TTC-1-1.
+</p>
+</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="modification-annotations-from-modomics">Modification annotations from MODOMICS<a class="anchor" aria-label="anchor" href="#modification-annotations-from-modomics"></a>
@@ -870,7 +915,7 @@ known tRNA modification positions onto your reference sequences using
 pairwise alignment. Data for common organisms is bundled with the
 package (see <code><a href="../reference/modomics_organisms.html">modomics_organisms()</a></code>), so no internet
 connection is needed.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fasta_path</span> <span class="op">&lt;-</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">config</span><span class="op">$</span><span class="va">fasta</span></span>
 <span><span class="va">mods</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/modomics_mods.html">modomics_mods</a></span><span class="op">(</span><span class="va">fasta_path</span>, organism <span class="op">=</span> <span class="st">"Escherichia coli"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Processing 182 MODOMICS sequences.</span></span>
@@ -895,7 +940,7 @@ connection is needed.</p>
 profiles. Positions with known modifications often correspond to
 elevated error rates, since the basecaller misidentifies modified
 nucleotides.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_bcerror_profile.html">plot_bcerror_profile</a></span><span class="op">(</span><span class="va">bcerror_summary</span>, refs <span class="op">=</span> <span class="va">plot_trnas</span>, mods <span class="op">=</span> <span class="va">mods</span><span class="op">)</span></span></code></pre></div>
 <div class="figure">
 <img src="clover_files/figure-html/fig-bcerror-mods-1.png" class="r-plt" alt="Base-calling error profiles with known modification positions marked." width="960"><p class="caption">
@@ -909,7 +954,7 @@ Base-calling error profiles with known modification positions marked.
 <p>Odds ratios measure whether modifications at pairs of positions tend
 to co-occur on the same read. Positive log odds ratios indicate
 co-occurrence; negative indicate mutual exclusivity.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">or_data</span> <span class="op">&lt;-</span> <span class="fu">S4Vectors</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">odds_ratios</span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">or_data</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 63,823</span></span>
@@ -929,7 +974,7 @@ co-occurrence; negative indicate mutual exclusivity.</p>
 <code>UUC</code>) while the pipeline uses DNA notation (e.g.,
 <code>TTC</code>). The pipeline also adds a <code>host-</code> prefix.
 We need to account for these naming differences when matching.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pick one tRNA and one sample</span></span>
 <span><span class="va">or_single</span> <span class="op">&lt;-</span> <span class="va">or_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
@@ -967,7 +1012,7 @@ Modification co-occurrence network for a single tRNA in one sample.
 ratio of odds ratios (ROR). Positive log ROR indicates gained
 modification dependencies in the infected condition; negative indicates
 lost dependencies.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add condition labels</span></span>
 <span><span class="va">or_with_cond</span> <span class="op">&lt;-</span> <span class="va">or_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>condition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"ctl"</span>, <span class="va">sample_id</span><span class="op">)</span>, <span class="st">"ctl"</span>, <span class="st">"inf"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -996,9 +1041,17 @@ Modification rewiring between control and infected conditions.
 </div>
 </div>
 <div class="section level2">
+<h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h2>
+<p>For isodecoder-level modification rewiring analysis — including odds
+ratio aggregation, ratio of odds ratios, dimensionality reduction, and
+network visualization — see
+<code>vignette("rewiring", package = "clover")</code>.</p>
+</div>
+<div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
@@ -1051,26 +1104,26 @@ Modification rewiring between control and infected conditions.
 <span><span class="co">#&gt; [49] vctrs_0.7.1                 Matrix_1.7-4               </span></span>
 <span><span class="co">#&gt; [51] jsonlite_2.0.0              litedown_0.9               </span></span>
 <span><span class="co">#&gt; [53] IRanges_2.44.0              hms_1.1.4                  </span></span>
-<span><span class="co">#&gt; [55] S4Vectors_0.48.0            bit64_4.6.0-1              </span></span>
-<span><span class="co">#&gt; [57] ggrepel_0.9.6               systemfonts_1.3.1          </span></span>
-<span><span class="co">#&gt; [59] locfit_1.5-9.12             jquerylib_0.1.4            </span></span>
-<span><span class="co">#&gt; [61] glue_1.8.0                  pkgdown_2.2.0              </span></span>
-<span><span class="co">#&gt; [63] codetools_0.2-20            ggtext_0.1.2               </span></span>
-<span><span class="co">#&gt; [65] cowplot_1.2.0               shape_1.4.6.1              </span></span>
-<span><span class="co">#&gt; [67] stringi_1.8.7               gtable_0.3.6               </span></span>
-<span><span class="co">#&gt; [69] GenomicRanges_1.62.1        tibble_3.3.1               </span></span>
-<span><span class="co">#&gt; [71] pillar_1.11.1               htmltools_0.5.9            </span></span>
-<span><span class="co">#&gt; [73] Seqinfo_1.0.0               circlize_0.4.17            </span></span>
-<span><span class="co">#&gt; [75] R6_2.6.1                    textshaping_1.0.4          </span></span>
-<span><span class="co">#&gt; [77] vroom_1.7.0                 evaluate_1.0.5             </span></span>
-<span><span class="co">#&gt; [79] lattice_0.22-7              Biobase_2.70.0             </span></span>
-<span><span class="co">#&gt; [81] markdown_2.0                readr_2.1.6                </span></span>
-<span><span class="co">#&gt; [83] gridtext_0.1.5              bslib_0.10.0               </span></span>
-<span><span class="co">#&gt; [85] Rcpp_1.1.1                  SparseArray_1.10.8         </span></span>
-<span><span class="co">#&gt; [87] DESeq2_1.50.2               xfun_0.56                  </span></span>
-<span><span class="co">#&gt; [89] GlobalOptions_0.1.3         fs_1.6.6                   </span></span>
-<span><span class="co">#&gt; [91] MatrixGenerics_1.22.0       forcats_1.0.1              </span></span>
-<span><span class="co">#&gt; [93] pkgconfig_2.0.3</span></span></code></pre></div>
+<span><span class="co">#&gt; [55] patchwork_1.3.2             S4Vectors_0.48.0           </span></span>
+<span><span class="co">#&gt; [57] bit64_4.6.0-1               ggrepel_0.9.6              </span></span>
+<span><span class="co">#&gt; [59] systemfonts_1.3.1           locfit_1.5-9.12            </span></span>
+<span><span class="co">#&gt; [61] jquerylib_0.1.4             glue_1.8.0                 </span></span>
+<span><span class="co">#&gt; [63] pkgdown_2.2.0               codetools_0.2-20           </span></span>
+<span><span class="co">#&gt; [65] ggtext_0.1.2                cowplot_1.2.0              </span></span>
+<span><span class="co">#&gt; [67] shape_1.4.6.1               stringi_1.8.7              </span></span>
+<span><span class="co">#&gt; [69] gtable_0.3.6                GenomicRanges_1.62.1       </span></span>
+<span><span class="co">#&gt; [71] tibble_3.3.1                pillar_1.11.1              </span></span>
+<span><span class="co">#&gt; [73] htmltools_0.5.9             Seqinfo_1.0.0              </span></span>
+<span><span class="co">#&gt; [75] circlize_0.4.17             R6_2.6.1                   </span></span>
+<span><span class="co">#&gt; [77] textshaping_1.0.4           vroom_1.7.0                </span></span>
+<span><span class="co">#&gt; [79] evaluate_1.0.5              lattice_0.22-7             </span></span>
+<span><span class="co">#&gt; [81] Biobase_2.70.0              markdown_2.0               </span></span>
+<span><span class="co">#&gt; [83] readr_2.1.6                 gridtext_0.1.5             </span></span>
+<span><span class="co">#&gt; [85] bslib_0.10.0                Rcpp_1.1.1                 </span></span>
+<span><span class="co">#&gt; [87] SparseArray_1.10.8          DESeq2_1.50.2              </span></span>
+<span><span class="co">#&gt; [89] xfun_0.56                   GlobalOptions_0.1.3        </span></span>
+<span><span class="co">#&gt; [91] fs_1.6.6                    MatrixGenerics_1.22.0      </span></span>
+<span><span class="co">#&gt; [93] forcats_1.0.1               pkgconfig_2.0.3</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

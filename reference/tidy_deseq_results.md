@@ -28,7 +28,7 @@ tidy_deseq_results(dds, contrast, padj_cutoff = 0.05)
 
 ## Value
 
-A tibble with columns: `tRNA`, `log2FoldChange`, `lfcSE`, `pvalue`,
+A tibble with columns: `ref`, `log2FoldChange`, `lfcSE`, `pvalue`,
 `padj`, and `significant` (logical).
 
 ## Examples

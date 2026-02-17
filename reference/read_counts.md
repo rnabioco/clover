@@ -1,6 +1,6 @@
-# Read counts from file
+# Read a counts TSV file.
 
-Read counts from file
+Read a per-tRNA counts file produced by the tRNA sequencing pipeline.
 
 ## Usage
 
@@ -12,4 +12,16 @@ read_counts(path)
 
 - path:
 
-  path to file
+  Path to a counts TSV file (may be gzipped).
+
+## Value
+
+A tibble.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+counts <- read_counts("sample1.counts.tsv.gz")
+} # }
+```

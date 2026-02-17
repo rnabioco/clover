@@ -17,6 +17,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/clover.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
+  </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -41,7 +45,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="clover-0009000">clover 0.0.0.9000<a class="anchor" aria-label="anchor" href="#clover-0009000"></a></h2>
-<ul><li><p>New color palette functions <code><a href="../reference/aa_colors.html">aa_colors()</a></code> and <code><a href="../reference/charging_colors.html">charging_colors()</a></code> provide named color vectors for amino acids and tRNA charging states.</p></li>
+<ul><li><p>Column naming is now standardized across the package: charging data and DESeq2 results use <code>ref</code> instead of <code>tRNA</code> for the tRNA reference name, and Sprinzl coordinates use <code>pos</code> instead of <code>seq_index</code> for the 1-based position in the tRNA body. The default <code>lab_col</code> parameter in <code><a href="../reference/plot_volcano.html">plot_volcano()</a></code>, <code><a href="../reference/plot_abundance_charging.html">plot_abundance_charging()</a></code>, and <code><a href="../reference/tabulate_deseq.html">tabulate_deseq()</a></code> changed from <code>"tRNA"</code> to <code>"ref"</code>. <code><a href="../reference/read_bcerror.html">read_bcerror()</a></code> now returns <code>ref</code> as character instead of factor.</p></li>
+<li><p>New color palette functions <code><a href="../reference/aa_colors.html">aa_colors()</a></code> and <code><a href="../reference/charging_colors.html">charging_colors()</a></code> provide named color vectors for amino acids and tRNA charging states.</p></li>
 <li><p>New statistical utility functions <code><a href="../reference/calc_fold_change.html">calc_fold_change()</a></code>, <code><a href="../reference/cohens_d.html">cohens_d()</a></code>, <code><a href="../reference/propagate_error_ratio.html">propagate_error_ratio()</a></code>, and <code><a href="../reference/propagate_error_diff.html">propagate_error_diff()</a></code> for common tRNA analysis calculations.</p></li>
 <li><p>New <code><a href="../reference/trna_regions.html">trna_regions()</a></code> returns a named list mapping canonical tRNA structural region names to Sprinzl position integers.</p></li>
 <li><p><code><a href="../reference/aggregate_or_isodecoder.html">aggregate_or_isodecoder()</a></code> collapses per-gene odds ratios to isodecoder level by averaging across gene copies.</p></li>

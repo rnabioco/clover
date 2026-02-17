@@ -23,7 +23,7 @@ compute_charging_diffs(
 
   A tibble from
   [`read_charging_multi()`](https://rnabioco.github.io/clover/reference/read_charging_multi.md)
-  with an added condition column. Must contain `tRNA`, `counts_charged`,
+  with an added condition column. Must contain `ref`, `counts_charged`,
   `counts_uncharged`, `sample_id`, and the column named by
   `condition_col`.
 
@@ -53,7 +53,7 @@ compute_charging_diffs(
 
 A tibble with columns:
 
-- tRNA:
+- ref:
 
   tRNA identifier (factor ordered by `diff`).
 

@@ -54,7 +54,7 @@ plot_chord_ror(
 
   An optional tibble of modification annotations (e.g., from
   [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md))
-  with columns `pos` (seq_index) and `mod1`. When provided along with
+  with columns `pos` and `mod1`. When provided along with
   `sprinzl_coords`, modification positions are highlighted as an
   annotation ring.
 

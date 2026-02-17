@@ -52,7 +52,7 @@ se
 #> assays(1): counts
 #> rownames(190): host-tRNA-Ala-GGC-1-1 host-tRNA-Ala-GGC-1-1-uncharged
 #>   ... phage-tRNA-Thr-TGT phage-tRNA-Thr-TGT-uncharged
-#> rowData names(2): tRNA seq_length
+#> rowData names(2): ref seq_length
 #> colnames(6): wt-15-ctl-01 wt-15-ctl-02 ... wt-15-inf-02 wt-15-inf-03
 #> colData names(3): sample_id condition replicate
 ```
@@ -124,7 +124,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 tabulate_deseq(res)
 ```
 
-| tRNA                         | log2 FC | p-value      | Adjusted p-value | significant |
+| ref                          | log2 FC | p-value      | Adjusted p-value | significant |
 |------------------------------|---------|--------------|------------------|-------------|
 | phage-tRNA-Ile2-CAT          | 5.33    | 2.85 × 10⁻¹⁷ | 5.31 × 10⁻¹⁵     | TRUE        |
 | phage-tRNA-Gln-TTG           | 3.68    | 5.52 × 10⁻¹³ | 5.13 × 10⁻¹¹     | TRUE        |
@@ -241,8 +241,8 @@ bcerror_delta <- bcerror_delta |>
 # Join with sprinzl coords to get structural labels
 bcerror_sprinzl <- bcerror_delta |>
   left_join(
-    sprinzl |> select(trna_id, seq_index, sprinzl_label),
-    by = c("trna_id", "pos" = "seq_index")
+    sprinzl |> select(trna_id, pos, sprinzl_label),
+    by = c("trna_id", "pos")
   ) |>
   filter(!is.na(sprinzl_label))
 
@@ -259,6 +259,46 @@ positions.](clover_files/figure-html/fig-bcerror-delta-1.png)
 
 Difference in mean base-calling error (inf - ctl) across all tRNAs and
 positions.
+
+### Modification landscape
+
+For a detailed per-position view of a single tRNA,
+[`plot_mod_landscape()`](https://rnabioco.github.io/clover/reference/plot_mod_landscape.md)
+stacks multiple metrics into aligned panels. Here we show the error rate
+difference and mismatch difference for one tRNA.
+
+``` r
+glu_delta <- bcerror_sprinzl |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1")
+
+glu_landscape <- bcerror_charged |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1") |>
+  group_by(pos, condition) |>
+  summarise(
+    mean_error = mean(error_rate),
+    mean_mis = mean(mis),
+    .groups = "drop"
+  ) |>
+  pivot_wider(
+    names_from = condition,
+    values_from = c(mean_error, mean_mis)
+  ) |>
+  mutate(
+    delta_error = mean_error_inf - mean_error_ctl,
+    delta_mis = mean_mis_inf - mean_mis_ctl
+  )
+
+plot_mod_landscape(
+  glu_landscape,
+  metrics = c("delta_error", "delta_mis"),
+  title = "host-tRNA-Glu-TTC-1-1"
+)
+```
+
+![Modification landscape for
+tRNA-Glu-TTC-1-1.](clover_files/figure-html/fig-mod-landscape-1.png)
+
+Modification landscape for tRNA-Glu-TTC-1-1.
 
 ## Modification annotations from MODOMICS
 
@@ -402,6 +442,12 @@ conditions.](clover_files/figure-html/fig-chord-ror-1.png)
 
 Modification rewiring between control and infected conditions.
 
+## Next steps
+
+For isodecoder-level modification rewiring analysis — including odds
+ratio aggregation, ratio of odds ratios, dimensionality reduction, and
+network visualization — see `vignette("rewiring", package = "clover")`.
+
 ## Session info
 
 ``` r
@@ -457,24 +503,24 @@ sessionInfo()
 #> [49] vctrs_0.7.1                 Matrix_1.7-4               
 #> [51] jsonlite_2.0.0              litedown_0.9               
 #> [53] IRanges_2.44.0              hms_1.1.4                  
-#> [55] S4Vectors_0.48.0            bit64_4.6.0-1              
-#> [57] ggrepel_0.9.6               systemfonts_1.3.1          
-#> [59] locfit_1.5-9.12             jquerylib_0.1.4            
-#> [61] glue_1.8.0                  pkgdown_2.2.0              
-#> [63] codetools_0.2-20            ggtext_0.1.2               
-#> [65] cowplot_1.2.0               shape_1.4.6.1              
-#> [67] stringi_1.8.7               gtable_0.3.6               
-#> [69] GenomicRanges_1.62.1        tibble_3.3.1               
-#> [71] pillar_1.11.1               htmltools_0.5.9            
-#> [73] Seqinfo_1.0.0               circlize_0.4.17            
-#> [75] R6_2.6.1                    textshaping_1.0.4          
-#> [77] vroom_1.7.0                 evaluate_1.0.5             
-#> [79] lattice_0.22-7              Biobase_2.70.0             
-#> [81] markdown_2.0                readr_2.1.6                
-#> [83] gridtext_0.1.5              bslib_0.10.0               
-#> [85] Rcpp_1.1.1                  SparseArray_1.10.8         
-#> [87] DESeq2_1.50.2               xfun_0.56                  
-#> [89] GlobalOptions_0.1.3         fs_1.6.6                   
-#> [91] MatrixGenerics_1.22.0       forcats_1.0.1              
-#> [93] pkgconfig_2.0.3
+#> [55] patchwork_1.3.2             S4Vectors_0.48.0           
+#> [57] bit64_4.6.0-1               ggrepel_0.9.6              
+#> [59] systemfonts_1.3.1           locfit_1.5-9.12            
+#> [61] jquerylib_0.1.4             glue_1.8.0                 
+#> [63] pkgdown_2.2.0               codetools_0.2-20           
+#> [65] ggtext_0.1.2                cowplot_1.2.0              
+#> [67] shape_1.4.6.1               stringi_1.8.7              
+#> [69] gtable_0.3.6                GenomicRanges_1.62.1       
+#> [71] tibble_3.3.1                pillar_1.11.1              
+#> [73] htmltools_0.5.9             Seqinfo_1.0.0              
+#> [75] circlize_0.4.17             R6_2.6.1                   
+#> [77] textshaping_1.0.4           vroom_1.7.0                
+#> [79] evaluate_1.0.5              lattice_0.22-7             
+#> [81] Biobase_2.70.0              markdown_2.0               
+#> [83] readr_2.1.6                 gridtext_0.1.5             
+#> [85] bslib_0.10.0                Rcpp_1.1.1                 
+#> [87] SparseArray_1.10.8          DESeq2_1.50.2              
+#> [89] xfun_0.56                   GlobalOptions_0.1.3        
+#> [91] fs_1.6.6                    MatrixGenerics_1.22.0      
+#> [93] forcats_1.0.1               pkgconfig_2.0.3
 ```

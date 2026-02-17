@@ -14,7 +14,7 @@ charging_count_matrix(charging_data, min_count = 10)
 
 - charging_data:
 
-  A tibble of combined charging data with columns `tRNA`,
+  A tibble of combined charging data with columns `ref`,
   `counts_charged`, `counts_uncharged`, and `sample_id` (as returned by
   [`read_charging_multi()`](https://rnabioco.github.io/clover/reference/read_charging_multi.md)).
 
