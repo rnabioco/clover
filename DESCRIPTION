@@ -16,6 +16,7 @@ Depends:
 Imports:
     Biostrings,
     cli,
+    cowplot,
     dplyr,
     forcats,
     GenomicRanges,

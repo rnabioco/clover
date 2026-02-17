@@ -56,7 +56,7 @@ plot_bcerror <- function(tbl, data, title_suffix, include_legend = TRUE) {
       x = "Position",
       y = ""
     ) +
-    theme_minimal() +
+    cowplot::theme_cowplot() +
     theme(
       axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8),
       legend.pos = ifelse(include_legend, "bottom", "none")
@@ -170,10 +170,9 @@ plot_mod_heatmap <- function(
       oob = scales::squish
     ) +
     labs(x = "Sprinzl Position", y = "") +
-    theme_minimal() +
+    cowplot::theme_cowplot() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
-      panel.grid = element_blank(),
       legend.position = "bottom",
       legend.key.width = grid::unit(1.5, "cm")
     )
