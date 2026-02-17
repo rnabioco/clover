@@ -184,6 +184,86 @@ plot_mod_heatmap <- function(
   p
 }
 
+#' Plot a volcano plot of differential expression results.
+#'
+#' Creates a volcano plot from the tibble returned by
+#' [tidy_deseq_results()]. Significant points are labeled with
+#' [ggrepel::geom_text_repel()].
+#'
+#' @param data A tibble from [tidy_deseq_results()] with at least
+#'   `log2FoldChange`, `pvalue`, and `significant` columns.
+#' @param lab_col Column name (string) used for point labels. Default
+#'   `"tRNA"`.
+#' @param padj_cutoff Numeric; draws a dashed horizontal line at
+#'   `-log10(padj_cutoff)`. Default `0.05`.
+#' @param max_overlaps Maximum number of overlapping labels passed to
+#'   [ggrepel::geom_text_repel()]. Default `20`.
+#' @param point_size Numeric size for [ggplot2::geom_point()]. Default
+#'   `1.5`.
+#' @param label_size Numeric size for [ggrepel::geom_text_repel()].
+#'   Default `3`.
+#' @param sig_color Color for significant points. Default `"#D55E00"`.
+#' @param nonsig_color Color for non-significant points. Default
+#'   `"grey60"`.
+#'
+#' @return A ggplot object.
+#'
+#' @export
+#'
+#' @examples
+#' res <- tibble::tibble(
+#'   tRNA = paste0("tRNA-", 1:10),
+#'   log2FoldChange = rnorm(10),
+#'   pvalue = c(rep(0.001, 3), rep(0.5, 7)),
+#'   padj = c(rep(0.01, 3), rep(0.8, 7)),
+#'   significant = c(rep(TRUE, 3), rep(FALSE, 7))
+#' )
+#' plot_volcano(res)
+plot_volcano <- function(
+  data,
+  lab_col = "tRNA",
+  padj_cutoff = 0.05,
+  max_overlaps = 20,
+  point_size = 1.5,
+  label_size = 3,
+  sig_color = "#D55E00",
+  nonsig_color = "grey60"
+) {
+  rlang::check_installed("ggrepel", reason = "to label significant points.")
+
+  p <- ggplot(data, aes(x = log2FoldChange, y = -log10(pvalue))) +
+    geom_point(
+      aes(color = significant),
+      size = point_size,
+      alpha = 0.7
+    ) +
+    ggrepel::geom_text_repel(
+      data = function(x) dplyr::filter(x, significant),
+      aes(label = .data[[lab_col]]),
+      size = label_size,
+      max.overlaps = max_overlaps
+    ) +
+    scale_color_manual(
+      values = stats::setNames(
+        c(nonsig_color, sig_color),
+        c(FALSE, TRUE)
+      )
+    ) +
+    geom_hline(
+      yintercept = -log10(padj_cutoff),
+      linetype = "dashed",
+      color = "grey40"
+    ) +
+    labs(
+      x = "log2 Fold Change",
+      y = "-log10(p-value)"
+    ) +
+    cowplot::theme_cowplot() +
+    theme(legend.position = "none")
+
+  p
+}
+
 # Constants ---------------------------------------------------------------
 
 #' Labels for consensus tRNA secondary structure

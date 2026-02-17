@@ -31,6 +31,45 @@ test_that("plot_mod_heatmap works without clustering", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("plot_volcano returns a ggplot object", {
+  skip_if_not_installed("ggrepel")
+  res <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:10),
+    log2FoldChange = rnorm(10),
+    pvalue = c(rep(0.001, 3), rep(0.5, 7)),
+    padj = c(rep(0.01, 3), rep(0.8, 7)),
+    significant = c(rep(TRUE, 3), rep(FALSE, 7))
+  )
+  p <- plot_volcano(res)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_volcano works with custom lab_col", {
+  skip_if_not_installed("ggrepel")
+  res <- tibble::tibble(
+    gene = paste0("gene-", 1:5),
+    log2FoldChange = rnorm(5),
+    pvalue = c(0.001, 0.5, 0.5, 0.5, 0.5),
+    padj = c(0.01, 0.8, 0.8, 0.8, 0.8),
+    significant = c(TRUE, FALSE, FALSE, FALSE, FALSE)
+  )
+  p <- plot_volcano(res, lab_col = "gene")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_volcano works with no significant points", {
+  skip_if_not_installed("ggrepel")
+  res <- tibble::tibble(
+    tRNA = paste0("tRNA-", 1:5),
+    log2FoldChange = rnorm(5),
+    pvalue = rep(0.5, 5),
+    padj = rep(0.8, 5),
+    significant = rep(FALSE, 5)
+  )
+  p <- plot_volcano(res)
+  expect_s3_class(p, "ggplot")
+})
+
 test_that("plot_mod_heatmap works with a single row", {
   df <- data.frame(
     ref = rep("tRNA-Ala", 5),
