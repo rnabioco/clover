@@ -4,14 +4,14 @@
 \alias{tabulate_deseq}
 \title{Tabulate top DESeq2 differential expression results.}
 \usage{
-tabulate_deseq(data, lab_col = "tRNA", n = 10)
+tabulate_deseq(data, lab_col = "ref", n = 10)
 }
 \arguments{
 \item{data}{A tibble from \code{\link[=tidy_deseq_results]{tidy_deseq_results()}} with at least
 \code{log2FoldChange}, \code{pvalue}, \code{padj}, and \code{significant} columns.}
 
 \item{lab_col}{Column name (string) used for row labels. Default
-\code{"tRNA"}.}
+\code{"ref"}.}
 
 \item{n}{Maximum number of rows to display. Default \code{10}.}
 }
@@ -24,7 +24,7 @@ Create a formatted gt table of the top significant tRNAs from
 }
 \examples{
 res <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:20),
+  ref = paste0("tRNA-", 1:20),
   log2FoldChange = rnorm(20),
   pvalue = runif(20, 0, 0.1),
   padj = runif(20, 0, 0.2),

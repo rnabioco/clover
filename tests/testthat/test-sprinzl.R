@@ -7,7 +7,7 @@ test_that("read_sprinzl_coords returns expected columns and types", {
     coords,
     c(
       "trna_id",
-      "seq_index",
+      "pos",
       "sprinzl_label",
       "global_index",
       "region",
@@ -15,7 +15,7 @@ test_that("read_sprinzl_coords returns expected columns and types", {
     )
   )
   expect_type(coords$trna_id, "character")
-  expect_type(coords$seq_index, "double")
+  expect_type(coords$pos, "double")
   expect_type(coords$sprinzl_label, "character")
   expect_type(coords$global_index, "double")
   expect_type(coords$region, "character")

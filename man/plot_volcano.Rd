@@ -6,7 +6,7 @@
 \usage{
 plot_volcano(
   data,
-  lab_col = "tRNA",
+  lab_col = "ref",
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 1.5,
@@ -20,7 +20,7 @@ plot_volcano(
 \code{log2FoldChange}, \code{padj}, and \code{significant} columns.}
 
 \item{lab_col}{Column name (string) used for point labels. Default
-\code{"tRNA"}.}
+\code{"ref"}.}
 
 \item{padj_cutoff}{Numeric; draws a dashed horizontal line at
 \code{-log10(padj_cutoff)}. Default \code{0.05}.}
@@ -49,7 +49,7 @@ Creates a volcano plot from the tibble returned by
 }
 \examples{
 res <- tibble::tibble(
-  tRNA = paste0("tRNA-", 1:10),
+  ref = paste0("tRNA-", 1:10),
   log2FoldChange = rnorm(10),
   pvalue = c(rep(0.001, 3), rep(0.5, 7)),
   padj = c(rep(0.01, 3), rep(0.8, 7)),

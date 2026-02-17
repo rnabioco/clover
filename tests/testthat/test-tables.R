@@ -1,7 +1,7 @@
 test_that("tabulate_deseq returns a gt_tbl", {
   skip_if_not_installed("gt")
   res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:20),
+    ref = paste0("tRNA-", 1:20),
     log2FoldChange = rnorm(20),
     pvalue = runif(20, 0, 0.1),
     padj = runif(20, 0, 0.2),
@@ -14,7 +14,7 @@ test_that("tabulate_deseq returns a gt_tbl", {
 test_that("tabulate_deseq respects n parameter", {
   skip_if_not_installed("gt")
   res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:20),
+    ref = paste0("tRNA-", 1:20),
     log2FoldChange = rnorm(20),
     pvalue = runif(20, 0, 0.1),
     padj = runif(20, 0, 0.2),
@@ -27,7 +27,7 @@ test_that("tabulate_deseq respects n parameter", {
 test_that("tabulate_deseq filters NA padj rows", {
   skip_if_not_installed("gt")
   res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:5),
+    ref = paste0("tRNA-", 1:5),
     log2FoldChange = rnorm(5),
     pvalue = c(0.01, 0.02, NA, 0.04, NA),
     padj = c(0.05, 0.06, NA, 0.08, NA),

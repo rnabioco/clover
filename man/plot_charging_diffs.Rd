@@ -8,7 +8,7 @@ plot_charging_diffs(data, point_size = 2.5)
 }
 \arguments{
 \item{data}{A tibble from \code{\link[=compute_charging_diffs]{compute_charging_diffs()}} with at least
-\code{tRNA} (factor), \code{diff}, and \code{se_diff} columns.}
+\code{ref} (factor), \code{diff}, and \code{se_diff} columns.}
 
 \item{point_size}{Numeric size for \code{\link[ggplot2:geom_point]{ggplot2::geom_point()}}. Default
 \code{2.5}.}
@@ -23,7 +23,7 @@ returned by \code{\link[=compute_charging_diffs]{compute_charging_diffs()}}.
 }
 \examples{
 df <- tibble::tibble(
-  tRNA = forcats::fct_inorder(paste0("tRNA-", 1:5)),
+  ref = forcats::fct_inorder(paste0("tRNA-", 1:5)),
   diff = c(-0.1, -0.05, 0.02, 0.08, 0.15),
   se_diff = rep(0.03, 5)
 )

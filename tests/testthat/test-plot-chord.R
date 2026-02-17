@@ -55,7 +55,7 @@ test_that("plot_chord_or works with sprinzl_coords", {
 
   sprinzl <- tibble::tibble(
     trna_id = rep("tRNA-Ala-1", 4),
-    seq_index = 1:4,
+    pos = 1:4,
     sprinzl_label = c("20", "26", "34", "44"),
     global_index = 1:4,
     region = c("D-loop", "anticodon-stem", "anticodon-stem", "variable-region"),
@@ -88,7 +88,7 @@ test_that("plot_chord_or converts positions to Sprinzl labels", {
 
   sprinzl <- tibble::tibble(
     trna_id = rep("tRNA-Ala-1", 5),
-    seq_index = 1:5,
+    pos = 1:5,
     sprinzl_label = c("1", "2", "20a", "34", "58"),
     global_index = 1:5,
     region = c(
@@ -127,7 +127,7 @@ test_that("plot_chord_or shows all Sprinzl positions as sectors", {
 
   sprinzl <- tibble::tibble(
     trna_id = rep("tRNA-Ala-1", 5),
-    seq_index = 1:5,
+    pos = 1:5,
     sprinzl_label = c("1", "2", "3", "4", "5"),
     global_index = 1:5,
     region = rep("acceptor-stem", 5),
@@ -145,7 +145,7 @@ test_that("plot_chord_or shows all Sprinzl positions as sectors", {
 test_that(".setup_chord_sectors returns residues", {
   sprinzl <- tibble::tibble(
     trna_id = rep("tRNA-Ala-1", 4),
-    seq_index = 1:4,
+    pos = 1:4,
     sprinzl_label = c("1", "2", "3", "4"),
     global_index = 1:4,
     region = rep("acceptor-stem", 4),
@@ -172,7 +172,7 @@ test_that("plot_chord_or renders with mods annotation ring", {
 
   sprinzl <- tibble::tibble(
     trna_id = rep("tRNA-Ala-1", 4),
-    seq_index = 1:4,
+    pos = 1:4,
     sprinzl_label = c("20", "26", "34", "44"),
     global_index = 1:4,
     region = c("D-loop", "anticodon-stem", "anticodon-stem", "variable-region"),
@@ -214,7 +214,7 @@ test_that("plot_chord_ror renders with mods annotation ring", {
 
   sprinzl <- tibble::tibble(
     trna_id = rep("tRNA-Ala-1", 4),
-    seq_index = 1:4,
+    pos = 1:4,
     sprinzl_label = c("20", "26", "34", "44"),
     global_index = 1:4,
     region = c("D-loop", "anticodon-stem", "anticodon-stem", "variable-region"),
@@ -311,7 +311,7 @@ test_that("plot_chord_ror returns NULL when no pairs exceed cutoff", {
 test_that(".map_to_sprinzl drops pairs with no mapping", {
   sprinzl <- tibble::tibble(
     trna_id = rep("tRNA-1", 3),
-    seq_index = 1:3,
+    pos = 1:3,
     sprinzl_label = c("1", NA, "3"),
     global_index = 1:3,
     region = rep("D-stem", 3),

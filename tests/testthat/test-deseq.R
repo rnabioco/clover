@@ -1,6 +1,6 @@
 test_that("abundance_count_matrix creates correct matrix", {
   charging <- tibble::tibble(
-    tRNA = rep(c("tRNA-Ala", "tRNA-Gly", "tRNA-Ser"), 2),
+    ref = rep(c("tRNA-Ala", "tRNA-Gly", "tRNA-Ser"), 2),
     counts_charged = c(100, 200, 5, 120, 180, 3),
     counts_uncharged = c(50, 80, 2, 60, 90, 1),
     sample_id = rep(c("s1", "s2"), each = 3)
@@ -21,7 +21,7 @@ test_that("abundance_count_matrix creates correct matrix", {
 
 test_that("abundance_count_matrix filters low-count tRNAs", {
   charging <- tibble::tibble(
-    tRNA = rep(c("tRNA-Ala", "tRNA-Low"), 2),
+    ref = rep(c("tRNA-Ala", "tRNA-Low"), 2),
     counts_charged = c(100, 1, 120, 2),
     counts_uncharged = c(50, 0, 60, 1),
     sample_id = rep(c("s1", "s2"), each = 2)
@@ -35,7 +35,7 @@ test_that("abundance_count_matrix filters low-count tRNAs", {
 
 test_that("charging_count_matrix creates correct matrix", {
   charging <- tibble::tibble(
-    tRNA = rep(c("tRNA-Ala", "tRNA-Gly"), 2),
+    ref = rep(c("tRNA-Ala", "tRNA-Gly"), 2),
     counts_charged = c(100, 200, 120, 180),
     counts_uncharged = c(50, 80, 60, 90),
     sample_id = rep(c("s1", "s2"), each = 2)
@@ -121,7 +121,7 @@ test_that("run_deseq and tidy_deseq_results work end-to-end", {
   expect_s3_class(res, "tbl_df")
   expect_named(
     res,
-    c("tRNA", "log2FoldChange", "lfcSE", "pvalue", "padj", "significant")
+    c("ref", "log2FoldChange", "lfcSE", "pvalue", "padj", "significant")
   )
   expect_type(res$significant, "logical")
   expect_equal(nrow(res), n_genes)

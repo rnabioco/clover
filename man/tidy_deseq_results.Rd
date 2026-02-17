@@ -17,7 +17,7 @@ for coefficient-based contrasts.}
 Default \code{0.05}.}
 }
 \value{
-A tibble with columns: \code{tRNA}, \code{log2FoldChange}, \code{lfcSE},
+A tibble with columns: \code{ref}, \code{log2FoldChange}, \code{lfcSE},
 \code{pvalue}, \code{padj}, and \code{significant} (logical).
 }
 \description{

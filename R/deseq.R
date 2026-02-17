@@ -7,7 +7,7 @@
 #' abundance (charged + uncharged counts).
 #'
 #' @param charging_data A tibble of combined charging data with columns
-#'   `tRNA`, `counts_charged`, `counts_uncharged`, and `sample_id`
+#'   `ref`, `counts_charged`, `counts_uncharged`, and `sample_id`
 #'   (as returned by [read_charging_multi()]).
 #' @param min_count Minimum total count across all samples for a tRNA
 #'   to be retained. Default `10`.
@@ -29,7 +29,7 @@ abundance_count_matrix <- function(charging_data, min_count = 10) {
         round(counts_charged + counts_uncharged)
       )
     ) |>
-    dplyr::select(tRNA, sample_id, total_count) |>
+    dplyr::select(ref, sample_id, total_count) |>
     tidyr::pivot_wider(
       names_from = sample_id,
       values_from = total_count,
@@ -37,7 +37,7 @@ abundance_count_matrix <- function(charging_data, min_count = 10) {
     )
 
   mat <- as.matrix(abundance[, -1, drop = FALSE])
-  rownames(mat) <- abundance$tRNA
+  rownames(mat) <- abundance$ref
   storage.mode(mat) <- "integer"
 
   # Filter low-count tRNAs
@@ -52,7 +52,7 @@ abundance_count_matrix <- function(charging_data, min_count = 10) {
 #' charging ratios between conditions.
 #'
 #' @param charging_data A tibble of combined charging data with columns
-#'   `tRNA`, `counts_charged`, `counts_uncharged`, and `sample_id`
+#'   `ref`, `counts_charged`, `counts_uncharged`, and `sample_id`
 #'   (as returned by [read_charging_multi()]).
 #' @param min_count Minimum total count across all columns for a tRNA
 #'   to be retained. Default `10`.
@@ -82,7 +82,7 @@ charging_count_matrix <- function(charging_data, min_count = 10) {
       charge_status = sub("^counts_", "", charge_status),
       col_name = paste0(sample_id, "_", charge_status)
     ) |>
-    dplyr::select(tRNA, col_name, count) |>
+    dplyr::select(ref, col_name, count) |>
     tidyr::pivot_wider(
       names_from = col_name,
       values_from = count,
@@ -90,7 +90,7 @@ charging_count_matrix <- function(charging_data, min_count = 10) {
     )
 
   mat <- as.matrix(long[, -1, drop = FALSE])
-  rownames(mat) <- long$tRNA
+  rownames(mat) <- long$ref
   storage.mode(mat) <- "integer"
 
   # Filter low-count tRNAs
@@ -208,7 +208,7 @@ run_deseq <- function(count_matrix, coldata, design, ...) {
 #' @param padj_cutoff Adjusted p-value threshold for significance.
 #'   Default `0.05`.
 #'
-#' @return A tibble with columns: `tRNA`, `log2FoldChange`, `lfcSE`,
+#' @return A tibble with columns: `ref`, `log2FoldChange`, `lfcSE`,
 #'   `pvalue`, `padj`, and `significant` (logical).
 #'
 #' @export
@@ -225,7 +225,7 @@ tidy_deseq_results <- function(dds, contrast, padj_cutoff = 0.05) {
   res_df <- as.data.frame(res)
 
   tibble::tibble(
-    tRNA = rownames(res_df),
+    ref = rownames(res_df),
     log2FoldChange = res_df$log2FoldChange,
     lfcSE = res_df$lfcSE,
     pvalue = res_df$pvalue,

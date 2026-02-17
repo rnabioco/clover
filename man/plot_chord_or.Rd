@@ -47,9 +47,9 @@ Default \code{"#0072B2"} (blue).}
 to order sectors by Sprinzl position and color by structural region.}
 
 \item{mods}{An optional tibble of modification annotations (e.g., from
-\code{\link[=fetch_modomics_mods]{fetch_modomics_mods()}}) with columns \code{pos} (seq_index) and \code{mod1}.
-When provided along with \code{sprinzl_coords}, modification positions are
-highlighted as an annotation ring.}
+\code{\link[=fetch_modomics_mods]{fetch_modomics_mods()}}) with columns \code{pos} and \code{mod1}. When provided
+along with \code{sprinzl_coords}, modification positions are highlighted
+as an annotation ring.}
 
 \item{title}{Optional plot title.}
 

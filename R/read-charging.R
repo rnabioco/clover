@@ -7,7 +7,7 @@
 #'
 #' @param path Path to a `{sample}.charging.cpm.tsv.gz` file.
 #'
-#' @return A tibble with columns including `tRNA`, `counts_charged`,
+#' @return A tibble with columns including `ref`, `counts_charged`,
 #'   `counts_uncharged`, `cpm_charged`, `cpm_uncharged`, and `total_count`.
 #'
 #' @export
@@ -18,7 +18,8 @@
 #' charging
 #' }
 read_charging <- function(path) {
-  readr::read_tsv(path, show_col_types = FALSE)
+  readr::read_tsv(path, show_col_types = FALSE) |>
+    dplyr::rename(ref = tRNA)
 }
 
 #' Read an odds ratios file.
@@ -111,7 +112,7 @@ read_odds_ratios_multi <- function(paths) {
 #' computing the between-condition difference with propagated SE.
 #'
 #' @param charging_data A tibble from [read_charging_multi()] with an
-#'   added condition column. Must contain `tRNA`, `counts_charged`,
+#'   added condition column. Must contain `ref`, `counts_charged`,
 #'   `counts_uncharged`, `sample_id`, and the column named by
 #'   `condition_col`.
 #' @param condition_col Column name (string) for condition labels.
@@ -127,7 +128,7 @@ read_odds_ratios_multi <- function(paths) {
 #'
 #' @return A tibble with columns:
 #' \describe{
-#'   \item{tRNA}{tRNA identifier (factor ordered by `diff`).}
+#'   \item{ref}{tRNA identifier (factor ordered by `diff`).}
 #'   \item{ratio_numerator}{Mean charging ratio for the numerator
 #'     condition.}
 #'   \item{ratio_denominator}{Mean charging ratio for the denominator
@@ -176,7 +177,7 @@ compute_charging_diffs <- function(
 
   # Filter uncharged variants and compute per-sample charging ratio
   ratios <- charging_data |>
-    dplyr::filter(!grepl("-uncharged$", tRNA)) |>
+    dplyr::filter(!grepl("-uncharged$", ref)) |>
     dplyr::mutate(
       total = counts_charged + counts_uncharged,
       charging_ratio = counts_charged / total
@@ -186,19 +187,19 @@ compute_charging_diffs <- function(
   # Optionally keep only top N tRNAs by total abundance
 
   if (!is.null(n_top)) {
-    top_trnas <- ratios |>
-      dplyr::group_by(tRNA) |>
+    top_refs <- ratios |>
+      dplyr::group_by(ref) |>
       dplyr::summarise(total = sum(total), .groups = "drop") |>
       dplyr::slice_max(total, n = n_top) |>
-      dplyr::pull(tRNA)
+      dplyr::pull(ref)
 
     ratios <- ratios |>
-      dplyr::filter(tRNA %in% top_trnas)
+      dplyr::filter(ref %in% top_refs)
   }
 
   # Summarize by tRNA and condition
   ratio_summary <- ratios |>
-    dplyr::group_by(tRNA, .data[[condition_col]]) |>
+    dplyr::group_by(ref, .data[[condition_col]]) |>
     dplyr::summarise(
       mean_ratio = mean(charging_ratio),
       se_ratio = stats::sd(charging_ratio) / sqrt(dplyr::n()),
@@ -219,7 +220,7 @@ compute_charging_diffs <- function(
 
   wide |>
     dplyr::transmute(
-      tRNA,
+      ref,
       ratio_numerator = .data[[num_ratio]],
       ratio_denominator = .data[[den_ratio]],
       se_numerator = .data[[num_se]],
@@ -228,7 +229,7 @@ compute_charging_diffs <- function(
       se_diff = sqrt(.data[[num_se]]^2 + .data[[den_se]]^2)
     ) |>
     dplyr::filter(!is.na(diff)) |>
-    dplyr::mutate(tRNA = forcats::fct_reorder(tRNA, diff))
+    dplyr::mutate(ref = forcats::fct_reorder(ref, diff))
 }
 
 # Odds ratio computation from mod_calls -----------------------------------------

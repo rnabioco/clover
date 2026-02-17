@@ -13,7 +13,7 @@ read_sprinzl_coords(path)
 A tibble with columns:
 \itemize{
 \item \code{trna_id}: tRNA identifier (e.g., \code{nuc-tRNA-Ala-AGC-1-1})
-\item \code{seq_index}: 1-based position in tRNA body
+\item \code{pos}: 1-based position in tRNA body
 \item \code{sprinzl_label}: Sprinzl position (character: "1", "20a", "47:e1", etc.)
 \item \code{global_index}: cross-tRNA universal alignment position
 \item \code{region}: structural region (acceptor-stem, D-stem, D-loop, etc.)

@@ -8,7 +8,7 @@
 #' @param data A tibble from [tidy_deseq_results()] with at least
 #'   `log2FoldChange`, `pvalue`, `padj`, and `significant` columns.
 #' @param lab_col Column name (string) used for row labels. Default
-#'   `"tRNA"`.
+#'   `"ref"`.
 #' @param n Maximum number of rows to display. Default `10`.
 #'
 #' @return A `gt_tbl` object.
@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' res <- tibble::tibble(
-#'   tRNA = paste0("tRNA-", 1:20),
+#'   ref = paste0("tRNA-", 1:20),
 #'   log2FoldChange = rnorm(20),
 #'   pvalue = runif(20, 0, 0.1),
 #'   padj = runif(20, 0, 0.2),
@@ -26,7 +26,7 @@
 #' if (requireNamespace("gt", quietly = TRUE)) {
 #'   tabulate_deseq(res)
 #' }
-tabulate_deseq <- function(data, lab_col = "tRNA", n = 10) {
+tabulate_deseq <- function(data, lab_col = "ref", n = 10) {
   rlang::check_installed("gt", reason = "to create formatted tables.")
 
   tbl_data <- data |>

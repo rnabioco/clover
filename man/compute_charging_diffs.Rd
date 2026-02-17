@@ -15,7 +15,7 @@ compute_charging_diffs(
 }
 \arguments{
 \item{charging_data}{A tibble from \code{\link[=read_charging_multi]{read_charging_multi()}} with an
-added condition column. Must contain \code{tRNA}, \code{counts_charged},
+added condition column. Must contain \code{ref}, \code{counts_charged},
 \code{counts_uncharged}, \code{sample_id}, and the column named by
 \code{condition_col}.}
 
@@ -37,7 +37,7 @@ total abundance across all samples. Default \code{NULL} (keep all).}
 \value{
 A tibble with columns:
 \describe{
-\item{tRNA}{tRNA identifier (factor ordered by \code{diff}).}
+\item{ref}{tRNA identifier (factor ordered by \code{diff}).}
 \item{ratio_numerator}{Mean charging ratio for the numerator
 condition.}
 \item{ratio_denominator}{Mean charging ratio for the denominator

@@ -33,7 +33,7 @@ test_that("plot_mod_heatmap works without clustering", {
 
 test_that("plot_volcano returns a ggplot object", {
   res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:10),
+    ref = paste0("tRNA-", 1:10),
     log2FoldChange = rnorm(10),
     pvalue = c(rep(0.001, 3), rep(0.5, 7)),
     padj = c(rep(0.01, 3), rep(0.8, 7)),
@@ -57,7 +57,7 @@ test_that("plot_volcano works with custom lab_col", {
 
 test_that("plot_volcano works with no significant points", {
   res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:5),
+    ref = paste0("tRNA-", 1:5),
     log2FoldChange = rnorm(5),
     pvalue = rep(0.5, 5),
     padj = rep(0.8, 5),
@@ -69,12 +69,12 @@ test_that("plot_volcano works with no significant points", {
 
 test_that("plot_abundance_charging returns a ggplot object", {
   deseq_res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:6),
+    ref = paste0("tRNA-", 1:6),
     log2FoldChange = c(1, -1, 0.5, -0.5, 2, -2),
     padj = c(0.01, 0.02, 0.5, 0.6, 0.001, 0.003)
   )
   charging_diffs <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:6),
+    ref = paste0("tRNA-", 1:6),
     diff = c(0.1, -0.1, 0.05, -0.05, -0.2, 0.15),
     se_diff = rep(0.03, 6)
   )
@@ -84,12 +84,12 @@ test_that("plot_abundance_charging returns a ggplot object", {
 
 test_that("plot_abundance_charging handles no significant points", {
   deseq_res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:5),
+    ref = paste0("tRNA-", 1:5),
     log2FoldChange = rnorm(5),
     padj = rep(0.8, 5)
   )
   charging_diffs <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:5),
+    ref = paste0("tRNA-", 1:5),
     diff = rnorm(5, sd = 0.1),
     se_diff = rep(0.03, 5)
   )
@@ -99,12 +99,12 @@ test_that("plot_abundance_charging handles no significant points", {
 
 test_that("plot_abundance_charging respects custom padj_cutoff", {
   deseq_res <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:5),
+    ref = paste0("tRNA-", 1:5),
     log2FoldChange = c(1, -1, 0.5, -0.5, 2),
     padj = c(0.005, 0.02, 0.05, 0.1, 0.001)
   )
   charging_diffs <- tibble::tibble(
-    tRNA = paste0("tRNA-", 1:5),
+    ref = paste0("tRNA-", 1:5),
     diff = c(0.1, -0.1, 0.05, -0.05, -0.2),
     se_diff = rep(0.03, 5)
   )
@@ -125,7 +125,7 @@ test_that("plot_abundance_charging respects custom padj_cutoff", {
 
 test_that("plot_charging_diffs returns a ggplot object", {
   df <- tibble::tibble(
-    tRNA = forcats::fct_inorder(paste0("tRNA-", 1:5)),
+    ref = forcats::fct_inorder(paste0("tRNA-", 1:5)),
     diff = c(-0.1, -0.05, 0.02, 0.08, 0.15),
     se_diff = rep(0.03, 5)
   )
@@ -135,7 +135,7 @@ test_that("plot_charging_diffs returns a ggplot object", {
 
 test_that("plot_charging_diffs respects point_size", {
   df <- tibble::tibble(
-    tRNA = forcats::fct_inorder(paste0("tRNA-", 1:3)),
+    ref = forcats::fct_inorder(paste0("tRNA-", 1:3)),
     diff = c(-0.1, 0.0, 0.1),
     se_diff = rep(0.02, 3)
   )

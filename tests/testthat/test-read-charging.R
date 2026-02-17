@@ -14,7 +14,7 @@ test_that("read_charging reads a TSV file", {
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 2)
   expect_true(all(
-    c("tRNA", "counts_charged", "counts_uncharged") %in% names(result)
+    c("ref", "counts_charged", "counts_uncharged") %in% names(result)
   ))
   expect_equal(result$counts_charged, c(100, 200))
 })
@@ -96,7 +96,7 @@ test_that("read_charging works with ecoli test data", {
   expect_s3_class(result, "tbl_df")
   expect_true(nrow(result) > 0)
   expect_true(all(
-    c("tRNA", "counts_charged", "counts_uncharged") %in% names(result)
+    c("ref", "counts_charged", "counts_uncharged") %in% names(result)
   ))
 })
 
@@ -119,7 +119,7 @@ test_that("compute_charging_diffs returns expected columns", {
   expect_named(
     result,
     c(
-      "tRNA",
+      "ref",
       "ratio_numerator",
       "ratio_denominator",
       "se_numerator",
@@ -129,7 +129,7 @@ test_that("compute_charging_diffs returns expected columns", {
     )
   )
   expect_true(nrow(result) > 0)
-  expect_s3_class(result$tRNA, "factor")
+  expect_s3_class(result$ref, "factor")
 })
 
 test_that("compute_charging_diffs n_top limits rows", {
@@ -152,7 +152,7 @@ test_that("compute_charging_diffs n_top limits rows", {
 
 test_that("compute_charging_diffs errors when condition column missing", {
   charging <- tibble::tibble(
-    tRNA = "tRNA-Ala-AGC-1",
+    ref = "tRNA-Ala-AGC-1",
     counts_charged = 100,
     counts_uncharged = 50,
     sample_id = "s1"

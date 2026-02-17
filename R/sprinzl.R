@@ -10,7 +10,7 @@
 #'
 #' @return A tibble with columns:
 #'   - `trna_id`: tRNA identifier (e.g., `nuc-tRNA-Ala-AGC-1-1`)
-#'   - `seq_index`: 1-based position in tRNA body
+#'   - `pos`: 1-based position in tRNA body
 #'   - `sprinzl_label`: Sprinzl position (character: "1", "20a", "47:e1", etc.)
 #'   - `global_index`: cross-tRNA universal alignment position
 #'   - `region`: structural region (acceptor-stem, D-stem, D-loop, etc.)
@@ -28,9 +28,10 @@ read_sprinzl_coords <- function(path) {
     col_types = readr::cols(sprinzl_label = readr::col_character()),
     show_col_types = FALSE
   ) |>
+    dplyr::rename(pos = seq_index) |>
     dplyr::select(
       trna_id,
-      seq_index,
+      pos,
       sprinzl_label,
       global_index,
       region,

@@ -8,7 +8,7 @@ charging_count_matrix(charging_data, min_count = 10)
 }
 \arguments{
 \item{charging_data}{A tibble of combined charging data with columns
-\code{tRNA}, \code{counts_charged}, \code{counts_uncharged}, and \code{sample_id}
+\code{ref}, \code{counts_charged}, \code{counts_uncharged}, and \code{sample_id}
 (as returned by \code{\link[=read_charging_multi]{read_charging_multi()}}).}
 
 \item{min_count}{Minimum total count across all columns for a tRNA
