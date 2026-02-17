@@ -26,7 +26,7 @@ plot_volcano(
 
   A tibble from
   [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
-  with at least `log2FoldChange`, `pvalue`, and `significant` columns.
+  with at least `log2FoldChange`, `padj`, and `significant` columns.
 
 - lab_col:
 
