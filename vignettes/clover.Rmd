@@ -216,15 +216,16 @@ plot_mod_heatmap(
 ## Modification annotations from MODOMICS
 
 The [MODOMICS](https://genesilico.pl/modomics/) database catalogs known RNA
-modifications. `fetch_modomics_mods()` downloads tRNA modification data for a
-given organism and maps the modification positions onto your reference
-sequences using pairwise alignment.
+modifications. `modomics_mods()` maps known tRNA modification positions onto
+your reference sequences using pairwise alignment. Data for common organisms
+is bundled with the package (see `modomics_organisms()`), so no internet
+connection is needed.
 
 ```{r}
 #| label: modomics-fetch
 #| message: true
 fasta_path <- S4Vectors::metadata(se)$config$fasta
-mods <- fetch_modomics_mods(fasta_path, organism = "Escherichia coli")
+mods <- modomics_mods(fasta_path, organism = "Escherichia coli")
 mods
 ```
 

@@ -32,6 +32,8 @@ reference:
 
   - title: MODOMICS
     contents:
+    - modomics_mods
+    - modomics_organisms
     - fetch_modomics_mods
 
   - title: Variables
