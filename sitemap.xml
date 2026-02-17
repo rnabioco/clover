@@ -9,7 +9,6 @@
 <url><loc>https://rnabioco.github.io/clover/copilot-instructions.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/index.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/news/index.html</loc></url>
-<url><loc>https://rnabioco.github.io/clover/reference/aa_props.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/abundance_count_matrix.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/build_coldata.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/charging_count_matrix.html</loc></url>
@@ -25,7 +24,7 @@
 <url><loc>https://rnabioco.github.io/clover/reference/modomics_mods.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/modomics_organisms.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/order_sprinzl_positions.html</loc></url>
-<url><loc>https://rnabioco.github.io/clover/reference/plot_bcerror.html</loc></url>
+<url><loc>https://rnabioco.github.io/clover/reference/plot_abundance_charging.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/plot_bcerror_profile.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/plot_charging_diffs.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/plot_chord_or.html</loc></url>
@@ -45,6 +44,5 @@
 <url><loc>https://rnabioco.github.io/clover/reference/read_sprinzl_coords.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/run_deseq.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/tidy_deseq_results.html</loc></url>
-<url><loc>https://rnabioco.github.io/clover/reference/trna_consensus_labels.html</loc></url>
 </urlset>
 

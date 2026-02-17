@@ -119,8 +119,8 @@ for a complete walkthrough.
 
 ## Plot
 
-- [`plot_bcerror()`](https://rnabioco.github.io/clover/reference/plot_bcerror.md)
-  : Plot base-calling error in a heatmap.
+- [`plot_abundance_charging()`](https://rnabioco.github.io/clover/reference/plot_abundance_charging.md)
+  : Plot abundance changes versus charging ratio changes.
 - [`plot_bcerror_profile()`](https://rnabioco.github.io/clover/reference/plot_bcerror_profile.md)
   : Plot per-position base-calling error profiles.
 - [`plot_charging_diffs()`](https://rnabioco.github.io/clover/reference/plot_charging_diffs.md)
@@ -142,13 +142,6 @@ for a complete walkthrough.
   : List organisms with cached MODOMICS data
 - [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md)
   : Fetch tRNA modification annotations from MODOMICS
-
-## Variables
-
-- [`aa_props`](https://rnabioco.github.io/clover/reference/aa_props.md)
-  : Amino acid properties
-- [`trna_consensus_labels`](https://rnabioco.github.io/clover/reference/trna_consensus_labels.md)
-  : Labels for consensus tRNA secondary structure
 
 ## Utilities
 

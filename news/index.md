@@ -2,6 +2,11 @@
 
 ## clover 0.0.0.9000
 
+- [`plot_abundance_charging()`](https://rnabioco.github.io/clover/reference/plot_abundance_charging.md)
+  creates a scatter plot comparing tRNA abundance changes (from DESeq2)
+  with charging ratio changes, with significant points colored by
+  quadrant and labeled with ggrepel.
+
 - [`plot_bcerror_profile()`](https://rnabioco.github.io/clover/reference/plot_bcerror_profile.md)
   plots per-position base-calling error rates as a faceted line plot,
   with optional modification position overlay.

@@ -167,6 +167,21 @@ tRNA.](clover_files/figure-html/fig-charging-ratio-1.png)
 
 Change in charging ratio (infected - control) per tRNA.
 
+### Abundance versus charging
+
+We can visualize the relationship between abundance changes and charging
+ratio changes on a single scatter plot. This highlights tRNAs where
+expression and aminoacylation are coordinately or discordantly affected.
+
+``` r
+plot_abundance_charging(res, ratio_diff)
+```
+
+![Abundance change versus charging ratio change per
+tRNA.](clover_files/figure-html/fig-abundance-charging-1.png)
+
+Abundance change versus charging ratio change per tRNA.
+
 ## Base-calling error profiles
 
 Base-calling error rates reflect RNA modifications that cause the
@@ -419,47 +434,50 @@ sessionInfo()
 #> [1] tidyr_1.3.2       dplyr_1.2.0       clover_0.0.0.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0 shape_1.4.6.1              
-#>  [3] circlize_0.4.17             gtable_0.3.6               
-#>  [5] xfun_0.56                   bslib_0.10.0               
-#>  [7] ggplot2_4.0.2               GlobalOptions_0.1.3        
-#>  [9] ggrepel_0.9.6               Biobase_2.70.0             
-#> [11] lattice_0.22-7              tzdb_0.5.0                 
-#> [13] vctrs_0.7.1                 tools_4.5.2                
-#> [15] generics_0.1.4              stats4_4.5.2               
-#> [17] parallel_4.5.2              tibble_3.3.1               
-#> [19] pkgconfig_2.0.3             Matrix_1.7-4               
-#> [21] RColorBrewer_1.1-3          S7_0.2.1                   
-#> [23] desc_1.4.3                  S4Vectors_0.48.0           
-#> [25] lifecycle_1.0.5             stringr_1.6.0              
-#> [27] compiler_4.5.2              farver_2.1.2               
-#> [29] textshaping_1.0.4           Biostrings_2.78.0          
-#> [31] DESeq2_1.50.2               codetools_0.2-20           
-#> [33] Seqinfo_1.0.0               htmltools_0.5.9            
-#> [35] sass_0.4.10                 yaml_2.3.12                
-#> [37] pillar_1.11.1               pkgdown_2.2.0              
-#> [39] crayon_1.5.3                jquerylib_0.1.4            
-#> [41] BiocParallel_1.44.0         DelayedArray_0.36.0        
-#> [43] cachem_1.1.0                abind_1.4-8                
-#> [45] locfit_1.5-9.12             tidyselect_1.2.1           
-#> [47] digest_0.6.39               stringi_1.8.7              
-#> [49] purrr_1.2.1                 forcats_1.0.1              
-#> [51] labeling_0.4.3              cowplot_1.2.0              
-#> [53] fastmap_1.2.0               grid_4.5.2                 
-#> [55] colorspace_2.1-2            cli_3.6.5                  
-#> [57] SparseArray_1.10.8          magrittr_2.0.4             
-#> [59] S4Arrays_1.10.1             utf8_1.2.6                 
-#> [61] readr_2.1.6                 withr_3.0.2                
-#> [63] scales_1.4.0                bit64_4.6.0-1              
-#> [65] pwalign_1.6.0               rmarkdown_2.30             
-#> [67] XVector_0.50.0              matrixStats_1.5.0          
-#> [69] bit_4.6.0                   ragg_1.5.0                 
-#> [71] hms_1.1.4                   evaluate_1.0.5             
-#> [73] knitr_1.51                  GenomicRanges_1.62.1       
-#> [75] IRanges_2.44.0              rlang_1.1.7                
-#> [77] Rcpp_1.1.1                  glue_1.8.0                 
-#> [79] BiocGenerics_0.56.0         vroom_1.7.0                
-#> [81] jsonlite_2.0.0              R6_2.6.1                   
-#> [83] MatrixGenerics_1.22.0       systemfonts_1.3.1          
-#> [85] fs_1.6.6
+#>  [1] tidyselect_1.2.1            farver_2.1.2               
+#>  [3] Biostrings_2.78.0           S7_0.2.1                   
+#>  [5] fastmap_1.2.0               digest_0.6.39              
+#>  [7] lifecycle_1.0.5             pwalign_1.6.0              
+#>  [9] magrittr_2.0.4              compiler_4.5.2             
+#> [11] rlang_1.1.7                 sass_0.4.10                
+#> [13] tools_4.5.2                 utf8_1.2.6                 
+#> [15] yaml_2.3.12                 knitr_1.51                 
+#> [17] S4Arrays_1.10.1             labeling_0.4.3             
+#> [19] bit_4.6.0                   DelayedArray_0.36.0        
+#> [21] xml2_1.5.2                  RColorBrewer_1.1-3         
+#> [23] abind_1.4-8                 BiocParallel_1.44.0        
+#> [25] withr_3.0.2                 purrr_1.2.1                
+#> [27] BiocGenerics_0.56.0         desc_1.4.3                 
+#> [29] grid_4.5.2                  stats4_4.5.2               
+#> [31] colorspace_2.1-2            ggplot2_4.0.2              
+#> [33] scales_1.4.0                SummarizedExperiment_1.40.0
+#> [35] cli_3.6.5                   rmarkdown_2.30             
+#> [37] crayon_1.5.3                ragg_1.5.0                 
+#> [39] generics_0.1.4              tzdb_0.5.0                 
+#> [41] commonmark_2.0.0            cachem_1.1.0               
+#> [43] stringr_1.6.0               parallel_4.5.2             
+#> [45] XVector_0.50.0              matrixStats_1.5.0          
+#> [47] vctrs_0.7.1                 Matrix_1.7-4               
+#> [49] jsonlite_2.0.0              litedown_0.9               
+#> [51] IRanges_2.44.0              hms_1.1.4                  
+#> [53] S4Vectors_0.48.0            bit64_4.6.0-1              
+#> [55] ggrepel_0.9.6               systemfonts_1.3.1          
+#> [57] locfit_1.5-9.12             jquerylib_0.1.4            
+#> [59] glue_1.8.0                  pkgdown_2.2.0              
+#> [61] codetools_0.2-20            ggtext_0.1.2               
+#> [63] cowplot_1.2.0               shape_1.4.6.1              
+#> [65] stringi_1.8.7               gtable_0.3.6               
+#> [67] GenomicRanges_1.62.1        tibble_3.3.1               
+#> [69] pillar_1.11.1               htmltools_0.5.9            
+#> [71] Seqinfo_1.0.0               circlize_0.4.17            
+#> [73] R6_2.6.1                    textshaping_1.0.4          
+#> [75] vroom_1.7.0                 evaluate_1.0.5             
+#> [77] lattice_0.22-7              Biobase_2.70.0             
+#> [79] markdown_2.0                readr_2.1.6                
+#> [81] gridtext_0.1.5              bslib_0.10.0               
+#> [83] Rcpp_1.1.1                  SparseArray_1.10.8         
+#> [85] DESeq2_1.50.2               xfun_0.56                  
+#> [87] fs_1.6.6                    MatrixGenerics_1.22.0      
+#> [89] forcats_1.0.1               pkgconfig_2.0.3            
+#> [91] GlobalOptions_0.1.3
 ```
