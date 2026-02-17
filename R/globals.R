@@ -80,6 +80,13 @@ globalVariables(c(
   "count",
   # compute_ror
   "mean_log_or",
+  # .add_modification_ring
+  "pos",
+  # .map_to_sprinzl
+  "from_idx",
+  "to_idx",
+  "from_label",
+  "to_label",
   # compute_charging_diffs
   "charging_ratio",
   "mean_ratio",
