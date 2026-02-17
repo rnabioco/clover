@@ -1,8 +1,8 @@
 ---
-title: "Analyzing *E. coli* tRNAs during T4 phage infection"
+title: "Introduction to clover"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{clover}
+  %\VignetteIndexEntry{Introduction to clover}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
