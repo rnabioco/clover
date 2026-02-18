@@ -5,6 +5,12 @@
 - **[Jay Hesselberth](https://hesselberthlab.org)**. Author, maintainer.
   [](https://orcid.org/0000-0002-6299-179X)
 
+- **[Jill Bilodeaux](https://github.com/jmbilodeaux)**. Contributor.
+  [](https://orcid.org/0000-0002-1326-7092)
+
+- **[Laura White](https://github.com/lkwhite)**. Contributor.
+  [](https://orcid.org/0000-0003-2909-6627)
+
 - **[RNA Bioscience Initiative](https://medschool.cuanschutz.edu/rbi)**.
   Funder, copyright holder.
   [![ROR](https://raw.githubusercontent.com/ror-community/ror-logos/main/ror-icon-rgb.svg)](https://ror.org/https://ror.org/03wmf1y16)
