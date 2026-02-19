@@ -28,8 +28,9 @@ MODOMICS_DIR = PROJECT_ROOT / "inst" / "extdata" / "modomics"
 
 HOME = Path.home()
 
-# Use the NLOPT-enabled R2R binary (the pixi env has an old one without solver)
-R2R_BIN = HOME / "bin" / "r2r"
+# r2r binary — multistem_junction_bulgey doesn't need the NLOPT solver,
+# so we can use whichever r2r is on PATH
+R2R_BIN = "r2r"
 
 # Local archive files and the .ss file within each
 ORGANISMS = {
@@ -288,7 +289,7 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
         try:
             result = subprocess.run(
                 [
-                    str(R2R_BIN), "--GSC-weighted-consensus",
+                    R2R_BIN, "--GSC-weighted-consensus",
                     str(sto_path), str(cons_path),
                     "3", "0.97", "0.9", "0.75",
                     "4", "0.97", "0.9", "0.75", "0.5", "0.1",
@@ -307,7 +308,7 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
                 return None
 
         except FileNotFoundError:
-            print(f"    ERROR: r2r not found at {R2R_BIN}")
+            print(f"    ERROR: {R2R_BIN} not found on PATH")
             return None
         except subprocess.TimeoutExpired:
             print("    ERROR: R2R consensus timed out")
@@ -318,7 +319,7 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
         try:
             result = subprocess.run(
                 [
-                    str(R2R_BIN), "--disable-usage-warning",
+                    R2R_BIN, "--disable-usage-warning",
                     str(cons_path), str(svg_path),
                 ],
                 capture_output=True,
@@ -415,15 +416,14 @@ def find_innermost_acceptor_pair(structure: str) -> int:
     return last_opening if last_opening is not None else 0
 
 
-def count_internal_stems(structure: str, m_pos: int) -> int:
-    """Count the number of stems emanating from the multistem junction.
+def find_internal_stem_starts(structure: str, m_pos: int) -> list[int]:
+    """Find the start positions of each stem in the multistem junction.
 
-    Starting from the M label position (innermost acceptor pair), count
-    how many separate stem-loops branch off from the junction. Standard
-    tRNAs have 3 stems (D, AC, T) while long variable arm tRNAs have 4
-    (D, AC, variable arm, T).
+    Starting from the m_pos (innermost acceptor pair), walk the junction
+    and return the position of the first opening bracket of each internal
+    stem. Standard tRNAs have 3 stems (D, AC, T) while long variable arm
+    tRNAs have 4 (D, AC, variable arm, T).
     """
-    # Find the paired position for M using a stack
     stack = []
     pairs = {}
     for i, ch in enumerate(structure):
@@ -436,16 +436,14 @@ def count_internal_stems(structure: str, m_pos: int) -> int:
                 pairs[i] = j
 
     if m_pos not in pairs:
-        return 0
+        return []
 
     m_pair = pairs[m_pos]
-    # Scan the region between m_pos and its pair for stem openings
-    stems = 0
+    stem_starts = []
     i = m_pos + 1
     while i < m_pair:
         if structure[i] == "<":
-            stems += 1
-            # Skip to the closing bracket of this stem
+            stem_starts.append(i)
             if i in pairs:
                 i = pairs[i] + 1
             else:
@@ -453,20 +451,23 @@ def count_internal_stems(structure: str, m_pos: int) -> int:
         else:
             i += 1
 
-    return stems
+    return stem_starts
 
 
 def create_stockholm(name: str, sequence: str, structure: str) -> str:
     """Create a Stockholm alignment file for R2R with layout directives.
 
     R2R expects standard Stockholm format with SS_cons annotation.
-    Adds R2R_LABEL and multistem_junction_bulgey directives to produce
-    a proper cloverleaf layout.
+    Uses multistem_junction_bulgey with explicit coordinates to produce
+    a classic textbook cloverleaf with straight stems:
+    - Acceptor stem vertical at top
+    - D-arm horizontal left
+    - Anticodon arm vertical at bottom
+    - T-arm horizontal right
 
-    The M label is placed at the innermost acceptor base pair enclosing
-    the multi-stem junction. Junction angles are set for:
-    - Standard tRNAs (3 stems: D, AC, T): classic cloverleaf
-    - Long variable arm tRNAs (4 stems: D, AC, var, T): var arm points SE
+    Labels placed:
+    - ``j`` at the innermost acceptor pair (junction entry point)
+    - ``3`` at the T-stem start (for place_explicit positioning)
     """
     # Ensure CCA tail and amino acid placeholder are present
     sequence, structure = ensure_cca_tail(sequence, structure)
@@ -487,26 +488,53 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
     # Pad all tags to the same width
     width = max(len(seq_id), len(tag_ss), len(tag_lbl)) + 2
 
-    # R2R_LABEL: M at the innermost acceptor pair
-    m_pos = find_innermost_acceptor_pair(structure)
-    label = "." * m_pos + "M" + "." * (seq_len - m_pos - 1)
+    # Find label positions: j at innermost acceptor pair, 1/2/3 at stems
+    j_pos = find_innermost_acceptor_pair(structure)
+    stem_starts = find_internal_stem_starts(structure, j_pos)
+    n_stems = len(stem_starts)
 
-    # Determine junction layout based on stem count
-    n_stems = count_internal_stems(structure, m_pos)
+    # Build label string: j at junction, numbered labels at each stem
+    label_chars = ["."] * seq_len
+    label_chars[j_pos] = "j"
+    for idx, pos in enumerate(stem_starts):
+        label_chars[pos] = str(idx + 1)
+    label = "".join(label_chars)
+
+    # R2R directives for straight-stem cloverleaf layout
+    directives = []
+
+    # Initial stem direction: 90° = vertical (acceptor points up)
+    directives.append("#=GF R2R set_dir pos0 90 f")
+
+    # Explicitly position T-stem (always the last numbered stem)
+    t_label = str(n_stems)
+    directives.append(
+        f"#=GF R2R place_explicit {t_label} {t_label}-- 0 1 0 0 0 0"
+    )
 
     if n_stems == 4:
-        # Long variable arm: D left, AC down, var arm SE, T-stem right
-        # s0=180 flips acceptor to top; s1-s4 are internal stems
-        junction = (
-            "multistem_junction_circular_solver M "
-            "s0 180 ai s1 -90 ai s2 0 ai s3 45 ai s4 90 ai draw_circ"
+        # Long variable arm (Leu/Ser): D, AC, variable arm, T
+        # Angles swapped vs R2R demo so D-arm is LEFT and T-arm is RIGHT
+        directives.append(
+            "#=GF R2R multistem_junction_bulgey j "
+            "disable_auto_flip_place_explicit "
+            "J0/base 0 1.62706 2.29987 0 0 -90 "
+            "J1/base 0 4.63116 0.91097 0 0 0 "
+            "J2/base 0 3.5 -1.5 0 0 45 "
+            "J3/base 0 2.32414 -2.32817 0 0 -270 "
+            "backbonelen 1 1"
         )
     else:
-        # Standard 3-stem: D left, AC down, T-stem right
-        # s0=180 flips acceptor to top (enclosing stem points down)
-        junction = (
-            "multistem_junction_circular_solver M "
-            "s0 180 ai s1 -90 ai s2 0 ai s3 90 ai draw_circ"
+        # Standard 3-stem: D, AC, T
+        # Based on R2R demo coordinates with J0/J2 angles swapped
+        # so D-arm points LEFT and T-arm points RIGHT
+        directives.append(
+            "#=GF R2R multistem_junction_bulgey j "
+            "disable_auto_flip_place_explicit "
+            "J0/base 0 1.62706 2.29987 0 0 -90 "
+            "J1/base 0 4.63116 0.91097 0 0 0 "
+            "J2/base 0 2.32414 -2.32817 0 0 -270 "
+            "backbonelen 1 1"
         )
 
     lines = [
@@ -516,7 +544,7 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
         f"{tag_ss:<{width}}{structure}",
         f"{tag_lbl:<{width}}{label}",
         "",
-        f"#=GF R2R {junction}",
+        *directives,
         "",
         "//",
     ]
