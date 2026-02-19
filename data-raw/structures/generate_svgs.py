@@ -1,23 +1,22 @@
 """Generate tRNA cloverleaf SVGs using R2R.
 
-Downloads tRNA sequences and secondary structure data from gtRNAdb,
-converts to Stockholm format, runs R2R to produce cloverleaf SVGs,
-and extracts position metadata as JSON.
+Extracts tRNA sequences and secondary structure data from local gtRNAdb
+archive files, converts to Stockholm format, runs R2R to produce
+cloverleaf SVGs, and extracts position metadata as JSON.
 
 Usage:
-    pixi run -e python python data-raw/structures/generate_svgs.py
+    python data-raw/structures/generate_svgs.py
 
 Prerequisites:
-    - pixi python environment with lxml
-    - R2R available (via pixi python environment)
+    - Python with lxml
+    - R2R on PATH
+    - Local gtRNAdb archive tarballs in ~/
 """
 
-import json
 import re
 import subprocess
-import sys
+import tarfile
 import tempfile
-import urllib.request
 from pathlib import Path
 
 from parse_r2r_svg import parse_r2r_svg, write_metadata
@@ -27,27 +26,23 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 OUTPUT_DIR = PROJECT_ROOT / "inst" / "extdata" / "structures"
 MODOMICS_DIR = PROJECT_ROOT / "inst" / "extdata" / "modomics"
 
-# gtRNAdb organism IDs and their domain classification
+HOME = Path.home()
+
+# Local archive files and the .ss file within each
 ORGANISMS = {
     "Escherichia_coli": {
-        "gtrnadb_id": "Esch_coli_K_12_MG1655",
-        "domain": "bacteria",
+        "archive": HOME / "eschColi_K_12_MG1655-tRNAs.tar.gz",
+        "ss_member": "eschColi_K_12_MG1655-tRNAs.ss.sort",
     },
     "Saccharomyces_cerevisiae": {
-        "gtrnadb_id": "Scere3",
-        "domain": "eukaryota",
+        "archive": HOME / "sacCer3-tRNAs.tar.gz",
+        "ss_member": "sacCer3-tRNAs.ss.sort",
     },
     "Homo_sapiens": {
-        "gtrnadb_id": "Hsapi38",
-        "domain": "eukaryota",
+        "archive": HOME / "hg38-tRNAs.tar.gz",
+        "ss_member": "hg38-tRNAs-confidence-set.ss",
     },
 }
-
-# Standard tRNA dot-bracket notation for a canonical cloverleaf
-# Used as fallback when we can't get structure from gtRNAdb
-CANONICAL_TRNA_STRUCTURE = (
-    "(((((((..((((.......)))).(((((.......))))).....(((((.......))))).)))))))...."
-)
 
 
 def main():
@@ -60,12 +55,16 @@ def main():
         org_dir = OUTPUT_DIR / org_name
         org_dir.mkdir(parents=True, exist_ok=True)
 
-        # Step 1: Get tRNA sequences and structures from gtRNAdb
-        trnas = download_gtrnadb(org_info["gtrnadb_id"], org_info["domain"])
+        # Step 1: Extract tRNA sequences and structures from local archive
+        trnas = extract_trnas_from_archive(
+            org_info["archive"], org_info["ss_member"]
+        )
 
         if not trnas:
-            print(f"  WARNING: No tRNA data retrieved for {org_name}")
+            print(f"  WARNING: No tRNA data extracted for {org_name}")
             continue
+
+        print(f"  Found {len(trnas)} unique tRNA isotype-anticodon combos")
 
         # Step 2: Filter to isotypes with MODOMICS data
         modomics_isotypes = get_modomics_isotypes(org_name)
@@ -93,7 +92,6 @@ def main():
             print(f"  Generating {safe_name}...")
 
             try:
-                # Create Stockholm file and run R2R
                 svg_content = run_r2r(
                     trna_name,
                     trna_data["sequence"],
@@ -101,10 +99,8 @@ def main():
                 )
 
                 if svg_content:
-                    # Write SVG
                     svg_path.write_text(svg_content)
 
-                    # Parse SVG and write metadata
                     metadata = parse_r2r_svg(svg_path)
                     metadata["trna_name"] = trna_name
                     metadata["sequence"] = trna_data["sequence"]
@@ -112,7 +108,7 @@ def main():
                     write_metadata(metadata, json_path)
                     print(f"    OK ({len(metadata['nucleotides'])} nucleotides)")
                 else:
-                    print(f"    FAILED: R2R produced no output")
+                    print("    FAILED: R2R produced no output")
 
             except Exception as e:
                 print(f"    ERROR: {e}")
@@ -120,74 +116,47 @@ def main():
     print(f"\nDone. Output in {OUTPUT_DIR}")
 
 
-def download_gtrnadb(gtrnadb_id: str, domain: str) -> dict:
-    """Download tRNA data from gtRNAdb.
-
-    Tries the current gtRNAdb URLs. Falls back to parsing the
-    tRNAscan-SE secondary structure file (.ss format).
+def extract_trnas_from_archive(archive_path: Path, ss_member: str) -> dict:
+    """Extract tRNA data from a local gtRNAdb tar.gz archive.
 
     Returns dict mapping tRNA names to {"sequence": ..., "structure": ...}.
     """
-    base_url = f"https://gtrnadb.ucsc.edu/genomes/{domain}/{gtrnadb_id}"
+    if not archive_path.exists():
+        print(f"  Archive not found: {archive_path}")
+        return {}
 
-    # Try to get the .ss file (secondary structure)
-    ss_url = f"{base_url}/{gtrnadb_id}-tRNAs.ss"
-    print(f"  Fetching {ss_url}")
+    print(f"  Extracting {ss_member} from {archive_path.name}")
 
-    try:
-        req = urllib.request.Request(
-            ss_url,
-            headers={"User-Agent": "clover/0.1 (R package)"},
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            ss_data = resp.read().decode("utf-8")
-        return parse_trnascan_ss(ss_data)
-    except Exception as e:
-        print(f"  Could not fetch .ss file: {e}")
+    with tarfile.open(archive_path, "r:gz") as tar:
+        member = tar.getmember(ss_member)
+        f = tar.extractfile(member)
+        if f is None:
+            print(f"  Could not extract {ss_member}")
+            return {}
+        ss_data = f.read().decode("utf-8")
 
-    # Try the FASTA file as fallback
-    fa_url = f"{base_url}/{gtrnadb_id}-mature-tRNAs.fa"
-    print(f"  Trying FASTA fallback: {fa_url}")
-
-    try:
-        req = urllib.request.Request(
-            fa_url,
-            headers={"User-Agent": "clover/0.1 (R package)"},
-        )
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            fa_data = resp.read().decode("utf-8")
-        return parse_fasta_with_default_structure(fa_data)
-    except Exception as e:
-        print(f"  Could not fetch FASTA file: {e}")
-
-    return {}
+    return parse_trnascan_ss(ss_data)
 
 
 def parse_trnascan_ss(ss_data: str) -> dict:
     """Parse tRNAscan-SE .ss output format.
 
     Each entry looks like:
-        name.trna1 (start-end)
-        Length: 73 bp
-        Type: Ala
-        Anticodon: AGC at 34-36 (34-36)
-        Score: 74.48
-                 *    |    *    |    *    |
+        chr.trna71 (2518231-2518156)\tLength: 76 bp
+        Type: Ala\tAnticodon: GGC at 34-36 (...)  Score: 75.0
+        ...
         Seq: GGGCGTGTGGCGTAGTCGG...
         Str: >>>>>.>..>>>>........<<<<.>>>>>...
 
     The Str line uses > for 5' base pairs and < for 3' base pairs.
     """
     trnas = {}
+    # Split on lines starting with a non-whitespace entry name
+    # Handles both chr.trna* and chrN.trna* formats
     entries = re.split(r"\n(?=\S+\.trna\d+\s)", ss_data)
 
     for entry in entries:
         if not entry.strip():
-            continue
-
-        # Extract name
-        name_match = re.match(r"(\S+)", entry)
-        if not name_match:
             continue
 
         # Extract type and anticodon
@@ -201,7 +170,7 @@ def parse_trnascan_ss(ss_data: str) -> dict:
         anticodon = ac_match.group(1)
         trna_name = f"tRNA-{aa_type}-{anticodon}"
 
-        # Extract sequence
+        # Extract sequence and structure
         seq_match = re.search(r"Seq:\s+(\S+)", entry)
         str_match = re.search(r"Str:\s+(\S+)", entry)
 
@@ -211,8 +180,8 @@ def parse_trnascan_ss(ss_data: str) -> dict:
         sequence = seq_match.group(1).upper().replace("T", "U")
         structure_raw = str_match.group(1)
 
-        # Convert tRNAscan-SE bracket notation to dot-bracket
-        structure = convert_trnascan_to_dotbracket(structure_raw)
+        # Convert tRNAscan-SE bracket notation to R2R format
+        structure = convert_trnascan_to_r2r(structure_raw)
 
         # Keep first occurrence of each isotype-anticodon combo
         if trna_name not in trnas:
@@ -224,95 +193,27 @@ def parse_trnascan_ss(ss_data: str) -> dict:
     return trnas
 
 
-def convert_trnascan_to_dotbracket(raw: str) -> str:
-    """Convert tRNAscan-SE structure notation to dot-bracket.
+def convert_trnascan_to_r2r(raw: str) -> str:
+    """Convert tRNAscan-SE structure notation to R2R bracket format.
 
     tRNAscan uses > for 5' strand of stems and < for 3' strand.
-    We convert to standard ( and ) notation.
+    R2R uses < for 5' (opening) and > for 3' (closing) — the opposite.
     """
     result = []
     for ch in raw:
         if ch == ">":
-            result.append("(")
+            result.append("<")
         elif ch == "<":
-            result.append(")")
-        elif ch == ".":
-            result.append(".")
+            result.append(">")
         else:
             result.append(".")
     return "".join(result)
-
-
-def parse_fasta_with_default_structure(fa_data: str) -> dict:
-    """Parse FASTA and assign canonical tRNA structure."""
-    trnas = {}
-    current_name = None
-    current_seq = []
-
-    for line in fa_data.strip().split("\n"):
-        if line.startswith(">"):
-            if current_name and current_seq:
-                seq = "".join(current_seq).upper().replace("T", "U")
-                name = extract_trna_name(current_name)
-                if name and name not in trnas:
-                    structure = fit_canonical_structure(seq)
-                    trnas[name] = {
-                        "sequence": seq,
-                        "structure": structure,
-                    }
-            current_name = line[1:].strip()
-            current_seq = []
-        else:
-            current_seq.append(line.strip())
-
-    # Last entry
-    if current_name and current_seq:
-        seq = "".join(current_seq).upper().replace("T", "U")
-        name = extract_trna_name(current_name)
-        if name and name not in trnas:
-            structure = fit_canonical_structure(seq)
-            trnas[name] = {
-                "sequence": seq,
-                "structure": structure,
-            }
-
-    return trnas
-
-
-def extract_trna_name(header: str) -> str | None:
-    """Extract a tRNA-AA-Anticodon name from a FASTA header."""
-    match = re.search(r"(tRNA-\w+-\w+)", header)
-    return match.group(1) if match else None
 
 
 def extract_isotype(trna_name: str) -> str | None:
     """Extract amino acid isotype from tRNA name."""
     match = re.match(r"tRNA-(\w+)-", trna_name)
     return match.group(1) if match else None
-
-
-def fit_canonical_structure(sequence: str) -> str:
-    """Fit canonical tRNA secondary structure to a sequence.
-
-    Adjusts the canonical dot-bracket structure to match the
-    sequence length, primarily by modifying the variable loop region.
-    """
-    n = len(sequence)
-    canonical = CANONICAL_TRNA_STRUCTURE
-
-    if n == len(canonical):
-        return canonical
-    elif n < len(canonical):
-        # Truncate from the variable loop region (positions ~44-48)
-        diff = len(canonical) - n
-        # Remove from the variable loop (between anticodon arm and T-arm)
-        vl_start = 44
-        return canonical[:vl_start] + canonical[vl_start + diff:]
-    else:
-        # Extend the variable loop
-        diff = n - len(canonical)
-        vl_start = 44
-        return canonical[:vl_start] + "." * diff + canonical[vl_start:]
 
 
 def get_modomics_isotypes(org_name: str) -> set | None:
@@ -325,8 +226,6 @@ def get_modomics_isotypes(org_name: str) -> set | None:
     if not rds_path.exists():
         return None
 
-    # We can't read RDS from Python directly, so we extract isotype
-    # info by running a quick R command
     try:
         result = subprocess.run(
             [
@@ -354,8 +253,9 @@ def sanitize_filename(name: str) -> str:
 def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
     """Run R2R on a single tRNA to produce an SVG.
 
-    Creates Stockholm and meta files in a temp directory, runs R2R,
-    and returns the SVG content as a string.
+    Uses the two-step R2R workflow:
+    1. --GSC-weighted-consensus to build a consensus alignment
+    2. --disable-usage-warning to render the SVG
     """
     with tempfile.TemporaryDirectory() as tmpdir:
         tmpdir = Path(tmpdir)
@@ -365,35 +265,59 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
         sto_content = create_stockholm(trna_name, sequence, structure)
         sto_path.write_text(sto_content)
 
-        # Write R2R meta file
-        meta_path = tmpdir / "trna.r2r_meta"
-        meta_path.write_text(f"{sto_path}\n")
-
-        # Output SVG path
-        svg_path = tmpdir / "trna.svg"
-
-        # Run R2R
+        # Step 1: Build consensus
+        cons_path = tmpdir / "trna.cons.sto"
         try:
             result = subprocess.run(
-                ["r2r", "--disable-usage-warning", str(meta_path), str(svg_path)],
+                [
+                    "r2r", "--GSC-weighted-consensus",
+                    str(sto_path), str(cons_path),
+                    "3", "0.97", "0.9", "0.75",
+                    "4", "0.97", "0.9", "0.75", "0.5", "0.1",
+                ],
                 capture_output=True,
                 text=True,
                 timeout=60,
             )
 
             if result.returncode != 0:
-                print(f"    R2R stderr: {result.stderr[:200]}")
+                print(f"    R2R consensus stderr: {result.stderr[:200]}")
+                return None
+
+            if not cons_path.exists():
+                print("    R2R consensus produced no output file")
+                return None
+
+        except FileNotFoundError:
+            print("    ERROR: r2r not found. Ensure it is on PATH.")
+            return None
+        except subprocess.TimeoutExpired:
+            print("    ERROR: R2R consensus timed out")
+            return None
+
+        # Step 2: Render SVG
+        svg_path = tmpdir / "trna.svg"
+        try:
+            result = subprocess.run(
+                [
+                    "r2r", "--disable-usage-warning",
+                    str(cons_path), str(svg_path),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+
+            if result.returncode != 0:
+                print(f"    R2R render stderr: {result.stderr[:200]}")
                 return None
 
             if svg_path.exists():
                 return svg_path.read_text()
             return None
 
-        except FileNotFoundError:
-            print("    ERROR: r2r not found. Install via: pixi install -e python")
-            return None
         except subprocess.TimeoutExpired:
-            print("    ERROR: R2R timed out")
+            print("    ERROR: R2R render timed out")
             return None
 
 
@@ -401,9 +325,9 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
     """Create a Stockholm alignment file for R2R.
 
     R2R expects standard Stockholm format with SS_cons annotation.
-    For single molecules, we provide one sequence with matching structure.
+    The sequence ID and #=GC SS_cons tag must be padded to the same
+    width so the sequence and structure columns align.
     """
-    # Ensure sequence and structure are same length
     seq_len = len(sequence)
     str_len = len(structure)
 
@@ -412,17 +336,18 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
     elif str_len > seq_len:
         structure = structure[:seq_len]
 
-    # Replace U with T for DNA-style Stockholm (R2R convention)
     seq_display = sequence.replace("U", "T").replace("u", "t")
-
-    # Use a safe sequence ID (no spaces)
     seq_id = sanitize_filename(name)
+    tag = "#=GC SS_cons"
+
+    # Pad both the seq ID and the tag to the same width
+    width = max(len(seq_id), len(tag)) + 2
 
     lines = [
         "# STOCKHOLM 1.0",
         "",
-        f"{seq_id}      {seq_display}",
-        f"#=GC SS_cons    {structure}",
+        f"{seq_id:<{width}}{seq_display}",
+        f"{tag:<{width}}{structure}",
         "",
         "//",
     ]
