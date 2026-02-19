@@ -3,136 +3,133 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
-   width="46.5133mm"
-   height="39.3709mm"
+   width="84.6929"
+   height="165.614"
    id="svg2403"
    xml:space="preserve">
 <text x="0" y="8.616" id="text1000">
   <tspan x="0" y="8.616" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="12" id="tspan1001">trna.cons</tspan>
 </text>
 <path
- fill="none" stroke="#000000" stroke-width="0.72" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 76.0063 42.5686 A 13.8006,13.8006 0 0,1 48.4052,42.5686A 13.8006,13.8006 0 0,1 76.0063,42.5686"/>
-<path
  fill="#ffd8d8" stroke="none"
- d="M 52.2247 72.656 L 52.2247,72.656L 70.2997,72.656L 70.2997,78.041L 52.2247,78.041Z"/>
+ d="M 42.1239 21.4617 L 42.1239,21.4617L 60.1989,21.4617L 60.1989,26.8467L 42.1239,26.8467Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 59.3182 75.3485 L 63.2062 75.3485 "/>
+ d="M 49.2174 24.1542 L 53.1054 24.1542 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 52.2247 65.096 L 52.2247,65.096L 70.2997,65.096L 70.2997,70.481L 52.2247,70.481Z"/>
+ d="M 42.1239 29.0217 L 42.1239,29.0217L 60.1989,29.0217L 60.1989,34.4067L 42.1239,34.4067Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 59.3182 67.7885 L 63.2062 67.7885 "/>
+ d="M 49.2174 31.7142 L 53.1054 31.7142 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 52.2247 57.536 L 52.2247,57.536L 70.2997,57.536L 70.2997,62.921L 52.2247,62.921Z"/>
+ d="M 42.1239 36.5817 L 42.1239,36.5817L 60.1989,36.5817L 60.1989,41.9667L 42.1239,41.9667Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 59.3182 60.2285 L 63.2062 60.2285 "/>
+ d="M 49.2174 39.2742 L 53.1054 39.2742 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 52.2247 49.976 L 52.2247,49.976L 70.2997,49.976L 70.2997,55.361L 52.2247,55.361Z"/>
+ d="M 42.1239 44.1417 L 42.1239,44.1417L 60.1989,44.1417L 60.1989,49.5267L 42.1239,49.5267Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 59.3182 52.6685 L 63.2062 52.6685 "/>
+ d="M 49.2174 46.8342 L 53.1054 46.8342 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 52.2247 42.416 L 52.2247,42.416L 70.2997,42.416L 70.2997,47.801L 52.2247,47.801Z"/>
+ d="M 42.1239 51.7017 L 42.1239,51.7017L 60.1989,51.7017L 60.1989,57.0867L 42.1239,57.0867Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 59.3182 45.1085 L 63.2062 45.1085 "/>
+ d="M 49.2174 54.3942 L 53.1054 54.3942 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 52.2247 34.856 L 52.2247,34.856L 70.2997,34.856L 70.2997,40.241L 52.2247,40.241Z"/>
+ d="M 42.1239 59.2617 L 42.1239,59.2617L 60.1989,59.2617L 60.1989,64.6467L 42.1239,64.6467Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 59.3182 37.5485 L 63.2062 37.5485 "/>
+ d="M 49.2174 61.9542 L 53.1054 61.9542 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 52.2247 27.296 L 52.2247,27.296L 70.2997,27.296L 70.2997,32.681L 52.2247,32.681Z"/>
+ d="M 42.1239 66.8217 L 42.1239,66.8217L 60.1989,66.8217L 60.1989,72.2067L 42.1239,72.2067Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 59.3182 29.9885 L 63.2062 29.9885 "/>
+ d="M 49.2174 69.5142 L 53.1054 69.5142 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 77.7278 34.033 L 77.7278,34.033L 77.7278,51.658L 71.8928,51.658L 71.8928,34.033Z"/>
+ d="M 24.7369 84.5073 L 24.7369,84.5073L 24.7369,66.8823L 30.5719,66.8823L 30.5719,84.5073Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 74.8103 40.9015 L 74.8103 44.7895 "/>
+ d="M 27.6544 77.6388 L 27.6544 73.7508 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 85.2878 34.033 L 85.2878,34.033L 85.2878,51.658L 79.4528,51.658L 79.4528,34.033Z"/>
+ d="M 32.2969 84.5073 L 32.2969,84.5073L 32.2969,66.8823L 38.1319,66.8823L 38.1319,84.5073Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 82.3703 40.9015 L 82.3703 44.7895 "/>
+ d="M 35.2144 77.6388 L 35.2144 73.7508 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 92.8478 34.033 L 92.8478,34.033L 92.8478,51.658L 87.0128,51.658L 87.0128,34.033Z"/>
+ d="M 39.8569 84.5073 L 39.8569,84.5073L 39.8569,66.8823L 45.6919,66.8823L 45.6919,84.5073Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 89.9303 40.9015 L 89.9303 44.7895 "/>
+ d="M 42.7744 77.6388 L 42.7744 73.7508 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 100.408 34.033 L 100.408,34.033L 100.408,51.658L 94.5728,51.658L 94.5728,34.033Z"/>
+ d="M 47.4169 84.5073 L 47.4169,84.5073L 47.4169,66.8823L 53.2519,66.8823L 53.2519,84.5073Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 97.4903 40.9015 L 97.4903 44.7895 "/>
+ d="M 50.3344 77.6388 L 50.3344 73.7508 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 65.8394 53.2071 L 65.8394,53.2071L 47.7644,53.2071L 47.7644,47.8221L 65.8394,47.8221Z"/>
+ d="M 35.237 101.833 L 35.237,101.833L 53.312,101.833L 53.312,107.218L 35.237,107.218Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 58.7459 50.5146 L 54.8579 50.5146 "/>
+ d="M 42.3305 104.526 L 46.2185 104.526 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 65.8394 60.7671 L 65.8394,60.7671L 47.7644,60.7671L 47.7644,55.3821L 65.8394,55.3821Z"/>
+ d="M 35.237 109.393 L 35.237,109.393L 53.312,109.393L 53.312,114.778L 35.237,114.778Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 58.7459 58.0746 L 54.8579 58.0746 "/>
+ d="M 42.3305 112.086 L 46.2185 112.086 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 65.8394 74.5578 L 65.8394,74.5578L 47.7644,74.5578L 47.7644,69.1728L 65.8394,69.1728Z"/>
+ d="M 35.237 123.184 L 35.237,123.184L 53.312,123.184L 53.312,128.569L 35.237,128.569Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 58.7459 71.8653 L 54.8579 71.8653 "/>
+ d="M 42.3305 125.877 L 46.2185 125.877 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 65.8394 82.1178 L 65.8394,82.1178L 47.7644,82.1178L 47.7644,76.7328L 65.8394,76.7328Z"/>
+ d="M 35.237 130.744 L 35.237,130.744L 53.312,130.744L 53.312,136.129L 35.237,136.129Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 58.7459 79.4253 L 54.8579 79.4253 "/>
+ d="M 42.3305 133.437 L 46.2185 133.437 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 59.7249 39.0314 L 59.7249,39.0314L 59.7249,21.4064L 65.5599,21.4064L 65.5599,39.0314Z"/>
+ d="M 65.5599 84.3922 L 65.5599,84.3922L 65.5599,102.017L 59.7249,102.017L 59.7249,84.3922Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 62.6424 32.1629 L 62.6424 28.2749 "/>
+ d="M 62.6424 91.2607 L 62.6424 95.1487 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 52.1649 39.0314 L 52.1649,39.0314L 52.1649,21.4064L 57.9999,21.4064L 57.9999,39.0314Z"/>
+ d="M 57.9999 84.3922 L 57.9999,84.3922L 57.9999,102.017L 52.1649,102.017L 52.1649,84.3922Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 55.0824 32.1629 L 55.0824 28.2749 "/>
+ d="M 55.0824 91.2607 L 55.0824 95.1487 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 44.6049 39.0314 L 44.6049,39.0314L 44.6049,21.4064L 50.4399,21.4064L 50.4399,39.0314Z"/>
+ d="M 50.4399 84.3922 L 50.4399,84.3922L 50.4399,102.017L 44.6049,102.017L 44.6049,84.3922Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 47.5224 32.1629 L 47.5224 28.2749 "/>
+ d="M 47.5224 91.2607 L 47.5224 95.1487 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 37.0449 39.0314 L 37.0449,39.0314L 37.0449,21.4064L 42.8799,21.4064L 42.8799,39.0314Z"/>
+ d="M 42.8799 84.3922 L 42.8799,84.3922L 42.8799,102.017L 37.0449,102.017L 37.0449,84.3922Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 39.9624 32.1629 L 39.9624 28.2749 "/>
+ d="M 39.9624 91.2607 L 39.9624 95.1487 "/>
 <path
  fill="#ffd8d8" stroke="none"
- d="M 29.4849 39.0314 L 29.4849,39.0314L 29.4849,21.4064L 35.3199,21.4064L 35.3199,39.0314Z"/>
+ d="M 35.3199 84.3922 L 35.3199,84.3922L 35.3199,102.017L 29.4849,102.017L 29.4849,84.3922Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 32.4024 32.1629 L 32.4024 28.2749 "/>
+ d="M 32.4024 91.2607 L 32.4024 95.1487 "/>
 <path
  fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
  d=""/>
@@ -589,238 +586,238 @@
 <path
  fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
  d=""/>
-<text x="52.2247" y="78.041" id="text1002">
-  <tspan x="52.2247" y="78.041" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1003">G</tspan>
+<text x="42.1239" y="26.8467" id="text1002">
+  <tspan x="42.1239" y="26.8467" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1003">G</tspan>
 </text>
-<text x="52.4347" y="70.481" id="text1004">
-  <tspan x="52.4347" y="70.481" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1005">C</tspan>
+<text x="42.3339" y="34.4067" id="text1004">
+  <tspan x="42.3339" y="34.4067" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1005">C</tspan>
 </text>
-<text x="52.4347" y="62.921" id="text1006">
-  <tspan x="52.4347" y="62.921" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1007">U</tspan>
+<text x="42.3339" y="41.9667" id="text1006">
+  <tspan x="42.3339" y="41.9667" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1007">U</tspan>
 </text>
-<text x="52.4347" y="55.361" id="text1008">
-  <tspan x="52.4347" y="55.361" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1009">C</tspan>
+<text x="42.3339" y="49.5267" id="text1008">
+  <tspan x="42.3339" y="49.5267" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1009">C</tspan>
 </text>
-<text x="52.4347" y="47.801" id="text1010">
-  <tspan x="52.4347" y="47.801" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1011">C</tspan>
+<text x="42.3339" y="57.0867" id="text1010">
+  <tspan x="42.3339" y="57.0867" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1011">C</tspan>
 </text>
-<text x="52.4347" y="40.241" id="text1012">
-  <tspan x="52.4347" y="40.241" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1013">U</tspan>
+<text x="42.3339" y="64.6467" id="text1012">
+  <tspan x="42.3339" y="64.6467" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1013">U</tspan>
 </text>
-<text x="52.4347" y="32.681" id="text1014">
-  <tspan x="52.4347" y="32.681" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1015">C</tspan>
+<text x="42.3339" y="72.2067" id="text1014">
+  <tspan x="42.3339" y="72.2067" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1015">C</tspan>
 </text>
-<text x="59.8965" y="31.4663" id="text1016">
-  <tspan x="59.8965" y="31.4663" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1017">U</tspan>
+<text x="34.9027" y="73.5963" id="text1016">
+  <tspan x="34.9027" y="73.5963" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1017">U</tspan>
 </text>
-<text x="67.3108" y="33.746" id="text1018">
-  <tspan x="67.3108" y="33.746" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1019">A</tspan>
+<text x="28.9373" y="77.9625" id="text1018">
+  <tspan x="28.9373" y="77.9625" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1019">A</tspan>
 </text>
-<text x="71.8928" y="39.418" id="text1020">
-  <tspan x="71.8928" y="39.418" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1021">G</tspan>
+<text x="24.7369" y="84.5073" id="text1020">
+  <tspan x="24.7369" y="84.5073" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1021">G</tspan>
 </text>
-<text x="79.6628" y="39.418" id="text1022">
-  <tspan x="79.6628" y="39.418" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1023">U</tspan>
+<text x="32.5069" y="84.5073" id="text1022">
+  <tspan x="32.5069" y="84.5073" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1023">U</tspan>
 </text>
-<text x="87.0128" y="39.418" id="text1024">
-  <tspan x="87.0128" y="39.418" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1025">G</tspan>
+<text x="39.8569" y="84.5073" id="text1024">
+  <tspan x="39.8569" y="84.5073" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1025">G</tspan>
 </text>
-<text x="94.7828" y="39.418" id="text1026">
-  <tspan x="94.7828" y="39.418" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1027">C</tspan>
+<text x="47.6269" y="84.5073" id="text1026">
+  <tspan x="47.6269" y="84.5073" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1027">C</tspan>
 </text>
-<text x="100.328" y="34.0659" id="text1028">
-  <tspan x="100.328" y="34.0659" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1029">A</tspan>
+<text x="53.1725" y="89.8594" id="text1028">
+  <tspan x="53.1725" y="89.8594" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1029">A</tspan>
 </text>
-<text x="107.742" y="32.5844" id="text1030">
-  <tspan x="107.742" y="32.5844" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1031">A</tspan>
+<text x="60.5859" y="91.3409" id="text1030">
+  <tspan x="60.5859" y="91.3409" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1031">A</tspan>
 </text>
-<text x="114.522" y="35.4733" id="text1032">
-  <tspan x="114.522" y="35.4733" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1033">U</tspan>
+<text x="67.3659" y="88.452" id="text1032">
+  <tspan x="67.3659" y="88.452" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1033">U</tspan>
 </text>
-<text x="118.514" y="41.758" id="text1034">
-  <tspan x="118.514" y="41.758" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1035">G</tspan>
+<text x="71.3579" y="82.1673" id="text1034">
+  <tspan x="71.3579" y="82.1673" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1035">G</tspan>
 </text>
-<text x="118.514" y="49.318" id="text1036">
-  <tspan x="118.514" y="49.318" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1037">G</tspan>
+<text x="71.3579" y="74.6073" id="text1036">
+  <tspan x="71.3579" y="74.6073" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1037">G</tspan>
 </text>
-<text x="114.522" y="55.6026" id="text1038">
-  <tspan x="114.522" y="55.6026" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1039">U</tspan>
+<text x="67.3659" y="68.3226" id="text1038">
+  <tspan x="67.3659" y="68.3226" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1039">U</tspan>
 </text>
-<text x="107.536" y="58.4916" id="text1040">
-  <tspan x="107.536" y="58.4916" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1041">U</tspan>
+<text x="60.3797" y="65.4337" id="text1040">
+  <tspan x="60.3797" y="65.4337" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1041">U</tspan>
 </text>
-<text x="100.328" y="57.0101" id="text1042">
-  <tspan x="100.328" y="57.0101" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1043">A</tspan>
+<text x="53.1725" y="66.9152" id="text1042">
+  <tspan x="53.1725" y="66.9152" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1043">A</tspan>
 </text>
-<text x="94.5728" y="51.658" id="text1044">
-  <tspan x="94.5728" y="51.658" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1045">G</tspan>
+<text x="47.4169" y="72.2673" id="text1044">
+  <tspan x="47.4169" y="72.2673" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1045">G</tspan>
 </text>
-<text x="87.2228" y="51.658" id="text1046">
-  <tspan x="87.2228" y="51.658" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1047">C</tspan>
+<text x="40.0669" y="72.2673" id="text1046">
+  <tspan x="40.0669" y="72.2673" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1047">C</tspan>
 </text>
-<text x="79.869" y="51.658" id="text1048">
-  <tspan x="79.869" y="51.658" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1049">A</tspan>
+<text x="32.7131" y="72.2673" id="text1048">
+  <tspan x="32.7131" y="72.2673" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1049">A</tspan>
 </text>
-<text x="72.1028" y="51.658" id="text1050">
-  <tspan x="72.1028" y="51.658" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1051">U</tspan>
+<text x="24.9469" y="72.2673" id="text1050">
+  <tspan x="24.9469" y="72.2673" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1051">U</tspan>
 </text>
-<text x="66.5438" y="57.0004" id="text1052">
-  <tspan x="66.5438" y="57.0004" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1053">G</tspan>
+<text x="26.8392" y="79.5291" id="text1052">
+  <tspan x="26.8392" y="79.5291" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1053">G</tspan>
 </text>
-<text x="60.2144" y="53.2071" id="text1054">
-  <tspan x="60.2144" y="53.2071" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1055">C</tspan>
+<text x="35.447" y="107.218" id="text1054">
+  <tspan x="35.447" y="107.218" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1055">C</tspan>
 </text>
-<text x="60.4207" y="60.7671" id="text1056">
-  <tspan x="60.4207" y="60.7671" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1057">A</tspan>
+<text x="35.6532" y="114.778" id="text1056">
+  <tspan x="35.6532" y="114.778" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1057">A</tspan>
 </text>
-<text x="63.314" y="67.6624" id="text1058">
-  <tspan x="63.314" y="67.6624" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1059">U</tspan>
+<text x="32.3474" y="121.674" id="text1058">
+  <tspan x="32.3474" y="121.674" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1059">U</tspan>
 </text>
-<text x="60.2144" y="74.5578" id="text1060">
-  <tspan x="60.2144" y="74.5578" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1061">U</tspan>
+<text x="35.447" y="128.569" id="text1060">
+  <tspan x="35.447" y="128.569" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1061">U</tspan>
 </text>
-<text x="60.2144" y="82.1178" id="text1062">
-  <tspan x="60.2144" y="82.1178" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1063">C</tspan>
+<text x="35.447" y="136.129" id="text1062">
+  <tspan x="35.447" y="136.129" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1063">C</tspan>
 </text>
-<text x="65.1019" y="87.8855" id="text1064">
-  <tspan x="65.1019" y="87.8855" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1065">U</tspan>
+<text x="30.5595" y="141.897" id="text1064">
+  <tspan x="30.5595" y="141.897" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1065">U</tspan>
 </text>
-<text x="65.5048" y="95.4348" id="text1066">
-  <tspan x="65.5048" y="95.4348" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1067">U</tspan>
+<text x="30.1566" y="149.446" id="text1066">
+  <tspan x="30.1566" y="149.446" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1067">U</tspan>
 </text>
-<text x="61.2591" y="101.69" id="text1068">
-  <tspan x="61.2591" y="101.69" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1069">C</tspan>
+<text x="34.4023" y="155.701" id="text1068">
+  <tspan x="34.4023" y="155.701" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1069">C</tspan>
 </text>
-<text x="54.0944" y="104.103" id="text1070">
-  <tspan x="54.0944" y="104.103" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1071">C</tspan>
+<text x="41.567" y="158.114" id="text1070">
+  <tspan x="41.567" y="158.114" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1071">C</tspan>
 </text>
-<text x="46.7197" y="101.69" id="text1072">
-  <tspan x="46.7197" y="101.69" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1073">G</tspan>
+<text x="48.5216" y="155.701" id="text1072">
+  <tspan x="48.5216" y="155.701" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1073">G</tspan>
 </text>
-<text x="42.474" y="95.4348" id="text1074">
-  <tspan x="42.474" y="95.4348" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1075">G</tspan>
+<text x="52.7674" y="149.446" id="text1074">
+  <tspan x="52.7674" y="149.446" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1075">G</tspan>
 </text>
-<text x="43.087" y="87.8855" id="text1076">
-  <tspan x="43.087" y="87.8855" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1077">U</tspan>
+<text x="52.5744" y="141.897" id="text1076">
+  <tspan x="52.5744" y="141.897" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1077">U</tspan>
 </text>
-<text x="47.7644" y="82.1178" id="text1078">
-  <tspan x="47.7644" y="82.1178" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1079">G</tspan>
+<text x="47.477" y="136.129" id="text1078">
+  <tspan x="47.477" y="136.129" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1079">G</tspan>
 </text>
-<text x="47.7644" y="74.5578" id="text1080">
-  <tspan x="47.7644" y="74.5578" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1081">G</tspan>
+<text x="47.477" y="128.569" id="text1080">
+  <tspan x="47.477" y="128.569" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1081">G</tspan>
 </text>
-<text x="44.8748" y="67.6624" id="text1082">
-  <tspan x="44.8748" y="67.6624" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1083">C</tspan>
+<text x="50.7865" y="121.674" id="text1082">
+  <tspan x="50.7865" y="121.674" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1083">C</tspan>
 </text>
-<text x="47.9744" y="60.7671" id="text1084">
-  <tspan x="47.9744" y="60.7671" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1085">U</tspan>
+<text x="47.687" y="114.778" id="text1084">
+  <tspan x="47.687" y="114.778" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1085">U</tspan>
 </text>
-<text x="47.7644" y="53.2071" id="text1086">
-  <tspan x="47.7644" y="53.2071" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1087">G</tspan>
+<text x="47.477" y="107.218" id="text1086">
+  <tspan x="47.477" y="107.218" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1087">G</tspan>
 </text>
-<text x="45.717" y="45.9919" id="text1088">
-  <tspan x="45.717" y="45.9919" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1089">U</tspan>
+<text x="54.4587" y="110.579" id="text1088">
+  <tspan x="54.4587" y="110.579" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1089">U</tspan>
 </text>
-<text x="47.1898" y="38.6216" id="text1090">
-  <tspan x="47.1898" y="38.6216" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1091">G</tspan>
+<text x="61.5757" y="108.717" id="text1090">
+  <tspan x="61.5757" y="108.717" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1091">G</tspan>
 </text>
-<text x="52.9194" y="33.2437" id="text1092">
-  <tspan x="52.9194" y="33.2437" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1093">A</tspan>
+<text x="66.3366" y="102.53" id="text1092">
+  <tspan x="66.3366" y="102.53" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1093">A</tspan>
 </text>
-<text x="60.0627" y="31.4721" id="text1094">
-  <tspan x="60.0627" y="31.4721" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1095">U</tspan>
+<text x="65.3951" y="95.0059" id="text1094">
+  <tspan x="65.3951" y="95.0059" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1095">U</tspan>
 </text>
-<text x="59.9349" y="39.0314" id="text1096">
-  <tspan x="59.9349" y="39.0314" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1097">C</tspan>
+<text x="59.9349" y="89.7772" id="text1096">
+  <tspan x="59.9349" y="89.7772" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1097">C</tspan>
 </text>
-<text x="52.3749" y="39.0314" id="text1098">
-  <tspan x="52.3749" y="39.0314" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1099">C</tspan>
+<text x="52.3749" y="89.7772" id="text1098">
+  <tspan x="52.3749" y="89.7772" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1099">C</tspan>
 </text>
-<text x="44.6049" y="39.0314" id="text1100">
-  <tspan x="44.6049" y="39.0314" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1101">G</tspan>
+<text x="44.6049" y="89.7772" id="text1100">
+  <tspan x="44.6049" y="89.7772" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1101">G</tspan>
 </text>
-<text x="37.0449" y="39.0314" id="text1102">
-  <tspan x="37.0449" y="39.0314" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1103">G</tspan>
+<text x="37.0449" y="89.7772" id="text1102">
+  <tspan x="37.0449" y="89.7772" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1103">G</tspan>
 </text>
-<text x="29.4849" y="39.0314" id="text1104">
-  <tspan x="29.4849" y="39.0314" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1105">G</tspan>
+<text x="29.4849" y="89.7772" id="text1104">
+  <tspan x="29.4849" y="89.7772" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1105">G</tspan>
 </text>
-<text x="23.9272" y="43.9188" id="text1106">
-  <tspan x="23.9272" y="43.9188" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1107">U</tspan>
+<text x="23.9272" y="84.8898" id="text1106">
+  <tspan x="23.9272" y="84.8898" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1107">U</tspan>
 </text>
-<text x="16.3779" y="44.3218" id="text1108">
-  <tspan x="16.3779" y="44.3218" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1109">U</tspan>
+<text x="16.3779" y="84.4868" id="text1108">
+  <tspan x="16.3779" y="84.4868" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1109">U</tspan>
 </text>
-<text x="10.1227" y="40.0761" id="text1110">
-  <tspan x="10.1227" y="40.0761" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1111">C</tspan>
+<text x="10.1227" y="88.7326" id="text1110">
+  <tspan x="10.1227" y="88.7326" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1111">C</tspan>
 </text>
-<text x="7.5" y="32.9114" id="text1112">
-  <tspan x="7.5" y="32.9114" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1113">G</tspan>
+<text x="7.5" y="95.8972" id="text1112">
+  <tspan x="7.5" y="95.8972" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1113">G</tspan>
 </text>
-<text x="10.329" y="25.7467" id="text1114">
-  <tspan x="10.329" y="25.7467" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1115">A</tspan>
+<text x="10.329" y="103.062" id="text1114">
+  <tspan x="10.329" y="103.062" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1115">A</tspan>
 </text>
-<text x="16.1679" y="21.501" id="text1116">
-  <tspan x="16.1679" y="21.501" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1117">G</tspan>
+<text x="16.1679" y="107.308" id="text1116">
+  <tspan x="16.1679" y="107.308" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1117">G</tspan>
 </text>
-<text x="23.9272" y="21.9039" id="text1118">
-  <tspan x="23.9272" y="21.9039" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1119">U</tspan>
+<text x="23.9272" y="106.905" id="text1118">
+  <tspan x="23.9272" y="106.905" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1119">U</tspan>
 </text>
-<text x="29.6949" y="26.7914" id="text1120">
-  <tspan x="29.6949" y="26.7914" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1121">C</tspan>
+<text x="29.6949" y="102.017" id="text1120">
+  <tspan x="29.6949" y="102.017" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1121">C</tspan>
 </text>
-<text x="37.2549" y="26.7914" id="text1122">
-  <tspan x="37.2549" y="26.7914" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1123">C</tspan>
+<text x="37.2549" y="102.017" id="text1122">
+  <tspan x="37.2549" y="102.017" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1123">C</tspan>
 </text>
-<text x="44.8149" y="26.7914" id="text1124">
-  <tspan x="44.8149" y="26.7914" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1125">C</tspan>
+<text x="44.8149" y="102.017" id="text1124">
+  <tspan x="44.8149" y="102.017" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1125">C</tspan>
 </text>
-<text x="52.1649" y="26.7914" id="text1126">
-  <tspan x="52.1649" y="26.7914" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1127">G</tspan>
+<text x="52.1649" y="102.017" id="text1126">
+  <tspan x="52.1649" y="102.017" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1127">G</tspan>
 </text>
-<text x="59.7249" y="26.7914" id="text1128">
-  <tspan x="59.7249" y="26.7914" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1129">G</tspan>
+<text x="59.7249" y="102.017" id="text1128">
+  <tspan x="59.7249" y="102.017" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1129">G</tspan>
 </text>
-<text x="64.4647" y="32.681" id="text1130">
-  <tspan x="64.4647" y="32.681" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1131">G</tspan>
+<text x="54.3639" y="72.2067" id="text1130">
+  <tspan x="54.3639" y="72.2067" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1131">G</tspan>
 </text>
-<text x="64.8809" y="40.241" id="text1132">
-  <tspan x="64.8809" y="40.241" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1133">A</tspan>
+<text x="54.7801" y="64.6467" id="text1132">
+  <tspan x="54.7801" y="64.6467" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1133">A</tspan>
 </text>
-<text x="64.4647" y="47.801" id="text1134">
-  <tspan x="64.4647" y="47.801" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1135">G</tspan>
+<text x="54.3639" y="57.0867" id="text1134">
+  <tspan x="54.3639" y="57.0867" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1135">G</tspan>
 </text>
-<text x="64.4647" y="55.361" id="text1136">
-  <tspan x="64.4647" y="55.361" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1137">G</tspan>
+<text x="54.3639" y="49.5267" id="text1136">
+  <tspan x="54.3639" y="49.5267" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1137">G</tspan>
 </text>
-<text x="64.8809" y="62.921" id="text1138">
-  <tspan x="64.8809" y="62.921" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1139">A</tspan>
+<text x="54.7801" y="41.9667" id="text1138">
+  <tspan x="54.7801" y="41.9667" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1139">A</tspan>
 </text>
-<text x="64.4647" y="70.481" id="text1140">
-  <tspan x="64.4647" y="70.481" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1141">G</tspan>
+<text x="54.3639" y="34.4067" id="text1140">
+  <tspan x="54.3639" y="34.4067" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1141">G</tspan>
 </text>
-<text x="64.6747" y="78.041" id="text1142">
-  <tspan x="64.6747" y="78.041" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1143">C</tspan>
+<text x="54.5739" y="26.8467" id="text1142">
+  <tspan x="54.5739" y="26.8467" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1143">C</tspan>
 </text>
-<text x="70.0204" y="83.3868" id="text1144">
-  <tspan x="70.0204" y="83.3868" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1145">U</tspan>
+<text x="49.2282" y="21.501" id="text1144">
+  <tspan x="49.2282" y="21.501" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1145">U</tspan>
 </text>
-<text x="77.5804" y="83.3868" id="text1146">
-  <tspan x="77.5804" y="83.3868" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1147">C</tspan>
+<text x="41.6682" y="21.501" id="text1146">
+  <tspan x="41.6682" y="21.501" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1147">C</tspan>
 </text>
-<text x="85.1404" y="83.3868" id="text1148">
-  <tspan x="85.1404" y="83.3868" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1149">C</tspan>
+<text x="34.1082" y="21.501" id="text1148">
+  <tspan x="34.1082" y="21.501" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1149">C</tspan>
 </text>
-<text x="92.9067" y="83.3868" id="text1150">
-  <tspan x="92.9067" y="83.3868" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1151">A</tspan>
+<text x="26.7544" y="21.501" id="text1150">
+  <tspan x="26.7544" y="21.501" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1151">A</tspan>
 </text>
-<text x="100.467" y="83.3868" id="text1152">
-  <tspan x="100.467" y="83.3868" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1153">A</tspan>
+<text x="19.1944" y="21.501" id="text1152">
+  <tspan x="19.1944" y="21.501" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1153">A</tspan>
 </text>
 <path
  fill="none" stroke="#000000" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d="M 55.1422 78.9123 A 1.78191,1.78191 0 0,1 53.3603,80.6943L 49.7964 80.6943 "/>
-<text x="42.6939" y="83.3868" id="text1154">
-  <tspan x="42.6939" y="83.3868" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1155">5&#x2032;</tspan>
+ d="M 45.0414 20.5904 A 1.78191,1.78191 270 0,0 43.2595,18.8085L 39.6957 18.8085 "/>
+<text x="32.5932" y="21.501" id="text1154">
+  <tspan x="32.5932" y="21.501" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Bitstream Vera Sans" font-size="7.5" id="tspan1155">5&apos;</tspan>
 </text>
 </svg>
