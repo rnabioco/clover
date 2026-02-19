@@ -85,10 +85,6 @@ def main():
             svg_path = org_dir / f"{safe_name}.svg"
             json_path = org_dir / f"{safe_name}.json"
 
-            if svg_path.exists() and json_path.exists():
-                print(f"  Skipping {safe_name} (already exists)")
-                continue
-
             print(f"  Generating {safe_name}...")
 
             try:
@@ -321,13 +317,138 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
             return None
 
 
+def ensure_cca_tail(sequence: str, structure: str) -> tuple[str, str]:
+    """Append CCA tail and amino acid placeholder to sequence if missing.
+
+    Most eukaryotic tRNAs in genomic sequences lack the post-transcriptionally
+    added CCA tail. We add it plus a lowercase 'a' placeholder for the amino
+    acid attachment site. This extra position can be used to visualize
+    aminoacylation state alongside modification data.
+    """
+    upper_seq = sequence.upper()
+    if upper_seq.endswith("CCA"):
+        # Already has CCA, just add amino acid placeholder
+        sequence = sequence + "a"
+        structure = structure + "."
+        return sequence, structure
+
+    # Append CCA + amino acid placeholder as unpaired nucleotides
+    sequence = sequence + "CCAa"
+    structure = structure + "...."
+    return sequence, structure
+
+
+def find_innermost_acceptor_pair(structure: str) -> int:
+    """Find the position of the innermost acceptor stem base pair.
+
+    The acceptor stem is the outermost stem starting at position 0. We walk
+    inward along the 5' strand until we reach the last opening bracket
+    before the multi-stem junction begins. This handles both standard
+    tRNAs (7 bp acceptor) and non-standard ones (variable acceptor length).
+    """
+    # Build pair map
+    stack = []
+    pairs = {}
+    for i, ch in enumerate(structure):
+        if ch == "<":
+            stack.append(i)
+        elif ch == ">":
+            if stack:
+                j = stack.pop()
+                pairs[j] = i
+                pairs[i] = j
+
+    # Walk inward from position 0 along the acceptor stem
+    # The acceptor stem is contiguous opening brackets (possibly with
+    # small internal loops of 1-2 unpaired bases)
+    last_opening = None
+    i = 0
+    while i < len(structure):
+        if structure[i] == "<":
+            last_opening = i
+            # Check if the region between this pair contains stems
+            if i in pairs:
+                partner = pairs[i]
+                # Look ahead: count stems inside this pair
+                inner_stems = 0
+                j = i + 1
+                while j < partner:
+                    if structure[j] == "<" and j in pairs:
+                        inner_stems += 1
+                        j = pairs[j] + 1
+                    else:
+                        j += 1
+
+                if inner_stems >= 3:
+                    # This is the innermost acceptor pair enclosing junction
+                    return i
+
+            i += 1
+        elif structure[i] == ".":
+            # Allow small gaps (internal loops) in the acceptor stem
+            i += 1
+        else:
+            break
+
+    return last_opening if last_opening is not None else 0
+
+
+def count_internal_stems(structure: str, m_pos: int) -> int:
+    """Count the number of stems emanating from the multistem junction.
+
+    Starting from the M label position (innermost acceptor pair), count
+    how many separate stem-loops branch off from the junction. Standard
+    tRNAs have 3 stems (D, AC, T) while long variable arm tRNAs have 4
+    (D, AC, variable arm, T).
+    """
+    # Find the paired position for M using a stack
+    stack = []
+    pairs = {}
+    for i, ch in enumerate(structure):
+        if ch == "<":
+            stack.append(i)
+        elif ch == ">":
+            if stack:
+                j = stack.pop()
+                pairs[j] = i
+                pairs[i] = j
+
+    if m_pos not in pairs:
+        return 0
+
+    m_pair = pairs[m_pos]
+    # Scan the region between m_pos and its pair for stem openings
+    stems = 0
+    i = m_pos + 1
+    while i < m_pair:
+        if structure[i] == "<":
+            stems += 1
+            # Skip to the closing bracket of this stem
+            if i in pairs:
+                i = pairs[i] + 1
+            else:
+                i += 1
+        else:
+            i += 1
+
+    return stems
+
+
 def create_stockholm(name: str, sequence: str, structure: str) -> str:
-    """Create a Stockholm alignment file for R2R.
+    """Create a Stockholm alignment file for R2R with layout directives.
 
     R2R expects standard Stockholm format with SS_cons annotation.
-    The sequence ID and #=GC SS_cons tag must be padded to the same
-    width so the sequence and structure columns align.
+    Adds R2R_LABEL and multistem_junction_bulgey directives to produce
+    a proper cloverleaf layout.
+
+    The M label is placed at the innermost acceptor base pair enclosing
+    the multi-stem junction. Junction angles are set for:
+    - Standard tRNAs (3 stems: D, AC, T): classic cloverleaf
+    - Long variable arm tRNAs (4 stems: D, AC, var, T): var arm points SE
     """
+    # Ensure CCA tail and amino acid placeholder are present
+    sequence, structure = ensure_cca_tail(sequence, structure)
+
     seq_len = len(sequence)
     str_len = len(structure)
 
@@ -338,16 +459,45 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
 
     seq_display = sequence.replace("U", "T").replace("u", "t")
     seq_id = sanitize_filename(name)
-    tag = "#=GC SS_cons"
+    tag_ss = "#=GC SS_cons"
+    tag_lbl = "#=GC R2R_LABEL"
 
-    # Pad both the seq ID and the tag to the same width
-    width = max(len(seq_id), len(tag)) + 2
+    # Pad all tags to the same width
+    width = max(len(seq_id), len(tag_ss), len(tag_lbl)) + 2
+
+    # R2R_LABEL: M at the innermost acceptor pair
+    m_pos = find_innermost_acceptor_pair(structure)
+    label = "." * m_pos + "M" + "." * (seq_len - m_pos - 1)
+
+    # Determine junction layout based on stem count
+    n_stems = count_internal_stems(structure, m_pos)
+
+    if n_stems == 4:
+        # Long variable arm: D left, AC down, var arm SE, T-stem right
+        junction = (
+            "multistem_junction_bulgey M "
+            "J0 0 3 0 0 0 -90 "
+            "J1 0 3 0 0 0 90 "
+            "J2 0 3 0 0 0 -135 "
+            "J3 0 3 0 0 0 45"
+        )
+    else:
+        # Standard 3-stem: D left, AC down, T-stem right
+        junction = (
+            "multistem_junction_bulgey M "
+            "J0 0 3 0 0 0 -90 "
+            "J1 0 3 0 0 0 90 "
+            "J2 0 3 0 0 0 90"
+        )
 
     lines = [
         "# STOCKHOLM 1.0",
         "",
         f"{seq_id:<{width}}{seq_display}",
-        f"{tag:<{width}}{structure}",
+        f"{tag_ss:<{width}}{structure}",
+        f"{tag_lbl:<{width}}{label}",
+        "",
+        f"#=GF R2R {junction}",
         "",
         "//",
     ]
