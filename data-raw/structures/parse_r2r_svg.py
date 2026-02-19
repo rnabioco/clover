@@ -55,9 +55,20 @@ def parse_r2r_svg(svg_path: str | Path) -> dict:
     nucleotides = []
     lines = []
 
-    # Find all text elements - R2R puts single nucleotide chars as <text>
+    # Find all text elements - R2R puts single nucleotide chars in <tspan>
+    # elements inside <text>, not as direct text content.
     for text_el in root.iter(f"{{{SVG_NS}}}text"):
+        # Check direct text content first
         content = (text_el.text or "").strip()
+
+        # Also check child <tspan> elements (R2R's actual format)
+        if not (len(content) == 1 and content in "ACGUTacgut"):
+            for tspan in text_el.findall(f"{{{SVG_NS}}}tspan"):
+                tspan_text = (tspan.text or "").strip()
+                if len(tspan_text) == 1 and tspan_text in "ACGUTacgut":
+                    content = tspan_text
+                    break
+
         if len(content) == 1 and content in "ACGUTacgut":
             x = _get_x(text_el)
             y = _get_y(text_el)
