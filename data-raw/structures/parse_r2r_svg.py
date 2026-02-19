@@ -40,8 +40,10 @@ def parse_r2r_svg(svg_path: str | Path) -> dict:
     root = tree.getroot()
 
     # Get SVG dimensions
-    width = float(root.get("width", "0").replace("px", ""))
-    height = float(root.get("height", "0").replace("px", ""))
+    width_str = re.sub(r"[a-zA-Z]+", "", root.get("width", "0"))
+    height_str = re.sub(r"[a-zA-Z]+", "", root.get("height", "0"))
+    width = float(width_str) if width_str else 0
+    height = float(height_str) if height_str else 0
 
     # If width/height are 0, try viewBox
     if width == 0 or height == 0:

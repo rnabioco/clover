@@ -28,6 +28,9 @@ MODOMICS_DIR = PROJECT_ROOT / "inst" / "extdata" / "modomics"
 
 HOME = Path.home()
 
+# Use the NLOPT-enabled R2R binary (the pixi env has an old one without solver)
+R2R_BIN = HOME / "bin" / "r2r"
+
 # Local archive files and the .ss file within each
 ORGANISMS = {
     "Escherichia_coli": {
@@ -66,11 +69,18 @@ def main():
 
         print(f"  Found {len(trnas)} unique tRNA isotype-anticodon combos")
 
-        # Step 2: Filter to isotypes with MODOMICS data
+        # Step 2: Clean output directory of stale files
+        for old_file in org_dir.glob("*.svg"):
+            old_file.unlink()
+        for old_file in org_dir.glob("*.json"):
+            old_file.unlink()
+
+        # Step 3: Filter to isotypes with MODOMICS data
         modomics_isotypes = get_modomics_isotypes(org_name)
         if modomics_isotypes:
             filtered = {
-                k: v for k, v in trnas.items()
+                k: v
+                for k, v in trnas.items()
                 if extract_isotype(k) in modomics_isotypes
             }
             print(
@@ -79,35 +89,42 @@ def main():
             )
             trnas = filtered if filtered else trnas
 
-        # Step 3: Generate SVGs for each tRNA
-        for trna_name, trna_data in trnas.items():
+        # Step 4: Generate SVGs for each tRNA
+        for trna_name, trna_copies in trnas.items():
             safe_name = sanitize_filename(trna_name)
             svg_path = org_dir / f"{safe_name}.svg"
             json_path = org_dir / f"{safe_name}.json"
 
             print(f"  Generating {safe_name}...")
 
-            try:
-                svg_content = run_r2r(
-                    trna_name,
-                    trna_data["sequence"],
-                    trna_data["structure"],
-                )
+            success = False
+            for i, trna_data in enumerate(trna_copies):
+                try:
+                    svg_content = run_r2r(
+                        trna_name,
+                        trna_data["sequence"],
+                        trna_data["structure"],
+                    )
 
-                if svg_content:
-                    svg_path.write_text(svg_content)
+                    if svg_content:
+                        svg_path.write_text(svg_content)
 
-                    metadata = parse_r2r_svg(svg_path)
-                    metadata["trna_name"] = trna_name
-                    metadata["sequence"] = trna_data["sequence"]
-                    metadata["structure"] = trna_data["structure"]
-                    write_metadata(metadata, json_path)
-                    print(f"    OK ({len(metadata['nucleotides'])} nucleotides)")
-                else:
-                    print("    FAILED: R2R produced no output")
+                        metadata = parse_r2r_svg(svg_path)
+                        metadata["trna_name"] = trna_name
+                        metadata["sequence"] = trna_data["sequence"]
+                        metadata["structure"] = trna_data["structure"]
+                        write_metadata(metadata, json_path)
+                        n = len(metadata["nucleotides"])
+                        suffix = f" (copy {i + 1})" if i > 0 else ""
+                        print(f"    OK ({n} nucleotides){suffix}")
+                        success = True
+                        break
 
-            except Exception as e:
-                print(f"    ERROR: {e}")
+                except Exception as e:
+                    print(f"    ERROR on copy {i + 1}: {e}")
+
+            if not success:
+                print("    FAILED: R2R could not render any copy")
 
     print(f"\nDone. Output in {OUTPUT_DIR}")
 
@@ -155,6 +172,10 @@ def parse_trnascan_ss(ss_data: str) -> dict:
         if not entry.strip():
             continue
 
+        # Skip intron-containing tRNAs (for now)
+        if "Possible intron:" in entry:
+            continue
+
         # Extract type and anticodon
         type_match = re.search(r"Type:\s+(\S+)", entry)
         ac_match = re.search(r"Anticodon:\s+(\S+)", entry)
@@ -179,12 +200,13 @@ def parse_trnascan_ss(ss_data: str) -> dict:
         # Convert tRNAscan-SE bracket notation to R2R format
         structure = convert_trnascan_to_r2r(structure_raw)
 
-        # Keep first occurrence of each isotype-anticodon combo
+        # Keep all occurrences; first will be tried first
         if trna_name not in trnas:
-            trnas[trna_name] = {
-                "sequence": sequence,
-                "structure": structure,
-            }
+            trnas[trna_name] = []
+        trnas[trna_name].append({
+            "sequence": sequence,
+            "structure": structure,
+        })
 
     return trnas
 
@@ -266,7 +288,7 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
         try:
             result = subprocess.run(
                 [
-                    "r2r", "--GSC-weighted-consensus",
+                    str(R2R_BIN), "--GSC-weighted-consensus",
                     str(sto_path), str(cons_path),
                     "3", "0.97", "0.9", "0.75",
                     "4", "0.97", "0.9", "0.75", "0.5", "0.1",
@@ -285,7 +307,7 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
                 return None
 
         except FileNotFoundError:
-            print("    ERROR: r2r not found. Ensure it is on PATH.")
+            print(f"    ERROR: r2r not found at {R2R_BIN}")
             return None
         except subprocess.TimeoutExpired:
             print("    ERROR: R2R consensus timed out")
@@ -296,7 +318,7 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
         try:
             result = subprocess.run(
                 [
-                    "r2r", "--disable-usage-warning",
+                    str(R2R_BIN), "--disable-usage-warning",
                     str(cons_path), str(svg_path),
                 ],
                 capture_output=True,
@@ -474,20 +496,17 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
 
     if n_stems == 4:
         # Long variable arm: D left, AC down, var arm SE, T-stem right
+        # s0=180 flips acceptor to top; s1-s4 are internal stems
         junction = (
-            "multistem_junction_bulgey M "
-            "J0 0 3 0 0 0 -90 "
-            "J1 0 3 0 0 0 90 "
-            "J2 0 3 0 0 0 -135 "
-            "J3 0 3 0 0 0 45"
+            "multistem_junction_circular_solver M "
+            "s0 180 ai s1 -90 ai s2 0 ai s3 45 ai s4 90 ai draw_circ"
         )
     else:
         # Standard 3-stem: D left, AC down, T-stem right
+        # s0=180 flips acceptor to top (enclosing stem points down)
         junction = (
-            "multistem_junction_bulgey M "
-            "J0 0 3 0 0 0 -90 "
-            "J1 0 3 0 0 0 90 "
-            "J2 0 3 0 0 0 90"
+            "multistem_junction_circular_solver M "
+            "s0 180 ai s1 -90 ai s2 0 ai s3 90 ai draw_circ"
         )
 
     lines = [
