@@ -20,6 +20,7 @@ r-openssl = ">=2.0"
 r-httr2 = ">=1.0"
 r-gitcreds = ">=0.1"
 r-gh = ">=1.4"
+nlopt = ">=2.10.0,<3"
 [feature.python]
 dependencies = { python = ">=3.11", lxml = "*", r2r = ">=1.0.6,<2" }
 
