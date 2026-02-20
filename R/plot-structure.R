@@ -82,8 +82,10 @@ structure_trnas <- function(organism) {
 #'   color at specified positions. Unspecified positions keep the
 #'   default color.
 #' @param linkage_palette Character vector of length 2 giving the
-#'   low and high colors for the linkage value gradient. Default
-#'   `c("#0072B2", "#D55E00")` (blue to vermillion).
+#'   colors for negative (exclusive) and positive (co-occurring)
+#'   linkage values. Default `c("#0072B2", "#D55E00")` (blue for
+#'   exclusive, vermillion for co-occurring). Stroke width encodes
+#'   the magnitude of the value.
 #'
 #' @return The path to the annotated SVG file (invisibly).
 #'
@@ -341,59 +343,103 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
 
   has_value <- "value" %in% names(linkages)
 
-  if (has_value) {
-    vals <- linkages$value
-    val_range <- range(vals, na.rm = TRUE)
-  }
+  # Compute centroid of all nucleotide positions
+  centroid_x <- mean(nucs$x)
+  centroid_y <- mean(nucs$y)
 
+  base_offset <- 20
+
+  # Resolve coordinates for each arc and build info for lane assignment
+  arcs <- list()
   for (i in seq_len(nrow(linkages))) {
     p1 <- linkages$pos1[i]
     p2 <- linkages$pos2[i]
 
     idx1 <- which(nucs$pos == p1)
     idx2 <- which(nucs$pos == p2)
-    if (length(idx1) == 0 || length(idx2) == 0) {
-      next
-    }
+    if (length(idx1) == 0 || length(idx2) == 0) next
 
     n1 <- nucs[idx1[1], ]
     n2 <- nucs[idx2[1], ]
+    if (sqrt((n2$x - n1$x)^2 + (n2$y - n1$y)^2) < 1) next
 
-    # Compute Bezier control point (offset perpendicular to midpoint)
+    # Angular span relative to centroid (for lane assignment)
+    angle1 <- atan2(n1$y - centroid_y, n1$x - centroid_x)
+    angle2 <- atan2(n2$y - centroid_y, n2$x - centroid_x)
+
+    arcs[[length(arcs) + 1]] <- list(
+      idx = i,
+      n1 = n1, n2 = n2,
+      angle1 = angle1, angle2 = angle2
+    )
+  }
+
+  if (length(arcs) == 0) return(svg_doc)
+
+  # Assign lanes to avoid overlap
+  arcs_info <- data.frame(
+    arc_idx = seq_along(arcs),
+    angle1 = vapply(arcs, \(a) a$angle1, numeric(1)),
+    angle2 = vapply(arcs, \(a) a$angle2, numeric(1))
+  )
+  lanes <- assign_arc_lanes(arcs_info)
+
+  # Compute abs value range for stroke width mapping
+  if (has_value) {
+    abs_vals <- abs(linkages$value[!is.na(linkages$value) &
+      is.finite(linkages$value)])
+    abs_range <- if (length(abs_vals) > 0) range(abs_vals) else c(0, 0)
+  }
+
+  for (j in seq_along(arcs)) {
+    a <- arcs[[j]]
+    i <- a$idx
+    n1 <- a$n1
+    n2 <- a$n2
+    lane <- lanes[j]
+
+    # Midpoint of the two endpoints
     mx <- (n1$x + n2$x) / 2
     my <- (n1$y + n2$y) / 2
-    dx <- n2$x - n1$x
-    dy <- n2$y - n1$y
-    dist <- sqrt(dx^2 + dy^2)
 
-    if (dist < 1) {
-      next
+    # Vector from centroid to midpoint
+    vx <- mx - centroid_x
+    vy <- my - centroid_y
+    vmag <- sqrt(vx^2 + vy^2)
+
+    # Offset distance scaled by lane
+    offset <- base_offset * (1.0 + (lane - 1) * 0.7)
+
+    if (vmag > 0.01) {
+      # Extend outward from centroid
+      cx <- mx + (vx / vmag) * offset
+      cy <- my + (vy / vmag) * offset
+    } else {
+      # Fallback: perpendicular offset when midpoint is at centroid
+      dx <- n2$x - n1$x
+      dy <- n2$y - n1$y
+      dist <- sqrt(dx^2 + dy^2)
+      cx <- mx - (dy / dist) * offset
+      cy <- my + (dx / dist) * offset
     }
 
-    # Perpendicular offset (30% of distance)
-    offset <- dist * 0.3
-    cx <- mx - (dy / dist) * offset
-    cy <- my + (dx / dist) * offset
-
-    # Color based on value
+    # Color by sign of value
     if (has_value && !is.na(linkages$value[i])) {
-      color <- interpolate_color(
-        linkages$value[i],
-        val_range,
-        palette
-      )
+      color <- if (linkages$value[i] < 0) palette[1] else palette[2]
+      abs_val <- if (is.finite(linkages$value[i])) {
+        abs(linkages$value[i])
+      } else {
+        abs_range[2]
+      }
+      sw <- arc_stroke_width(abs_val, abs_range)
     } else {
-      color <- palette[1]
+      color <- palette[2]
+      sw <- 1.5
     }
 
     path_d <- sprintf(
       "M %.1f,%.1f Q %.1f,%.1f %.1f,%.1f",
-      n1$x,
-      n1$y,
-      cx,
-      cy,
-      n2$x,
-      n2$y
+      n1$x, n1$y, cx, cy, n2$x, n2$y
     )
 
     xml2::xml_add_child(
@@ -402,12 +448,96 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
       d = path_d,
       fill = "none",
       stroke = color,
-      "stroke-width" = "1.5",
+      "stroke-width" = as.character(round(sw, 1)),
       "stroke-opacity" = "0.7"
     )
   }
 
   svg_doc
+}
+
+assign_arc_lanes <- function(arcs_info) {
+  n <- nrow(arcs_info)
+  if (n == 0) return(integer(0))
+
+  # Normalize angular spans to [start, end] where start < end on the circle
+  spans <- lapply(seq_len(n), function(i) {
+    a1 <- arcs_info$angle1[i]
+    a2 <- arcs_info$angle2[i]
+    # Ensure consistent ordering: smaller angular span
+    diff <- (a2 - a1) %% (2 * pi)
+    if (diff > pi) {
+      list(start = a2, end = a1 + 2 * pi)
+    } else {
+      list(start = a1, end = a2)
+    }
+  })
+
+  # Sort by span size (smallest first)
+  span_sizes <- vapply(
+    spans,
+    function(s) (s$end - s$start) %% (2 * pi),
+    numeric(1)
+  )
+  order_idx <- order(span_sizes)
+
+  lanes <- integer(n)
+  lane_assignments <- list() # list of lists, one per lane
+
+  for (idx in order_idx) {
+    assigned <- FALSE
+    for (lane_num in seq_along(lane_assignments)) {
+      conflict <- FALSE
+      for (other_idx in lane_assignments[[lane_num]]) {
+        if (angular_spans_overlap(spans[[idx]], spans[[other_idx]])) {
+          conflict <- TRUE
+          break
+        }
+      }
+      if (!conflict) {
+        lanes[idx] <- lane_num
+        lane_assignments[[lane_num]] <- c(lane_assignments[[lane_num]], idx)
+        assigned <- TRUE
+        break
+      }
+    }
+    if (!assigned) {
+      new_lane <- length(lane_assignments) + 1
+      lanes[idx] <- new_lane
+      lane_assignments[[new_lane]] <- idx
+    }
+  }
+
+  lanes
+}
+
+angular_spans_overlap <- function(arc_a, arc_b) {
+  # Normalize both spans to start in [0, 2*pi)
+  twopi <- 2 * pi
+  a_start <- arc_a$start %% twopi
+  a_end <- a_start + ((arc_a$end - arc_a$start) %% twopi)
+  b_start <- arc_b$start %% twopi
+  b_end <- b_start + ((arc_b$end - arc_b$start) %% twopi)
+
+  # Check overlap on the line; also check with b shifted by 2*pi
+  overlaps <- function(s1, e1, s2, e2) {
+    s1 < e2 && s2 < e1
+  }
+
+  overlaps(a_start, a_end, b_start, b_end) ||
+    overlaps(a_start, a_end, b_start + twopi, b_end + twopi) ||
+    overlaps(a_start + twopi, a_end + twopi, b_start, b_end)
+}
+
+arc_stroke_width <- function(abs_value, abs_range) {
+  min_width <- 1.0
+  max_width <- 3.0
+  if (abs_range[1] == abs_range[2]) {
+    return((min_width + max_width) / 2)
+  }
+  t <- (abs_value - abs_range[1]) / (abs_range[2] - abs_range[1])
+  t <- max(0, min(1, t))
+  min_width + t * (max_width - min_width)
 }
 
 add_structure_legend <- function(
@@ -520,6 +650,10 @@ add_structure_legend <- function(
 
   # Linkage legend
   if (!is.null(linkages)) {
+    has_value <- "value" %in% names(linkages)
+    has_neg <- has_value && any(linkages$value < 0, na.rm = TRUE)
+    has_pos <- has_value && any(linkages$value >= 0, na.rm = TRUE)
+
     y_offset <- y_offset + 5
     xml2::xml_add_child(
       legend_group,
@@ -532,24 +666,107 @@ add_structure_legend <- function(
     )
     y_offset <- y_offset + 15
 
-    xml2::xml_add_child(
-      legend_group,
-      "line",
-      x1 = "0",
-      y1 = as.character(y_offset - 3),
-      x2 = "20",
-      y2 = as.character(y_offset - 3),
-      stroke = linkage_palette[1],
-      "stroke-width" = "1.5"
-    )
-    xml2::xml_add_child(
-      legend_group,
-      "text",
-      x = "25",
-      y = as.character(y_offset),
-      "font-size" = "9",
-      "co-occurrence"
-    )
+    if (has_value && has_neg && has_pos) {
+      # Bidirectional: show both entries
+      xml2::xml_add_child(
+        legend_group,
+        "line",
+        x1 = "0",
+        y1 = as.character(y_offset - 3),
+        x2 = "20",
+        y2 = as.character(y_offset - 3),
+        stroke = linkage_palette[1],
+        "stroke-width" = "1.5"
+      )
+      xml2::xml_add_child(
+        legend_group,
+        "text",
+        x = "25",
+        y = as.character(y_offset),
+        "font-size" = "9",
+        "Exclusive"
+      )
+      y_offset <- y_offset + 14
+
+      xml2::xml_add_child(
+        legend_group,
+        "line",
+        x1 = "0",
+        y1 = as.character(y_offset - 3),
+        x2 = "20",
+        y2 = as.character(y_offset - 3),
+        stroke = linkage_palette[2],
+        "stroke-width" = "1.5"
+      )
+      xml2::xml_add_child(
+        legend_group,
+        "text",
+        x = "25",
+        y = as.character(y_offset),
+        "font-size" = "9",
+        "Co-occurring"
+      )
+    } else if (has_value && has_neg) {
+      # All negative
+      xml2::xml_add_child(
+        legend_group,
+        "line",
+        x1 = "0",
+        y1 = as.character(y_offset - 3),
+        x2 = "20",
+        y2 = as.character(y_offset - 3),
+        stroke = linkage_palette[1],
+        "stroke-width" = "1.5"
+      )
+      xml2::xml_add_child(
+        legend_group,
+        "text",
+        x = "25",
+        y = as.character(y_offset),
+        "font-size" = "9",
+        "Exclusive"
+      )
+    } else if (has_value && has_pos) {
+      # All positive
+      xml2::xml_add_child(
+        legend_group,
+        "line",
+        x1 = "0",
+        y1 = as.character(y_offset - 3),
+        x2 = "20",
+        y2 = as.character(y_offset - 3),
+        stroke = linkage_palette[2],
+        "stroke-width" = "1.5"
+      )
+      xml2::xml_add_child(
+        legend_group,
+        "text",
+        x = "25",
+        y = as.character(y_offset),
+        "font-size" = "9",
+        "Co-occurring"
+      )
+    } else {
+      # No value column
+      xml2::xml_add_child(
+        legend_group,
+        "line",
+        x1 = "0",
+        y1 = as.character(y_offset - 3),
+        x2 = "20",
+        y2 = as.character(y_offset - 3),
+        stroke = linkage_palette[2],
+        "stroke-width" = "1.5"
+      )
+      xml2::xml_add_child(
+        legend_group,
+        "text",
+        x = "25",
+        y = as.character(y_offset),
+        "font-size" = "9",
+        "Linkage"
+      )
+    }
   }
 
   # Expand viewBox to accommodate legend

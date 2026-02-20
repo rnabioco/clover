@@ -391,10 +391,14 @@ The simplest call renders the bare cloverleaf with base-pair lines and
 nucleotide letters.
 
 ```{r}
-#| label: fig-structure-bare
-#| results: asis
+#| label: structure-bare
 svg_path <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
-cat(readLines(svg_path), sep = "\n")
+```
+
+```{r}
+#| label: fig-structure-bare
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
 ```
 
 ### Annotated structure with modifications, outlines, and text colors
@@ -403,8 +407,7 @@ We can highlight the anticodon with filled circles, mark the discriminator
 base with an outline, and change the text color of specific positions.
 
 ```{r}
-#| label: fig-structure-annotated
-#| results: asis
+#| label: structure-annotated
 # Known modifications for this tRNA
 mods_glu_struct <- mods |>
   filter(ref == "host-tRNA-Glu-TTC-1-1")
@@ -433,7 +436,12 @@ svg_path <- plot_tRNA_structure(
   outline_palette = c(discriminator = "#E41A1C"),
   text_colors = disc_text
 )
-cat(readLines(svg_path), sep = "\n")
+```
+
+```{r}
+#| label: fig-structure-annotated
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
 ```
 
 ### Long variable arm tRNAs
@@ -442,10 +450,61 @@ Leu and Ser tRNAs have a 4-stem cloverleaf with a variable arm stem,
 which is properly rendered from the tRNAscan-SE covariance model alignment.
 
 ```{r}
-#| label: fig-structure-leu
-#| results: asis
+#| label: structure-leu
 svg_path <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
-cat(readLines(svg_path), sep = "\n")
+```
+
+```{r}
+#| label: fig-structure-leu
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
+```
+
+### Modification co-occurrence on structure
+
+We can visualize pairwise modification co-occurrence directly on the tRNA
+cloverleaf. Arcs connect position pairs with significant odds ratios:
+blue arcs indicate mutual exclusivity (negative log OR) and vermillion
+arcs indicate co-occurrence (positive log OR). Stroke width encodes the
+magnitude.
+
+```{r}
+#| label: structure-linkages
+# Filter OR data for one tRNA and one sample
+or_glu <- or_data |>
+  filter(
+    ref == "host-tRNA-Glu-TTC-1-1",
+    sample_id == "wt-15-ctl-01"
+  )
+
+# Clean and apply significance filters
+or_clean <- clean_odds_ratios(or_glu)
+or_sig <- or_clean |>
+  filter(
+    p_value < 0.01,
+    total_obs >= 100,
+    abs(log_odds_ratio) >= 1.0
+  )
+
+# Build linkages tibble for plot_tRNA_structure
+linkages_glu <- tibble::tibble(
+  pos1 = or_sig$pos1,
+  pos2 = or_sig$pos2,
+  value = or_sig$log_odds_ratio
+)
+
+svg_path <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = mods_glu_struct,
+  linkages = linkages_glu
+)
+```
+
+```{r}
+#| label: fig-structure-linkages
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
 ```
 
 ## Next steps
