@@ -198,7 +198,308 @@ map_identity_to_trna <- function(elements, sprinzl_coords, trna_id) {
   merged
 }
 
+#' Plot tRNA structure with identity element overlays
+#'
+#' Generates a tRNA cloverleaf structure SVG with aminoacylation
+#' identity elements highlighted as colored outlines. Strong
+#' determinants are shown in red, weak determinants in blue.
+#'
+#' @param trna Character string identifying the tRNA
+#'   (e.g., `"tRNA-Ala-AGC"`). Use [structure_trnas()] to list
+#'   available tRNAs.
+#' @param organism Character string specifying the organism name
+#'   (e.g., `"Saccharomyces cerevisiae"`).
+#' @param sprinzl_coords A tibble of Sprinzl coordinates as returned
+#'   by [read_sprinzl_coords()].
+#' @param trna_id Character string identifying the tRNA in
+#'   `sprinzl_coords` (e.g., `"nuc-tRNA-Ala-AGC-1-1"`). If `NULL`
+#'   (default), auto-detected from `trna` by converting the anticodon
+#'   to RNA (T to U) and matching the first Sprinzl entry.
+#' @param amino_acid Optional 3-letter amino acid code. If `NULL`
+#'   (default), extracted from the `trna` name.
+#' @param outline_palette Named character vector of colors keyed by
+#'   strength (`"strong"`, `"weak"`). Default uses red for strong
+#'   and blue for weak determinants.
+#' @param ... Additional arguments passed to
+#'   [plot_tRNA_structure()].
+#'
+#' @return The path to the annotated SVG file (invisibly).
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' coords <- read_sprinzl_coords(
+#'   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
+#' )
+#' plot_identity_structure(
+#'   "tRNA-Ala-AGC", "Saccharomyces cerevisiae", coords
+#' )
+#' }
+plot_identity_structure <- function(
+  trna,
+  organism,
+  sprinzl_coords,
+  trna_id = NULL,
+  amino_acid = NULL,
+  outline_palette = NULL,
+  ...
+) {
+  if (is.null(amino_acid)) {
+    amino_acid <- strsplit(trna, "-")[[1]][2]
+  }
+
+  if (is.null(trna_id)) {
+    trna_id <- find_sprinzl_id(trna, sprinzl_coords)
+    if (is.null(trna_id)) {
+      cli::cli_abort(
+        "No Sprinzl coordinate entry found for {.val {trna}}."
+      )
+    }
+  }
+
+  elements <- identity_elements(
+    organism,
+    amino_acid = amino_acid,
+    type = "determinant"
+  )
+
+  mapped <- map_identity_to_trna(elements, sprinzl_coords, trna_id)
+
+  if (nrow(mapped) == 0) {
+    return(plot_tRNA_structure(trna, organism, ...))
+  }
+
+  outlines <- dplyr::tibble(
+    pos = mapped$pos,
+    group = mapped$strength
+  )
+
+  if (is.null(outline_palette)) {
+    outline_palette <- c(
+      strong = "#E41A1C",
+      weak = "#377EB8"
+    )
+  }
+
+  plot_tRNA_structure(
+    trna,
+    organism,
+    outlines = outlines,
+    outline_palette = outline_palette,
+    ...
+  )
+}
+
+#' Plot identity elements for multiple tRNAs side by side
+#'
+#' Generates a combined SVG showing tRNA cloverleaf structures
+#' arranged in a horizontal row, each annotated with aminoacylation
+#' identity elements. Inspired by Figure 2 of Giege & Eriani (2023).
+#'
+#' @param trnas Character vector of tRNA identifiers
+#'   (e.g., `c("tRNA-Ala-AGC", "tRNA-Phe-GAA")`).
+#' @param organism Character string specifying the organism name.
+#' @param sprinzl_coords A tibble of Sprinzl coordinates as returned
+#'   by [read_sprinzl_coords()].
+#' @param output Path for the output SVG file. If `NULL` (default),
+#'   writes to a temporary file.
+#' @param outline_palette Named character vector of colors keyed by
+#'   strength. Default uses red for strong and blue for weak.
+#' @param gap Horizontal gap in SVG units between panels. Default 20.
+#' @param ... Additional arguments passed to
+#'   [plot_identity_structure()].
+#'
+#' @return The path to the combined SVG file (invisibly).
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' coords <- read_sprinzl_coords(
+#'   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
+#' )
+#' plot_identity_panel(
+#'   c("tRNA-Ala-AGC", "tRNA-Asp-GTC",
+#'     "tRNA-Phe-GAA", "tRNA-His-GTG"),
+#'   "Saccharomyces cerevisiae",
+#'   coords
+#' )
+#' }
+plot_identity_panel <- function(
+  trnas,
+  organism,
+  sprinzl_coords,
+  output = NULL,
+  outline_palette = NULL,
+  gap = 20,
+  ...
+) {
+  if (is.null(outline_palette)) {
+    outline_palette <- c(
+      strong = "#E41A1C",
+      weak = "#377EB8"
+    )
+  }
+
+  # Generate individual SVGs
+  svg_paths <- vapply(
+    trnas,
+    function(trna) {
+      plot_identity_structure(
+        trna,
+        organism,
+        sprinzl_coords,
+        outline_palette = outline_palette,
+        position_markers = FALSE,
+        ...
+      )
+    },
+    character(1)
+  )
+
+  # Read all SVGs and extract dimensions
+  svg_docs <- lapply(svg_paths, xml2::read_xml)
+  widths <- vapply(
+    svg_docs,
+    function(doc) {
+      vb <- strsplit(
+        xml2::xml_attr(xml2::xml_root(doc), "viewBox"),
+        "\\s+"
+      )[[1]]
+      as.numeric(vb[3])
+    },
+    numeric(1)
+  )
+  heights <- vapply(
+    svg_docs,
+    function(doc) {
+      vb <- strsplit(
+        xml2::xml_attr(xml2::xml_root(doc), "viewBox"),
+        "\\s+"
+      )[[1]]
+      as.numeric(vb[4])
+    },
+    numeric(1)
+  )
+
+  # Label height
+  label_h <- 16
+
+  total_width <- sum(widths) + gap * (length(trnas) - 1)
+  total_height <- max(heights) + label_h
+
+  # Build combined SVG
+  combined <- xml2::read_xml(paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" ',
+    'viewBox="0 0 ',
+    total_width,
+    ' ',
+    total_height,
+    '" ',
+    'width="',
+    total_width,
+    '" height="',
+    total_height,
+    '"',
+    '></svg>'
+  ))
+  root <- xml2::xml_root(combined)
+
+  x_offset <- 0
+  for (i in seq_along(svg_docs)) {
+    panel_g <- xml2::xml_add_child(
+      root,
+      "g",
+      transform = paste0("translate(", x_offset, ",", label_h, ")")
+    )
+
+    # Copy all children from the individual SVG
+    children <- xml2::xml_children(xml2::xml_root(svg_docs[[i]]))
+    for (child in children) {
+      xml2::xml_add_child(panel_g, child)
+    }
+
+    # Add amino acid label above each panel
+    aa <- strsplit(trnas[i], "-")[[1]][2]
+    label_x <- x_offset + widths[i] / 2
+    label_node <- xml2::xml_add_child(
+      root,
+      "text",
+      x = as.character(label_x),
+      y = as.character(label_h - 3),
+      "text-anchor" = "middle",
+      "font-family" = "Helvetica, Arial, sans-serif",
+      "font-size" = "11",
+      "font-weight" = "bold",
+      fill = "#333333"
+    )
+    xml2::xml_set_text(label_node, aa)
+
+    x_offset <- x_offset + widths[i] + gap
+  }
+
+  # Add shared legend
+  legend_g <- xml2::xml_add_child(root, "g")
+  legend_y <- total_height - 3
+
+  items <- list()
+  for (nm in names(outline_palette)) {
+    items[[length(items) + 1]] <- list(
+      label = nm,
+      color = outline_palette[[nm]]
+    )
+  }
+
+  legend_x <- total_width / 2 - (length(items) * 60) / 2
+  for (item in items) {
+    xml2::xml_add_child(
+      legend_g,
+      "circle",
+      cx = as.character(legend_x),
+      cy = as.character(legend_y - 3),
+      r = "4",
+      fill = "none",
+      stroke = item$color,
+      "stroke-width" = "1.5"
+    )
+    txt <- xml2::xml_add_child(
+      legend_g,
+      "text",
+      x = as.character(legend_x + 8),
+      y = as.character(legend_y),
+      "font-family" = "Helvetica, Arial, sans-serif",
+      "font-size" = "9",
+      fill = "#555555"
+    )
+    xml2::xml_set_text(txt, item$label)
+    legend_x <- legend_x + 60
+  }
+
+  if (is.null(output)) {
+    output <- tempfile(fileext = ".svg")
+  }
+  xml2::write_xml(combined, output)
+  invisible(output)
+}
+
 # Internal helpers -------------------------------------------------------------
+
+find_sprinzl_id <- function(trna, sprinzl_coords) {
+  parts <- strsplit(trna, "-")[[1]]
+  if (length(parts) >= 3) {
+    parts[3] <- gsub("T", "U", parts[3])
+  }
+  rna_name <- paste(parts, collapse = "-")
+  pattern <- paste0("^nuc-", rna_name, "-")
+
+  ids <- unique(sprinzl_coords$trna_id)
+  matches <- grep(pattern, ids, value = TRUE)
+  if (length(matches) == 0) {
+    return(NULL)
+  }
+  sort(matches)[1]
+}
 
 load_cached_determinants <- function() {
   path <- system.file(
