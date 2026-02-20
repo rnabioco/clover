@@ -62,6 +62,8 @@ reference:
     - identity_elements
     - identity_organisms
     - map_identity_to_trna
+    - plot_identity_panel
+    - plot_identity_structure
 
   - title: Statistics
     contents:

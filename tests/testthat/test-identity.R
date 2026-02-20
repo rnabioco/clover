@@ -126,6 +126,61 @@ test_that("map_identity_to_trna converts Sprinzl to seq positions", {
   expect_false(-1L %in% mapped_sprinzl)
 })
 
+test_that("find_sprinzl_id matches structure name to Sprinzl ID", {
+  mock_coords <- dplyr::tibble(
+    trna_id = c(
+      "nuc-tRNA-Ala-AGC-1-1",
+      "nuc-tRNA-His-GUG-1-1",
+      "nuc-tRNA-Phe-GAA-1-1"
+    ),
+    pos = 1L,
+    sprinzl_label = "1",
+    global_index = 1L,
+    region = "acceptor_stem",
+    residue = "G"
+  )
+
+  expect_equal(
+    find_sprinzl_id("tRNA-Ala-AGC", mock_coords),
+    "nuc-tRNA-Ala-AGC-1-1"
+  )
+  # T->U conversion
+  expect_equal(
+    find_sprinzl_id("tRNA-His-GTG", mock_coords),
+    "nuc-tRNA-His-GUG-1-1"
+  )
+  expect_null(find_sprinzl_id("tRNA-Xxx-ZZZ", mock_coords))
+})
+
+test_that("plot_identity_structure produces SVG file", {
+  coords <- read_sprinzl_coords(
+    clover_example("sprinzl/sacCer_global_coords.tsv.gz")
+  )
+  svg <- plot_identity_structure(
+    "tRNA-Ala-AGC",
+    "Saccharomyces cerevisiae",
+    coords
+  )
+  expect_true(file.exists(svg))
+  expect_match(svg, "\\.svg$")
+})
+
+test_that("plot_identity_panel produces combined SVG", {
+  coords <- read_sprinzl_coords(
+    clover_example("sprinzl/sacCer_global_coords.tsv.gz")
+  )
+  svg <- plot_identity_panel(
+    c("tRNA-Ala-AGC", "tRNA-Asp-GTC"),
+    "Saccharomyces cerevisiae",
+    coords
+  )
+  expect_true(file.exists(svg))
+  content <- readLines(svg)
+  # Should contain amino acid labels
+  expect_true(any(grepl("Ala", content)))
+  expect_true(any(grepl("Asp", content)))
+})
+
 test_that("map_identity_to_trna errors for missing tRNA", {
   elements <- identity_elements("Escherichia coli", amino_acid = "Ala")
   mock_coords <- dplyr::tibble(

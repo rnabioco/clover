@@ -4,6 +4,10 @@
 
 * `map_identity_to_trna()` converts Sprinzl-numbered identity elements to 1-based sequence positions for a specific tRNA, enabling overlay on `plot_tRNA_structure()` via the `outlines` parameter.
 
+* `plot_identity_panel()` arranges multiple tRNA cloverleaf structures side by side in a single SVG, each annotated with aminoacylation identity elements colored by strength (red = strong, blue = weak).
+
+* `plot_identity_structure()` generates a single tRNA cloverleaf structure SVG with identity element outlines, automatically mapping Sprinzl positions to sequence coordinates.
+
 * `filter_linkages()` filters odds ratio data by p-value, observation count, and log odds ratio magnitude, returning a tibble ready for the `linkages` parameter of `plot_tRNA_structure()`.
 
 * `plot_tRNA_structure()` now accepts odds ratio tibbles directly as `linkages` input: if a `log_odds_ratio` column is present and `value` is not, it is automatically used as the arc value.
