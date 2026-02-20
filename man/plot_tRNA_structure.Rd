@@ -8,9 +8,12 @@ plot_tRNA_structure(
   trna,
   organism,
   modifications = NULL,
+  outlines = NULL,
   linkages = NULL,
   output = NULL,
   mod_palette = NULL,
+  outline_palette = NULL,
+  text_colors = NULL,
   linkage_palette = c("#0072B2", "#D55E00")
 )
 }
@@ -27,6 +30,10 @@ position in the tRNA sequence) and \code{mod1} (short modification
 name, e.g., \code{"m1A"}). Output of \code{\link[=modomics_mods]{modomics_mods()}} works
 directly after filtering to the tRNA of interest.}
 
+\item{outlines}{A tibble with columns \code{pos} (1-based position)
+and \code{group} (category name for palette lookup). Draws circle
+outlines (stroke only, no fill) around each nucleotide.}
+
 \item{linkages}{A tibble with columns \code{pos1}, \code{pos2}, and
 optionally \code{value} (e.g., log odds ratio) for coloring arcs.
 Output of \code{\link[=clean_odds_ratios]{clean_odds_ratios()}} works directly.}
@@ -37,6 +44,14 @@ writes to a temporary file.}
 \item{mod_palette}{Named character vector of colors keyed by
 modification short name. If \code{NULL}, uses a default palette.}
 
+\item{outline_palette}{Named character vector of colors keyed by
+outline group name. If \code{NULL}, uses \code{"#333333"} for all.}
+
+\item{text_colors}{A tibble with columns \code{pos} (1-based position)
+and \code{color} (hex color string). Changes the nucleotide letter
+color at specified positions. Unspecified positions keep the
+default color.}
+
 \item{linkage_palette}{Character vector of length 2 giving the
 low and high colors for the linkage value gradient. Default
 \code{c("#0072B2", "#D55E00")} (blue to vermillion).}
@@ -46,9 +61,10 @@ The path to the annotated SVG file (invisibly).
 }
 \description{
 Reads a bundled tRNA cloverleaf SVG and overlays modification
-highlights and circuit linkage arcs. Modifications are shown as
-colored circles behind nucleotide letters; linkages are drawn as
-Bezier curve arcs between position pairs.
+highlights, outline circles, and circuit linkage arcs.
+Modifications are shown as colored filled circles behind
+nucleotide letters; outlines are shown as colored circle borders;
+linkages are drawn as Bezier curve arcs between position pairs.
 }
 \examples{
 \dontrun{
