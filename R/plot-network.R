@@ -40,7 +40,7 @@ build_or_network <- function(data, value_col = "ror", min_weight = 0) {
       edge_type = dplyr::case_when(
         .data[[value_col]] > 0 ~ "co-occurring",
         .data[[value_col]] < 0 ~ "exclusive",
-        TRUE ~ "neutral"
+        .default = "neutral"
       ),
       weight = abs(.data[[value_col]])
     ) |>

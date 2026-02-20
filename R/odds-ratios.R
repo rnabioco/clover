@@ -43,9 +43,49 @@ clean_odds_ratios <- function(data, cap_inf = 2) {
     log_or_clean = dplyr::case_when(
       is.infinite(log_odds_ratio) & log_odds_ratio > 0 ~ upper,
       is.infinite(log_odds_ratio) & log_odds_ratio < 0 ~ lower,
-      TRUE ~ log_odds_ratio
+      .default = log_odds_ratio
     )
   )
+}
+
+#' Filter odds ratios for structure linkage arcs.
+#'
+#' Convenience filter for odds ratio data that returns a tibble ready
+#' for the `linkages` parameter of [plot_tRNA_structure()]. Filters
+#' by p-value, observation count, and log odds ratio magnitude, then
+#' selects the columns needed for plotting.
+#'
+#' @param data A tibble of odds ratio data, typically from
+#'   [clean_odds_ratios()], with columns `pos1`, `pos2`,
+#'   `log_odds_ratio`, `p_value`, and `total_obs`.
+#' @param max_p Maximum p-value to retain. Default `0.01`.
+#' @param min_obs Minimum total observations to retain. Default `100`.
+#' @param min_lor Minimum absolute log odds ratio to retain. Default
+#'   `1.0`.
+#'
+#' @return A tibble with columns `pos1`, `pos2`, and `value` (the log
+#'   odds ratio), ready for [plot_tRNA_structure()].
+#'
+#' @export
+#'
+#' @examples
+#' df <- tibble::tibble(
+#'   pos1 = c(20, 34, 10),
+#'   pos2 = c(34, 58, 45),
+#'   odds_ratio = c(4.0, 0.3, 1.1),
+#'   log_odds_ratio = c(1.4, -1.2, 0.1),
+#'   p_value = c(0.001, 0.005, 0.5),
+#'   total_obs = c(200, 150, 50)
+#' )
+#' filter_linkages(df)
+filter_linkages <- function(data, max_p = 0.01, min_obs = 100, min_lor = 1.0) {
+  data |>
+    dplyr::filter(
+      p_value < max_p,
+      total_obs >= min_obs,
+      abs(log_odds_ratio) >= min_lor
+    ) |>
+    dplyr::transmute(pos1, pos2, value = log_odds_ratio)
 }
 
 #' Aggregate odds ratios to isodecoder level.
@@ -167,7 +207,7 @@ compute_ror_isodecoder <- function(
       ror = dplyr::case_when(
         ror > ror_cap ~ ror_cap,
         ror < -ror_cap ~ -ror_cap,
-        TRUE ~ ror
+        .default = ror
       ),
       ror_se = sqrt(se_num^2 + se_den^2),
       z_score = ror / ror_se,

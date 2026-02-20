@@ -37,7 +37,9 @@ outlines (stroke only, no fill) around each nucleotide.}
 
 \item{linkages}{A tibble with columns \code{pos1}, \code{pos2}, and
 optionally \code{value} (e.g., log odds ratio) for coloring arcs.
-Output of \code{\link[=clean_odds_ratios]{clean_odds_ratios()}} works directly.}
+If a \code{log_odds_ratio} column is present and \code{value} is not, it
+is automatically used as \code{value}, so output of
+\code{\link[=clean_odds_ratios]{clean_odds_ratios()}} or \code{\link[=filter_linkages]{filter_linkages()}} works directly.}
 
 \item{output}{Path for the output SVG file. If \code{NULL} (default),
 writes to a temporary file.}

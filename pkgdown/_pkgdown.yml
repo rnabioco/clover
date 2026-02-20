@@ -24,6 +24,7 @@ reference:
     - charging_count_matrix
     - clean_odds_ratios
     - compute_charging_diffs
+    - filter_linkages
     - compute_odds_ratios
     - compute_ror
     - compute_ror_isodecoder

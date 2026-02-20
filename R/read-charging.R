@@ -94,13 +94,8 @@ read_multi <- function(paths, reader) {
     cli_abort("{.arg paths} must be a named character vector.")
   }
 
-  tbls <- purrr::map(names(paths), function(sid) {
-    tbl <- reader(paths[[sid]])
-    tbl$sample_id <- sid
-    tbl
-  })
-
-  dplyr::bind_rows(tbls)
+  purrr::map(paths, reader) |>
+    dplyr::bind_rows(.id = "sample_id")
 }
 
 # Charging ratio comparison ------------------------------------------------------

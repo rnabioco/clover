@@ -64,7 +64,7 @@ order_sprinzl_positions <- function(labels) {
         stringr::str_detect(suffix, "^[A-Z]$") ~ match(suffix, LETTERS),
         stringr::str_detect(suffix, "^:e") ~
           100 + as.numeric(stringr::str_extract(suffix, "\\d+$")),
-        TRUE ~ 0
+        .default = 0
       ),
       sort_key = base_num + suffix_order / 1000
     ) |>

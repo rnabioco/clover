@@ -482,28 +482,15 @@ magnitude.
 
 ```{r}
 #| label: structure-linkages
-# Filter OR data for one tRNA and one sample
-or_glu <- or_data |>
+# Filter OR data for one tRNA and one sample, clean, and filter for
+# significance. filter_linkages() returns a tibble ready for plotting.
+linkages_glu <- or_data |>
   filter(
     ref == "host-tRNA-Glu-TTC-1-1",
     sample_id == "wt-15-ctl-01"
-  )
-
-# Clean and apply significance filters
-or_clean <- clean_odds_ratios(or_glu)
-or_sig <- or_clean |>
-  filter(
-    p_value < 0.01,
-    total_obs >= 100,
-    abs(log_odds_ratio) >= 1.0
-  )
-
-# Build linkages tibble for plot_tRNA_structure
-linkages_glu <- tibble::tibble(
-  pos1 = or_sig$pos1,
-  pos2 = or_sig$pos2,
-  value = or_sig$log_odds_ratio
-)
+  ) |>
+  clean_odds_ratios() |>
+  filter_linkages()
 
 svg_path <- plot_tRNA_structure(
   "tRNA-Glu-TTC",
