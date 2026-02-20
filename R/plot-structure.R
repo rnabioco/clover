@@ -70,7 +70,9 @@ structure_trnas <- function(organism) {
 #'   outlines (stroke only, no fill) around each nucleotide.
 #' @param linkages A tibble with columns `pos1`, `pos2`, and
 #'   optionally `value` (e.g., log odds ratio) for coloring arcs.
-#'   Output of [clean_odds_ratios()] works directly.
+#'   If a `log_odds_ratio` column is present and `value` is not, it
+#'   is automatically used as `value`, so output of
+#'   [clean_odds_ratios()] or [filter_linkages()] works directly.
 #' @param output Path for the output SVG file. If `NULL` (default),
 #'   writes to a temporary file.
 #' @param mod_palette Named character vector of colors keyed by
@@ -184,6 +186,11 @@ plot_tRNA_structure <- function(
 
   # Add linkage arcs
   if (!is.null(linkages)) {
+    if (
+      "log_odds_ratio" %in% names(linkages) && !"value" %in% names(linkages)
+    ) {
+      linkages <- dplyr::rename(linkages, value = log_odds_ratio)
+    }
     svg_doc <- add_linkage_arcs(svg_doc, nucs, linkages, linkage_palette)
   }
 
@@ -264,6 +271,14 @@ structure_to_png <- function(
 nuc_x_offset <- 2.5
 nuc_y_offset <- -2.7
 
+find_nuc <- function(nucs, pos) {
+  idx <- which(nucs$pos == pos)
+  if (length(idx) == 0) {
+    return(NULL)
+  }
+  nucs[idx[1], ]
+}
+
 structure_org_dir <- function(organism) {
   org_fname <- gsub(" ", "_", organism)
   org_dir <- system.file(
@@ -328,13 +343,10 @@ add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
     mod_pos <- modifications$pos[i]
     mod_name <- modifications$mod1[i]
 
-    # Find matching nucleotide by position
-    nuc_idx <- which(nucs$pos == mod_pos)
-    if (length(nuc_idx) == 0) {
+    nuc <- find_nuc(nucs, mod_pos)
+    if (is.null(nuc)) {
       next
     }
-
-    nuc <- nucs[nuc_idx[1], ]
     color <- palette[mod_name]
     if (is.na(color) || is.null(color)) {
       color <- "#999999"
@@ -365,12 +377,10 @@ recolor_text <- function(svg_doc, nucs, text_colors) {
     tc_pos <- text_colors$pos[i]
     tc_color <- text_colors$color[i]
 
-    nuc_idx <- which(nucs$pos == tc_pos)
-    if (length(nuc_idx) == 0) {
+    nuc <- find_nuc(nucs, tc_pos)
+    if (is.null(nuc)) {
       next
     }
-
-    nuc <- nucs[nuc_idx[1], ]
 
     # Match tspan by x coordinate (R2R sets x on both <text> and <tspan>)
     for (ts in tspans) {
@@ -409,12 +419,10 @@ add_outline_circles <- function(svg_doc, nucs, outlines, palette) {
     out_pos <- outlines$pos[i]
     out_group <- outlines$group[i]
 
-    nuc_idx <- which(nucs$pos == out_pos)
-    if (length(nuc_idx) == 0) {
+    nuc <- find_nuc(nucs, out_pos)
+    if (is.null(nuc)) {
       next
     }
-
-    nuc <- nucs[nuc_idx[1], ]
     color <- if (!is.null(palette)) palette[out_group] else NA
     if (is.na(color)) {
       color <- "#333333"
@@ -460,14 +468,11 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
     p1 <- linkages$pos1[i]
     p2 <- linkages$pos2[i]
 
-    idx1 <- which(nucs$pos == p1)
-    idx2 <- which(nucs$pos == p2)
-    if (length(idx1) == 0 || length(idx2) == 0) {
+    n1 <- find_nuc(nucs, p1)
+    n2 <- find_nuc(nucs, p2)
+    if (is.null(n1) || is.null(n2)) {
       next
     }
-
-    n1 <- nucs[idx1[1], ]
-    n2 <- nucs[idx2[1], ]
 
     # Use visual centers for all geometry
     n1_cx <- n1$x + nuc_x_offset
@@ -1085,12 +1090,10 @@ add_position_markers <- function(svg_doc, nucs) {
   angles <- seq(0, 2 * pi, length.out = n_candidates + 1)[-(n_candidates + 1)]
 
   for (pos in marker_positions) {
-    nuc_idx <- which(nucs$pos == pos)
-    if (length(nuc_idx) == 0) {
+    nuc <- find_nuc(nucs, pos)
+    if (is.null(nuc)) {
       next
     }
-
-    nuc <- nucs[nuc_idx[1], ]
     nuc_cx <- nuc$x + nuc_x_offset
     nuc_cy <- nuc$y + nuc_y_offset
 

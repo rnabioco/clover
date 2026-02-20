@@ -85,6 +85,22 @@ test_that("add_linkage_arcs annotates SVG with paths", {
   expect_length(paths, 1)
 })
 
+test_that("plot_tRNA_structure auto-renames log_odds_ratio to value", {
+  skip_if(
+    length(structure_organisms()) == 0,
+    "No bundled structure data"
+  )
+  org <- structure_organisms()[1]
+  trna <- structure_trnas(org)[1]
+  linkages <- dplyr::tibble(
+    pos1 = 1L,
+    pos2 = 10L,
+    log_odds_ratio = 1.5
+  )
+  svg <- plot_tRNA_structure(trna, org, linkages = linkages)
+  expect_true(file.exists(svg))
+})
+
 test_that("assign_arc_lanes assigns different lanes for overlapping arcs", {
   # Two arcs with similar angular spans should get different lanes
   arcs_info <- data.frame(

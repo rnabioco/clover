@@ -1,5 +1,9 @@
 # clover 0.0.0.9000
 
+* `filter_linkages()` filters odds ratio data by p-value, observation count, and log odds ratio magnitude, returning a tibble ready for the `linkages` parameter of `plot_tRNA_structure()`.
+
+* `plot_tRNA_structure()` now accepts odds ratio tibbles directly as `linkages` input: if a `log_odds_ratio` column is present and `value` is not, it is automatically used as the arc value.
+
 * `plot_tRNA_structure()` now draws a 3' amino acid label (e.g., "Glu") connected by a line to the terminal nucleotide, and position markers every 10 nucleotides around the cloverleaf. Position markers can be disabled with `position_markers = FALSE`.
 
 * `plot_tRNA_structure()` now centers modification circles, outline circles, and linkage arcs on the visual center of nucleotide characters instead of the text baseline position.

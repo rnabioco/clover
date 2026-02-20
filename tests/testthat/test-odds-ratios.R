@@ -49,6 +49,35 @@ test_that("clean_odds_ratios preserves finite values", {
   expect_equal(result$log_or_clean, 0.92)
 })
 
+test_that("filter_linkages applies all filters", {
+  df <- tibble::tibble(
+    pos1 = c(20, 34, 10),
+    pos2 = c(34, 58, 45),
+    odds_ratio = c(4.0, 0.3, 1.1),
+    log_odds_ratio = c(1.4, -1.2, 0.1),
+    p_value = c(0.001, 0.005, 0.5),
+    total_obs = c(200, 150, 50)
+  )
+  result <- filter_linkages(df)
+  expect_equal(nrow(result), 2)
+  expect_named(result, c("pos1", "pos2", "value"))
+  expect_equal(result$value, c(1.4, -1.2))
+})
+
+test_that("filter_linkages respects custom thresholds", {
+  df <- tibble::tibble(
+    pos1 = c(20, 34),
+    pos2 = c(34, 58),
+    odds_ratio = c(4.0, 0.3),
+    log_odds_ratio = c(1.4, -1.2),
+    p_value = c(0.001, 0.005),
+    total_obs = c(200, 150)
+  )
+  result <- filter_linkages(df, max_p = 0.002, min_obs = 100, min_lor = 1.0)
+  expect_equal(nrow(result), 1)
+  expect_equal(result$pos1, 20)
+})
+
 test_that("aggregate_or_isodecoder collapses gene copies", {
   df <- tibble::tibble(
     ref = c("tRNA-Ala-AGC-1-1", "tRNA-Ala-AGC-2-1"),
