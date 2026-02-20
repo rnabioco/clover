@@ -44,6 +44,7 @@ reference:
 
   - title: Structure
     contents:
+    - default_mod_palette
     - plot_tRNA_structure
     - structure_organisms
     - structure_trnas

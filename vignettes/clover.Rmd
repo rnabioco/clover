@@ -392,9 +392,9 @@ nucleotide letters.
 
 ```{r}
 #| label: fig-structure-bare
-#| fig.cap: "Bare tRNA cloverleaf structure for E. coli tRNA-Glu-TTC."
+#| results: asis
 svg_path <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
-knitr::include_graphics(svg_path)
+cat(readLines(svg_path), sep = "\n")
 ```
 
 ### Annotated structure with modifications, outlines, and text colors
@@ -404,7 +404,7 @@ base with an outline, and change the text color of specific positions.
 
 ```{r}
 #| label: fig-structure-annotated
-#| fig.cap: "Annotated tRNA-Glu-TTC showing anticodon (filled green), discriminator base (red outline and text), and MODOMICS modifications."
+#| results: asis
 # Known modifications for this tRNA
 mods_glu_struct <- mods |>
   filter(ref == "host-tRNA-Glu-TTC-1-1")
@@ -433,7 +433,7 @@ svg_path <- plot_tRNA_structure(
   outline_palette = c(discriminator = "#E41A1C"),
   text_colors = disc_text
 )
-knitr::include_graphics(svg_path)
+cat(readLines(svg_path), sep = "\n")
 ```
 
 ### Long variable arm tRNAs
@@ -443,9 +443,9 @@ which is properly rendered from the tRNAscan-SE covariance model alignment.
 
 ```{r}
 #| label: fig-structure-leu
-#| fig.cap: "tRNA-Leu-CAA showing 4-stem cloverleaf with variable arm."
+#| results: asis
 svg_path <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
-knitr::include_graphics(svg_path)
+cat(readLines(svg_path), sep = "\n")
 ```
 
 ## Next steps
