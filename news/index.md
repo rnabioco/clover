@@ -3,6 +3,11 @@
 ## clover 0.0.0.9000
 
 - [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  now centers modification circles, outline circles, and linkage arcs on
+  the visual center of nucleotide characters instead of the text
+  baseline position.
+
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
   overlays modification highlights and circuit linkage arcs on tRNA
   cloverleaf secondary structure SVGs. Use
   [`structure_organisms()`](https://rnabioco.github.io/clover/reference/structure_organisms.md)
@@ -10,6 +15,10 @@
   [`structure_trnas()`](https://rnabioco.github.io/clover/reference/structure_trnas.md)
   to list bundled structures. Base SVGs are generated offline from
   gtRNAdb data via R2R.
+
+- [`structure_to_png()`](https://rnabioco.github.io/clover/reference/structure_to_png.md)
+  converts a tRNA structure SVG to PNG format. Requires the rsvg
+  package.
 
 - [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
   linkage arcs now route outward from the structure centroid instead of

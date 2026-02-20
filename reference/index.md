@@ -103,6 +103,8 @@
   : Plot tRNA secondary structure with modifications and linkages
 - [`structure_organisms()`](https://rnabioco.github.io/clover/reference/structure_organisms.md)
   : List organisms with bundled tRNA structure SVGs
+- [`structure_to_png()`](https://rnabioco.github.io/clover/reference/structure_to_png.md)
+  : Convert a tRNA structure SVG to PNG
 - [`structure_trnas()`](https://rnabioco.github.io/clover/reference/structure_trnas.md)
   : List available tRNA structures for an organism
 
