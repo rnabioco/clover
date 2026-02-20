@@ -286,92 +286,6 @@ since the basecaller misidentifies modified nucleotides.
 plot_bcerror_profile(bcerror_summary, refs = plot_trnas, mods = mods)
 ```
 
-## Modification co-occurrence (odds ratios)
-
-Odds ratios measure whether modifications at pairs of positions tend to
-co-occur on the same read. Positive log odds ratios indicate co-occurrence;
-negative indicate mutual exclusivity.
-
-```{r}
-#| label: odds-ratios-data
-or_data <- S4Vectors::metadata(se)$odds_ratios
-glimpse(or_data)
-```
-
-### Chord diagram: single sample
-
-The Sprinzl coordinate files use RNA anticodon notation (e.g., `UUC`) while
-the pipeline uses DNA notation (e.g., `TTC`). The pipeline also adds a
-`host-` prefix. We need to account for these naming differences when matching.
-
-```{r}
-#| label: fig-chord-single
-#| fig.cap: "Modification co-occurrence network for a single tRNA in one sample."
-#| fig.height: 6
-#| fig.width: 6
-#| error: false
-#| warning: false
-# Pick one tRNA and one sample
-or_single <- or_data |>
-  filter(
-    ref == "host-tRNA-Glu-TTC-1-1",
-    sample_id == "wt-15-ctl-01"
-  )
-
-# Get sprinzl coords: note UUC (RNA) vs TTC (DNA) in anticodon
-sprinzl_glu <- sprinzl |>
-  filter(trna_id == "tRNA-Glu-UUC-1-1")
-
-# Filter modifications for this tRNA
-mods_glu <- mods |>
-  filter(ref == "host-tRNA-Glu-TTC-1-1")
-
-plot_chord_or(
-  or_single,
-  or_cutoff = 1.0,
-  p_cutoff = 0.01,
-  min_obs = 100,
-  sprinzl_coords = sprinzl_glu,
-  mods = mods_glu,
-  title = "host-tRNA-Glu-TTC-1-1 (ctl-01)"
-)
-```
-
-### Chord diagram: modification rewiring between conditions
-
-We can compare modification networks between conditions using the ratio of
-odds ratios (ROR). Positive log ROR indicates gained modification dependencies
-in the infected condition; negative indicates lost dependencies.
-
-```{r}
-#| label: fig-chord-ror
-#| fig.cap: "Modification rewiring between control and infected conditions."
-#| fig.height: 6
-#| fig.width: 6
-#| error: false
-#| warning: false
-# Add condition labels
-or_with_cond <- or_data |>
-  mutate(condition = ifelse(grepl("ctl", sample_id), "ctl", "inf")) |>
-  filter(ref == "host-tRNA-Glu-TTC-1-1")
-
-# Compute ratio of odds ratios
-ror <- compute_ror(
-  or_with_cond,
-  numerator = "inf",
-  denominator = "ctl",
-  min_obs = 100
-)
-
-plot_chord_ror(
-  ror,
-  ror_cutoff = 0.5,
-  sprinzl_coords = sprinzl_glu,
-  mods = mods_glu,
-  title = "Modification rewiring: inf vs ctl (Glu-TTC-1-1)"
-)
-```
-
 ## tRNA secondary structure visualization
 
 clover includes pre-computed tRNA cloverleaf SVGs for several model organisms.
@@ -482,6 +396,8 @@ magnitude.
 
 ```{r}
 #| label: structure-linkages
+or_data <- S4Vectors::metadata(se)$odds_ratios
+
 # Filter OR data for one tRNA and one sample, clean, and filter for
 # significance. filter_linkages() returns a tibble ready for plotting.
 linkages_glu <- or_data |>
