@@ -303,7 +303,7 @@ add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
       "circle",
       cx = as.character(nuc$x + nuc_x_offset),
       cy = as.character(nuc$y + nuc_y_offset),
-      r = "6",
+      r = "4.8",
       fill = color,
       "fill-opacity" = "0.6",
       stroke = "none"
@@ -383,7 +383,7 @@ add_outline_circles <- function(svg_doc, nucs, outlines, palette) {
       "circle",
       cx = as.character(nuc$x + nuc_x_offset),
       cy = as.character(nuc$y + nuc_y_offset),
-      r = "6",
+      r = "4.8",
       fill = "none",
       stroke = color,
       "stroke-width" = "1.2"
