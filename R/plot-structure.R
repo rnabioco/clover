@@ -51,9 +51,10 @@ structure_trnas <- function(organism) {
 #' Plot tRNA secondary structure with modifications and linkages
 #'
 #' Reads a bundled tRNA cloverleaf SVG and overlays modification
-#' highlights and circuit linkage arcs. Modifications are shown as
-#' colored circles behind nucleotide letters; linkages are drawn as
-#' Bezier curve arcs between position pairs.
+#' highlights, outline circles, and circuit linkage arcs.
+#' Modifications are shown as colored filled circles behind
+#' nucleotide letters; outlines are shown as colored circle borders;
+#' linkages are drawn as Bezier curve arcs between position pairs.
 #'
 #' @param trna Character string identifying the tRNA
 #'   (e.g., `"tRNA-Ala-GGC"`). Use [structure_trnas()] to list
@@ -64,6 +65,9 @@ structure_trnas <- function(organism) {
 #'   position in the tRNA sequence) and `mod1` (short modification
 #'   name, e.g., `"m1A"`). Output of [modomics_mods()] works
 #'   directly after filtering to the tRNA of interest.
+#' @param outlines A tibble with columns `pos` (1-based position)
+#'   and `group` (category name for palette lookup). Draws circle
+#'   outlines (stroke only, no fill) around each nucleotide.
 #' @param linkages A tibble with columns `pos1`, `pos2`, and
 #'   optionally `value` (e.g., log odds ratio) for coloring arcs.
 #'   Output of [clean_odds_ratios()] works directly.
@@ -71,6 +75,12 @@ structure_trnas <- function(organism) {
 #'   writes to a temporary file.
 #' @param mod_palette Named character vector of colors keyed by
 #'   modification short name. If `NULL`, uses a default palette.
+#' @param outline_palette Named character vector of colors keyed by
+#'   outline group name. If `NULL`, uses `"#333333"` for all.
+#' @param text_colors A tibble with columns `pos` (1-based position)
+#'   and `color` (hex color string). Changes the nucleotide letter
+#'   color at specified positions. Unspecified positions keep the
+#'   default color.
 #' @param linkage_palette Character vector of length 2 giving the
 #'   low and high colors for the linkage value gradient. Default
 #'   `c("#0072B2", "#D55E00")` (blue to vermillion).
@@ -96,9 +106,12 @@ plot_tRNA_structure <- function(
   trna,
   organism,
   modifications = NULL,
+  outlines = NULL,
   linkages = NULL,
   output = NULL,
   mod_palette = NULL,
+  outline_palette = NULL,
+  text_colors = NULL,
   linkage_palette = c("#0072B2", "#D55E00")
 ) {
   rlang::check_installed("jsonlite", reason = "to read structure metadata.")
@@ -129,12 +142,24 @@ plot_tRNA_structure <- function(
     output <- tempfile(fileext = ".svg")
   }
 
-  # Add modification highlights
+  # Add modification highlights (filled circles behind text)
   if (!is.null(modifications)) {
     if (is.null(mod_palette)) {
       mod_palette <- default_mod_palette()
     }
     svg_doc <- add_mod_circles(svg_doc, nucs, modifications, mod_palette)
+  }
+
+  # Add outline circles (stroke-only circles on top of fills, behind text)
+  if (!is.null(outlines)) {
+    svg_doc <- add_outline_circles(
+      svg_doc, nucs, outlines, outline_palette
+    )
+  }
+
+  # Recolor nucleotide text at specified positions
+  if (!is.null(text_colors)) {
+    svg_doc <- recolor_text(svg_doc, nucs, text_colors)
   }
 
   # Add linkage arcs
@@ -143,12 +168,14 @@ plot_tRNA_structure <- function(
   }
 
   # Add legend
-  if (!is.null(modifications) || !is.null(linkages)) {
+  if (!is.null(modifications) || !is.null(outlines) || !is.null(linkages)) {
     svg_doc <- add_structure_legend(
       svg_doc,
       metadata,
       modifications,
       mod_palette,
+      outlines,
+      outline_palette,
       linkages,
       linkage_palette
     )
@@ -221,6 +248,80 @@ add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
       fill = color,
       "fill-opacity" = "0.6",
       stroke = "none"
+    )
+  }
+
+  svg_doc
+}
+
+recolor_text <- function(svg_doc, nucs, text_colors) {
+  root <- xml2::xml_root(svg_doc)
+
+  # Find all tspan elements (nucleotide letters)
+  tspans <- xml2::xml_find_all(root, ".//d1:tspan", xml2::xml_ns(svg_doc))
+
+  for (i in seq_len(nrow(text_colors))) {
+    tc_pos <- text_colors$pos[i]
+    tc_color <- text_colors$color[i]
+
+    nuc_idx <- which(nucs$pos == tc_pos)
+    if (length(nuc_idx) == 0) next
+
+    nuc <- nucs[nuc_idx[1], ]
+
+    # Match tspan by x coordinate (R2R sets x on both <text> and <tspan>)
+    for (ts in tspans) {
+      tx <- as.numeric(xml2::xml_attr(ts, "x"))
+      ty <- as.numeric(xml2::xml_attr(ts, "y"))
+      if (!is.na(tx) && !is.na(ty) &&
+        abs(tx - nuc$x) < 0.01 && abs(ty - nuc$y) < 0.01) {
+        xml2::xml_set_attr(ts, "fill", tc_color)
+        break
+      }
+    }
+  }
+
+  svg_doc
+}
+
+add_outline_circles <- function(svg_doc, nucs, outlines, palette) {
+  root <- xml2::xml_root(svg_doc)
+
+  # Insert after modifications group (index 1) if it exists, else at 0
+  mod_group <- xml2::xml_find_first(root, ".//g[@id='clover-modifications']")
+  where <- if (is.na(mod_group)) 0L else 1L
+
+  outline_group <- xml2::xml_add_child(
+    root,
+    "g",
+    id = "clover-outlines",
+    .where = where
+  )
+
+  for (i in seq_len(nrow(outlines))) {
+    out_pos <- outlines$pos[i]
+    out_group <- outlines$group[i]
+
+    nuc_idx <- which(nucs$pos == out_pos)
+    if (length(nuc_idx) == 0) {
+      next
+    }
+
+    nuc <- nucs[nuc_idx[1], ]
+    color <- if (!is.null(palette)) palette[out_group] else NA
+    if (is.na(color)) {
+      color <- "#333333"
+    }
+
+    xml2::xml_add_child(
+      outline_group,
+      "circle",
+      cx = as.character(nuc$x),
+      cy = as.character(nuc$y),
+      r = "6",
+      fill = "none",
+      stroke = color,
+      "stroke-width" = "1.2"
     )
   }
 
@@ -314,6 +415,8 @@ add_structure_legend <- function(
   metadata,
   modifications,
   mod_palette,
+  outlines,
+  outline_palette,
   linkages,
   linkage_palette
 ) {
@@ -367,6 +470,48 @@ add_structure_legend <- function(
           y = as.character(y_offset),
           "font-size" = "9",
           mod
+        )
+        y_offset <- y_offset + 14
+      }
+    }
+  }
+
+  # Outline legend
+  if (!is.null(outlines) && !is.null(outline_palette)) {
+    out_types <- unique(outlines$group)
+    out_types <- out_types[out_types %in% names(outline_palette)]
+
+    if (length(out_types) > 0) {
+      y_offset <- y_offset + 5
+      xml2::xml_add_child(
+        legend_group,
+        "text",
+        x = "0",
+        y = as.character(y_offset),
+        "font-size" = "10",
+        "font-weight" = "bold",
+        "Outlines"
+      )
+      y_offset <- y_offset + 15
+
+      for (out in out_types) {
+        xml2::xml_add_child(
+          legend_group,
+          "circle",
+          cx = "6",
+          cy = as.character(y_offset - 3),
+          r = "5",
+          fill = "none",
+          stroke = outline_palette[out],
+          "stroke-width" = "1.2"
+        )
+        xml2::xml_add_child(
+          legend_group,
+          "text",
+          x = "16",
+          y = as.character(y_offset),
+          "font-size" = "9",
+          out
         )
         y_offset <- y_offset + 14
       }

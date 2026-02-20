@@ -405,10 +405,12 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
 
 
 def postprocess_svg(svg_content: str, trna_name: str) -> str:
-    """Post-process R2R SVG output to fix label and font.
+    """Post-process R2R SVG output to fix label, font, and remove clutter.
 
     - Replace default "trna.cons" label with the actual tRNA name
     - Replace Bitstream Vera Sans font with standard sans-serif stack
+    - Remove pink base-pair conservation boxes (not useful for single seqs)
+    - Remove empty backbone placeholder paths
     """
     svg_content = svg_content.replace(
         ">trna.cons<", f">{trna_name}<"
@@ -417,6 +419,21 @@ def postprocess_svg(svg_content: str, trna_name: str) -> str:
         'font-family="Bitstream Vera Sans"',
         'font-family="Helvetica, Arial, sans-serif"',
     )
+
+    # Remove pink base-pair boxes (fill="#ffd8d8")
+    svg_content = re.sub(
+        r'<path\s*\n\s*fill="#ffd8d8"[^/]*/>\n',
+        "",
+        svg_content,
+    )
+
+    # Remove empty backbone placeholder paths (stroke="#5c5c5c" with d="")
+    svg_content = re.sub(
+        r'<path\s*\n\s*fill="none"\s+stroke="#5c5c5c"[^/]*\n\s*d=""\s*/>\n',
+        "",
+        svg_content,
+    )
+
     return svg_content
 
 

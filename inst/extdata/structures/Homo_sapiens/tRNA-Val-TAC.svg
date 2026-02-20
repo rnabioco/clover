@@ -11,62 +11,32 @@
   <tspan x="0" y="8.616" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="12" id="tspan1001">tRNA-Val-TAC</tspan>
 </text>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 71.508 31.236 L 71.508,31.236L 89.583,31.236L 89.583,36.621L 71.508,36.621Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 78.6015 33.9285 L 82.4895 33.9285 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 71.508 38.796 L 71.508,38.796L 89.583,38.796L 89.583,44.181L 71.508,44.181Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 78.6015 41.4885 L 82.4895 41.4885 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 71.508 46.356 L 71.508,46.356L 89.583,46.356L 89.583,51.741L 71.508,51.741Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 78.6015 49.0485 L 82.4895 49.0485 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 71.508 53.916 L 71.508,53.916L 89.583,53.916L 89.583,59.301L 71.508,59.301Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 78.6015 56.6085 L 82.4895 56.6085 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 71.508 61.476 L 71.508,61.476L 89.583,61.476L 89.583,66.861L 71.508,66.861Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 78.6015 64.1685 L 82.4895 64.1685 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 71.508 69.036 L 71.508,69.036L 89.583,69.036L 89.583,74.421L 71.508,74.421Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 78.6015 71.7285 L 82.4895 71.7285 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 71.508 76.596 L 71.508,76.596L 89.583,76.596L 89.583,81.981L 71.508,81.981Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 78.6015 79.2885 L 82.4895 79.2885 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 59.956 88.8966 L 59.956,88.8966L 59.956,106.522L 54.121,106.522L 54.121,88.8966Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 57.0385 95.7651 L 57.0385 99.6531 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 52.396 88.8966 L 52.396,88.8966L 52.396,106.522L 46.561,106.522L 46.561,88.8966Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 49.4785 95.7651 L 49.4785 99.6531 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 44.836 88.8966 L 44.836,88.8966L 44.836,106.522L 39.001,106.522L 39.001,88.8966Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 41.9185 95.7651 L 41.9185 99.6531 "/>
@@ -74,509 +44,35 @@
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 34.3585 95.7651 L 34.3585 99.6531 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 64.6211 111.608 L 64.6211,111.608L 82.6961,111.608L 82.6961,116.993L 64.6211,116.993Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 71.7146 114.3 L 75.6026 114.3 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 64.6211 119.168 L 64.6211,119.168L 82.6961,119.168L 82.6961,124.553L 64.6211,124.553Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 71.7146 121.86 L 75.6026 121.86 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 64.6211 126.728 L 64.6211,126.728L 82.6961,126.728L 82.6961,132.113L 64.6211,132.113Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 71.7146 129.42 L 75.6026 129.42 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 64.6211 134.288 L 64.6211,134.288L 82.6961,134.288L 82.6961,139.673L 64.6211,139.673Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 71.7146 136.98 L 75.6026 136.98 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 64.6211 141.848 L 64.6211,141.848L 82.6961,141.848L 82.6961,147.233L 64.6211,147.233Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 71.7146 144.54 L 75.6026 144.54 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 89.109 99.5515 L 89.109,99.5515L 89.109,81.9265L 94.944,81.9265L 94.944,99.5515Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 92.0265 92.683 L 92.0265 88.795 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 96.669 99.5515 L 96.669,99.5515L 96.669,81.9265L 102.504,81.9265L 102.504,99.5515Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 99.5865 92.683 L 99.5865 88.795 "/>
-<path
- fill="#ffd8d8" stroke="none"
- d="M 104.229 99.5515 L 104.229,99.5515L 104.229,81.9265L 110.064,81.9265L 110.064,99.5515Z"/>
 <path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 107.146 92.683 L 107.146 88.795 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 111.789 99.5515 L 111.789,99.5515L 111.789,81.9265L 117.624,81.9265L 117.624,99.5515Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 114.706 92.683 L 114.706 88.795 "/>
 <path
- fill="#ffd8d8" stroke="none"
- d="M 119.349 99.5515 L 119.349,99.5515L 119.349,81.9265L 125.184,81.9265L 125.184,99.5515Z"/>
-<path
  fill="none" stroke="#000000" stroke-width="1.44" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 122.266 92.683 L 122.266 88.795 "/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
-<path
- fill="none" stroke="#5c5c5c" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
- d=""/>
 <text x="71.508" y="36.621" id="text1002">
   <tspan x="71.508" y="36.621" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1003">G</tspan>
 </text>

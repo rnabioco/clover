@@ -372,6 +372,82 @@ plot_chord_ror(
 )
 ```
 
+## tRNA secondary structure visualization
+
+clover includes pre-computed tRNA cloverleaf SVGs for several model organisms.
+You can overlay modification annotations, circle outlines, and text color
+changes onto these structures.
+
+```{r}
+#| label: structure-organisms
+# List available organisms and tRNAs
+structure_organisms()
+head(structure_trnas("Escherichia coli"))
+```
+
+### Base structure
+
+The simplest call renders the bare cloverleaf with base-pair lines and
+nucleotide letters.
+
+```{r}
+#| label: fig-structure-bare
+#| fig.cap: "Bare tRNA cloverleaf structure for E. coli tRNA-Glu-TTC."
+svg_path <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+knitr::include_graphics(svg_path)
+```
+
+### Annotated structure with modifications, outlines, and text colors
+
+We can highlight the anticodon with filled circles, mark the discriminator
+base with an outline, and change the text color of specific positions.
+
+```{r}
+#| label: fig-structure-annotated
+#| fig.cap: "Annotated tRNA-Glu-TTC showing anticodon (filled green), discriminator base (red outline and text), and MODOMICS modifications."
+# Known modifications for this tRNA
+mods_glu_struct <- mods |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1")
+
+# Anticodon positions (34-36) as filled circles
+anticodon <- tibble::tibble(
+  pos = 34:36,
+  mod1 = rep("anticodon", 3)
+)
+
+# Combine MODOMICS mods with anticodon highlight
+all_mods <- bind_rows(mods_glu_struct, anticodon)
+
+# Discriminator base (position 73) as an outline
+disc_outline <- tibble::tibble(pos = 73, group = "discriminator")
+
+# Change discriminator text to red
+disc_text <- tibble::tibble(pos = 73, color = "#E41A1C")
+
+svg_path <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = all_mods,
+  mod_palette = c(default_mod_palette(), anticodon = "#4DAF4A"),
+  outlines = disc_outline,
+  outline_palette = c(discriminator = "#E41A1C"),
+  text_colors = disc_text
+)
+knitr::include_graphics(svg_path)
+```
+
+### Long variable arm tRNAs
+
+Leu and Ser tRNAs have a 4-stem cloverleaf with a variable arm stem,
+which is properly rendered from the tRNAscan-SE covariance model alignment.
+
+```{r}
+#| label: fig-structure-leu
+#| fig.cap: "tRNA-Leu-CAA showing 4-stem cloverleaf with variable arm."
+svg_path <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
+knitr::include_graphics(svg_path)
+```
+
 ## Next steps
 
 For isodecoder-level modification rewiring analysis — including odds ratio
