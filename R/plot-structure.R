@@ -592,6 +592,18 @@ interpolate_color <- function(value, range, palette) {
   grDevices::rgb(mixed[1], mixed[2], mixed[3])
 }
 
+#' Default modification color palette
+#'
+#' Returns a named character vector of colors for common tRNA
+#' modifications, suitable for use with [plot_tRNA_structure()].
+#'
+#' @return A named character vector mapping modification names to
+#'   hex colors.
+#'
+#' @export
+#'
+#' @examples
+#' default_mod_palette()
 default_mod_palette <- function() {
   c(
     "m1A" = "#E41A1C",
