@@ -146,6 +146,16 @@ plot_tRNA_structure <- function(
   metadata <- jsonlite::fromJSON(json_path, simplifyVector = TRUE)
   nucs <- metadata$nucleotides
 
+  # Make SVG responsive: add viewBox from width/height, then remove fixed dims
+  root <- xml2::xml_root(svg_doc)
+  w <- xml2::xml_attr(root, "width")
+  h <- xml2::xml_attr(root, "height")
+  if (!is.na(w) && !is.na(h) && is.na(xml2::xml_attr(root, "viewBox"))) {
+    xml2::xml_set_attr(root, "viewBox", paste("0 0", w, h))
+  }
+  xml2::xml_set_attr(root, "width", NULL)
+  xml2::xml_set_attr(root, "height", NULL)
+
   if (is.null(output)) {
     output <- tempfile(fileext = ".svg")
   }
