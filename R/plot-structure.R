@@ -155,7 +155,10 @@ plot_tRNA_structure <- function(
   # Add outline circles (stroke-only circles on top of fills, behind text)
   if (!is.null(outlines)) {
     svg_doc <- add_outline_circles(
-      svg_doc, nucs, outlines, outline_palette
+      svg_doc,
+      nucs,
+      outlines,
+      outline_palette
     )
   }
 
@@ -184,13 +187,67 @@ plot_tRNA_structure <- function(
   }
 
   xml2::write_xml(svg_doc, output)
-  cli::cli_inform("Wrote annotated SVG to {.path {output}}.")
+
+  invisible(output)
+}
+
+#' Convert a tRNA structure SVG to PNG
+#'
+#' Renders an SVG file (typically produced by [plot_tRNA_structure()])
+#' to a PNG bitmap. Requires the
+#' \href{https://cran.r-project.org/package=rsvg}{rsvg} package.
+#'
+#' @param svg_path Path to an SVG file, typically the return value of
+#'   [plot_tRNA_structure()].
+#' @param output Path for the output PNG file. If `NULL` (default),
+#'   replaces the `.svg` extension with `.png`.
+#' @param width Width of the output PNG in pixels. If `NULL`
+#'   (default), uses the intrinsic SVG width.
+#' @param height Height of the output PNG in pixels. If `NULL`
+#'   (default), uses the intrinsic SVG height.
+#'
+#' @return The path to the PNG file (invisibly).
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+#' png <- structure_to_png(svg)
+#' }
+structure_to_png <- function(
+  svg_path,
+  output = NULL,
+  width = NULL,
+  height = NULL
+) {
+  rlang::check_installed("rsvg", reason = "to convert SVG to PNG.")
+
+  if (!file.exists(svg_path)) {
+    cli::cli_abort("SVG file not found: {.path {svg_path}}.")
+  }
+
+  if (is.null(output)) {
+    output <- sub("\\.svg$", ".png", svg_path, ignore.case = TRUE)
+    if (output == svg_path) {
+      output <- paste0(svg_path, ".png")
+    }
+  }
+
+  rsvg::rsvg_png(svg_path, file = output, width = width, height = height)
 
   invisible(output)
 }
 
 
 # Internal helpers -------------------------------------------------------------
+
+# R2R SVGs use font-size 7.5 Helvetica. The text x/y attributes give the
+# left baseline of the character. These offsets shift to the visual center
+# of the uppercase letter (approximately half character-width right, half
+# cap-height up).
+nuc_x_offset <- 2.5
+nuc_y_offset <- -2.7
 
 structure_org_dir <- function(organism) {
   org_fname <- gsub(" ", "_", organism)
@@ -244,8 +301,8 @@ add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
     xml2::xml_add_child(
       mod_group,
       "circle",
-      cx = as.character(nuc$x),
-      cy = as.character(nuc$y),
+      cx = as.character(nuc$x + nuc_x_offset),
+      cy = as.character(nuc$y + nuc_y_offset),
       r = "6",
       fill = color,
       "fill-opacity" = "0.6",
@@ -267,7 +324,9 @@ recolor_text <- function(svg_doc, nucs, text_colors) {
     tc_color <- text_colors$color[i]
 
     nuc_idx <- which(nucs$pos == tc_pos)
-    if (length(nuc_idx) == 0) next
+    if (length(nuc_idx) == 0) {
+      next
+    }
 
     nuc <- nucs[nuc_idx[1], ]
 
@@ -275,8 +334,12 @@ recolor_text <- function(svg_doc, nucs, text_colors) {
     for (ts in tspans) {
       tx <- as.numeric(xml2::xml_attr(ts, "x"))
       ty <- as.numeric(xml2::xml_attr(ts, "y"))
-      if (!is.na(tx) && !is.na(ty) &&
-        abs(tx - nuc$x) < 0.01 && abs(ty - nuc$y) < 0.01) {
+      if (
+        !is.na(tx) &&
+          !is.na(ty) &&
+          abs(tx - nuc$x) < 0.01 &&
+          abs(ty - nuc$y) < 0.01
+      ) {
         xml2::xml_set_attr(ts, "fill", tc_color)
         break
       }
@@ -318,8 +381,8 @@ add_outline_circles <- function(svg_doc, nucs, outlines, palette) {
     xml2::xml_add_child(
       outline_group,
       "circle",
-      cx = as.character(nuc$x),
-      cy = as.character(nuc$y),
+      cx = as.character(nuc$x + nuc_x_offset),
+      cy = as.character(nuc$y + nuc_y_offset),
       r = "6",
       fill = "none",
       stroke = color,
@@ -343,9 +406,9 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
 
   has_value <- "value" %in% names(linkages)
 
-  # Compute centroid of all nucleotide positions
-  centroid_x <- mean(nucs$x)
-  centroid_y <- mean(nucs$y)
+  # Compute centroid of all nucleotide visual centers
+  centroid_x <- mean(nucs$x + nuc_x_offset)
+  centroid_y <- mean(nucs$y + nuc_y_offset)
 
   base_offset <- 20
 
@@ -357,24 +420,41 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
 
     idx1 <- which(nucs$pos == p1)
     idx2 <- which(nucs$pos == p2)
-    if (length(idx1) == 0 || length(idx2) == 0) next
+    if (length(idx1) == 0 || length(idx2) == 0) {
+      next
+    }
 
     n1 <- nucs[idx1[1], ]
     n2 <- nucs[idx2[1], ]
-    if (sqrt((n2$x - n1$x)^2 + (n2$y - n1$y)^2) < 1) next
+
+    # Use visual centers for all geometry
+    n1_cx <- n1$x + nuc_x_offset
+    n1_cy <- n1$y + nuc_y_offset
+    n2_cx <- n2$x + nuc_x_offset
+    n2_cy <- n2$y + nuc_y_offset
+
+    if (sqrt((n2_cx - n1_cx)^2 + (n2_cy - n1_cy)^2) < 1) {
+      next
+    }
 
     # Angular span relative to centroid (for lane assignment)
-    angle1 <- atan2(n1$y - centroid_y, n1$x - centroid_x)
-    angle2 <- atan2(n2$y - centroid_y, n2$x - centroid_x)
+    angle1 <- atan2(n1_cy - centroid_y, n1_cx - centroid_x)
+    angle2 <- atan2(n2_cy - centroid_y, n2_cx - centroid_x)
 
     arcs[[length(arcs) + 1]] <- list(
       idx = i,
-      n1 = n1, n2 = n2,
-      angle1 = angle1, angle2 = angle2
+      n1_cx = n1_cx,
+      n1_cy = n1_cy,
+      n2_cx = n2_cx,
+      n2_cy = n2_cy,
+      angle1 = angle1,
+      angle2 = angle2
     )
   }
 
-  if (length(arcs) == 0) return(svg_doc)
+  if (length(arcs) == 0) {
+    return(svg_doc)
+  }
 
   # Assign lanes to avoid overlap
   arcs_info <- data.frame(
@@ -386,21 +466,21 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
 
   # Compute abs value range for stroke width mapping
   if (has_value) {
-    abs_vals <- abs(linkages$value[!is.na(linkages$value) &
-      is.finite(linkages$value)])
+    abs_vals <- abs(linkages$value[
+      !is.na(linkages$value) &
+        is.finite(linkages$value)
+    ])
     abs_range <- if (length(abs_vals) > 0) range(abs_vals) else c(0, 0)
   }
 
   for (j in seq_along(arcs)) {
     a <- arcs[[j]]
     i <- a$idx
-    n1 <- a$n1
-    n2 <- a$n2
     lane <- lanes[j]
 
-    # Midpoint of the two endpoints
-    mx <- (n1$x + n2$x) / 2
-    my <- (n1$y + n2$y) / 2
+    # Midpoint of the two visual centers
+    mx <- (a$n1_cx + a$n2_cx) / 2
+    my <- (a$n1_cy + a$n2_cy) / 2
 
     # Vector from centroid to midpoint
     vx <- mx - centroid_x
@@ -416,8 +496,8 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
       cy <- my + (vy / vmag) * offset
     } else {
       # Fallback: perpendicular offset when midpoint is at centroid
-      dx <- n2$x - n1$x
-      dy <- n2$y - n1$y
+      dx <- a$n2_cx - a$n1_cx
+      dy <- a$n2_cy - a$n1_cy
       dist <- sqrt(dx^2 + dy^2)
       cx <- mx - (dy / dist) * offset
       cy <- my + (dx / dist) * offset
@@ -439,7 +519,12 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
 
     path_d <- sprintf(
       "M %.1f,%.1f Q %.1f,%.1f %.1f,%.1f",
-      n1$x, n1$y, cx, cy, n2$x, n2$y
+      a$n1_cx,
+      a$n1_cy,
+      cx,
+      cy,
+      a$n2_cx,
+      a$n2_cy
     )
 
     xml2::xml_add_child(
@@ -458,7 +543,9 @@ add_linkage_arcs <- function(svg_doc, nucs, linkages, palette) {
 
 assign_arc_lanes <- function(arcs_info) {
   n <- nrow(arcs_info)
-  if (n == 0) return(integer(0))
+  if (n == 0) {
+    return(integer(0))
+  }
 
   # Normalize angular spans to [start, end] where start < end on the circle
   spans <- lapply(seq_len(n), function(i) {

@@ -50,6 +50,7 @@ Suggests:
     patchwork,
     pwalign,
     rmarkdown,
+    rsvg,
     testthat (>= 3.0.0),
     tidygraph,
     withr

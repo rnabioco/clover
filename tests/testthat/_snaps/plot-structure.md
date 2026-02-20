@@ -25,3 +25,11 @@
       ! No structure SVG found for "tRNA-Fake-XXX".
       i Use `structure_trnas()` to list available tRNAs.
 
+# structure_to_png errors for missing file
+
+    Code
+      structure_to_png("nonexistent.svg")
+    Condition
+      Error in `structure_to_png()`:
+      ! SVG file not found: 'nonexistent.svg'.
+
