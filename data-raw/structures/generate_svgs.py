@@ -332,12 +332,28 @@ def run_r2r(trna_name: str, sequence: str, structure: str) -> str | None:
                 return None
 
             if svg_path.exists():
-                return svg_path.read_text()
+                return postprocess_svg(svg_path.read_text(), trna_name)
             return None
 
         except subprocess.TimeoutExpired:
             print("    ERROR: R2R render timed out")
             return None
+
+
+def postprocess_svg(svg_content: str, trna_name: str) -> str:
+    """Post-process R2R SVG output to fix label and font.
+
+    - Replace default "trna.cons" label with the actual tRNA name
+    - Replace Bitstream Vera Sans font with standard sans-serif stack
+    """
+    svg_content = svg_content.replace(
+        ">trna.cons<", f">{trna_name}<"
+    )
+    svg_content = svg_content.replace(
+        'font-family="Bitstream Vera Sans"',
+        'font-family="Helvetica, Arial, sans-serif"',
+    )
+    return svg_content
 
 
 def ensure_cca_tail(sequence: str, structure: str) -> tuple[str, str]:
@@ -535,6 +551,13 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
             "J2/base 0 2.32414 -2.32817 0 0 -90 "
             "backbonelen 1 1"
         )
+
+    # Set direction for discriminator base (first unpaired 3' position)
+    # so the CCA tail points straight up, using turn_ss
+    disc_pos = structure.rindex(">") + 1
+    label_chars[disc_pos] = "d"
+    label = "".join(label_chars)
+    directives.append("#=GF R2R turn_ss d 0")
 
     lines = [
         "# STOCKHOLM 1.0",
