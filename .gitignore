@@ -15,6 +15,10 @@ src/*.o
 src/*.so
 src/*.dll
 
+# data-raw build artifacts
+data-raw/structures/__pycache__/
+data-raw/structures/fasta/
+
 # pixi environments
 .pixi/*
 !.pixi/config.toml
