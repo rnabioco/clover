@@ -42,6 +42,13 @@ reference:
     - build_or_network
     - plot_arc_diagram
 
+  - title: Structure
+    contents:
+    - default_mod_palette
+    - plot_tRNA_structure
+    - structure_organisms
+    - structure_trnas
+
   - title: MODOMICS
     contents:
     - modomics_mods

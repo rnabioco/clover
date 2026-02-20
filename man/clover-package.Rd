@@ -21,7 +21,9 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item RNA Bioscience Initiative (https://ror.org/03wmf1y16) [funder, copyright holder]
+  \item Jill Bilodeaux \email{jill.bilodeuax@cuanschutz.edu} (\href{https://orcid.org/0000-0002-1326-7092}{ORCID}) [contributor]
+  \item Laura White \email{laura.k.white@cuanschutz.edu} (\href{https://orcid.org/0000-0003-2909-6627}{ORCID}) [contributor]
+  \item RNA Bioscience Initiative (\href{https://ror.org/03wmf1y16}{ROR}) [funder, copyright holder]
 }
 
 }
