@@ -16,7 +16,7 @@ Description: Analyze direct tRNA sequencing data. Provides differential
 License: MIT + file LICENSE
 URL: https://rnabioco.github.io/clover, https://github.com/rnabioco/clover
 Depends:
-    R (>= 4.0.0)
+    R (>= 4.3.0)
 Imports:
     Biostrings,
     cli,

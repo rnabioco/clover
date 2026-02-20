@@ -14,6 +14,7 @@ plot_tRNA_structure(
   mod_palette = NULL,
   outline_palette = NULL,
   text_colors = NULL,
+  position_markers = TRUE,
   linkage_palette = c("#0072B2", "#D55E00")
 )
 }
@@ -51,6 +52,10 @@ outline group name. If \code{NULL}, uses \code{"#333333"} for all.}
 and \code{color} (hex color string). Changes the nucleotide letter
 color at specified positions. Unspecified positions keep the
 default color.}
+
+\item{position_markers}{Logical; if \code{TRUE} (default), draw
+small grey position numbers every 10 nucleotides around the
+cloverleaf to help orient readers.}
 
 \item{linkage_palette}{Character vector of length 2 giving the
 colors for negative (exclusive) and positive (co-occurring)
