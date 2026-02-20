@@ -139,5 +139,17 @@ globalVariables(c(
   "weight",
   "degree",
   "betweenness",
-  "position"
+  "position",
+  # identity elements
+  "amino_acid",
+  "nucleotide",
+  "strength",
+  "pair_pos",
+  "pair_type",
+  "against_aars",
+  "universal",
+  "type",
+  "sprinzl_int",
+  "sprinzl_pos",
+  "description"
 ))

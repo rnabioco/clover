@@ -57,6 +57,12 @@ reference:
     - modomics_organisms
     - fetch_modomics_mods
 
+  - title: Identity elements
+    contents:
+    - identity_elements
+    - identity_organisms
+    - map_identity_to_trna
+
   - title: Statistics
     contents:
     - calc_fold_change
