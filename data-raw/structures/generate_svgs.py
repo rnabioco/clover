@@ -520,7 +520,7 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
             "disable_auto_flip_place_explicit "
             "J0/base 0 1.62706 2.29987 0 0 -270 "
             "J1/base 0 4.63116 0.91097 0 0 0 "
-            "J2/base 0 3.5 -1.5 0 0 45 "
+            "J2/base 0 3.5 -1.5 0 0 -45 "
             "J3/base 0 2.32414 -2.32817 0 0 -90 "
             "backbonelen 1 1"
         )
