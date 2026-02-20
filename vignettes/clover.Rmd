@@ -372,6 +372,141 @@ plot_chord_ror(
 )
 ```
 
+## tRNA secondary structure visualization
+
+clover includes pre-computed tRNA cloverleaf SVGs for several model organisms.
+You can overlay modification annotations, circle outlines, and text color
+changes onto these structures.
+
+```{r}
+#| label: structure-organisms
+# List available organisms and tRNAs
+structure_organisms()
+head(structure_trnas("Escherichia coli"))
+```
+
+### Base structure
+
+The simplest call renders the bare cloverleaf with base-pair lines and
+nucleotide letters.
+
+```{r}
+#| label: structure-bare
+svg_path <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+```
+
+```{r}
+#| label: fig-structure-bare
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
+```
+
+### Annotated structure with modifications, outlines, and text colors
+
+We can highlight the anticodon with filled circles, mark the discriminator
+base with an outline, and change the text color of specific positions.
+
+```{r}
+#| label: structure-annotated
+# Known modifications for this tRNA
+mods_glu_struct <- mods |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1")
+
+# Anticodon positions (34-36) as filled circles
+anticodon <- tibble::tibble(
+  pos = 34:36,
+  mod1 = rep("anticodon", 3)
+)
+
+# Combine MODOMICS mods with anticodon highlight
+all_mods <- bind_rows(mods_glu_struct, anticodon)
+
+# Discriminator base (position 73) as an outline
+disc_outline <- tibble::tibble(pos = 73, group = "discriminator")
+
+# Change discriminator text to red
+disc_text <- tibble::tibble(pos = 73, color = "#E41A1C")
+
+svg_path <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = all_mods,
+  mod_palette = c(default_mod_palette(), anticodon = "#4DAF4A"),
+  outlines = disc_outline,
+  outline_palette = c(discriminator = "#E41A1C"),
+  text_colors = disc_text
+)
+```
+
+```{r}
+#| label: fig-structure-annotated
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
+```
+
+### Long variable arm tRNAs
+
+Leu and Ser tRNAs have a 4-stem cloverleaf with a variable arm stem,
+which is properly rendered from the tRNAscan-SE covariance model alignment.
+
+```{r}
+#| label: structure-leu
+svg_path <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
+```
+
+```{r}
+#| label: fig-structure-leu
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
+```
+
+### Modification co-occurrence on structure
+
+We can visualize pairwise modification co-occurrence directly on the tRNA
+cloverleaf. Arcs connect position pairs with significant odds ratios:
+blue arcs indicate mutual exclusivity (negative log OR) and vermillion
+arcs indicate co-occurrence (positive log OR). Stroke width encodes the
+magnitude.
+
+```{r}
+#| label: structure-linkages
+# Filter OR data for one tRNA and one sample
+or_glu <- or_data |>
+  filter(
+    ref == "host-tRNA-Glu-TTC-1-1",
+    sample_id == "wt-15-ctl-01"
+  )
+
+# Clean and apply significance filters
+or_clean <- clean_odds_ratios(or_glu)
+or_sig <- or_clean |>
+  filter(
+    p_value < 0.01,
+    total_obs >= 100,
+    abs(log_odds_ratio) >= 1.0
+  )
+
+# Build linkages tibble for plot_tRNA_structure
+linkages_glu <- tibble::tibble(
+  pos1 = or_sig$pos1,
+  pos2 = or_sig$pos2,
+  value = or_sig$log_odds_ratio
+)
+
+svg_path <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = mods_glu_struct,
+  linkages = linkages_glu
+)
+```
+
+```{r}
+#| label: fig-structure-linkages
+#| echo: false
+htmltools::HTML(paste(readLines(svg_path), collapse = "\n"))
+```
+
 ## Next steps
 
 For isodecoder-level modification rewiring analysis — including odds ratio

@@ -1,5 +1,9 @@
 # clover 0.0.0.9000
 
+* `plot_tRNA_structure()` overlays modification highlights and circuit linkage arcs on tRNA cloverleaf secondary structure SVGs. Use `structure_organisms()` and `structure_trnas()` to list bundled structures. Base SVGs are generated offline from gtRNAdb data via R2R.
+
+* `plot_tRNA_structure()` linkage arcs now route outward from the structure centroid instead of using a fixed perpendicular offset, avoiding arcs that cut through the interior. Overlapping arcs are assigned to separate lanes for visual clarity. Arc color encodes sign (blue for exclusive, vermillion for co-occurring) and stroke width encodes magnitude of the value. The legend updates to show bidirectional entries when both positive and negative values are present.
+
 * Column naming is now standardized across the package: charging data and DESeq2 results use `ref` instead of `tRNA` for the tRNA reference name, and Sprinzl coordinates use `pos` instead of `seq_index` for the 1-based position in the tRNA body. The default `lab_col` parameter in `plot_volcano()`, `plot_abundance_charging()`, and `tabulate_deseq()` changed from `"tRNA"` to `"ref"`. `read_bcerror()` now returns `ref` as character instead of factor.
 
 * New color palette functions `aa_colors()` and `charging_colors()` provide named color vectors for amino acids and tRNA charging states.
