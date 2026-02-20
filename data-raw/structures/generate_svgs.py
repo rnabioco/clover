@@ -514,26 +514,25 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
 
     if n_stems == 4:
         # Long variable arm (Leu/Ser): D, AC, variable arm, T
-        # Angles swapped vs R2R demo so D-arm is LEFT and T-arm is RIGHT
+        # Angles from R2R demo: D-arm LEFT, T-arm RIGHT
         directives.append(
             "#=GF R2R multistem_junction_bulgey j "
             "disable_auto_flip_place_explicit "
-            "J0/base 0 1.62706 2.29987 0 0 -90 "
+            "J0/base 0 1.62706 2.29987 0 0 -270 "
             "J1/base 0 4.63116 0.91097 0 0 0 "
             "J2/base 0 3.5 -1.5 0 0 45 "
-            "J3/base 0 2.32414 -2.32817 0 0 -270 "
+            "J3/base 0 2.32414 -2.32817 0 0 -90 "
             "backbonelen 1 1"
         )
     else:
         # Standard 3-stem: D, AC, T
-        # Based on R2R demo coordinates with J0/J2 angles swapped
-        # so D-arm points LEFT and T-arm points RIGHT
+        # Angles from R2R demo: D-arm LEFT, T-arm RIGHT
         directives.append(
             "#=GF R2R multistem_junction_bulgey j "
             "disable_auto_flip_place_explicit "
-            "J0/base 0 1.62706 2.29987 0 0 -90 "
+            "J0/base 0 1.62706 2.29987 0 0 -270 "
             "J1/base 0 4.63116 0.91097 0 0 0 "
-            "J2/base 0 2.32414 -2.32817 0 0 -270 "
+            "J2/base 0 2.32414 -2.32817 0 0 -90 "
             "backbonelen 1 1"
         )
 
