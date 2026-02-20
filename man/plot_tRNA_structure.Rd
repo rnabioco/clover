@@ -53,8 +53,10 @@ color at specified positions. Unspecified positions keep the
 default color.}
 
 \item{linkage_palette}{Character vector of length 2 giving the
-low and high colors for the linkage value gradient. Default
-\code{c("#0072B2", "#D55E00")} (blue to vermillion).}
+colors for negative (exclusive) and positive (co-occurring)
+linkage values. Default \code{c("#0072B2", "#D55E00")} (blue for
+exclusive, vermillion for co-occurring). Stroke width encodes
+the magnitude of the value.}
 }
 \value{
 The path to the annotated SVG file (invisibly).
