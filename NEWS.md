@@ -1,5 +1,9 @@
 # clover 0.0.0.9000
 
+* `identity_elements()` returns experimentally validated tRNA aminoacylation identity elements (determinants and antideterminants) for a given organism, based on Giege & Eriani (2023). Use `identity_organisms()` to list supported organisms.
+
+* `map_identity_to_trna()` converts Sprinzl-numbered identity elements to 1-based sequence positions for a specific tRNA, enabling overlay on `plot_tRNA_structure()` via the `outlines` parameter.
+
 * `filter_linkages()` filters odds ratio data by p-value, observation count, and log odds ratio magnitude, returning a tibble ready for the `linkages` parameter of `plot_tRNA_structure()`.
 
 * `plot_tRNA_structure()` now accepts odds ratio tibbles directly as `linkages` input: if a `log_odds_ratio` column is present and `value` is not, it is automatically used as the arc value.
