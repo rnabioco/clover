@@ -3,8 +3,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
-   width="55.6426mm"
-   height="62.342mm"
+   width="157.727"
+   height="176.717"
    id="svg2403"
    xml:space="preserve">
 <text x="0" y="8.616" id="text1000">
@@ -815,6 +815,6 @@
  fill="none" stroke="#000000" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 77.4837 30.3647 A 1.78191,1.78191 270 0,0 75.7018,28.5828L 72.138 28.5828 "/>
 <text x="65.0355" y="31.2753" id="text1152">
-  <tspan x="65.0355" y="31.2753" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1153">5&#x2032;</tspan>
+  <tspan x="65.0355" y="31.2753" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1153">5&apos;</tspan>
 </text>
 </svg>

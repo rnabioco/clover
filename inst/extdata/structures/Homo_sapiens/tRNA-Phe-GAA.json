@@ -193,8 +193,8 @@
       "pos": 32
     },
     {
-      "base": "A",
-      "x": 141.75,
+      "base": "G",
+      "x": 141.33,
       "y": 116.11,
       "pos": 33
     },
@@ -463,10 +463,10 @@
       "pos": 77
     }
   ],
-  "width": 54.42,
-  "height": 70.34,
+  "width": 154.67,
+  "height": 199.4,
   "lines": [],
   "trna_name": "tRNA-Phe-GAA",
-  "sequence": "GCCGAAAUAGCUCAGUUGGGAGAGCGUUAGACUGAAGAUCUAAAGGUCCCUGGUUCAAUCCCGGGUUUCGGCA",
+  "sequence": "GCCGAAAUAGCUCAGUUGGGAGAGCGUUAGACUGAAGAUCUAAAGGUCCCUGGUUCGAUCCCGGGUUUCGGCA",
   "structure": "<<<<<<<..<<<<........>>>>.<<<<<.......>>>>>.....<<<<<.......>>>>>>>>>>>>."
 }

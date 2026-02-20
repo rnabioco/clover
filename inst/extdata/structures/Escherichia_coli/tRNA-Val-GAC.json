@@ -79,14 +79,14 @@
       "pos": 13
     },
     {
-      "base": "U",
+      "base": "C",
       "x": 74.78,
       "y": 89.54,
       "pos": 14
     },
     {
-      "base": "A",
-      "x": 87.22,
+      "base": "G",
+      "x": 86.81,
       "y": 89.54,
       "pos": 15
     },
@@ -103,13 +103,13 @@
       "pos": 17
     },
     {
-      "base": "A",
-      "x": 74.98,
+      "base": "G",
+      "x": 74.57,
       "y": 104.66,
       "pos": 18
     },
     {
-      "base": "U",
+      "base": "C",
       "x": 87.02,
       "y": 104.66,
       "pos": 19
@@ -157,8 +157,8 @@
       "pos": 26
     },
     {
-      "base": "A",
-      "x": 100.14,
+      "base": "C",
+      "x": 99.94,
       "y": 109.99,
       "pos": 27
     },
@@ -235,8 +235,8 @@
       "pos": 39
     },
     {
-      "base": "U",
-      "x": 99.94,
+      "base": "G",
+      "x": 99.73,
       "y": 122.23,
       "pos": 40
     },
@@ -469,10 +469,10 @@
       "pos": 78
     }
   ],
-  "width": 55.64,
-  "height": 70.34,
+  "width": 157.73,
+  "height": 199.4,
   "lines": [],
   "trna_name": "tRNA-Val-GAC",
-  "sequence": "GCGUUCAUAGCUCAGUUGGUUAGAGCACCACCUUGACAUGGUGGGGGUCGUUGGUUCGAGUCCAAUUGAACGCACCA",
+  "sequence": "GCGUCCGUAGCUCAGUUGGUUAGAGCACCACCUUGACAUGGUGGGGGUCGGUGGUUCGAGUCCACUCGGACGCACCA",
   "structure": "<<<<<<<..<<<<.........>>>>.<<<<<.......>>>>>.....<<<<<.......>>>>>>>>>>>>...."
 }

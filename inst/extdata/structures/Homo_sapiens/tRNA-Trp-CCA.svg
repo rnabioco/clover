@@ -3,8 +3,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
-   width="53.8736mm"
-   height="70.343mm"
+   width="152.296"
+   height="199.397"
    id="svg2403"
    xml:space="preserve">
 <text x="0" y="8.616" id="text1000">
@@ -595,8 +595,8 @@
 <text x="69.5519" y="59.301" id="text1002">
   <tspan x="69.5519" y="59.301" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1003">G</tspan>
 </text>
-<text x="69.9681" y="66.861" id="text1004">
-  <tspan x="69.9681" y="66.861" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1005">A</tspan>
+<text x="69.5519" y="66.861" id="text1004">
+  <tspan x="69.5519" y="66.861" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1005">G</tspan>
 </text>
 <text x="69.7619" y="74.421" id="text1006">
   <tspan x="69.7619" y="74.421" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1007">C</tspan>
@@ -728,7 +728,7 @@
   <tspan x="94.3841" y="140.331" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1091">G</tspan>
 </text>
 <text x="96.6939" y="133.068" id="text1092">
-  <tspan x="96.6939" y="133.068" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1093">C</tspan>
+  <tspan x="96.6939" y="133.068" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1093">U</tspan>
 </text>
 <text x="93.889" y="126.048" id="text1094">
   <tspan x="93.889" y="126.048" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1095">U</tspan>
@@ -757,8 +757,8 @@
 <text x="137.175" y="123.276" id="text1110">
   <tspan x="137.175" y="123.276" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1111">C</tspan>
 </text>
-<text x="139.378" y="116.111" id="text1112">
-  <tspan x="139.378" y="116.111" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1113">G</tspan>
+<text x="139.794" y="116.111" id="text1112">
+  <tspan x="139.794" y="116.111" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1113">A</tspan>
 </text>
 <text x="137.381" y="108.947" id="text1114">
   <tspan x="137.381" y="108.947" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1115">A</tspan>
@@ -824,6 +824,6 @@
  fill="none" stroke="#000000" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 72.4694 53.0447 A 1.78191,1.78191 270 0,0 70.6875,51.2628L 67.1236 51.2628 "/>
 <text x="60.0211" y="53.9553" id="text1154">
-  <tspan x="60.0211" y="53.9553" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1155">5&#x2032;</tspan>
+  <tspan x="60.0211" y="53.9553" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1155">5&apos;</tspan>
 </text>
 </svg>
