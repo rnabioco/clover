@@ -334,101 +334,6 @@ marked.](clover_files/figure-html/fig-bcerror-mods-1.png)
 
 Base-calling error profiles with known modification positions marked.
 
-## Modification co-occurrence (odds ratios)
-
-Odds ratios measure whether modifications at pairs of positions tend to
-co-occur on the same read. Positive log odds ratios indicate
-co-occurrence; negative indicate mutual exclusivity.
-
-``` r
-or_data <- S4Vectors::metadata(se)$odds_ratios
-glimpse(or_data)
-#> Rows: 63,823
-#> Columns: 8
-#> $ sample_id      <chr> "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-…
-#> $ ref            <chr> "host-tRNA-Asp-GTC-1-1", "host-tRNA-Asp-GTC-1-1", "host…
-#> $ pos1           <dbl> 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
-#> $ pos2           <dbl> 23, 26, 28, 31, 32, 35, 36, 37, 39, 40, 43, 45, 47, 48,…
-#> $ odds_ratio     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-#> $ log_odds_ratio <dbl> -23.02585, -23.02585, -23.02585, -23.02585, -23.02585, …
-#> $ p_value        <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-#> $ total_obs      <dbl> 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1…
-```
-
-### Chord diagram: single sample
-
-The Sprinzl coordinate files use RNA anticodon notation (e.g., `UUC`)
-while the pipeline uses DNA notation (e.g., `TTC`). The pipeline also
-adds a `host-` prefix. We need to account for these naming differences
-when matching.
-
-``` r
-# Pick one tRNA and one sample
-or_single <- or_data |>
-  filter(
-    ref == "host-tRNA-Glu-TTC-1-1",
-    sample_id == "wt-15-ctl-01"
-  )
-
-# Get sprinzl coords: note UUC (RNA) vs TTC (DNA) in anticodon
-sprinzl_glu <- sprinzl |>
-  filter(trna_id == "tRNA-Glu-UUC-1-1")
-
-# Filter modifications for this tRNA
-mods_glu <- mods |>
-  filter(ref == "host-tRNA-Glu-TTC-1-1")
-
-plot_chord_or(
-  or_single,
-  or_cutoff = 1.0,
-  p_cutoff = 0.01,
-  min_obs = 100,
-  sprinzl_coords = sprinzl_glu,
-  mods = mods_glu,
-  title = "host-tRNA-Glu-TTC-1-1 (ctl-01)"
-)
-```
-
-![Modification co-occurrence network for a single tRNA in one
-sample.](clover_files/figure-html/fig-chord-single-1.png)
-
-Modification co-occurrence network for a single tRNA in one sample.
-
-### Chord diagram: modification rewiring between conditions
-
-We can compare modification networks between conditions using the ratio
-of odds ratios (ROR). Positive log ROR indicates gained modification
-dependencies in the infected condition; negative indicates lost
-dependencies.
-
-``` r
-# Add condition labels
-or_with_cond <- or_data |>
-  mutate(condition = ifelse(grepl("ctl", sample_id), "ctl", "inf")) |>
-  filter(ref == "host-tRNA-Glu-TTC-1-1")
-
-# Compute ratio of odds ratios
-ror <- compute_ror(
-  or_with_cond,
-  numerator = "inf",
-  denominator = "ctl",
-  min_obs = 100
-)
-
-plot_chord_ror(
-  ror,
-  ror_cutoff = 0.5,
-  sprinzl_coords = sprinzl_glu,
-  mods = mods_glu,
-  title = "Modification rewiring: inf vs ctl (Glu-TTC-1-1)"
-)
-```
-
-![Modification rewiring between control and infected
-conditions.](clover_files/figure-html/fig-chord-ror-1.png)
-
-Modification rewiring between control and infected conditions.
-
 ## tRNA secondary structure visualization
 
 clover includes pre-computed tRNA cloverleaf SVGs for several model
@@ -516,6 +421,8 @@ vermillion arcs indicate co-occurrence (positive log OR). Stroke width
 encodes the magnitude.
 
 ``` r
+or_data <- S4Vectors::metadata(se)$odds_ratios
+
 # Filter OR data for one tRNA and one sample, clean, and filter for
 # significance. filter_linkages() returns a tibble ready for plotting.
 linkages_glu <- or_data |>
@@ -586,36 +493,34 @@ sessionInfo()
 #> [27] withr_3.0.2                 purrr_1.2.1                
 #> [29] BiocGenerics_0.56.0         desc_1.4.3                 
 #> [31] grid_4.5.2                  stats4_4.5.2               
-#> [33] colorspace_2.1-2            ggplot2_4.0.2              
-#> [35] scales_1.4.0                SummarizedExperiment_1.40.0
-#> [37] cli_3.6.5                   rmarkdown_2.30             
-#> [39] crayon_1.5.3                ragg_1.5.0                 
-#> [41] generics_0.1.4              tzdb_0.5.0                 
-#> [43] commonmark_2.0.0            cachem_1.1.0               
-#> [45] stringr_1.6.0               parallel_4.5.2             
-#> [47] XVector_0.50.0              matrixStats_1.5.0          
-#> [49] vctrs_0.7.1                 Matrix_1.7-4               
-#> [51] jsonlite_2.0.0              litedown_0.9               
-#> [53] patchwork_1.3.2             IRanges_2.44.0             
-#> [55] hms_1.1.4                   S4Vectors_0.48.0           
-#> [57] bit64_4.6.0-1               ggrepel_0.9.6              
-#> [59] systemfonts_1.3.1           locfit_1.5-9.12            
-#> [61] jquerylib_0.1.4             glue_1.8.0                 
-#> [63] reactR_0.6.1                pkgdown_2.2.0              
-#> [65] codetools_0.2-20            ggtext_0.1.2               
-#> [67] cowplot_1.2.0               shape_1.4.6.1              
-#> [69] stringi_1.8.7               gtable_0.3.6               
-#> [71] GenomicRanges_1.62.1        tibble_3.3.1               
-#> [73] pillar_1.11.1               htmltools_0.5.9            
-#> [75] Seqinfo_1.0.0               circlize_0.4.17            
-#> [77] reactable_0.4.5             R6_2.6.1                   
-#> [79] textshaping_1.0.4           vroom_1.7.0                
-#> [81] evaluate_1.0.5              lattice_0.22-7             
-#> [83] Biobase_2.70.0              markdown_2.0               
-#> [85] readr_2.2.0                 gridtext_0.1.6             
-#> [87] bslib_0.10.0                Rcpp_1.1.1                 
-#> [89] SparseArray_1.10.8          DESeq2_1.50.2              
-#> [91] xfun_0.56                   GlobalOptions_0.1.3        
-#> [93] fs_1.6.6                    MatrixGenerics_1.22.0      
-#> [95] forcats_1.0.1               pkgconfig_2.0.3
+#> [33] ggplot2_4.0.2               scales_1.4.0               
+#> [35] SummarizedExperiment_1.40.0 cli_3.6.5                  
+#> [37] rmarkdown_2.30              crayon_1.5.3               
+#> [39] ragg_1.5.0                  generics_0.1.4             
+#> [41] tzdb_0.5.0                  commonmark_2.0.0           
+#> [43] cachem_1.1.0                stringr_1.6.0              
+#> [45] parallel_4.5.2              XVector_0.50.0             
+#> [47] matrixStats_1.5.0           vctrs_0.7.1                
+#> [49] Matrix_1.7-4                jsonlite_2.0.0             
+#> [51] litedown_0.9                patchwork_1.3.2            
+#> [53] IRanges_2.44.0              hms_1.1.4                  
+#> [55] S4Vectors_0.48.0            bit64_4.6.0-1              
+#> [57] ggrepel_0.9.6               systemfonts_1.3.1          
+#> [59] locfit_1.5-9.12             jquerylib_0.1.4            
+#> [61] glue_1.8.0                  reactR_0.6.1               
+#> [63] pkgdown_2.2.0               codetools_0.2-20           
+#> [65] ggtext_0.1.2                cowplot_1.2.0              
+#> [67] stringi_1.8.7               gtable_0.3.6               
+#> [69] GenomicRanges_1.62.1        tibble_3.3.1               
+#> [71] pillar_1.11.1               htmltools_0.5.9            
+#> [73] Seqinfo_1.0.0               reactable_0.4.5            
+#> [75] R6_2.6.1                    textshaping_1.0.4          
+#> [77] vroom_1.7.0                 evaluate_1.0.5             
+#> [79] lattice_0.22-7              Biobase_2.70.0             
+#> [81] markdown_2.0                readr_2.2.0                
+#> [83] gridtext_0.1.6              bslib_0.10.0               
+#> [85] Rcpp_1.1.1                  SparseArray_1.10.8         
+#> [87] DESeq2_1.50.2               xfun_0.56                  
+#> [89] fs_1.6.6                    MatrixGenerics_1.22.0      
+#> [91] forcats_1.0.1               pkgconfig_2.0.3
 ```
