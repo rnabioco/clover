@@ -1,6 +1,10 @@
 # clover 0.0.0.9000
 
+* `plot_tRNA_structure()` now centers modification circles, outline circles, and linkage arcs on the visual center of nucleotide characters instead of the text baseline position.
+
 * `plot_tRNA_structure()` overlays modification highlights and circuit linkage arcs on tRNA cloverleaf secondary structure SVGs. Use `structure_organisms()` and `structure_trnas()` to list bundled structures. Base SVGs are generated offline from gtRNAdb data via R2R.
+
+* `structure_to_png()` converts a tRNA structure SVG to PNG format. Requires the rsvg package.
 
 * `plot_tRNA_structure()` linkage arcs now route outward from the structure centroid instead of using a fixed perpendicular offset, avoiding arcs that cut through the interior. Overlapping arcs are assigned to separate lanes for visual clarity. Arc color encodes sign (blue for exclusive, vermillion for co-occurring) and stroke width encodes magnitude of the value. The legend updates to show bidirectional entries when both positive and negative values are present.
 

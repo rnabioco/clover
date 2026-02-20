@@ -108,7 +108,11 @@ test_that("assign_arc_lanes assigns same lane for non-overlapping arcs", {
 })
 
 test_that("assign_arc_lanes handles empty input", {
-  arcs_info <- data.frame(arc_idx = integer(), angle1 = numeric(), angle2 = numeric())
+  arcs_info <- data.frame(
+    arc_idx = integer(),
+    angle1 = numeric(),
+    angle2 = numeric()
+  )
   lanes <- assign_arc_lanes(arcs_info)
   expect_length(lanes, 0)
 })
@@ -154,6 +158,31 @@ test_that("add_linkage_arcs with bidirectional values produces paths", {
   expect_equal(xml2::xml_attr(paths[[1]], "stroke"), "#0072B2")
   # Second arc (positive value) should use palette[2]
   expect_equal(xml2::xml_attr(paths[[2]], "stroke"), "#D55E00")
+})
+
+test_that("structure_to_png converts SVG to PNG", {
+  skip_if_not_installed("rsvg")
+  skip_if(
+    length(structure_organisms()) == 0,
+    "No bundled structure SVGs"
+  )
+
+  org <- structure_organisms()[1]
+  trna <- structure_trnas(org)[1]
+  svg <- plot_tRNA_structure(trna, org)
+
+  png <- structure_to_png(svg)
+  expect_true(file.exists(png))
+  expect_match(png, "\\.png$")
+  expect_gt(file.info(png)$size, 0)
+})
+
+test_that("structure_to_png errors for missing file", {
+  skip_if_not_installed("rsvg")
+  expect_snapshot(
+    structure_to_png("nonexistent.svg"),
+    error = TRUE
+  )
 })
 
 test_that("add_linkage_arcs skips missing positions", {
