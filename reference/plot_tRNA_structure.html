@@ -72,6 +72,7 @@ linkages are drawn as Bezier curve arcs between position pairs.</p>
 <span>  mod_palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  outline_palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  text_colors <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  position_markers <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  linkage_palette <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -130,6 +131,12 @@ outline group name. If <code>NULL</code>, uses <code>"#333333"</code> for all.</
 and <code>color</code> (hex color string). Changes the nucleotide letter
 color at specified positions. Unspecified positions keep the
 default color.</p></dd>
+
+
+<dt id="arg-position-markers">position_markers<a class="anchor" aria-label="anchor" href="#arg-position-markers"></a></dt>
+<dd><p>Logical; if <code>TRUE</code> (default), draw
+small grey position numbers every 10 nucleotides around the
+cloverleaf to help orient readers.</p></dd>
 
 
 <dt id="arg-linkage-palette">linkage_palette<a class="anchor" aria-label="anchor" href="#arg-linkage-palette"></a></dt>

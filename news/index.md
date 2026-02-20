@@ -3,6 +3,12 @@
 ## clover 0.0.0.9000
 
 - [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  now draws a 3’ amino acid label (e.g., “Glu”) connected by a line to
+  the terminal nucleotide, and position markers every 10 nucleotides
+  around the cloverleaf. Position markers can be disabled with
+  `position_markers = FALSE`.
+
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
   now centers modification circles, outline circles, and linkage arcs on
   the visual center of nucleotide characters instead of the text
   baseline position.

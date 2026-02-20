@@ -19,6 +19,7 @@ plot_tRNA_structure(
   mod_palette = NULL,
   outline_palette = NULL,
   text_colors = NULL,
+  position_markers = TRUE,
   linkage_palette = c("#0072B2", "#D55E00")
 )
 ```
@@ -76,6 +77,11 @@ plot_tRNA_structure(
   A tibble with columns `pos` (1-based position) and `color` (hex color
   string). Changes the nucleotide letter color at specified positions.
   Unspecified positions keep the default color.
+
+- position_markers:
+
+  Logical; if `TRUE` (default), draw small grey position numbers every
+  10 nucleotides around the cloverleaf to help orient readers.
 
 - linkage_palette:
 
