@@ -81,6 +81,9 @@ structure_trnas <- function(organism) {
 #'   and `color` (hex color string). Changes the nucleotide letter
 #'   color at specified positions. Unspecified positions keep the
 #'   default color.
+#' @param position_markers Logical; if `TRUE` (default), draw
+#'   small grey position numbers every 10 nucleotides around the
+#'   cloverleaf to help orient readers.
 #' @param linkage_palette Character vector of length 2 giving the
 #'   colors for negative (exclusive) and positive (co-occurring)
 #'   linkage values. Default `c("#0072B2", "#D55E00")` (blue for
@@ -114,6 +117,7 @@ plot_tRNA_structure <- function(
   mod_palette = NULL,
   outline_palette = NULL,
   text_colors = NULL,
+  position_markers = TRUE,
   linkage_palette = c("#0072B2", "#D55E00")
 ) {
   rlang::check_installed("jsonlite", reason = "to read structure metadata.")
@@ -142,6 +146,17 @@ plot_tRNA_structure <- function(
 
   if (is.null(output)) {
     output <- tempfile(fileext = ".svg")
+  }
+
+  # Restyle base SVG: black nucleotide text, grey base-pair lines
+  svg_doc <- restyle_base_svg(svg_doc)
+
+  # Add 3' amino acid label
+  svg_doc <- add_end_labels(svg_doc, nucs, metadata)
+
+  # Add position markers every 10 nt
+  if (position_markers) {
+    svg_doc <- add_position_markers(svg_doc, nucs)
   }
 
   # Add modification highlights (filled circles behind text)
@@ -264,6 +279,33 @@ structure_org_dir <- function(organism) {
     ))
   }
   org_dir
+}
+
+restyle_base_svg <- function(svg_doc) {
+  root <- xml2::xml_root(svg_doc)
+  ns <- xml2::xml_ns(svg_doc)
+
+  # Change all nucleotide tspan text to black (R2R uses #d90000 red)
+  tspans <- xml2::xml_find_all(root, ".//d1:tspan", ns)
+  for (ts in tspans) {
+    fill <- xml2::xml_attr(ts, "fill")
+    if (!is.na(fill) && fill == "#d90000") {
+      xml2::xml_set_attr(ts, "fill", "#000000")
+    }
+  }
+
+  # Change base-pair line paths to grey (R2R uses black #000000 with
+  # stroke-width 1.44)
+  paths <- xml2::xml_find_all(root, ".//d1:path", ns)
+  for (p in paths) {
+    sw <- xml2::xml_attr(p, "stroke-width")
+    stroke <- xml2::xml_attr(p, "stroke")
+    if (!is.na(sw) && !is.na(stroke) && sw == "1.44" && stroke == "#000000") {
+      xml2::xml_set_attr(p, "stroke", "#999999")
+    }
+  }
+
+  svg_doc
 }
 
 add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
@@ -880,6 +922,208 @@ add_structure_legend <- function(
     if (!is.na(w_val)) {
       xml2::xml_set_attr(root, "width", as.character(w_val + 120))
     }
+  }
+
+  svg_doc
+}
+
+add_end_labels <- function(svg_doc, nucs, metadata) {
+  root <- xml2::xml_root(svg_doc)
+
+  # Extract amino acid from tRNA name (e.g., "tRNA-Glu-TTC" -> "Glu")
+  trna_name <- metadata$trna_name
+  aa <- strsplit(trna_name, "-")[[1]][2]
+
+  # Remove R2R's amino acid indicator text (single letter beyond last
+
+  # nucleotide that doesn't match any position in the metadata)
+  remove_extra_aa_text(svg_doc, nucs)
+
+  # Get last nucleotide (3' end)
+  last_nuc <- nucs[nrow(nucs), ]
+  last_cx <- last_nuc$x + nuc_x_offset
+  last_cy <- last_nuc$y + nuc_y_offset
+
+  # Compute centroid of all nucleotide visual centers
+  centroid_x <- mean(nucs$x + nuc_x_offset)
+  centroid_y <- mean(nucs$y + nuc_y_offset)
+
+  # Direction from centroid toward the last nucleotide
+  dx <- last_cx - centroid_x
+  dy <- last_cy - centroid_y
+  mag <- sqrt(dx^2 + dy^2)
+
+  if (mag > 0.01) {
+    dir_x <- dx / mag
+    dir_y <- dy / mag
+  } else {
+    dir_x <- 0
+    dir_y <- -1
+  }
+
+  # Label position: offset outward from the nucleotide
+  offset <- 15
+  label_x <- last_cx + dir_x * offset
+  label_y <- last_cy + dir_y * offset
+
+  label_group <- xml2::xml_add_child(
+    root,
+    "g",
+    id = "clover-end-labels"
+  )
+
+  # Line from nucleotide center to label
+  xml2::xml_add_child(
+    label_group,
+    "line",
+    x1 = as.character(last_cx),
+    y1 = as.character(last_cy),
+    x2 = as.character(label_x),
+    y2 = as.character(label_y),
+    stroke = "black",
+    "stroke-width" = "0.5"
+  )
+
+  # Rounded rectangle behind the label
+  # Approximate text width based on character count
+  pad_x <- 3
+  pad_y <- 2
+  text_width <- nchar(aa) * 4.5
+  rect_w <- text_width + 2 * pad_x
+  rect_h <- 7.5 + 2 * pad_y
+
+  xml2::xml_add_child(
+    label_group,
+    "rect",
+    x = as.character(label_x - rect_w / 2),
+    y = as.character(label_y - rect_h / 2),
+    width = as.character(rect_w),
+    height = as.character(rect_h),
+    rx = "3",
+    ry = "3",
+    fill = "white",
+    stroke = "black",
+    "stroke-width" = "0.8"
+  )
+
+  # Amino acid text label
+  xml2::xml_add_child(
+    label_group,
+    "text",
+    x = as.character(label_x),
+    y = as.character(label_y),
+    "font-size" = "7.5",
+    "font-family" = "Helvetica, Arial, sans-serif",
+    "text-anchor" = "middle",
+    "dominant-baseline" = "central",
+    fill = "black",
+    aa
+  )
+
+  svg_doc
+}
+
+remove_extra_aa_text <- function(svg_doc, nucs) {
+  root <- xml2::xml_root(svg_doc)
+  tspans <- xml2::xml_find_all(root, ".//d1:tspan", xml2::xml_ns(svg_doc))
+
+  # Build lookup of all known nucleotide coordinates
+  nuc_coords <- data.frame(
+    x = nucs$x,
+    y = nucs$y
+  )
+
+  for (ts in tspans) {
+    tx <- as.numeric(xml2::xml_attr(ts, "x"))
+    ty <- as.numeric(xml2::xml_attr(ts, "y"))
+    text_content <- xml2::xml_text(ts)
+
+    if (is.na(tx) || is.na(ty)) {
+      next
+    }
+    # Only look for single-character nucleotide letters
+    if (nchar(text_content) != 1) {
+      next
+    }
+    if (!text_content %in% c("A", "C", "G", "U", "T")) {
+      next
+    }
+
+    # Check if this tspan matches any known nucleotide position
+    dists <- sqrt((nuc_coords$x - tx)^2 + (nuc_coords$y - ty)^2)
+    if (min(dists) > 0.1) {
+      # This text element doesn't match any nucleotide — it's the extra
+      # amino acid indicator from R2R. Hide it.
+      parent <- xml2::xml_parent(ts)
+      xml2::xml_set_attr(parent, "display", "none")
+    }
+  }
+}
+
+add_position_markers <- function(svg_doc, nucs) {
+  root <- xml2::xml_root(svg_doc)
+
+  marker_group <- xml2::xml_add_child(
+    root,
+    "g",
+    id = "clover-position-markers"
+  )
+
+  max_pos <- max(nucs$pos)
+  marker_positions <- seq(10, max_pos, by = 10)
+
+  offset <- 10
+
+  # Precompute visual centers for all nucleotides
+  all_cx <- nucs$x + nuc_x_offset
+  all_cy <- nucs$y + nuc_y_offset
+
+  # Try 12 evenly-spaced candidate directions and pick the one whose
+
+  # endpoint is furthest from any other nucleotide
+  n_candidates <- 12
+  angles <- seq(0, 2 * pi, length.out = n_candidates + 1)[-(n_candidates + 1)]
+
+  for (pos in marker_positions) {
+    nuc_idx <- which(nucs$pos == pos)
+    if (length(nuc_idx) == 0) {
+      next
+    }
+
+    nuc <- nucs[nuc_idx[1], ]
+    nuc_cx <- nuc$x + nuc_x_offset
+    nuc_cy <- nuc$y + nuc_y_offset
+
+    best_min_dist <- -1
+    best_x <- nuc_cx
+    best_y <- nuc_cy - offset
+
+    for (angle in angles) {
+      cand_x <- nuc_cx + cos(angle) * offset
+      cand_y <- nuc_cy + sin(angle) * offset
+
+      dists <- sqrt((all_cx - cand_x)^2 + (all_cy - cand_y)^2)
+      min_dist <- min(dists)
+
+      if (min_dist > best_min_dist) {
+        best_min_dist <- min_dist
+        best_x <- cand_x
+        best_y <- cand_y
+      }
+    }
+
+    xml2::xml_add_child(
+      marker_group,
+      "text",
+      x = as.character(best_x),
+      y = as.character(best_y),
+      "font-size" = "5.5",
+      "font-family" = "Helvetica, Arial, sans-serif",
+      "text-anchor" = "middle",
+      "dominant-baseline" = "central",
+      fill = "#666666",
+      as.character(pos)
+    )
   }
 
   svg_doc

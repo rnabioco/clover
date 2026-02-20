@@ -1,5 +1,7 @@
 # clover 0.0.0.9000
 
+* `plot_tRNA_structure()` now draws a 3' amino acid label (e.g., "Glu") connected by a line to the terminal nucleotide, and position markers every 10 nucleotides around the cloverleaf. Position markers can be disabled with `position_markers = FALSE`.
+
 * `plot_tRNA_structure()` now centers modification circles, outline circles, and linkage arcs on the visual center of nucleotide characters instead of the text baseline position.
 
 * `plot_tRNA_structure()` overlays modification highlights and circuit linkage arcs on tRNA cloverleaf secondary structure SVGs. Use `structure_organisms()` and `structure_trnas()` to list bundled structures. Base SVGs are generated offline from gtRNAdb data via R2R.

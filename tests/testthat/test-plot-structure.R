@@ -200,3 +200,68 @@ test_that("add_linkage_arcs skips missing positions", {
   paths <- xml2::xml_find_all(result, ".//*[local-name()='path']")
   expect_length(paths, 0)
 })
+
+test_that("add_end_labels adds amino acid label and line", {
+  svg_text <- paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">',
+    '<text x="10" y="10">G</text>',
+    '</svg>'
+  )
+  doc <- xml2::read_xml(svg_text)
+  nucs <- data.frame(pos = 1L, base = "G", x = 10, y = 10)
+  metadata <- list(trna_name = "tRNA-Glu-TTC")
+
+  result <- add_end_labels(doc, nucs, metadata)
+  group <- xml2::xml_find_first(result, ".//*[@id='clover-end-labels']")
+  expect_false(is.na(group))
+
+  lines <- xml2::xml_find_all(group, ".//*[local-name()='line']")
+  expect_length(lines, 1)
+
+  texts <- xml2::xml_find_all(group, ".//*[local-name()='text']")
+  expect_length(texts, 1)
+  expect_equal(xml2::xml_text(texts[[1]]), "Glu")
+})
+
+test_that("add_position_markers adds markers every 10 nt", {
+  svg_text <- paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">',
+    '<text x="10" y="10">A</text>',
+    '</svg>'
+  )
+  doc <- xml2::read_xml(svg_text)
+  nucs <- data.frame(
+    pos = 1:25,
+    base = rep("A", 25),
+    x = seq(10, 250, by = 10),
+    y = rep(50, 25)
+  )
+
+  result <- add_position_markers(doc, nucs)
+  group <- xml2::xml_find_first(result, ".//*[@id='clover-position-markers']")
+  expect_false(is.na(group))
+
+  texts <- xml2::xml_find_all(group, ".//*[local-name()='text']")
+  expect_length(texts, 2)
+  expect_equal(xml2::xml_text(texts[[1]]), "10")
+  expect_equal(xml2::xml_text(texts[[2]]), "20")
+})
+
+test_that("plot_tRNA_structure respects position_markers = FALSE", {
+  skip_if(
+    length(structure_organisms()) == 0,
+    "No bundled structure SVGs"
+  )
+
+  org <- structure_organisms()[1]
+  trna <- structure_trnas(org)[1]
+
+  svg_path <- plot_tRNA_structure(trna, org, position_markers = FALSE)
+  doc <- xml2::read_xml(svg_path)
+  markers <- xml2::xml_find_first(doc, ".//*[@id='clover-position-markers']")
+  expect_true(is.na(markers))
+
+  # End labels should still be present
+  end_labels <- xml2::xml_find_first(doc, ".//*[@id='clover-end-labels']")
+  expect_false(is.na(end_labels))
+})
