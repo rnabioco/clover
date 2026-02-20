@@ -2,6 +2,29 @@
 
 ## clover 0.0.0.9000
 
+- [`identity_elements()`](https://rnabioco.github.io/clover/reference/identity_elements.md)
+  returns experimentally validated tRNA aminoacylation identity elements
+  (determinants and antideterminants) for a given organism, based on
+  Giege & Eriani (2023). Use
+  [`identity_organisms()`](https://rnabioco.github.io/clover/reference/identity_organisms.md)
+  to list supported organisms.
+
+- [`map_identity_to_trna()`](https://rnabioco.github.io/clover/reference/map_identity_to_trna.md)
+  converts Sprinzl-numbered identity elements to 1-based sequence
+  positions for a specific tRNA, enabling overlay on
+  [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  via the `outlines` parameter.
+
+- [`plot_identity_panel()`](https://rnabioco.github.io/clover/reference/plot_identity_panel.md)
+  arranges multiple tRNA cloverleaf structures side by side in a single
+  SVG, each annotated with aminoacylation identity elements colored by
+  strength (red = strong, blue = weak).
+
+- [`plot_identity_structure()`](https://rnabioco.github.io/clover/reference/plot_identity_structure.md)
+  generates a single tRNA cloverleaf structure SVG with identity element
+  outlines, automatically mapping Sprinzl positions to sequence
+  coordinates.
+
 - [`filter_linkages()`](https://rnabioco.github.io/clover/reference/filter_linkages.md)
   filters odds ratio data by p-value, observation count, and log odds
   ratio magnitude, returning a tibble ready for the `linkages` parameter

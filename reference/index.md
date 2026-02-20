@@ -79,6 +79,10 @@
   : Plot a chord diagram of modification co-occurrence.
 - [`plot_chord_ror()`](https://rnabioco.github.io/clover/reference/plot_chord_ror.md)
   : Plot a chord diagram of modification rewiring between conditions.
+- [`plot_identity_panel()`](https://rnabioco.github.io/clover/reference/plot_identity_panel.md)
+  : Plot identity elements for multiple tRNAs side by side
+- [`plot_identity_structure()`](https://rnabioco.github.io/clover/reference/plot_identity_structure.md)
+  : Plot tRNA structure with identity element overlays
 - [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
   : Plot a delta-signal modification heatmap.
 - [`plot_mod_landscape()`](https://rnabioco.github.io/clover/reference/plot_mod_landscape.md)
@@ -118,6 +122,19 @@
   : List organisms with cached MODOMICS data
 - [`fetch_modomics_mods()`](https://rnabioco.github.io/clover/reference/fetch_modomics_mods.md)
   : Fetch tRNA modification annotations from MODOMICS
+
+## Identity elements
+
+- [`identity_elements()`](https://rnabioco.github.io/clover/reference/identity_elements.md)
+  : Retrieve tRNA aminoacylation identity elements
+- [`identity_organisms()`](https://rnabioco.github.io/clover/reference/identity_organisms.md)
+  : List supported organisms for identity elements
+- [`map_identity_to_trna()`](https://rnabioco.github.io/clover/reference/map_identity_to_trna.md)
+  : Map identity elements to tRNA sequence positions
+- [`plot_identity_panel()`](https://rnabioco.github.io/clover/reference/plot_identity_panel.md)
+  : Plot identity elements for multiple tRNAs side by side
+- [`plot_identity_structure()`](https://rnabioco.github.io/clover/reference/plot_identity_structure.md)
+  : Plot tRNA structure with identity element overlays
 
 ## Statistics
 
