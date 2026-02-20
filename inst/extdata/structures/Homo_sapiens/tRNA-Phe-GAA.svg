@@ -3,8 +3,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
-   width="54.4169mm"
-   height="70.343mm"
+   width="154.669"
+   height="199.397"
    id="svg2403"
    xml:space="preserve">
 <text x="0" y="8.616" id="text1000">
@@ -766,8 +766,8 @@
 <text x="139.131" y="123.276" id="text1112">
   <tspan x="139.131" y="123.276" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1113">C</tspan>
 </text>
-<text x="141.75" y="116.111" id="text1114">
-  <tspan x="141.75" y="116.111" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1115">A</tspan>
+<text x="141.334" y="116.111" id="text1114">
+  <tspan x="141.334" y="116.111" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1115">G</tspan>
 </text>
 <text x="139.337" y="108.947" id="text1116">
   <tspan x="139.337" y="108.947" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1117">A</tspan>
@@ -833,6 +833,6 @@
  fill="none" stroke="#000000" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 74.4255 53.0447 A 1.78191,1.78191 270 0,0 72.6436,51.2628L 69.0798 51.2628 "/>
 <text x="61.9773" y="53.9553" id="text1156">
-  <tspan x="61.9773" y="53.9553" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1157">5&#x2032;</tspan>
+  <tspan x="61.9773" y="53.9553" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1157">5&apos;</tspan>
 </text>
 </svg>

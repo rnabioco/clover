@@ -1,21 +1,22 @@
 """Generate tRNA cloverleaf SVGs using R2R.
 
-Extracts tRNA sequences and secondary structure data from local gtRNAdb
-archive files, converts to Stockholm format, runs R2R to produce
+Aligns mature tRNA FASTA sequences against tRNAscan-SE covariance
+models using Infernal's cmalign, extracts per-sequence secondary
+structures, converts to Stockholm format, runs R2R to produce
 cloverleaf SVGs, and extracts position metadata as JSON.
 
 Usage:
-    python data-raw/structures/generate_svgs.py
+    pixi run -e struct python data-raw/structures/generate_svgs.py
 
 Prerequisites:
     - Python with lxml
-    - R2R on PATH
-    - Local gtRNAdb archive tarballs in ~/
+    - R2R and cmalign on PATH (pixi struct environment)
+    - Mature tRNA FASTAs in data-raw/structures/fasta/
+    - tRNAscan-SE CMs in data-raw/structures/
 """
 
 import re
 import subprocess
-import tarfile
 import tempfile
 from pathlib import Path
 
@@ -23,28 +24,28 @@ from parse_r2r_svg import parse_r2r_svg, write_metadata
 
 # Project root (two levels up from this script)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+SCRIPT_DIR = Path(__file__).resolve().parent
+FASTA_DIR = SCRIPT_DIR / "fasta"
+CM_DIR = SCRIPT_DIR
 OUTPUT_DIR = PROJECT_ROOT / "inst" / "extdata" / "structures"
 MODOMICS_DIR = PROJECT_ROOT / "inst" / "extdata" / "modomics"
-
-HOME = Path.home()
 
 # r2r binary — multistem_junction_bulgey doesn't need the NLOPT solver,
 # so we can use whichever r2r is on PATH
 R2R_BIN = "r2r"
 
-# Local archive files and the .ss file within each
 ORGANISMS = {
     "Escherichia_coli": {
-        "archive": HOME / "eschColi_K_12_MG1655-tRNAs.tar.gz",
-        "ss_member": "eschColi_K_12_MG1655-tRNAs.ss.sort",
+        "fasta": FASTA_DIR / "eschColi_K_12_MG1655-mature-tRNAs.fa",
+        "cm": CM_DIR / "TRNAinf-bact.cm",
     },
     "Saccharomyces_cerevisiae": {
-        "archive": HOME / "sacCer3-tRNAs.tar.gz",
-        "ss_member": "sacCer3-tRNAs.ss.sort",
+        "fasta": FASTA_DIR / "sacCer3-mature-tRNAs.fa",
+        "cm": CM_DIR / "TRNAinf-euk.cm",
     },
     "Homo_sapiens": {
-        "archive": HOME / "hg38-tRNAs.tar.gz",
-        "ss_member": "hg38-tRNAs-confidence-set.ss",
+        "fasta": FASTA_DIR / "hg38-mature-tRNAs.fa",
+        "cm": CM_DIR / "TRNAinf-euk.cm",
     },
 }
 
@@ -59,10 +60,20 @@ def main():
         org_dir = OUTPUT_DIR / org_name
         org_dir.mkdir(parents=True, exist_ok=True)
 
-        # Step 1: Extract tRNA sequences and structures from local archive
-        trnas = extract_trnas_from_archive(
-            org_info["archive"], org_info["ss_member"]
-        )
+        # Step 1: Align sequences against tRNAscan-SE CM
+        fasta_path = org_info["fasta"]
+        if not fasta_path.exists():
+            print(f"  WARNING: FASTA not found: {fasta_path}")
+            continue
+
+        cm_path = org_info["cm"]
+        sto_path = run_cmalign(fasta_path, cm_path)
+        if sto_path is None:
+            print(f"  WARNING: cmalign failed for {org_name}")
+            continue
+
+        # Step 2: Parse aligned sequences and structures
+        trnas = parse_cmalign_stockholm(sto_path)
 
         if not trnas:
             print(f"  WARNING: No tRNA data extracted for {org_name}")
@@ -70,13 +81,13 @@ def main():
 
         print(f"  Found {len(trnas)} unique tRNA isotype-anticodon combos")
 
-        # Step 2: Clean output directory of stale files
+        # Step 3: Clean output directory of stale files
         for old_file in org_dir.glob("*.svg"):
             old_file.unlink()
         for old_file in org_dir.glob("*.json"):
             old_file.unlink()
 
-        # Step 3: Filter to isotypes with MODOMICS data
+        # Step 4: Filter to isotypes with MODOMICS data
         modomics_isotypes = get_modomics_isotypes(org_name)
         if modomics_isotypes:
             filtered = {
@@ -90,7 +101,7 @@ def main():
             )
             trnas = filtered if filtered else trnas
 
-        # Step 4: Generate SVGs for each tRNA
+        # Step 5: Generate SVGs for each tRNA
         for trna_name, trna_copies in trnas.items():
             safe_name = sanitize_filename(trna_name)
             svg_path = org_dir / f"{safe_name}.svg"
@@ -130,78 +141,118 @@ def main():
     print(f"\nDone. Output in {OUTPUT_DIR}")
 
 
-def extract_trnas_from_archive(archive_path: Path, ss_member: str) -> dict:
-    """Extract tRNA data from a local gtRNAdb tar.gz archive.
+def run_cmalign(fasta_path: Path, cm_path: Path) -> Path | None:
+    """Run Infernal cmalign on a FASTA file against a covariance model.
 
-    Returns dict mapping tRNA names to {"sequence": ..., "structure": ...}.
+    Returns path to the Stockholm output file, or None on failure.
     """
-    if not archive_path.exists():
-        print(f"  Archive not found: {archive_path}")
+    print(f"  Running cmalign on {fasta_path.name}...")
+
+    sto_fd, sto_path = tempfile.mkstemp(suffix=".sto")
+    sto_path = Path(sto_path)
+
+    try:
+        result = subprocess.run(
+            [
+                "cmalign", "--notrunc",
+                "-o", str(sto_path),
+                str(cm_path), str(fasta_path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+
+        if result.returncode != 0:
+            print(f"  cmalign stderr: {result.stderr[:500]}")
+            sto_path.unlink(missing_ok=True)
+            return None
+
+        print(f"  cmalign completed successfully")
+        return sto_path
+
+    except FileNotFoundError:
+        print("  ERROR: cmalign not found on PATH")
+        sto_path.unlink(missing_ok=True)
+        return None
+    except subprocess.TimeoutExpired:
+        print("  ERROR: cmalign timed out")
+        sto_path.unlink(missing_ok=True)
+        return None
+
+
+def parse_cmalign_stockholm(sto_path: Path) -> dict:
+    """Parse cmalign Stockholm output into per-tRNA sequences and structures.
+
+    Reads aligned sequences and the SS_cons line, then for each sequence:
+    1. Extract tRNA name from FASTA header (tRNA-{AA}-{Anticodon})
+    2. Remove gap columns (where seq has '-' or '.')
+    3. Convert WUSS notation to R2R bracket format
+    4. Group by tRNA-{AA}-{Anticodon} (dedup copies)
+
+    Returns dict mapping tRNA names to list of {sequence, structure}.
+    """
+    text = sto_path.read_text()
+
+    # Parse interleaved Stockholm: collect sequences and SS_cons
+    seq_parts = {}  # name -> list of seq chunks (in order)
+    ss_parts = []   # list of SS_cons chunks (in order)
+
+    for line in text.splitlines():
+        line = line.rstrip()
+        if not line or line.startswith("#=GF") or line.startswith("//"):
+            continue
+        if line.startswith("# STOCKHOLM"):
+            continue
+        if line.startswith("#=GC SS_cons"):
+            # Extract structure after the tag
+            ss_chunk = line.split(None, 2)[2] if len(line.split(None, 2)) > 2 else ""
+            ss_parts.append(ss_chunk)
+        elif line.startswith("#=GC") or line.startswith("#=GR"):
+            continue
+        elif not line.startswith("#"):
+            # Sequence line: "name  aligned_seq"
+            parts = line.split(None, 1)
+            if len(parts) == 2:
+                name, seq_chunk = parts
+                if name not in seq_parts:
+                    seq_parts[name] = []
+                seq_parts[name].append(seq_chunk)
+
+    if not ss_parts:
+        print("  WARNING: No SS_cons found in Stockholm output")
         return {}
 
-    print(f"  Extracting {ss_member} from {archive_path.name}")
+    # Concatenate interleaved chunks
+    full_ss = "".join(ss_parts)
+    full_seqs = {name: "".join(chunks) for name, chunks in seq_parts.items()}
 
-    with tarfile.open(archive_path, "r:gz") as tar:
-        member = tar.getmember(ss_member)
-        f = tar.extractfile(member)
-        if f is None:
-            print(f"  Could not extract {ss_member}")
-            return {}
-        ss_data = f.read().decode("utf-8")
-
-    return parse_trnascan_ss(ss_data)
-
-
-def parse_trnascan_ss(ss_data: str) -> dict:
-    """Parse tRNAscan-SE .ss output format.
-
-    Each entry looks like:
-        chr.trna71 (2518231-2518156)\tLength: 76 bp
-        Type: Ala\tAnticodon: GGC at 34-36 (...)  Score: 75.0
-        ...
-        Seq: GGGCGTGTGGCGTAGTCGG...
-        Str: >>>>>.>..>>>>........<<<<.>>>>>...
-
-    The Str line uses > for 5' base pairs and < for 3' base pairs.
-    """
+    # Extract per-sequence ungapped structures
     trnas = {}
-    # Split on lines starting with a non-whitespace entry name
-    # Handles both chr.trna* and chrN.trna* formats
-    entries = re.split(r"\n(?=\S+\.trna\d+\s)", ss_data)
+    name_pattern = re.compile(r"tRNA-(\w+)-(\w+)-\d+-\d+")
 
-    for entry in entries:
-        if not entry.strip():
+    for seq_name, aligned_seq in full_seqs.items():
+        # Extract tRNA identity from name
+        match = name_pattern.search(seq_name)
+        if not match:
+            print(f"  WARNING: Could not parse tRNA name from: {seq_name}")
             continue
 
-        # Skip intron-containing tRNAs (for now)
-        if "Possible intron:" in entry:
-            continue
-
-        # Extract type and anticodon
-        type_match = re.search(r"Type:\s+(\S+)", entry)
-        ac_match = re.search(r"Anticodon:\s+(\S+)", entry)
-
-        if not type_match or not ac_match:
-            continue
-
-        aa_type = type_match.group(1)
-        anticodon = ac_match.group(1)
+        aa_type = match.group(1)
+        anticodon = match.group(2)
         trna_name = f"tRNA-{aa_type}-{anticodon}"
 
-        # Extract sequence and structure
-        seq_match = re.search(r"Seq:\s+(\S+)", entry)
-        str_match = re.search(r"Str:\s+(\S+)", entry)
+        # Remove gap columns for this sequence
+        ungapped_seq = []
+        ungapped_ss = []
+        for seq_ch, ss_ch in zip(aligned_seq, full_ss):
+            if seq_ch not in ("-", "."):
+                ungapped_seq.append(seq_ch)
+                ungapped_ss.append(ss_ch)
 
-        if not seq_match or not str_match:
-            continue
+        sequence = "".join(ungapped_seq).upper()
+        structure = wuss_to_r2r("".join(ungapped_ss))
 
-        sequence = seq_match.group(1).upper().replace("T", "U")
-        structure_raw = str_match.group(1)
-
-        # Convert tRNAscan-SE bracket notation to R2R format
-        structure = convert_trnascan_to_r2r(structure_raw)
-
-        # Keep all occurrences; first will be tried first
         if trna_name not in trnas:
             trnas[trna_name] = []
         trnas[trna_name].append({
@@ -212,19 +263,32 @@ def parse_trnascan_ss(ss_data: str) -> dict:
     return trnas
 
 
-def convert_trnascan_to_r2r(raw: str) -> str:
-    """Convert tRNAscan-SE structure notation to R2R bracket format.
+def wuss_to_r2r(wuss: str) -> str:
+    """Convert WUSS notation (from cmalign SS_cons) to R2R bracket format.
 
-    tRNAscan uses > for 5' strand of stems and < for 3' strand.
-    R2R uses < for 5' (opening) and > for 3' (closing) — the opposite.
+    WUSS paired characters → R2R < and >:
+        ( → <    ) → >
+        < → <    > → >
+        [ → <    ] → >
+        { → <    } → >
+    WUSS unpaired characters → R2R dot:
+        : , _ - ~ . → .
     """
+    opening = set("(<[{")
+    closing = set(")>]}")
+    unpaired = set(":,_-~.")
+
     result = []
-    for ch in raw:
-        if ch == ">":
+    for ch in wuss:
+        if ch in opening:
             result.append("<")
-        elif ch == "<":
+        elif ch in closing:
             result.append(">")
+        elif ch in unpaired:
+            result.append(".")
         else:
+            # Unknown character (e.g., pseudoknot markers A-a, B-b)
+            # Treat as unpaired for R2R
             result.append(".")
     return "".join(result)
 
@@ -483,7 +547,7 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
 
     Labels placed:
     - ``j`` at the innermost acceptor pair (junction entry point)
-    - ``3`` at the T-stem start (for place_explicit positioning)
+    - ``1``, ``2``, etc. at each internal stem start
     """
     # Ensure CCA tail and amino acid placeholder are present
     sequence, structure = ensure_cca_tail(sequence, structure)
@@ -521,12 +585,6 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
 
     # Initial stem direction: 90° = vertical (acceptor points up)
     directives.append("#=GF R2R set_dir pos0 90 f")
-
-    # Explicitly position T-stem (always the last numbered stem)
-    t_label = str(n_stems)
-    directives.append(
-        f"#=GF R2R place_explicit {t_label} {t_label}-- 0 1 0 0 0 0"
-    )
 
     if n_stems == 4:
         # Long variable arm (Leu/Ser): D, AC, variable arm, T

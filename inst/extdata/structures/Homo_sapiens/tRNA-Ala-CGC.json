@@ -175,8 +175,8 @@
       "pos": 29
     },
     {
-      "base": "A",
-      "x": 139.79,
+      "base": "G",
+      "x": 139.38,
       "y": 93.43,
       "pos": 30
     },
@@ -349,8 +349,8 @@
       "pos": 58
     },
     {
-      "base": "G",
-      "x": 62.66,
+      "base": "A",
+      "x": 63.08,
       "y": 124.55,
       "pos": 59
     },
@@ -361,14 +361,14 @@
       "pos": 60
     },
     {
-      "base": "C",
+      "base": "U",
       "x": 62.87,
       "y": 132.11,
       "pos": 61
     },
     {
-      "base": "G",
-      "x": 74.9,
+      "base": "A",
+      "x": 75.32,
       "y": 132.11,
       "pos": 62
     },
@@ -439,10 +439,10 @@
       "pos": 73
     }
   ],
-  "width": 53.73,
-  "height": 62.34,
+  "width": 152.71,
+  "height": 176.72,
   "lines": [],
   "trna_name": "tRNA-Ala-CGC",
-  "sequence": "GGGGAUGUAGCUCAGUGGUAGAGCGCGCGCUUCGCAUGUGUGAGGUCCCGGGUUCAAUCCCCGGCAUCUCCA",
+  "sequence": "GGGGAUGUAGCUCAGUGGUAGAGCGCAUGCUUCGCAUGUAUGAGGUCCCGGGUUCGAUCCCCGGCAUCUCCA",
   "structure": "<<<<<<<..<<<<.......>>>>.<<<<<.......>>>>>.....<<<<<.......>>>>>>>>>>>>."
 }

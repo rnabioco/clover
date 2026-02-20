@@ -3,8 +3,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
    version="1.0"
-   width="55.6426mm"
-   height="70.343mm"
+   width="157.727"
+   height="199.397"
    id="svg2403"
    xml:space="preserve">
 <text x="0" y="8.616" id="text1000">
@@ -742,8 +742,8 @@
 <text x="93.2798" y="144.771" id="text1092">
   <tspan x="93.2798" y="144.771" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1093">G</tspan>
 </text>
-<text x="99.8146" y="140.331" id="text1094">
-  <tspan x="99.8146" y="140.331" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1095">A</tspan>
+<text x="99.3984" y="140.331" id="text1094">
+  <tspan x="99.3984" y="140.331" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1095">G</tspan>
 </text>
 <text x="101.708" y="133.068" id="text1096">
   <tspan x="101.708" y="133.068" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1097">U</tspan>
@@ -781,8 +781,8 @@
 <text x="142.396" y="108.947" id="text1118">
   <tspan x="142.396" y="108.947" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1119">A</tspan>
 </text>
-<text x="135.724" y="104.701" id="text1120">
-  <tspan x="135.724" y="104.701" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1121">G</tspan>
+<text x="135.934" y="104.701" id="text1120">
+  <tspan x="135.934" y="104.701" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1121">U</tspan>
 </text>
 <text x="128.385" y="105.104" id="text1122">
   <tspan x="128.385" y="105.104" fill="#d90000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1123">C</tspan>
@@ -842,6 +842,6 @@
  fill="none" stroke="#000000" stroke-width="0.5" stroke-linecap="butt" stroke-linejoin="miter"
  d="M 77.4837 53.0447 A 1.78191,1.78191 270 0,0 75.7018,51.2628L 72.138 51.2628 "/>
 <text x="65.0355" y="53.9553" id="text1158">
-  <tspan x="65.0355" y="53.9553" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1159">5&#x2032;</tspan>
+  <tspan x="65.0355" y="53.9553" fill="#000000"  font-variant="normal" font-weight="normal" font-style="normal" font-family="Helvetica, Arial, sans-serif" font-size="7.5" id="tspan1159">5&apos;</tspan>
 </text>
 </svg>

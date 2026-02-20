@@ -25,8 +25,8 @@
       "pos": 4
     },
     {
-      "base": "G",
-      "x": 83.75,
+      "base": "A",
+      "x": 84.16,
       "y": 51.74,
       "pos": 5
     },
@@ -67,14 +67,14 @@
       "pos": 11
     },
     {
-      "base": "C",
+      "base": "U",
       "x": 71.72,
       "y": 81.98,
       "pos": 12
     },
     {
-      "base": "G",
-      "x": 83.75,
+      "base": "A",
+      "x": 84.16,
       "y": 81.98,
       "pos": 13
     },
@@ -223,7 +223,7 @@
       "pos": 37
     },
     {
-      "base": "C",
+      "base": "U",
       "x": 7.71,
       "y": 119.3,
       "pos": 38
@@ -463,10 +463,10 @@
       "pos": 77
     }
   ],
-  "width": 54.42,
-  "height": 70.34,
+  "width": 154.25,
+  "height": 199.4,
   "lines": [],
   "trna_name": "tRNA-Lys-TTT",
-  "sequence": "GCCCGGAUAGCUCAGUCGGUAGAGCAUCAGACUUUUAAUCUGAGGGUCCAGGGUUCAAGUCCCUGUUCGGGCG",
+  "sequence": "GCCUGGAUAGCUCAGUUGGUAGAGCAUCAGACUUUUAAUCUGAGGGUCCAGGGUUCAAGUCCCUGUUCAGGCA",
   "structure": "<<<<<<<..<<<<........>>>>.<<<<<.......>>>>>.....<<<<<.......>>>>>>>>>>>>."
 }

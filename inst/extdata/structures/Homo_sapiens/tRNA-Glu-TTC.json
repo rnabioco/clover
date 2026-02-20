@@ -79,37 +79,37 @@
       "pos": 13
     },
     {
-      "base": "U",
-      "x": 71.72,
+      "base": "A",
+      "x": 71.92,
       "y": 89.54,
       "pos": 14
     },
     {
-      "base": "A",
-      "x": 84.16,
+      "base": "U",
+      "x": 83.96,
       "y": 89.54,
       "pos": 15
     },
     {
-      "base": "G",
-      "x": 71.51,
+      "base": "U",
+      "x": 71.72,
       "y": 97.1,
       "pos": 16
     },
     {
-      "base": "C",
-      "x": 83.96,
+      "base": "A",
+      "x": 84.16,
       "y": 97.1,
       "pos": 17
     },
     {
-      "base": "G",
-      "x": 71.51,
+      "base": "A",
+      "x": 71.92,
       "y": 104.66,
       "pos": 18
     },
     {
-      "base": "C",
+      "base": "U",
       "x": 83.96,
       "y": 104.66,
       "pos": 19
@@ -121,7 +121,7 @@
       "pos": 20
     },
     {
-      "base": "U",
+      "base": "C",
       "x": 132.88,
       "y": 104.7,
       "pos": 21
@@ -187,7 +187,7 @@
       "pos": 31
     },
     {
-      "base": "U",
+      "base": "C",
       "x": 11.91,
       "y": 113.02,
       "pos": 32
@@ -313,7 +313,7 @@
       "pos": 52
     },
     {
-      "base": "C",
+      "base": "U",
       "x": 11.91,
       "y": 133.15,
       "pos": 53
@@ -361,44 +361,44 @@
       "pos": 60
     },
     {
-      "base": "C",
+      "base": "U",
       "x": 83.84,
       "y": 143.03,
       "pos": 61
     },
     {
-      "base": "G",
-      "x": 64.62,
+      "base": "C",
+      "x": 64.83,
       "y": 147.23,
       "pos": 62
     },
     {
-      "base": "C",
-      "x": 77.07,
+      "base": "G",
+      "x": 76.86,
       "y": 147.23,
       "pos": 63
     },
     {
-      "base": "G",
-      "x": 64.62,
+      "base": "U",
+      "x": 64.83,
       "y": 154.79,
       "pos": 64
     },
     {
-      "base": "C",
-      "x": 77.07,
+      "base": "A",
+      "x": 77.28,
       "y": 154.79,
       "pos": 65
     },
     {
-      "base": "C",
-      "x": 64.83,
+      "base": "G",
+      "x": 64.62,
       "y": 162.35,
       "pos": 66
     },
     {
-      "base": "G",
-      "x": 76.86,
+      "base": "C",
+      "x": 77.07,
       "y": 162.35,
       "pos": 67
     },
@@ -415,7 +415,7 @@
       "pos": 69
     },
     {
-      "base": "C",
+      "base": "U",
       "x": 59.94,
       "y": 175.68,
       "pos": 70
@@ -457,10 +457,10 @@
       "pos": 76
     }
   ],
-  "width": 54.56,
-  "height": 70.34,
+  "width": 154.67,
+  "height": 199.4,
   "lines": [],
   "trna_name": "tRNA-Glu-TTC",
-  "sequence": "UCCCUGGUGGUCUAGUGGCUAGGAUUCGGCGCUUUCACCGCCGCGGCCCGGGUUCGAUUCCCGGCCAGGGAA",
+  "sequence": "UCCCAUAUGGUCUAGCGGUUAGGAUUCCUGGUUUUCACCCAGGUGGCCCGGGUUCGACUCCCGGUAUGGGAA",
   "structure": "<<<<<<<..<<<<........>>>>.<<<<<.......>>>>>....<<<<<.......>>>>>>>>>>>>."
 }
