@@ -399,7 +399,7 @@ svg_path <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
 #| label: fig-structure-bare
 #| echo: false
 htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
+  "<div style=\"text-align: center; width: 150%;\">",
   paste(readLines(svg_path), collapse = "\n"),
   "</div>"
 ))
@@ -446,7 +446,7 @@ svg_path <- plot_tRNA_structure(
 #| label: fig-structure-annotated
 #| echo: false
 htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
+  "<div style=\"text-align: center; width: 150%;\">",
   paste(readLines(svg_path), collapse = "\n"),
   "</div>"
 ))
@@ -466,7 +466,7 @@ svg_path <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
 #| label: fig-structure-leu
 #| echo: false
 htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
+  "<div style=\"text-align: center; width: 150%;\">",
   paste(readLines(svg_path), collapse = "\n"),
   "</div>"
 ))
@@ -504,7 +504,7 @@ svg_path <- plot_tRNA_structure(
 #| label: fig-structure-linkages
 #| echo: false
 htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
+  "<div style=\"text-align: center; width: 150%;\">",
   paste(readLines(svg_path), collapse = "\n"),
   "</div>"
 ))
