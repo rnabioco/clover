@@ -158,6 +158,8 @@ for a complete walkthrough.
   : Plot per-tRNA modification landscape profiles.
 - [`plot_pcoa_rewiring()`](https://rnabioco.github.io/clover/reference/plot_pcoa_rewiring.md)
   : Plot PCoA of tRNA rewiring scores.
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  : Plot tRNA secondary structure with modifications and linkages
 - [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md)
   : Plot a volcano plot of differential expression results.
 
@@ -167,6 +169,17 @@ for a complete walkthrough.
   : Build a network from odds ratio data.
 - [`plot_arc_diagram()`](https://rnabioco.github.io/clover/reference/plot_arc_diagram.md)
   : Plot a network as an arc diagram.
+
+## Structure
+
+- [`default_mod_palette()`](https://rnabioco.github.io/clover/reference/default_mod_palette.md)
+  : Default modification color palette
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  : Plot tRNA secondary structure with modifications and linkages
+- [`structure_organisms()`](https://rnabioco.github.io/clover/reference/structure_organisms.md)
+  : List organisms with bundled tRNA structure SVGs
+- [`structure_trnas()`](https://rnabioco.github.io/clover/reference/structure_trnas.md)
+  : List available tRNA structures for an organism
 
 ## MODOMICS
 

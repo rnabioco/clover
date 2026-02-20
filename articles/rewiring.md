@@ -231,7 +231,7 @@ sessionInfo()
 #> [51] grid_4.5.2                  colorspace_2.1-2           
 #> [53] cli_3.6.5                   SparseArray_1.10.8         
 #> [55] magrittr_2.0.4              S4Arrays_1.10.1            
-#> [57] utf8_1.2.6                  readr_2.1.6                
+#> [57] utf8_1.2.6                  readr_2.2.0                
 #> [59] withr_3.0.2                 scales_1.4.0               
 #> [61] bit64_4.6.0-1               rmarkdown_2.30             
 #> [63] XVector_0.50.0              matrixStats_1.5.0          

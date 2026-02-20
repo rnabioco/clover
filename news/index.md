@@ -2,6 +2,24 @@
 
 ## clover 0.0.0.9000
 
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  overlays modification highlights and circuit linkage arcs on tRNA
+  cloverleaf secondary structure SVGs. Use
+  [`structure_organisms()`](https://rnabioco.github.io/clover/reference/structure_organisms.md)
+  and
+  [`structure_trnas()`](https://rnabioco.github.io/clover/reference/structure_trnas.md)
+  to list bundled structures. Base SVGs are generated offline from
+  gtRNAdb data via R2R.
+
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  linkage arcs now route outward from the structure centroid instead of
+  using a fixed perpendicular offset, avoiding arcs that cut through the
+  interior. Overlapping arcs are assigned to separate lanes for visual
+  clarity. Arc color encodes sign (blue for exclusive, vermillion for
+  co-occurring) and stroke width encodes magnitude of the value. The
+  legend updates to show bidirectional entries when both positive and
+  negative values are present.
+
 - Column naming is now standardized across the package: charging data
   and DESeq2 results use `ref` instead of `tRNA` for the tRNA reference
   name, and Sprinzl coordinates use `pos` instead of `seq_index` for the
