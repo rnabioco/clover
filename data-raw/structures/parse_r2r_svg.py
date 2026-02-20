@@ -95,11 +95,8 @@ def parse_r2r_svg(svg_path: str | Path) -> dict:
                 "y2": round(y2, 2),
             })
 
-    # Sort nucleotides by reading order: top-to-bottom, left-to-right
-    # This usually corresponds to 5'->3' in a cloverleaf layout
-    # We assign positions after sorting
-    nucleotides.sort(key=lambda n: (round(n["y"], 0), n["x"]))
-
+    # R2R emits text elements in 5'->3' sequence order, so SVG document
+    # order is the correct position assignment.  Do NOT spatially sort.
     # Assign sequence positions (1-based)
     for i, nuc in enumerate(nucleotides):
         nuc["pos"] = i + 1

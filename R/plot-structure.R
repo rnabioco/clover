@@ -656,7 +656,6 @@ add_structure_legend <- function(
   # Modification legend
   if (!is.null(modifications) && !is.null(mod_palette)) {
     mod_types <- unique(modifications$mod1)
-    mod_types <- mod_types[mod_types %in% names(mod_palette)]
 
     if (length(mod_types) > 0) {
       xml2::xml_add_child(
@@ -671,13 +670,17 @@ add_structure_legend <- function(
       y_offset <- y_offset + 15
 
       for (mod in mod_types) {
+        color <- mod_palette[mod]
+        if (is.na(color) || is.null(color)) {
+          color <- "#999999"
+        }
         xml2::xml_add_child(
           legend_group,
           "circle",
           cx = "6",
           cy = as.character(y_offset - 3),
           r = "5",
-          fill = mod_palette[mod],
+          fill = color,
           "fill-opacity" = "0.6"
         )
         xml2::xml_add_child(
