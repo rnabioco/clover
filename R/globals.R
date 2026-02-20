@@ -151,5 +151,11 @@ globalVariables(c(
   "type",
   "sprinzl_int",
   "sprinzl_pos",
-  "description"
+  "description",
+  # plot_volcano
+  "padj",
+  # read_charging
+  "tRNA",
+  # read_sprinzl_coords
+  "seq_index"
 ))

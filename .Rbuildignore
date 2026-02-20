@@ -25,3 +25,4 @@
 ^\.claude$
 ^\.clang-format$
 ^data-raw$
+^vignettes/\.quarto$

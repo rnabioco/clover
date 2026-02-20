@@ -43,6 +43,7 @@ Suggests:
     ggrepel,
     ggtext,
     gt,
+    htmltools,
     httr2,
     igraph,
     jsonlite,
