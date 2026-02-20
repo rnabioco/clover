@@ -345,6 +345,7 @@ or_data <- S4Vectors::metadata(se)$odds_ratios
 glimpse(or_data)
 #> Rows: 63,823
 #> Columns: 8
+#> $ sample_id      <chr> "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-…
 #> $ ref            <chr> "host-tRNA-Asp-GTC-1-1", "host-tRNA-Asp-GTC-1-1", "host…
 #> $ pos1           <dbl> 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
 #> $ pos2           <dbl> 23, 26, 28, 31, 32, 35, 36, 37, 39, 40, 43, 45, 47, 48,…
@@ -352,7 +353,6 @@ glimpse(or_data)
 #> $ log_odds_ratio <dbl> -23.02585, -23.02585, -23.02585, -23.02585, -23.02585, …
 #> $ p_value        <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
 #> $ total_obs      <dbl> 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1…
-#> $ sample_id      <chr> "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-…
 ```
 
 ### Chord diagram: single sample
@@ -516,28 +516,15 @@ vermillion arcs indicate co-occurrence (positive log OR). Stroke width
 encodes the magnitude.
 
 ``` r
-# Filter OR data for one tRNA and one sample
-or_glu <- or_data |>
+# Filter OR data for one tRNA and one sample, clean, and filter for
+# significance. filter_linkages() returns a tibble ready for plotting.
+linkages_glu <- or_data |>
   filter(
     ref == "host-tRNA-Glu-TTC-1-1",
     sample_id == "wt-15-ctl-01"
-  )
-
-# Clean and apply significance filters
-or_clean <- clean_odds_ratios(or_glu)
-or_sig <- or_clean |>
-  filter(
-    p_value < 0.01,
-    total_obs >= 100,
-    abs(log_odds_ratio) >= 1.0
-  )
-
-# Build linkages tibble for plot_tRNA_structure
-linkages_glu <- tibble::tibble(
-  pos1 = or_sig$pos1,
-  pos2 = or_sig$pos2,
-  value = or_sig$log_odds_ratio
-)
+  ) |>
+  clean_odds_ratios() |>
+  filter_linkages()
 
 svg_path <- plot_tRNA_structure(
   "tRNA-Glu-TTC",

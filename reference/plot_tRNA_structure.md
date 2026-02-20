@@ -53,8 +53,12 @@ plot_tRNA_structure(
 - linkages:
 
   A tibble with columns `pos1`, `pos2`, and optionally `value` (e.g.,
-  log odds ratio) for coloring arcs. Output of
+  log odds ratio) for coloring arcs. If a `log_odds_ratio` column is
+  present and `value` is not, it is automatically used as `value`, so
+  output of
   [`clean_odds_ratios()`](https://rnabioco.github.io/clover/reference/clean_odds_ratios.md)
+  or
+  [`filter_linkages()`](https://rnabioco.github.io/clover/reference/filter_linkages.md)
   works directly.
 
 - output:

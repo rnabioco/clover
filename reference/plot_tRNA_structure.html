@@ -108,7 +108,9 @@ outlines (stroke only, no fill) around each nucleotide.</p></dd>
 <dt id="arg-linkages">linkages<a class="anchor" aria-label="anchor" href="#arg-linkages"></a></dt>
 <dd><p>A tibble with columns <code>pos1</code>, <code>pos2</code>, and
 optionally <code>value</code> (e.g., log odds ratio) for coloring arcs.
-Output of <code><a href="clean_odds_ratios.html">clean_odds_ratios()</a></code> works directly.</p></dd>
+If a <code>log_odds_ratio</code> column is present and <code>value</code> is not, it
+is automatically used as <code>value</code>, so output of
+<code><a href="clean_odds_ratios.html">clean_odds_ratios()</a></code> or <code><a href="filter_linkages.html">filter_linkages()</a></code> works directly.</p></dd>
 
 
 <dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>

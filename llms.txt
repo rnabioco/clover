@@ -121,6 +121,8 @@ for a complete walkthrough.
   : Clean odds ratio data.
 - [`compute_charging_diffs()`](https://rnabioco.github.io/clover/reference/compute_charging_diffs.md)
   : Compute charging ratio differences between conditions.
+- [`filter_linkages()`](https://rnabioco.github.io/clover/reference/filter_linkages.md)
+  : Filter odds ratios for structure linkage arcs.
 - [`compute_odds_ratios()`](https://rnabioco.github.io/clover/reference/compute_odds_ratios.md)
   : Compute pairwise modification co-occurrence odds ratios.
 - [`compute_ror()`](https://rnabioco.github.io/clover/reference/compute_ror.md)

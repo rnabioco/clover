@@ -2,6 +2,17 @@
 
 ## clover 0.0.0.9000
 
+- [`filter_linkages()`](https://rnabioco.github.io/clover/reference/filter_linkages.md)
+  filters odds ratio data by p-value, observation count, and log odds
+  ratio magnitude, returning a tibble ready for the `linkages` parameter
+  of
+  [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md).
+
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  now accepts odds ratio tibbles directly as `linkages` input: if a
+  `log_odds_ratio` column is present and `value` is not, it is
+  automatically used as the arc value.
+
 - [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
   now draws a 3’ amino acid label (e.g., “Glu”) connected by a line to
   the terminal nucleotide, and position markers every 10 nucleotides
