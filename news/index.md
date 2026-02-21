@@ -25,6 +25,11 @@
   outlines, automatically mapping Sprinzl positions to sequence
   coordinates.
 
+- [`structure_html()`](https://rnabioco.github.io/clover/reference/structure_html.md)
+  wraps a tRNA structure SVG in a centering `<div>` and returns an
+  [`htmltools::HTML`](https://rstudio.github.io/htmltools/reference/HTML.html)
+  object, simplifying embedding in R Markdown and Quarto documents.
+
 - [`filter_linkages()`](https://rnabioco.github.io/clover/reference/filter_linkages.md)
   filters odds ratio data by p-value, observation count, and log odds
   ratio magnitude, returning a tibble ready for the `linkages` parameter

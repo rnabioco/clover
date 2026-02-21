@@ -182,6 +182,8 @@ for a complete walkthrough.
   : Default modification color palette
 - [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
   : Plot tRNA secondary structure with modifications and linkages
+- [`structure_html()`](https://rnabioco.github.io/clover/reference/structure_html.md)
+  : Embed a tRNA structure SVG as centered HTML
 - [`structure_organisms()`](https://rnabioco.github.io/clover/reference/structure_organisms.md)
   : List organisms with bundled tRNA structure SVGs
 - [`structure_to_png()`](https://rnabioco.github.io/clover/reference/structure_to_png.md)

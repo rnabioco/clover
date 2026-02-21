@@ -24,5 +24,5 @@ Other contributors:
 - Laura White <laura.k.white@cuanschutz.edu>
   ([ORCID](https://orcid.org/0000-0003-2909-6627)) \[contributor\]
 
-- RNA Bioscience Initiative (https://ror.org/03wmf1y16) \[funder,
+- RNA Bioscience Initiative ([ROR](https://ror.org/03wmf1y16)) \[funder,
   copyright holder\]
