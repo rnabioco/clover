@@ -307,12 +307,12 @@ structure_html <- function(svg_path) {
 
 # Internal helpers -------------------------------------------------------------
 
-# R2R SVGs use font-size 7.5 Helvetica. The text x/y attributes give the
+# R2R SVGs use font-size 7.1 Helvetica. The text x/y attributes give the
 # left baseline of the character. These offsets shift to the visual center
 # of the uppercase letter (approximately half character-width right, half
 # cap-height up).
-nuc_x_offset <- 2.5
-nuc_y_offset <- -2.7
+nuc_x_offset <- 2.375
+nuc_y_offset <- -2.565
 
 find_nuc <- function(nucs, pos) {
   idx <- which(nucs$pos == pos)
@@ -349,6 +349,22 @@ restyle_base_svg <- function(svg_doc) {
     fill <- xml2::xml_attr(ts, "fill")
     if (!is.na(fill) && fill == "#d90000") {
       xml2::xml_set_attr(ts, "fill", "#000000")
+    }
+  }
+
+  # Shrink nucleotide font-size from 7.5 to 7.1
+  for (ts in tspans) {
+    fs <- xml2::xml_attr(ts, "font-size")
+    if (!is.na(fs) && fs == "7.5") {
+      xml2::xml_set_attr(ts, "font-size", "7.1")
+    }
+  }
+
+  # Shrink tRNA name label from font-size 12 to 9
+  for (ts in tspans) {
+    fs <- xml2::xml_attr(ts, "font-size")
+    if (!is.na(fs) && fs == "12") {
+      xml2::xml_set_attr(ts, "font-size", "9")
     }
   }
 
@@ -400,7 +416,7 @@ add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
       "circle",
       cx = as.character(nuc$x + nuc_x_offset),
       cy = as.character(nuc$y + nuc_y_offset),
-      r = "4.8",
+      r = "4.3",
       fill = color,
       "fill-opacity" = "0.6",
       stroke = "none"
@@ -476,7 +492,7 @@ add_outline_circles <- function(svg_doc, nucs, outlines, palette) {
       "circle",
       cx = as.character(nuc$x + nuc_x_offset),
       cy = as.character(nuc$y + nuc_y_offset),
-      r = "4.8",
+      r = "4.3",
       fill = "none",
       stroke = color,
       "stroke-width" = "1.2"
@@ -1060,7 +1076,7 @@ add_end_labels <- function(svg_doc, nucs, metadata) {
     "text",
     x = as.character(label_x),
     y = as.character(label_y),
-    "font-size" = "7.5",
+    "font-size" = "7.1",
     "font-family" = "Helvetica, Arial, sans-serif",
     "text-anchor" = "middle",
     "dominant-baseline" = "central",
@@ -1163,7 +1179,7 @@ add_position_markers <- function(svg_doc, nucs) {
       "text",
       x = as.character(best_x),
       y = as.character(best_y),
-      "font-size" = "5.5",
+      "font-size" = "5.2",
       "font-family" = "Helvetica, Arial, sans-serif",
       "text-anchor" = "middle",
       "dominant-baseline" = "central",
