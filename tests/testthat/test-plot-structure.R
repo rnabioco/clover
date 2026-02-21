@@ -263,6 +263,27 @@ test_that("add_position_markers adds markers every 10 nt", {
   expect_equal(xml2::xml_text(texts[[2]]), "20")
 })
 
+test_that("structure_html returns html class", {
+  skip_if_not_installed("htmltools")
+  svg_file <- withr::local_tempfile(fileext = ".svg")
+  writeLines(
+    '<svg xmlns="http://www.w3.org/2000/svg"><text>A</text></svg>',
+    svg_file
+  )
+
+  result <- structure_html(svg_file)
+  expect_s3_class(result, "html")
+  expect_match(as.character(result), "text-align: center")
+})
+
+test_that("structure_html errors on missing file", {
+  skip_if_not_installed("htmltools")
+  expect_snapshot(
+    structure_html("nonexistent.svg"),
+    error = TRUE
+  )
+})
+
 test_that("plot_tRNA_structure respects position_markers = FALSE", {
   skip_if(
     length(structure_organisms()) == 0,

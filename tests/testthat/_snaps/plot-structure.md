@@ -33,3 +33,11 @@
       Error in `structure_to_png()`:
       ! SVG file not found: 'nonexistent.svg'.
 
+# structure_html errors on missing file
+
+    Code
+      structure_html("nonexistent.svg")
+    Condition
+      Error in `structure_html()`:
+      ! SVG file not found: 'nonexistent.svg'.
+

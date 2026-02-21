@@ -312,11 +312,7 @@ svg_path <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
 ```{r}
 #| label: fig-structure-bare
 #| echo: false
-htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
-  paste(readLines(svg_path), collapse = "\n"),
-  "</div>"
-))
+structure_html(svg_path)
 ```
 
 ### Annotated structure with modifications, outlines, and text colors
@@ -359,11 +355,7 @@ svg_path <- plot_tRNA_structure(
 ```{r}
 #| label: fig-structure-annotated
 #| echo: false
-htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
-  paste(readLines(svg_path), collapse = "\n"),
-  "</div>"
-))
+structure_html(svg_path)
 ```
 
 ### Long variable arm tRNAs
@@ -379,11 +371,7 @@ svg_path <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
 ```{r}
 #| label: fig-structure-leu
 #| echo: false
-htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
-  paste(readLines(svg_path), collapse = "\n"),
-  "</div>"
-))
+structure_html(svg_path)
 ```
 
 ### Modification co-occurrence on structure
@@ -419,11 +407,7 @@ svg_path <- plot_tRNA_structure(
 ```{r}
 #| label: fig-structure-linkages
 #| echo: false
-htmltools::HTML(paste0(
-  "<div style=\"text-align: center;\">",
-  paste(readLines(svg_path), collapse = "\n"),
-  "</div>"
-))
+structure_html(svg_path)
 ```
 
 ## Next steps
