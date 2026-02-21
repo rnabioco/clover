@@ -271,6 +271,39 @@ structure_to_png <- function(
   invisible(output)
 }
 
+#' Embed a tRNA structure SVG as centered HTML
+#'
+#' Reads an SVG file (typically produced by [plot_tRNA_structure()])
+#' and wraps it in a centering `<div>`, returning an
+#' [htmltools::HTML()] object suitable for use in R Markdown or
+#' Quarto documents.
+#'
+#' @param svg_path Path to an SVG file, typically the return value of
+#'   [plot_tRNA_structure()].
+#'
+#' @return An [htmltools::HTML()] object.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+#' structure_html(svg)
+#' }
+structure_html <- function(svg_path) {
+  rlang::check_installed("htmltools", reason = "to embed SVG as HTML.")
+
+  if (!file.exists(svg_path)) {
+    cli::cli_abort("SVG file not found: {.path {svg_path}}.")
+  }
+
+  svg_lines <- readLines(svg_path, warn = FALSE)
+  htmltools::HTML(paste0(
+    "<div style=\"text-align: center;\">",
+    paste(svg_lines, collapse = "\n"),
+    "</div>"
+  ))
+}
 
 # Internal helpers -------------------------------------------------------------
 

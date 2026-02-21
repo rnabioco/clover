@@ -8,6 +8,8 @@
 
 * `plot_identity_structure()` generates a single tRNA cloverleaf structure SVG with identity element outlines, automatically mapping Sprinzl positions to sequence coordinates.
 
+* `structure_html()` wraps a tRNA structure SVG in a centering `<div>` and returns an `htmltools::HTML` object, simplifying embedding in R Markdown and Quarto documents.
+
 * `filter_linkages()` filters odds ratio data by p-value, observation count, and log odds ratio magnitude, returning a tibble ready for the `linkages` parameter of `plot_tRNA_structure()`.
 
 * `plot_tRNA_structure()` now accepts odds ratio tibbles directly as `linkages` input: if a `log_odds_ratio` column is present and `value` is not, it is automatically used as the arc value.
