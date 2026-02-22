@@ -133,6 +133,12 @@
   [`build_or_network()`](https://rnabioco.github.io/clover/reference/build_or_network.md).
 
 - [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
+  gains `cluster_threshold` to filter low-magnitude noise before
+  clustering, `fill_name` and `fill_breaks` to customize the legend
+  title and breaks, and improved caption styling with
+  `plot.caption.position = "plot"`.
+
+- [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
   gains new parameters for annotated heatmaps: `label_col` overlays text
   labels on tiles, `highlight_col` adds dot markers at selected cells,
   and `group_col` enables group-aware clustering with divider lines

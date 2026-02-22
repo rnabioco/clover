@@ -23,8 +23,11 @@ plot_mod_heatmap(
   highlight_col = NULL,
   highlight_size = 0.8,
   highlight_offset = c(-0.35, 0.35),
+  cluster_threshold = NULL,
   group_col = NULL,
   divider_linewidth = 0.8,
+  fill_name = waiver(),
+  fill_breaks = waiver(),
   caption = NULL
 )
 ```
@@ -97,6 +100,13 @@ plot_mod_heatmap(
   Numeric vector of length 2 giving x/y offsets from tile center for
   highlight dots. Default `c(-0.35, 0.35)`.
 
+- cluster_threshold:
+
+  Numeric threshold for noise filtering during clustering. When
+  non-NULL, only positions where any row has
+  `abs(value) > cluster_threshold` are used to build the distance
+  matrix. Falls back to all positions if nothing passes. Default `NULL`.
+
 - group_col:
 
   Column name (string) for group-aware clustering. When provided, rows
@@ -106,6 +116,15 @@ plot_mod_heatmap(
 - divider_linewidth:
 
   Line width for group dividers. Default `0.8`.
+
+- fill_name:
+
+  Legend title for the fill scale. Default `waiver()` (ggplot2 default).
+
+- fill_breaks:
+
+  Numeric vector of legend breaks for the fill scale. Default `waiver()`
+  (ggplot2 default).
 
 - caption:
 

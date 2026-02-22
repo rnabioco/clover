@@ -72,8 +72,11 @@ optionally clustered using Ward's D2 hierarchical clustering.</p>
 <span>  highlight_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  highlight_size <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  highlight_offset <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.35</span>, <span class="fl">0.35</span><span class="op">)</span>,</span>
+<span>  cluster_threshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  divider_linewidth <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  fill_name <span class="op">=</span> <span class="fu">waiver</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  fill_breaks <span class="op">=</span> <span class="fu">waiver</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  caption <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -149,6 +152,14 @@ cells get a dot overlay. Default <code>NULL</code> (no dots).</p></dd>
 from tile center for highlight dots. Default <code>c(-0.35, 0.35)</code>.</p></dd>
 
 
+<dt id="arg-cluster-threshold">cluster_threshold<a class="anchor" aria-label="anchor" href="#arg-cluster-threshold"></a></dt>
+<dd><p>Numeric threshold for noise filtering during
+clustering. When non-NULL, only positions where any row has
+<code>abs(value) &gt; cluster_threshold</code> are used to build the distance
+matrix. Falls back to all positions if nothing passes. Default
+<code>NULL</code>.</p></dd>
+
+
 <dt id="arg-group-col">group_col<a class="anchor" aria-label="anchor" href="#arg-group-col"></a></dt>
 <dd><p>Column name (string) for group-aware clustering. When
 provided, rows are clustered within each group and horizontal divider
@@ -157,6 +168,16 @@ lines separate groups. Default <code>NULL</code>.</p></dd>
 
 <dt id="arg-divider-linewidth">divider_linewidth<a class="anchor" aria-label="anchor" href="#arg-divider-linewidth"></a></dt>
 <dd><p>Line width for group dividers. Default <code>0.8</code>.</p></dd>
+
+
+<dt id="arg-fill-name">fill_name<a class="anchor" aria-label="anchor" href="#arg-fill-name"></a></dt>
+<dd><p>Legend title for the fill scale. Default
+<code>waiver()</code> (ggplot2 default).</p></dd>
+
+
+<dt id="arg-fill-breaks">fill_breaks<a class="anchor" aria-label="anchor" href="#arg-fill-breaks"></a></dt>
+<dd><p>Numeric vector of legend breaks for the fill
+scale. Default <code>waiver()</code> (ggplot2 default).</p></dd>
 
 
 <dt id="arg-caption">caption<a class="anchor" aria-label="anchor" href="#arg-caption"></a></dt>
