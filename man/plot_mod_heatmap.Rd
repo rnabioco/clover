@@ -20,8 +20,11 @@ plot_mod_heatmap(
   highlight_col = NULL,
   highlight_size = 0.8,
   highlight_offset = c(-0.35, 0.35),
+  cluster_threshold = NULL,
   group_col = NULL,
   divider_linewidth = 0.8,
+  fill_name = waiver(),
+  fill_breaks = waiver(),
   caption = NULL
 )
 }
@@ -63,11 +66,23 @@ cells get a dot overlay. Default \code{NULL} (no dots).}
 \item{highlight_offset}{Numeric vector of length 2 giving x/y offsets
 from tile center for highlight dots. Default \code{c(-0.35, 0.35)}.}
 
+\item{cluster_threshold}{Numeric threshold for noise filtering during
+clustering. When non-NULL, only positions where any row has
+\code{abs(value) > cluster_threshold} are used to build the distance
+matrix. Falls back to all positions if nothing passes. Default
+\code{NULL}.}
+
 \item{group_col}{Column name (string) for group-aware clustering. When
 provided, rows are clustered within each group and horizontal divider
 lines separate groups. Default \code{NULL}.}
 
 \item{divider_linewidth}{Line width for group dividers. Default \code{0.8}.}
+
+\item{fill_name}{Legend title for the fill scale. Default
+\code{waiver()} (ggplot2 default).}
+
+\item{fill_breaks}{Numeric vector of legend breaks for the fill
+scale. Default \code{waiver()} (ggplot2 default).}
 
 \item{caption}{Explanatory text displayed below the plot. Default
 \code{NULL}.}

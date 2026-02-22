@@ -262,6 +262,72 @@ test_that("compute_text_color returns correct colors", {
   expect_equal(colors, c("black", "black", "white", "white", "black"))
 })
 
+test_that("cluster_refs with threshold filters noisy positions", {
+  df <- tidyr::expand_grid(
+    ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
+    sprinzl_label = as.character(1:5)
+  )
+  # Most values are tiny noise, one position has large signal
+  df$value <- 0.001
+  df$value[df$sprinzl_label == "3"] <- c(0.2, -0.1, 0.15)
+  df$sprinzl_label <- order_sprinzl_positions(df$sprinzl_label)
+
+  result <- cluster_refs(df, "ref", "value", threshold = 0.01)
+  expect_length(result, 3)
+  expect_setequal(result, paste0("tRNA-", c("Ala", "Gly", "Ser")))
+})
+
+test_that("cluster_refs threshold falls back when nothing passes", {
+  df <- tidyr::expand_grid(
+    ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
+    sprinzl_label = as.character(1:5)
+  )
+  df$value <- rnorm(nrow(df), sd = 0.001)
+  df$sprinzl_label <- order_sprinzl_positions(df$sprinzl_label)
+
+  result <- cluster_refs(df, "ref", "value", threshold = 1.0)
+  expect_length(result, 3)
+  expect_setequal(result, paste0("tRNA-", c("Ala", "Gly", "Ser")))
+})
+
+test_that("plot_mod_heatmap respects cluster_threshold", {
+  df <- tidyr::expand_grid(
+    ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
+    sprinzl_label = as.character(1:10)
+  )
+  df$value <- 0.001
+  df$value[df$sprinzl_label == "5"] <- c(0.2, -0.15, 0.1)
+
+  p <- plot_mod_heatmap(df, cluster_threshold = 0.01)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_mod_heatmap cluster_threshold falls back with extreme threshold", {
+  df <- tidyr::expand_grid(
+    ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
+    sprinzl_label = as.character(1:5)
+  )
+  df$value <- rnorm(nrow(df), sd = 0.001)
+
+  p <- plot_mod_heatmap(df, cluster_threshold = 1.0)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_mod_heatmap accepts fill_name and fill_breaks", {
+  df <- tidyr::expand_grid(
+    ref = paste0("tRNA-", c("Ala", "Gly")),
+    sprinzl_label = as.character(1:5)
+  )
+  df$value <- rnorm(nrow(df), sd = 0.1)
+
+  p <- plot_mod_heatmap(
+    df,
+    fill_name = "Delta BCError",
+    fill_breaks = c(-0.2, -0.1, 0, 0.1, 0.2)
+  )
+  expect_s3_class(p, "ggplot")
+})
+
 test_that("cluster_refs returns ordered refs", {
   df <- tidyr::expand_grid(
     ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
