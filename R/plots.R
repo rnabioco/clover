@@ -23,8 +23,22 @@ compute_text_color <- function(values, color_limits) {
 
 #' Cluster refs using Ward's D2 on a wide value matrix.
 #' @noRd
-cluster_refs <- function(data, ref_col, value_col) {
-  wide <- data |>
+cluster_refs <- function(data, ref_col, value_col, threshold = NULL) {
+  cluster_data <- data
+
+  if (!is.null(threshold)) {
+    # Find positions where any row exceeds the threshold
+    informative <- cluster_data |>
+      dplyr::group_by(sprinzl_label) |>
+      dplyr::filter(any(abs(.data[[value_col]]) > threshold)) |>
+      dplyr::ungroup()
+
+    if (nrow(informative) > 0) {
+      cluster_data <- informative
+    }
+  }
+
+  wide <- cluster_data |>
     dplyr::select(
       dplyr::all_of(c(ref_col, "sprinzl_label", value_col))
     ) |>
@@ -47,7 +61,13 @@ cluster_refs <- function(data, ref_col, value_col) {
 #' @return A list with `ref_order` (character) and `group_sizes` (named
 #'   integer vector with cumulative counts at each group boundary).
 #' @noRd
-cluster_refs_by_group <- function(data, ref_col, value_col, group_col) {
+cluster_refs_by_group <- function(
+  data,
+  ref_col,
+  value_col,
+  group_col,
+  threshold = NULL
+) {
   groups <- unique(data[[group_col]])
   groups <- sort(groups)
 
@@ -58,7 +78,7 @@ cluster_refs_by_group <- function(data, ref_col, value_col, group_col) {
     group_data <- data[data[[group_col]] == g, , drop = FALSE]
     refs <- unique(group_data[[ref_col]])
     if (length(refs) > 1) {
-      ordered <- cluster_refs(group_data, ref_col, value_col)
+      ordered <- cluster_refs(group_data, ref_col, value_col, threshold)
     } else {
       ordered <- refs
     }
@@ -97,10 +117,19 @@ cluster_refs_by_group <- function(data, ref_col, value_col, group_col) {
 #' @param highlight_size Dot size for highlighted cells. Default `0.8`.
 #' @param highlight_offset Numeric vector of length 2 giving x/y offsets
 #'   from tile center for highlight dots. Default `c(-0.35, 0.35)`.
+#' @param cluster_threshold Numeric threshold for noise filtering during
+#'   clustering. When non-NULL, only positions where any row has
+#'   `abs(value) > cluster_threshold` are used to build the distance
+#'   matrix. Falls back to all positions if nothing passes. Default
+#'   `NULL`.
 #' @param group_col Column name (string) for group-aware clustering. When
 #'   provided, rows are clustered within each group and horizontal divider
 #'   lines separate groups. Default `NULL`.
 #' @param divider_linewidth Line width for group dividers. Default `0.8`.
+#' @param fill_name Legend title for the fill scale. Default
+#'   `waiver()` (ggplot2 default).
+#' @param fill_breaks Numeric vector of legend breaks for the fill
+#'   scale. Default `waiver()` (ggplot2 default).
 #' @param caption Explanatory text displayed below the plot. Default
 #'   `NULL`.
 #'
@@ -131,8 +160,11 @@ plot_mod_heatmap <- function(
   highlight_col = NULL,
   highlight_size = 0.8,
   highlight_offset = c(-0.35, 0.35),
+  cluster_threshold = NULL,
   group_col = NULL,
   divider_linewidth = 0.8,
+  fill_name = waiver(),
+  fill_breaks = waiver(),
   caption = NULL
 ) {
   # --- order x-axis by Sprinzl position ---
@@ -142,11 +174,17 @@ plot_mod_heatmap <- function(
   refs <- unique(data[[ref_col]])
 
   if (cluster && length(refs) > 1 && !is.null(group_col)) {
-    grouped <- cluster_refs_by_group(data, ref_col, value_col, group_col)
+    grouped <- cluster_refs_by_group(
+      data,
+      ref_col,
+      value_col,
+      group_col,
+      cluster_threshold
+    )
     ref_order <- grouped$ref_order
     group_sizes <- grouped$group_sizes
   } else if (cluster && length(refs) > 1) {
-    ref_order <- cluster_refs(data, ref_col, value_col)
+    ref_order <- cluster_refs(data, ref_col, value_col, cluster_threshold)
     group_sizes <- NULL
   } else {
     ref_order <- refs
@@ -187,7 +225,9 @@ plot_mod_heatmap <- function(
       midpoint = 0,
       na.value = na_value,
       limits = color_limits,
-      oob = scales::squish
+      oob = scales::squish,
+      name = fill_name,
+      breaks = fill_breaks
     ) +
     labs(x = "Sprinzl Position", y = "", caption = caption) +
     cowplot::theme_cowplot() +
@@ -262,7 +302,15 @@ plot_mod_heatmap <- function(
 
   # --- caption theme ---
   if (!is.null(caption)) {
-    p <- p + theme(plot.caption = element_text(hjust = 0))
+    p <- p +
+      theme(
+        plot.caption = element_text(
+          hjust = 0,
+          size = 10,
+          margin = margin(t = 8)
+        ),
+        plot.caption.position = "plot"
+      )
   }
 
   if (square) {

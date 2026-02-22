@@ -46,6 +46,8 @@
 
 * `plot_arc_diagram()` creates a circular arc diagram from a tidygraph network built by `build_or_network()`.
 
+* `plot_mod_heatmap()` gains `cluster_threshold` to filter low-magnitude noise before clustering, `fill_name` and `fill_breaks` to customize the legend title and breaks, and improved caption styling with `plot.caption.position = "plot"`.
+
 * `plot_mod_heatmap()` gains new parameters for annotated heatmaps: `label_col` overlays text labels on tiles, `highlight_col` adds dot markers at selected cells, and `group_col` enables group-aware clustering with divider lines between groups. A `caption` parameter adds explanatory text below the plot.
 
 * `plot_mod_landscape()` creates stacked multi-metric profile plots along the tRNA sequence, with optional structural region shading and Sprinzl position secondary axis. Uses patchwork for panel layout.
