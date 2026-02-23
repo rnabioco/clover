@@ -56,9 +56,16 @@ order_sprinzl_positions <- function(labels) {
   ordering <- tibble::tibble(label = unique(labels)) |>
     dplyr::filter(!is.na(label), label != "") |>
     dplyr::mutate(
-      base_num = as.numeric(stringr::str_extract(label, "^\\d+")),
+      # Variable arm extra positions (e.g., e11, e1, e21) go between 45-46
+      .is_var_extra = stringr::str_detect(label, "^e\\d+$"),
+      base_num = dplyr::case_when(
+        .is_var_extra ~ 45,
+        .default = as.numeric(stringr::str_extract(label, "^\\d+"))
+      ),
       suffix = stringr::str_extract(label, "[a-zA-Z]$|:e\\d+$"),
       suffix_order = dplyr::case_when(
+        .is_var_extra ~
+          500 + as.numeric(stringr::str_extract(label, "\\d+$")),
         is.na(suffix) ~ 0,
         stringr::str_detect(suffix, "^[a-z]$") ~ match(suffix, letters),
         stringr::str_detect(suffix, "^[A-Z]$") ~ match(suffix, LETTERS),
