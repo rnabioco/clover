@@ -10,6 +10,7 @@ setup = "Rscript -e \"if (!requireNamespace('pak', quietly = TRUE)) install.pack
 document = "Rscript -e \"devtools::document()\""
 test = "Rscript -e \"devtools::test()\""
 check = "Rscript -e \"devtools::check()\""
+install-air = "curl -LsSf https://github.com/posit-dev/air/releases/latest/download/air-installer.sh | sh"
 
 [dependencies]
 r-base = ">=4.5.2,<4.6"
