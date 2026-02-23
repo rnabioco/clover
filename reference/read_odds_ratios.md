@@ -18,7 +18,7 @@ read_odds_ratios(path)
 
 ## Value
 
-A tibble with columns including `pos1`, `pos2`, `odds_ratio`,
+A tibble with columns including `ref`, `pos1`, `pos2`, `odds_ratio`,
 `log_odds_ratio`, `p_value`, and `total_obs`.
 
 ## Examples

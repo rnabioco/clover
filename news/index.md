@@ -2,6 +2,16 @@
 
 ## clover 0.0.0.9000
 
+- [`compute_bcerror_delta()`](https://rnabioco.github.io/clover/reference/compute_bcerror_delta.md)
+  computes per-position differences in base-calling error rates between
+  two conditions from a summarized bcerror tibble.
+
+- [`prep_mod_heatmap()`](https://rnabioco.github.io/clover/reference/prep_mod_heatmap.md)
+  prepares bcerror delta data for
+  [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
+  by joining Sprinzl coordinates, annotating known modifications, and
+  shortening tRNA labels.
+
 - [`identity_elements()`](https://rnabioco.github.io/clover/reference/identity_elements.md)
   returns experimentally validated tRNA aminoacylation identity elements
   (determinants and antideterminants) for a given organism, based on
