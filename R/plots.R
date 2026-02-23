@@ -89,6 +89,115 @@ cluster_refs_by_group <- function(
   list(ref_order = ref_order, group_sizes = group_sizes)
 }
 
+#' Prepare data for [plot_mod_heatmap()].
+#'
+#' Join Sprinzl coordinates to a bcerror delta tibble, optionally
+#' annotate known modifications, order positions by canonical Sprinzl
+#' index, and shorten tRNA names for display.
+#'
+#' @param data A tibble with at least `ref`, `pos`, and a value column
+#'   (e.g., `delta` from [compute_bcerror_delta()]).
+#' @param value_col Column name (string) for the fill value. Default
+#'   `"delta"`.
+#' @param ref_col Column name (string) for the tRNA reference. Default
+#'   `"ref"`.
+#' @param sprinzl_coords A tibble of Sprinzl coordinates from
+#'   [read_sprinzl_coords()], with at least `trna_id`, `pos`,
+#'   `sprinzl_label`, and `global_index` columns.
+#' @param mods Optional tibble of modification annotations (e.g., from
+#'   [modomics_mods()]) with at least `ref` and `pos` columns. When
+#'   provided, a logical `has_mod` column is added.
+#' @param strip_prefix Regex pattern to strip from `ref` before
+#'   matching Sprinzl coordinates. Default `"^host-"`.
+#' @param shorten_labels Logical; if `TRUE` (default), create a
+#'   `trna_label` column with shortened names (e.g.,
+#'   `"tRNA-Glu-TTC-1-1"` becomes `"Glu-TTC"`).
+#'
+#' @return A tibble ready for [plot_mod_heatmap()], with
+#'   `sprinzl_label` as an ordered factor and optionally `has_mod` and
+#'   `trna_label` columns.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
+#' sprinzl <- read_sprinzl_coords(
+#'   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+#' )
+#' mods <- modomics_mods(trna_fasta, organism = "Escherichia coli")
+#' heatmap_data <- prep_mod_heatmap(
+#'   bcerror_delta,
+#'   sprinzl_coords = sprinzl,
+#'   mods = mods
+#' )
+#' }
+prep_mod_heatmap <- function(
+  data,
+  value_col = "delta",
+  ref_col = "ref",
+  sprinzl_coords,
+  mods = NULL,
+  strip_prefix = "^host-",
+  shorten_labels = TRUE
+) {
+  # Strip prefix and convert DNA -> RNA anticodon for Sprinzl matching
+  result <- dplyr::mutate(
+    data,
+    trna_id = dna_to_rna_anticodon(sub(strip_prefix, "", .data[[ref_col]]))
+  )
+
+  # Join Sprinzl coordinates
+  result <- dplyr::left_join(
+    result,
+    dplyr::select(
+      sprinzl_coords,
+      dplyr::all_of(c("trna_id", "pos", "sprinzl_label", "global_index"))
+    ),
+    by = c("trna_id", "pos")
+  ) |>
+    dplyr::filter(!is.na(.data$sprinzl_label))
+
+  # Annotate modifications
+  if (!is.null(mods)) {
+    mod_positions <- mods |>
+      dplyr::distinct(.data$ref, .data$pos) |>
+      dplyr::mutate(has_mod = TRUE)
+
+    result <- dplyr::left_join(result, mod_positions, by = c("ref", "pos")) |>
+      dplyr::mutate(has_mod = tidyr::replace_na(.data$has_mod, FALSE))
+  }
+
+  # Order sprinzl_label by global_index
+  label_order <- result |>
+    dplyr::distinct(.data$sprinzl_label, .data$global_index) |>
+    dplyr::arrange(.data$global_index) |>
+    dplyr::pull(.data$sprinzl_label)
+
+  result <- dplyr::mutate(
+    result,
+    sprinzl_label = factor(.data$sprinzl_label, levels = label_order)
+  )
+
+  # Strip prefix from ref for display
+  result <- dplyr::mutate(
+    result,
+    !!ref_col := sub(strip_prefix, "", .data[[ref_col]])
+  )
+
+  # Shorten tRNA names
+  if (shorten_labels) {
+    result <- dplyr::mutate(
+      result,
+      trna_label = sub("^tRNA-", "", .data[[ref_col]]) |>
+        sub("-\\d+-\\d+$", "", x = _)
+    )
+  }
+
+  # Sort alphabetically so cluster = FALSE gives a sensible default order
+  dplyr::arrange(result, .data[[ref_col]])
+}
+
 #' Plot a delta-signal modification heatmap.
 #'
 #' Create a diverging heatmap of modification signal changes (e.g., mutant
@@ -234,6 +343,7 @@ plot_mod_heatmap <- function(
     labs(x = "Sprinzl Position", y = "", caption = caption) +
     cowplot::theme_cowplot() +
     theme(
+      axis.title.x = element_text(size = rel(0.6)),
       axis.text.x = element_text(angle = 45, hjust = 1, size = 5),
       axis.text.y = element_text(size = rel(0.6)),
       legend.position = "bottom",

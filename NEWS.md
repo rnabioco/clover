@@ -1,5 +1,9 @@
 # clover 0.0.0.9000
 
+* `compute_bcerror_delta()` computes per-position differences in base-calling error rates between two conditions from a summarized bcerror tibble.
+
+* `prep_mod_heatmap()` prepares bcerror delta data for `plot_mod_heatmap()` by joining Sprinzl coordinates, annotating known modifications, and shortening tRNA labels.
+
 * `identity_elements()` returns experimentally validated tRNA aminoacylation identity elements (determinants and antideterminants) for a given organism, based on Giege & Eriani (2023). Use `identity_organisms()` to list supported organisms.
 
 * `map_identity_to_trna()` converts Sprinzl-numbered identity elements to 1-based sequence positions for a specific tRNA, enabling overlay on `plot_tRNA_structure()` via the `outlines` parameter.

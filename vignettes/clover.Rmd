@@ -180,58 +180,26 @@ plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
 #| fig.height: 5
 #| message: false
 # Compute delta (wt - tb); positive = higher error in wt (modification present)
-bcerror_delta <- bcerror_summary |>
-  select(ref, pos, condition, mean_error) |>
-  pivot_wider(names_from = condition, values_from = mean_error) |>
-  mutate(delta = wt - tb)
+bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
 
-# Add Sprinzl coordinates for position ordering
+# Add Sprinzl coordinates and MODOMICS modification annotations
 sprinzl <- read_sprinzl_coords(
   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
 )
-
-# Match tRNA names: strip "host-" prefix and convert DNA -> RNA anticodon
-bcerror_delta <- bcerror_delta |>
-  mutate(trna_id = dna_to_rna_anticodon(sub("^host-", "", ref)))
-
-# Fetch known modification positions from MODOMICS
-# Use tRNA-only FASTA (no adapters) so positions match bcerror coordinates
 trna_fasta <- clover_example("ecoli/trna_only.fa.gz")
 mods <- modomics_mods(trna_fasta, organism = "Escherichia coli")
 
-# Join with sprinzl coords and modification annotations
-bcerror_sprinzl <- bcerror_delta |>
-  left_join(
-    sprinzl |> select(trna_id, pos, sprinzl_label, global_index),
-    by = c("trna_id", "pos")
-  ) |>
-  filter(!is.na(sprinzl_label)) |>
-  left_join(
-    mods |> distinct(ref, pos) |> mutate(has_mod = TRUE),
-    by = c("ref", "pos")
-  ) |>
-  mutate(has_mod = tidyr::replace_na(has_mod, FALSE))
-
-# Order positions by canonical Sprinzl sequence and clean ref names
-label_order <- bcerror_sprinzl |>
-  distinct(sprinzl_label, global_index) |>
-  arrange(global_index) |>
-  pull(sprinzl_label)
-
-bcerror_sprinzl <- bcerror_sprinzl |>
-  mutate(
-    ref = sub("^host-", "", ref),
-    sprinzl_label = factor(sprinzl_label, levels = label_order)
-  )
-
-# Shorten tRNA labels for display (e.g., "tRNA-Glu-TTC-1-1" -> "Glu-TTC")
-bcerror_sprinzl <- bcerror_sprinzl |>
-  mutate(trna_label = sub("^tRNA-", "", ref) |> sub("-\\d+-\\d+$", "", x = _))
+heatmap_data <- prep_mod_heatmap(
+  bcerror_delta,
+  sprinzl_coords = sprinzl,
+  mods = mods
+)
 
 plot_mod_heatmap(
-  bcerror_sprinzl,
+  heatmap_data,
   value_col = "delta",
   ref_col = "trna_label",
+  cluster = FALSE,
   color_limits = c(-0.1, 0.1),
   highlight_col = "has_mod"
 )
