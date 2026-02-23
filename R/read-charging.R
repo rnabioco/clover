@@ -40,8 +40,11 @@ read_charging <- function(path) {
 #' or_data
 #' }
 read_odds_ratios <- function(path) {
-  readr::read_tsv(path, show_col_types = FALSE) |>
-    dplyr::rename(ref = tRNA)
+  d <- readr::read_tsv(path, show_col_types = FALSE)
+  if ("tRNA" %in% names(d)) {
+    d <- dplyr::rename(d, ref = tRNA)
+  }
+  d
 }
 
 #' Read charging CPM files for multiple samples.
