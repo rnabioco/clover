@@ -39,12 +39,22 @@ are dropped.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 coords <- read_sprinzl_coords(
   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 )
-elems <- identity_elements("Saccharomyces cerevisiae",
-  amino_acid = "Ala")
+elems <- identity_elements(
+  "Saccharomyces cerevisiae",
+  amino_acid = "Ala"
+)
 map_identity_to_trna(elems, coords, "nuc-tRNA-Ala-AGC-1-1")
-} # }
+#> # A tibble: 5 × 13
+#>   amino_acid domain  sprinzl_pos nucleotide region       type  strength pair_pos
+#>   <chr>      <chr>         <int> <chr>      <chr>        <chr> <chr>       <int>
+#> 1 Ala        Eukarya          73 A          discriminat… dete… strong         NA
+#> 2 Ala        Eukarya           3 G          acceptor_st… dete… strong         70
+#> 3 Ala        Eukarya          70 U          acceptor_st… dete… strong          3
+#> 4 Ala        Eukarya           3 G          acceptor_st… anti… NA             70
+#> 5 Ala        Eukarya          70 U          acceptor_st… anti… NA              3
+#> # ℹ 5 more variables: pair_type <chr>, against_aars <chr>, universal <lgl>,
+#> #   description <chr>, pos <dbl>
 ```

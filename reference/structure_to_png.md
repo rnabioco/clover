@@ -40,8 +40,8 @@ The path to the PNG file (invisibly).
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
-png <- structure_to_png(svg)
-} # }
+structure_to_png(svg)
+# }
 ```

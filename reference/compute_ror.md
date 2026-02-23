@@ -52,11 +52,27 @@ A tibble with columns: `pos1`, `pos2`, `or_numerator`, `or_denominator`,
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-combined_or <- read_odds_ratios_multi(paths)
-combined_or$condition <- ifelse(
-  grepl("wt", combined_or$sample_id), "wt", "mut"
+results <- read_pipeline_results(
+  clover_example("ecoli/config.yaml"),
+  types = "odds_ratios"
 )
-ror <- compute_ror(combined_or, numerator = "mut", denominator = "wt")
-} # }
+or_data <- results$odds_ratios
+or_data$condition <- ifelse(
+  grepl("ctl", or_data$sample_id), "ctl", "inf"
+)
+compute_ror(or_data, numerator = "inf", denominator = "ctl")
+#> # A tibble: 8,602 × 6
+#>     pos1  pos2 or_numerator or_denominator log_ror     ror
+#>    <dbl> <dbl>        <dbl>          <dbl>   <dbl>   <dbl>
+#>  1    18    24        -23.0          -23.0    0    1      
+#>  2    18    40        -23.0          -23.0    0    1      
+#>  3    18    46        -23.0          -23.0    0    1      
+#>  4    18    66        -23.0          -23.0    0    1      
+#>  5    18    76        -23.0          -23.0    0    1      
+#>  6    19    18        -23.0          -23.0    0    1      
+#>  7    19    20        -23.0          -17.7   -5.29 0.00506
+#>  8    19    21        -23.0          -23.0    0    1      
+#>  9    19    22        -23.0          -23.0    0    1      
+#> 10    19    24        -23.0          -23.0    0    1      
+#> # ℹ 8,592 more rows
 ```

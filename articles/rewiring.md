@@ -2,6 +2,8 @@
 
 ``` r
 library(clover)
+library(SummarizedExperiment)
+library(S4Vectors)
 library(dplyr)
 ```
 
@@ -39,7 +41,7 @@ se <- create_clover(
   sample_info = sample_info
 )
 
-or_data <- S4Vectors::metadata(se)$odds_ratios
+or_data <- metadata(se)$odds_ratios
 or_data$condition <- ifelse(grepl("ctl", or_data$sample_id), "ctl", "inf")
 ```
 
@@ -197,51 +199,40 @@ sessionInfo()
 #> tzcode source: system (glibc)
 #> 
 #> attached base packages:
-#> [1] stats     graphics  grDevices utils     datasets  methods   base     
+#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  
+#> [8] base     
 #> 
 #> other attached packages:
-#> [1] dplyr_1.2.0       clover_0.0.0.9000
+#>  [1] dplyr_1.2.0                 SummarizedExperiment_1.40.0
+#>  [3] Biobase_2.70.0              GenomicRanges_1.62.1       
+#>  [5] Seqinfo_1.0.0               IRanges_2.44.0             
+#>  [7] S4Vectors_0.48.0            BiocGenerics_0.56.0        
+#>  [9] generics_0.1.4              MatrixGenerics_1.22.0      
+#> [11] matrixStats_1.5.0           clover_0.0.0.9000          
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0 shape_1.4.6.1              
-#>  [3] circlize_0.4.17             gtable_0.3.6               
-#>  [5] xfun_0.56                   bslib_0.10.0               
-#>  [7] ggplot2_4.0.2               GlobalOptions_0.1.3        
-#>  [9] htmlwidgets_1.6.4           ggrepel_0.9.6              
-#> [11] Biobase_2.70.0              lattice_0.22-7             
-#> [13] tzdb_0.5.0                  vctrs_0.7.1                
-#> [15] tools_4.5.2                 generics_0.1.4             
-#> [17] stats4_4.5.2                parallel_4.5.2             
-#> [19] tibble_3.3.1                pkgconfig_2.0.3            
-#> [21] Matrix_1.7-4                RColorBrewer_1.1-3         
-#> [23] S7_0.2.1                    desc_1.4.3                 
-#> [25] S4Vectors_0.48.0            lifecycle_1.0.5            
-#> [27] stringr_1.6.0               compiler_4.5.2             
-#> [29] farver_2.1.2                textshaping_1.0.4          
-#> [31] Biostrings_2.78.0           Seqinfo_1.0.0              
-#> [33] htmltools_0.5.9             sass_0.4.10                
-#> [35] yaml_2.3.12                 pkgdown_2.2.0              
-#> [37] pillar_1.11.1               crayon_1.5.3               
-#> [39] jquerylib_0.1.4             tidyr_1.3.2                
-#> [41] DelayedArray_0.36.0         cachem_1.1.0               
-#> [43] abind_1.4-8                 tidyselect_1.2.1           
-#> [45] digest_0.6.39               stringi_1.8.7              
-#> [47] purrr_1.2.1                 labeling_0.4.3             
-#> [49] cowplot_1.2.0               fastmap_1.2.0              
-#> [51] grid_4.5.2                  colorspace_2.1-2           
-#> [53] cli_3.6.5                   SparseArray_1.10.8         
-#> [55] magrittr_2.0.4              S4Arrays_1.10.1            
-#> [57] utf8_1.2.6                  readr_2.2.0                
-#> [59] withr_3.0.2                 scales_1.4.0               
-#> [61] bit64_4.6.0-1               rmarkdown_2.30             
-#> [63] XVector_0.50.0              matrixStats_1.5.0          
-#> [65] bit_4.6.0                   ragg_1.5.0                 
-#> [67] hms_1.1.4                   evaluate_1.0.5             
-#> [69] knitr_1.51                  GenomicRanges_1.62.1       
-#> [71] IRanges_2.44.0              viridisLite_0.4.3          
-#> [73] rlang_1.1.7                 Rcpp_1.1.1                 
-#> [75] glue_1.8.0                  BiocGenerics_0.56.0        
-#> [77] vroom_1.7.0                 jsonlite_2.0.0             
-#> [79] R6_2.6.1                    MatrixGenerics_1.22.0      
-#> [81] systemfonts_1.3.1           fs_1.6.6
+#>  [1] shape_1.4.6.1       circlize_0.4.17     gtable_0.3.6       
+#>  [4] xfun_0.56           bslib_0.10.0        ggplot2_4.0.2      
+#>  [7] GlobalOptions_0.1.3 htmlwidgets_1.6.4   ggrepel_0.9.6      
+#> [10] lattice_0.22-7      tzdb_0.5.0          vctrs_0.7.1        
+#> [13] tools_4.5.2         parallel_4.5.2      tibble_3.3.1       
+#> [16] pkgconfig_2.0.3     Matrix_1.7-4        RColorBrewer_1.1-3 
+#> [19] S7_0.2.1            desc_1.4.3          lifecycle_1.0.5    
+#> [22] stringr_1.6.0       compiler_4.5.2      farver_2.1.2       
+#> [25] textshaping_1.0.4   Biostrings_2.78.0   htmltools_0.5.9    
+#> [28] sass_0.4.10         yaml_2.3.12         pkgdown_2.2.0      
+#> [31] pillar_1.11.1       crayon_1.5.3        jquerylib_0.1.4    
+#> [34] tidyr_1.3.2         DelayedArray_0.36.0 cachem_1.1.0       
+#> [37] abind_1.4-8         tidyselect_1.2.1    digest_0.6.39      
+#> [40] stringi_1.8.7       purrr_1.2.1         labeling_0.4.3     
+#> [43] cowplot_1.2.0       fastmap_1.2.0       grid_4.5.2         
+#> [46] colorspace_2.1-2    cli_3.6.5           SparseArray_1.10.8 
+#> [49] magrittr_2.0.4      S4Arrays_1.10.1     utf8_1.2.6         
+#> [52] readr_2.2.0         withr_3.0.2         scales_1.4.0       
+#> [55] bit64_4.6.0-1       rmarkdown_2.30      XVector_0.50.0     
+#> [58] bit_4.6.0           ragg_1.5.0          hms_1.1.4          
+#> [61] evaluate_1.0.5      knitr_1.51          viridisLite_0.4.3  
+#> [64] rlang_1.1.7         Rcpp_1.1.1          glue_1.8.0         
+#> [67] vroom_1.7.0         jsonlite_2.0.0      R6_2.6.1           
+#> [70] systemfonts_1.3.1   fs_1.6.6
 ```

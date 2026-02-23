@@ -98,8 +98,13 @@ graphics plot.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-or_data <- read_odds_ratios("sample1.odds_ratios.tsv.gz")
+# \donttest{
+path <- clover_example(
+  "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+)
+or_data <- read_odds_ratios(path)
+or_data <- dplyr::filter(or_data, ref == "host-tRNA-Glu-TTC-1-1")
 plot_chord_or(or_data)
-} # }
+
+# }
 ```

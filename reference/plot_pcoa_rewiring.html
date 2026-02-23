@@ -27,7 +27,8 @@ ggrepel::geom_text_repel()."><script defer data-domain="rnabioco.github.io" src=
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/heatmap.html">Plotting modification heatmaps</a></li>
+    <li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Plotting tRNA structures</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -101,12 +102,20 @@ with at least <code>isodecoder</code>, <code>euclidean_magnitude</code>, and
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="prepare_rewiring_matrix.html">prepare_rewiring_matrix</a></span><span class="op">(</span><span class="va">ror_data</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.8</span>, <span class="fl">0.3</span>, <span class="fl">2.1</span>, <span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1.2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  nrow <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tRNA-Ala"</span>, <span class="st">"tRNA-Gly"</span>, <span class="st">"tRNA-Ser"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"20_vs_34"</span>, <span class="st">"34_vs_58"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="calculate_rewiring_scores.html">calculate_rewiring_scores</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pcoa</span> <span class="op">&lt;-</span> <span class="fu"><a href="perform_pcoa.html">perform_pcoa</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot_pcoa_rewiring</span><span class="op">(</span><span class="va">pcoa</span>, <span class="va">scores</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-plt img"><img src="plot_pcoa_rewiring-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

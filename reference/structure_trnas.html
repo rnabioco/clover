@@ -21,7 +21,8 @@ are bundled with the package for the given organism."><script defer data-domain=
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/heatmap.html">Plotting modification heatmaps</a></li>
+    <li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Plotting tRNA structures</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -74,9 +75,15 @@ list available organisms.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu">structure_trnas</span><span class="op">(</span><span class="st">"Escherichia coli"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">structure_trnas</span><span class="op">(</span><span class="st">"Escherichia coli"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "tRNA-Ala-GGC" "tRNA-Ala-TGC" "tRNA-Arg-ACG" "tRNA-Arg-CCG" "tRNA-Arg-CCT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "tRNA-Arg-TCT" "tRNA-Asn-GTT" "tRNA-Asp-GTC" "tRNA-Cys-GCA" "tRNA-Gln-CTG"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "tRNA-Gln-TTG" "tRNA-Glu-TTC" "tRNA-Gly-CCC" "tRNA-Gly-GCC" "tRNA-Gly-TCC"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "tRNA-His-GTG" "tRNA-Ile-GAT" "tRNA-Leu-CAA" "tRNA-Leu-CAG" "tRNA-Leu-GAG"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "tRNA-Leu-TAA" "tRNA-Leu-TAG" "tRNA-Lys-TTT" "tRNA-Met-CAT" "tRNA-Phe-GAA"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "tRNA-Pro-CGG" "tRNA-Pro-GGG" "tRNA-Pro-TGG" "tRNA-Ser-CGA" "tRNA-Ser-GCT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "tRNA-Ser-GGA" "tRNA-Ser-TGA" "tRNA-Thr-CGT" "tRNA-Thr-GGT" "tRNA-Thr-TGT"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [36] "tRNA-Trp-CCA" "tRNA-Tyr-GTA" "tRNA-Val-GAC" "tRNA-Val-TAC"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

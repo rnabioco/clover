@@ -42,7 +42,20 @@ A `DESeqDataSet` object.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-dds <- run_deseq(mat, coldata, design = ~ condition)
-} # }
+# \donttest{
+se <- create_clover(clover_example("ecoli/config.yaml"))
+counts <- SummarizedExperiment::assay(se, "counts")
+coldata <- as.data.frame(SummarizedExperiment::colData(se))
+coldata$condition <- ifelse(
+  grepl("ctl", coldata$sample_id), "ctl", "inf"
+)
+dds <- run_deseq(counts, coldata, design = ~condition)
+#> Warning: some variables in design formula are characters, converting to factors
+#> estimating size factors
+#> estimating dispersions
+#> gene-wise dispersion estimates
+#> mean-dispersion relationship
+#> final dispersion estimates
+#> fitting model and testing
+# }
 ```

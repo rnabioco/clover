@@ -251,10 +251,10 @@ for a complete walkthrough.
 
 # Articles
 
-### All vignettes
+### Articles
 
-- [Introduction to
-  clover](https://rnabioco.github.io/clover/articles/clover.md):
+- [Plotting modification
+  heatmaps](https://rnabioco.github.io/clover/articles/heatmap.md):
 - [Modification rewiring
   analysis](https://rnabioco.github.io/clover/articles/rewiring.md):
 - [Plotting tRNA

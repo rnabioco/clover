@@ -74,8 +74,17 @@ graphics plot.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-ror <- compute_ror(combined_or, numerator = "mut", denominator = "wt")
+# \donttest{
+results <- read_pipeline_results(
+  clover_example("ecoli/config.yaml"),
+  types = "odds_ratios"
+)
+or_data <- results$odds_ratios
+or_data$condition <- ifelse(
+  grepl("ctl", or_data$sample_id), "ctl", "inf"
+)
+ror <- compute_ror(or_data, numerator = "inf", denominator = "ctl")
 plot_chord_ror(ror)
-} # }
+
+# }
 ```

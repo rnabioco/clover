@@ -19,7 +19,8 @@
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/heatmap.html">Plotting modification heatmaps</a></li>
+    <li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Plotting tRNA structures</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -69,21 +70,21 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fa</span> <span class="op">&lt;-</span> <span class="fu"><a href="clover_example.html">clover_example</a></span><span class="op">(</span><span class="st">"ecoli/validated.fa.gz"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">fa</span> <span class="op">&lt;-</span> <span class="fu"><a href="clover_example.html">clover_example</a></span><span class="op">(</span><span class="st">"ecoli/trna_only.fa.gz"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">read_fasta</span><span class="op">(</span><span class="va">fa</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DNAStringSet object of length 190:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       width seq                                             names               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1]   141 CCTAAGAGCAAGAAGAAGCCTG...CAACCTTGCCTTAAAAAAAAAA host-tRNA-Ile-GAT...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [2]   141 CCTAAGAGCAAGAAGAAGCCTG...TGGAAGGTAGGCAAAAAAAAAA host-tRNA-Ile-GAT...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3]   140 CCTAAGAGCAAGAAGAAGCCTG...CAACCTTGCCTTAAAAAAAAAA host-tRNA-Ala-TGC...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [4]   140 CCTAAGAGCAAGAAGAAGCCTG...TGGAAGGTAGGCAAAAAAAAAA host-tRNA-Ala-TGC...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [5]   141 CCTAAGAGCAAGAAGAAGCCTG...CAACCTTGCCTTAAAAAAAAAA host-tRNA-Asp-GTC...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ...   ... ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [186]   140 CCTAAGAGCAAGAAGAAGCCTG...TGGAAGGTAGGCAAAAAAAAAA phage-tRNA-Thr-TG...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [187]   141 CCTAAGAGCAAGAAGAAGCCTG...CAACCTTGCCTTAAAAAAAAAA phage-tRNA-Ile2-CAT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [188]   141 CCTAAGAGCAAGAAGAAGCCTG...TGGAAGGTAGGCAAAAAAAAAA phage-tRNA-Ile2-C...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [189]   139 CCTAAGAGCAAGAAGAAGCCTG...CAACCTTGCCTTAAAAAAAAAA phage-tRNA-Arg-TCT</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [190]   139 CCTAAGAGCAAGAAGAAGCCTG...TGGAAGGTAGGCAAAAAAAAAA phage-tRNA-Arg-TC...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> DNAStringSet object of length 95:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      width seq                                              names               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]    77 AGGCTTGTAGCTCAGGTGGTTAG...TCAAGTCCACTCAGGCCTACCA host-tRNA-Ile-GAT...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2]    76 GGGGCTATAGCTCAGCTGGGAGA...TCGATCCCGCATAGCTCCACCA host-tRNA-Ala-TGC...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3]    77 GGAGCGGTAGTTCAGTCGGTTAG...TCGAGTCCCGTCCGTTCCGCCA host-tRNA-Asp-GTC...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4]    77 GGAGCGGTAGTTCAGTCGGTTAG...TCGAGTCCCGTCCGTTCCGCCA host-tRNA-Asp-GTC...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5]    76 GCCGATATAGCTCAGTTGGTAGA...TCGACTCCTATTATCGGCACCA host-tRNA-Thr-CGT...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ...   ... ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [91]    78 CTCCGTGTAGCTCAGTTTGGTAG...CAAATCCTTGTATGGAGAGCCA phage-tRNA-Pro-TGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [92]    90 GGAGGCGTGGCAGAGTGGTTTAA...TCAAATCCTATCGCCTCCGCCA phage-tRNA-Ser-TGA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [93]    76 GCTGATTTAGCTCAGTAGGTAGA...TCGATTCCGTCAATCAGCACCA phage-tRNA-Thr-TGT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [94]    77 GGCCCTGTAGCTCAATGGTTAGC...TCAAATCTGGTCTGGGTCACCA phage-tRNA-Ile2-CAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [95]    75 GTCCCGCTGGTGTAATGGATAGC...TCGATCCCAGGGCGGGATACCA phage-tRNA-Arg-TCT</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

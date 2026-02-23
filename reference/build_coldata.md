@@ -33,12 +33,17 @@ A data frame with row names matching `colnames(count_matrix)`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-mat <- abundance_count_matrix(charging)
-sample_info <- data.frame(
-  sample_id = c("wt_1", "wt_2", "mut_1", "mut_2"),
-  condition = c("wt", "wt", "mut", "mut")
+results <- read_pipeline_results(
+  clover_example("ecoli/config.yaml"),
+  types = "charging"
 )
-coldata <- build_coldata(mat, sample_info)
-} # }
+mat <- abundance_count_matrix(results$charging)
+build_coldata(mat)
+#>                 sample_id
+#> wt-15-ctl-01 wt-15-ctl-01
+#> wt-15-ctl-02 wt-15-ctl-02
+#> wt-15-ctl-03 wt-15-ctl-03
+#> wt-15-inf-01 wt-15-inf-01
+#> wt-15-inf-02 wt-15-inf-02
+#> wt-15-inf-03 wt-15-inf-03
 ```

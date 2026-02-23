@@ -21,7 +21,8 @@ each sample and result type."><script defer data-domain="rnabioco.github.io" src
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/heatmap.html">Plotting modification heatmaps</a></li>
+    <li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Plotting tRNA structures</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -80,10 +81,23 @@ each sample and result type.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_pipeline_config.html">read_pipeline_config</a></span><span class="op">(</span><span class="st">"path/to/config.yaml"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_pipeline_config.html">read_pipeline_config</a></span><span class="op">(</span><span class="fu"><a href="clover_example.html">clover_example</a></span><span class="op">(</span><span class="st">"ecoli/config.yaml"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">list_pipeline_files</span><span class="op">(</span><span class="va">config</span>, types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"charging"</span>, <span class="st">"bcerror"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 12 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    sample_id    type     path                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> wt-15-ctl-01 charging /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> wt-15-ctl-02 charging /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> wt-15-ctl-03 charging /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> wt-15-inf-01 charging /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> wt-15-inf-02 charging /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> wt-15-inf-03 charging /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> wt-15-ctl-01 bcerror  /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> wt-15-ctl-02 bcerror  /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> wt-15-ctl-03 bcerror  /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> wt-15-inf-01 bcerror  /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> wt-15-inf-02 bcerror  /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> wt-15-inf-03 bcerror  /home/runner/work/_temp/Library/clover/extdata/ecoli/s…</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -35,12 +35,29 @@ A `tbl_graph` object with node metrics `degree` and `betweenness`, or
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 df <- tibble::tibble(
   pos1 = c("20", "34", "20"),
   pos2 = c("34", "58", "58"),
   ror = c(1.5, -0.8, 0.3)
 )
 build_or_network(df)
-} # }
+#> # A tbl_graph: 3 nodes and 3 edges
+#> #
+#> # An undirected simple graph with 1 component
+#> #
+#> # Node Data: 3 × 3 (active)
+#>   position degree betweenness
+#>   <chr>     <dbl>       <dbl>
+#> 1 20            2           0
+#> 2 34            2           0
+#> 3 58            2           0
+#> #
+#> # Edge Data: 3 × 4
+#>    from    to edge_type    weight
+#>   <int> <int> <chr>         <dbl>
+#> 1     1     2 co-occurring    1.5
+#> 2     2     3 exclusive       0.8
+#> 3     1     3 co-occurring    0.3
+# }
 ```

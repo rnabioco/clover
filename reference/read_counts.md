@@ -22,6 +22,6 @@ A tibble.
 
 ``` r
 if (FALSE) { # \dontrun{
-counts <- read_counts("sample1.counts.tsv.gz")
+read_counts("sample1.counts.tsv.gz")
 } # }
 ```

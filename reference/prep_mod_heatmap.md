@@ -68,16 +68,27 @@ with `sprinzl_label` as an ordered factor and optionally `has_mod` and
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
+bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
+bcerror_delta <- compute_bcerror_delta(
+  bcerror_rds$bcerror_summary, delta = wt - tb
+)
 sprinzl <- read_sprinzl_coords(
   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
 )
-mods <- modomics_mods(trna_fasta, organism = "Escherichia coli")
-heatmap_data <- prep_mod_heatmap(
-  bcerror_delta,
-  sprinzl_coords = sprinzl,
-  mods = mods
-)
-} # }
+prep_mod_heatmap(bcerror_delta, sprinzl_coords = sprinzl)
+#> # A tibble: 776 × 9
+#>    ref             pos     tb     wt    delta trna_id sprinzl_label global_index
+#>    <chr>         <dbl>  <dbl>  <dbl>    <dbl> <chr>   <fct>                <dbl>
+#>  1 tRNA-Asn-GTT…     1 0.0334 0.0405  7.11e-3 tRNA-A… 1                        1
+#>  2 tRNA-Asn-GTT…     2 0.0660 0.0896  2.36e-2 tRNA-A… 2                        3
+#>  3 tRNA-Asn-GTT…     3 0.0587 0.0809  2.21e-2 tRNA-A… 3                        4
+#>  4 tRNA-Asn-GTT…     4 0.195  0.201   5.84e-3 tRNA-A… 4                        8
+#>  5 tRNA-Asn-GTT…     5 0.258  0.288   2.92e-2 tRNA-A… 5                        9
+#>  6 tRNA-Asn-GTT…     6 0.117  0.134   1.70e-2 tRNA-A… 6                       11
+#>  7 tRNA-Asn-GTT…     7 0.125  0.133   7.20e-3 tRNA-A… 7                       12
+#>  8 tRNA-Asn-GTT…     8 0.0644 0.0706  6.17e-3 tRNA-A… 8                       13
+#>  9 tRNA-Asn-GTT…     9 0.0623 0.0619 -3.87e-4 tRNA-A… 9                       14
+#> 10 tRNA-Asn-GTT…    10 0.0295 0.0266 -2.95e-3 tRNA-A… 10                      15
+#> # ℹ 766 more rows
+#> # ℹ 1 more variable: trna_label <chr>
 ```

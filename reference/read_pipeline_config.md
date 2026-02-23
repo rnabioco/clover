@@ -32,9 +32,17 @@ A list with elements:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-config <- read_pipeline_config("path/to/config.yaml")
+config <- read_pipeline_config(clover_example("ecoli/config.yaml"))
 config$samples
+#> # A tibble: 6 × 2
+#>   sample_id    data_path         
+#>   <chr>        <chr>             
+#> 1 wt-15-ctl-01 /data/wt-15-ctl-01
+#> 2 wt-15-ctl-02 /data/wt-15-ctl-02
+#> 3 wt-15-ctl-03 /data/wt-15-ctl-03
+#> 4 wt-15-inf-01 /data/wt-15-inf-01
+#> 5 wt-15-inf-02 /data/wt-15-inf-02
+#> 6 wt-15-inf-03 /data/wt-15-inf-03
 config$output_dir
-} # }
+#> [1] "/home/runner/work/_temp/Library/clover/extdata/ecoli"
 ```

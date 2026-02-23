@@ -23,7 +23,8 @@ aggregated using the specified function."><script defer data-domain="rnabioco.gi
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/heatmap.html">Plotting modification heatmaps</a></li>
+    <li><a class="dropdown-item" href="../articles/rewiring.html">Modification rewiring analysis</a></li>
     <li><a class="dropdown-item" href="../articles/structure.html">Plotting tRNA structures</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -107,13 +108,29 @@ Default <code>mean</code>.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">combined_or</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_odds_ratios_multi.html">read_odds_ratios_multi</a></span><span class="op">(</span><span class="va">paths</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">combined_or</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"wt"</span>, <span class="va">combined_or</span><span class="op">$</span><span class="va">sample_id</span><span class="op">)</span>, <span class="st">"wt"</span>, <span class="st">"mut"</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_pipeline_results.html">read_pipeline_results</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="clover_example.html">clover_example</a></span><span class="op">(</span><span class="st">"ecoli/config.yaml"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  types <span class="op">=</span> <span class="st">"odds_ratios"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ror</span> <span class="op">&lt;-</span> <span class="fu">compute_ror</span><span class="op">(</span><span class="va">combined_or</span>, numerator <span class="op">=</span> <span class="st">"mut"</span>, denominator <span class="op">=</span> <span class="st">"wt"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span><span class="va">or_data</span> <span class="op">&lt;-</span> <span class="va">results</span><span class="op">$</span><span class="va">odds_ratios</span></span></span>
+<span class="r-in"><span><span class="va">or_data</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"ctl"</span>, <span class="va">or_data</span><span class="op">$</span><span class="va">sample_id</span><span class="op">)</span>, <span class="st">"ctl"</span>, <span class="st">"inf"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">compute_ror</span><span class="op">(</span><span class="va">or_data</span>, numerator <span class="op">=</span> <span class="st">"inf"</span>, denominator <span class="op">=</span> <span class="st">"ctl"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8,602 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pos1  pos2 or_numerator or_denominator log_ror     ror</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    18    24        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    18    40        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    18    46        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    18    66        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    18    76        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    19    18        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    19    20        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">17.7</span>   -<span style="color: #BB0000;">5.29</span> 0.005<span style="text-decoration: underline;">06</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    19    21        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    19    22        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    19    24        -<span style="color: #BB0000;">23.0</span>          -<span style="color: #BB0000;">23.0</span>    0    1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8,592 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

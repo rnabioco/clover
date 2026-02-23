@@ -65,12 +65,12 @@ The path to the annotated SVG file (invisibly).
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 coords <- read_sprinzl_coords(
   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 )
 plot_identity_structure(
   "tRNA-Ala-AGC", "Saccharomyces cerevisiae", coords
 )
-} # }
+# }
 ```

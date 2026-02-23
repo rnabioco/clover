@@ -14,6 +14,10 @@ clover_example(path)
 
   path to file
 
+## Value
+
+A string with the path to the example file.
+
 ## Examples
 
 ``` r
