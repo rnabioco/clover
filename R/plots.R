@@ -158,7 +158,7 @@ plot_mod_heatmap <- function(
   label_min = 0.05,
   label_size = 2.5,
   highlight_col = NULL,
-  highlight_size = 0.8,
+  highlight_size = 0.4,
   highlight_offset = c(-0.35, 0.35),
   cluster_threshold = NULL,
   group_col = NULL,
@@ -235,8 +235,15 @@ plot_mod_heatmap <- function(
     cowplot::theme_cowplot() +
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1, size = 5),
-      legend.position = "bottom",
-      legend.key.width = grid::unit(1.5, "cm")
+      axis.text.y = element_text(size = rel(0.6)),
+      legend.position = "inside",
+      legend.position.inside = c(1, 0),
+      legend.justification = c(1, 0),
+      legend.direction = "horizontal",
+      legend.key.width = grid::unit(1, "cm"),
+      legend.key.height = grid::unit(0.3, "cm"),
+      legend.text = element_text(size = 7),
+      legend.title = element_text(size = 8)
     )
 
   # --- text labels ---
