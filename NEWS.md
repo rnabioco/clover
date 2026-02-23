@@ -1,5 +1,7 @@
 # clover 0.0.0.9000
 
+* `plot_tRNA_structure()` gains `sprinzl_coords` and `trna_id` parameters. When `sprinzl_coords` is provided, position columns in `modifications`, `outlines`, `text_colors`, and `linkages` are interpreted as Sprinzl labels and converted to 1-based sequence positions automatically (#20).
+
 * `compute_bcerror_delta()` computes per-position differences in base-calling error rates between two conditions from a summarized bcerror tibble.
 
 * `prep_mod_heatmap()` prepares bcerror delta data for `plot_mod_heatmap()` by joining Sprinzl coordinates, annotating known modifications, and shortening tRNA labels.

@@ -15,7 +15,9 @@ plot_tRNA_structure(
   outline_palette = NULL,
   text_colors = NULL,
   position_markers = TRUE,
-  linkage_palette = c("#0072B2", "#D55E00")
+  linkage_palette = c("#0072B2", "#D55E00"),
+  sprinzl_coords = NULL,
+  trna_id = NULL
 )
 }
 \arguments{
@@ -27,19 +29,22 @@ available tRNAs.}
 (e.g., \code{"Escherichia coli"}).}
 
 \item{modifications}{A tibble with columns \code{pos} (1-based
-position in the tRNA sequence) and \code{mod1} (short modification
-name, e.g., \code{"m1A"}). Output of \code{\link[=modomics_mods]{modomics_mods()}} works
-directly after filtering to the tRNA of interest.}
+position or Sprinzl label when \code{sprinzl_coords} is provided)
+and \code{mod1} (short modification name, e.g., \code{"m1A"}). Output
+of \code{\link[=modomics_mods]{modomics_mods()}} works directly after filtering to the
+tRNA of interest.}
 
-\item{outlines}{A tibble with columns \code{pos} (1-based position)
-and \code{group} (category name for palette lookup). Draws circle
-outlines (stroke only, no fill) around each nucleotide.}
+\item{outlines}{A tibble with columns \code{pos} (1-based position
+or Sprinzl label) and \code{group} (category name for palette
+lookup). Draws circle outlines (stroke only, no fill) around
+each nucleotide.}
 
-\item{linkages}{A tibble with columns \code{pos1}, \code{pos2}, and
-optionally \code{value} (e.g., log odds ratio) for coloring arcs.
-If a \code{log_odds_ratio} column is present and \code{value} is not, it
-is automatically used as \code{value}, so output of
-\code{\link[=clean_odds_ratios]{clean_odds_ratios()}} or \code{\link[=filter_linkages]{filter_linkages()}} works directly.}
+\item{linkages}{A tibble with columns \code{pos1}, \code{pos2} (1-based
+positions or Sprinzl labels), and optionally \code{value} (e.g.,
+log odds ratio) for coloring arcs. If a \code{log_odds_ratio}
+column is present and \code{value} is not, it is automatically
+used as \code{value}, so output of \code{\link[=clean_odds_ratios]{clean_odds_ratios()}} or
+\code{\link[=filter_linkages]{filter_linkages()}} works directly.}
 
 \item{output}{Path for the output SVG file. If \code{NULL} (default),
 writes to a temporary file.}
@@ -50,10 +55,10 @@ modification short name. If \code{NULL}, uses a default palette.}
 \item{outline_palette}{Named character vector of colors keyed by
 outline group name. If \code{NULL}, uses \code{"#333333"} for all.}
 
-\item{text_colors}{A tibble with columns \code{pos} (1-based position)
-and \code{color} (hex color string). Changes the nucleotide letter
-color at specified positions. Unspecified positions keep the
-default color.}
+\item{text_colors}{A tibble with columns \code{pos} (1-based position
+or Sprinzl label) and \code{color} (hex color string). Changes the
+nucleotide letter color at specified positions. Unspecified
+positions keep the default color.}
 
 \item{position_markers}{Logical; if \code{TRUE} (default), draw
 small grey position numbers every 10 nucleotides around the
@@ -64,6 +69,18 @@ colors for negative (exclusive) and positive (co-occurring)
 linkage values. Default \code{c("#0072B2", "#D55E00")} (blue for
 exclusive, vermillion for co-occurring). Stroke width encodes
 the magnitude of the value.}
+
+\item{sprinzl_coords}{A tibble of Sprinzl coordinates as
+returned by \code{\link[=read_sprinzl_coords]{read_sprinzl_coords()}}, or \code{NULL} (default). When
+provided, position columns in \code{modifications}, \code{outlines},
+\code{text_colors}, and \code{linkages} are interpreted as Sprinzl
+labels and converted to 1-based sequence positions
+automatically.}
+
+\item{trna_id}{Character string identifying the tRNA in
+\code{sprinzl_coords} (e.g.,
+\code{"nuc-tRNA-Glu-UUC-1-1"}). If \code{NULL} (default), the tRNA
+name is resolved from \code{trna} automatically.}
 }
 \value{
 The path to the annotated SVG file (invisibly).
