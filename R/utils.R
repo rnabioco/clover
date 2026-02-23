@@ -9,3 +9,15 @@
 clover_example <- function(path) {
   system.file("extdata", path, package = "clover", mustWork = TRUE)
 }
+
+# Convert DNA anticodon to RNA in tRNA name strings.
+#
+# e.g., "tRNA-Glu-TTC-1-1" -> "tRNA-Glu-UUC-1-1"
+dna_to_rna_anticodon <- function(x) {
+  parts <- stringr::str_match(x, "^(tRNA-[A-Za-z0-9]+-)(\\w+)(-.*)")
+  ifelse(
+    is.na(parts[, 1]),
+    x,
+    paste0(parts[, 2], chartr("T", "U", parts[, 3]), parts[, 4])
+  )
+}

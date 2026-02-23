@@ -152,23 +152,10 @@ can reveal modification changes.
 
 ```{r}
 #| label: bcerror-data
-bcerror <- S4Vectors::metadata(se)$bcerror
-
-# Focus on charged tRNAs (not uncharged variants)
-bcerror_charged <- bcerror |>
-  filter(!grepl("-uncharged$", ref))
-
-# Calculate mean error rate per position per condition
-bcerror_charged <- bcerror_charged |>
-  mutate(condition = ifelse(grepl("ctl", sample_id), "ctl", "inf"))
-
-bcerror_summary <- bcerror_charged |>
-  group_by(ref, pos, condition) |>
-  summarise(
-    mean_error = mean(error_rate),
-    mean_mis = mean(mis),
-    .groups = "drop"
-  )
+# Load preprocessed bcerror data (10 tRNAs: 5 most + 5 least abundant)
+bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
+bcerror_charged <- bcerror_rds$bcerror_charged
+bcerror_summary <- bcerror_rds$bcerror_summary
 ```
 
 ```{r}
@@ -178,8 +165,8 @@ bcerror_summary <- bcerror_charged |>
 # Plot error profiles for a few tRNAs
 plot_trnas <- c(
   "host-tRNA-Ala-GGC-1-1",
-  "host-tRNA-Asp-GTC-1-1",
-  "host-tRNA-Glu-TTC-1-1"
+  "host-tRNA-Glu-TTC-1-1",
+  "host-tRNA-Phe-GAA-1-1"
 )
 
 plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
@@ -202,9 +189,9 @@ sprinzl <- read_sprinzl_coords(
   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
 )
 
-# Match tRNA names: strip "host-" prefix
+# Match tRNA names: strip "host-" prefix and convert DNA -> RNA anticodon
 bcerror_delta <- bcerror_delta |>
-  mutate(trna_id = sub("^host-", "", ref))
+  mutate(trna_id = dna_to_rna_anticodon(sub("^host-", "", ref)))
 
 # Join with sprinzl coords to get structural labels
 bcerror_sprinzl <- bcerror_delta |>
