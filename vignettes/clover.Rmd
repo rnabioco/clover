@@ -152,7 +152,7 @@ can reveal modification changes.
 
 ```{r}
 #| label: bcerror-data
-# Load preprocessed bcerror data (10 tRNAs: 5 most + 5 least abundant)
+# Load preprocessed bcerror data comparing wt vs TruB-del (tb) for 10 tRNAs
 bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
 bcerror_charged <- bcerror_rds$bcerror_charged
 bcerror_summary <- bcerror_rds$bcerror_summary
@@ -164,7 +164,7 @@ bcerror_summary <- bcerror_rds$bcerror_summary
 #| fig.height: 7
 # Plot error profiles for a few tRNAs
 plot_trnas <- c(
-  "host-tRNA-Ala-GGC-1-1",
+  "host-tRNA-Asn-GTT-1-1",
   "host-tRNA-Glu-TTC-1-1",
   "host-tRNA-Phe-GAA-1-1"
 )
@@ -176,14 +176,14 @@ plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
 
 ```{r}
 #| label: fig-bcerror-delta
-#| fig.cap: "Difference in mean base-calling error (inf - ctl) across all tRNAs and positions."
+#| fig.cap: "Difference in mean base-calling error (wt - TruB-del) across all tRNAs and positions."
 #| fig.height: 5
 #| message: false
-# Compute delta (inf - ctl)
+# Compute delta (wt - tb); positive = higher error in wt (modification present)
 bcerror_delta <- bcerror_summary |>
   select(ref, pos, condition, mean_error) |>
   pivot_wider(names_from = condition, values_from = mean_error) |>
-  mutate(delta = inf - ctl)
+  mutate(delta = wt - tb)
 
 # Add Sprinzl coordinates for position ordering
 sprinzl <- read_sprinzl_coords(
@@ -223,10 +223,14 @@ bcerror_sprinzl <- bcerror_sprinzl |>
     sprinzl_label = factor(sprinzl_label, levels = label_order)
   )
 
+# Shorten tRNA labels for display (e.g., "tRNA-Glu-TTC-1-1" -> "Glu-TTC")
+bcerror_sprinzl <- bcerror_sprinzl |>
+  mutate(trna_label = sub("^tRNA-", "", ref) |> sub("-\\d+-\\d+$", "", x = _))
+
 plot_mod_heatmap(
   bcerror_sprinzl,
   value_col = "delta",
-  ref_col = "ref",
+  ref_col = "trna_label",
   color_limits = c(-0.1, 0.1),
   highlight_col = "has_mod"
 )
