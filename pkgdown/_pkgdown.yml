@@ -84,3 +84,9 @@ reference:
     - list_pipeline_files
     - order_sprinzl_positions
     - trna_regions
+
+articles:
+  - title: Articles
+    contents:
+    - articles/heatmap
+    - articles/rewiring

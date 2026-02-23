@@ -1,0 +1,457 @@
+---
+title: "Plotting modification heatmaps"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10,
+  fig.height = 6,
+  warning = FALSE
+)
+```
+
+```{r}
+#| label: setup
+#| message: false
+library(clover)
+library(dplyr)
+```
+
+## Overview
+
+This article is a visual gallery for clover's modification heatmap functions.
+It covers every parameter of `plot_mod_heatmap()` and `prep_mod_heatmap()`,
+plus the related `plot_bcerror_profile()` and `plot_mod_landscape()` functions.
+
+All examples use the bundled *E. coli* base-calling error data shipped with
+the package.
+
+## Data preparation
+
+The bundled RDS contains pre-summarized bcerror data comparing wild-type
+(`wt`) and TruB-deletion (`tb`) *E. coli* across 10 tRNAs.
+
+```{r}
+#| label: load-data
+bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
+bcerror_summary <- bcerror_rds$bcerror_summary
+bcerror_charged <- bcerror_rds$bcerror_charged
+```
+
+Compute the per-position delta (wt minus TruB-del). Positive values mean
+higher error in wild-type, indicating a modification lost in the mutant.
+
+```{r}
+#| label: compute-delta
+bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
+bcerror_delta
+```
+
+## Preparing heatmap data
+
+`prep_mod_heatmap()` joins Sprinzl coordinates, optionally annotates known
+modifications from MODOMICS, and shortens tRNA names for display.
+
+```{r}
+#| label: prep-heatmap
+#| message: false
+sprinzl <- read_sprinzl_coords(
+  clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+)
+trna_fasta <- clover_example("ecoli/trna_only.fa.gz")
+mods <- modomics_mods(trna_fasta, organism = "Escherichia coli")
+
+heatmap_data <- prep_mod_heatmap(
+  bcerror_delta,
+  sprinzl_coords = sprinzl,
+  mods = mods
+)
+
+heatmap_data
+```
+
+The result is a tibble with `sprinzl_label` as an ordered factor (canonical
+tRNA position ordering), `trna_label` for compact y-axis names, and `has_mod`
+marking known MODOMICS modification sites.
+
+## Basic heatmap
+
+The simplest call passes the prepared data with appropriate column mappings.
+
+```{r}
+#| label: fig-basic
+#| fig.cap: "Basic modification heatmap with default settings."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label"
+)
+```
+
+## Color scale
+
+Control the diverging color scale with `color_limits`, `color_low`,
+`color_high`, and `na_value`.
+
+```{r}
+#| label: fig-color-scale
+#| fig.cap: "Custom color scale with tighter limits and purple-green palette."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  color_low = "#7B3294",
+  color_high = "#008837",
+  na_value = "gray95"
+)
+```
+
+The default palette uses colorblind-friendly blue (`#0072B2`) and vermillion
+(`#D55E00`). Values outside `color_limits` are squished to the extremes.
+
+## Clustering
+
+By default, rows are clustered using Ward's D2 hierarchical clustering on
+the Sprinzl-position value matrix. Set `cluster = FALSE` to keep alphabetical
+order.
+
+```{r}
+#| label: fig-cluster-on
+#| fig.cap: "Clustered rows (default)."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1)
+)
+```
+
+```{r}
+#| label: fig-cluster-off
+#| fig.cap: "Alphabetical row order (cluster = FALSE)."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  cluster = FALSE,
+  color_limits = c(-0.1, 0.1)
+)
+```
+
+### Noise filtering with `cluster_threshold`
+
+When clustering, low-level noise can dominate the distance matrix. Setting
+`cluster_threshold` restricts clustering to positions where at least one
+tRNA exceeds the threshold in absolute value.
+
+```{r}
+#| label: fig-cluster-threshold
+#| fig.cap: "Clustering uses only positions with |delta| > 0.05."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  cluster_threshold = 0.05
+)
+```
+
+## Group-aware clustering
+
+When tRNAs belong to natural groups (e.g., amino acid families), use
+`group_col` to cluster within each group and draw horizontal dividers
+between them. First, add an amino acid column to the data.
+
+```{r}
+#| label: add-amino-acid
+heatmap_grouped <- heatmap_data |>
+  mutate(amino_acid = sub("-.*", "", trna_label))
+```
+
+```{r}
+#| label: fig-group-cluster
+#| fig.cap: "Clustering within amino acid groups, separated by dividers."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_grouped,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  group_col = "amino_acid"
+)
+```
+
+Control the divider line thickness with `divider_linewidth`.
+
+```{r}
+#| label: fig-divider-width
+#| fig.cap: "Thicker dividers between groups."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_grouped,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  group_col = "amino_acid",
+  divider_linewidth = 2
+)
+```
+
+## Modification highlights
+
+When `prep_mod_heatmap()` is called with `mods`, a logical `has_mod` column
+marks known modification sites. Use `highlight_col` to overlay dots on those
+cells.
+
+```{r}
+#| label: fig-highlight
+#| fig.cap: "MODOMICS modification sites marked with dots."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  highlight_col = "has_mod"
+)
+```
+
+Adjust dot appearance with `highlight_size` and `highlight_offset` (x/y
+displacement from tile center).
+
+```{r}
+#| label: fig-highlight-custom
+#| fig.cap: "Larger highlight dots with custom offset."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  highlight_col = "has_mod",
+  highlight_size = 1.2,
+  highlight_offset = c(-0.3, 0.3)
+)
+```
+
+## Tile labels
+
+Overlay text on tiles with `label_col`. Labels are only shown where
+`abs(value) >= label_min`, and text color automatically switches between
+black and white for contrast.
+
+```{r}
+#| label: add-ref-base
+#| message: false
+# Add the reference base at each position for labeling
+ref_seqs <- Biostrings::readDNAStringSet(trna_fasta)
+ref_bases <- tibble::tibble(
+  ref = rep(names(ref_seqs), Biostrings::width(ref_seqs)),
+  pos = unlist(lapply(Biostrings::width(ref_seqs), seq_len)),
+  ref_base = strsplit(as.character(unlist(ref_seqs)), "") |> unlist()
+)
+
+heatmap_labeled <- heatmap_data |>
+  left_join(ref_bases, by = c("ref", "pos"))
+```
+
+```{r}
+#| label: fig-labels
+#| fig.cap: "Reference bases overlaid on tiles where |delta| >= 0.03."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_labeled,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  label_col = "ref_base",
+  label_min = 0.03,
+  label_size = 2
+)
+```
+
+## Legend and caption
+
+Customize the fill legend with `fill_name` and `fill_breaks`, and add
+explanatory text with `caption`.
+
+```{r}
+#| label: fig-legend-caption
+#| fig.cap: "Custom legend title, breaks, and caption."
+#| fig.height: 5
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  fill_name = "\u0394 error rate",
+  fill_breaks = c(-0.1, -0.05, 0, 0.05, 0.1),
+  caption = "Positive values = higher error in wt (modification present in wt, lost in TruB-del)."
+)
+```
+
+## Square versus free aspect ratio
+
+By default, `square = TRUE` uses `coord_fixed(ratio = 1)` for square tiles.
+Set `square = FALSE` to let ggplot2 fill the available space, which is useful
+for wide heatmaps with many positions.
+
+```{r}
+#| label: fig-square-false
+#| fig.cap: "Free aspect ratio stretches tiles to fill the plot area."
+#| fig.height: 4
+plot_mod_heatmap(
+  heatmap_data,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.1, 0.1),
+  square = FALSE
+)
+```
+
+## Base-calling error profiles
+
+`plot_bcerror_profile()` creates line plots of per-position error rates,
+faceted by tRNA and colored by condition.
+
+```{r}
+#| label: fig-profile-basic
+#| fig.cap: "Error profiles for three tRNAs."
+#| fig.height: 7
+plot_trnas <- c(
+  "host-tRNA-Asn-GTT-1-1",
+  "host-tRNA-Glu-TTC-1-1",
+  "host-tRNA-Phe-GAA-1-1"
+)
+
+plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
+```
+
+### Adding modification annotations
+
+Pass a `mods` tibble to overlay vertical dashed lines at known modification
+positions.
+
+```{r}
+#| label: fig-profile-mods
+#| fig.cap: "Error profiles with MODOMICS modification positions marked."
+#| fig.height: 7
+plot_bcerror_profile(bcerror_summary, refs = plot_trnas, mods = mods)
+```
+
+### Custom colors and layout
+
+Override condition colors with a named vector, and change the facet layout
+with `ncol`.
+```{r}
+#| label: fig-profile-custom
+#| fig.cap: "Custom colors and two-column layout."
+#| fig.height: 5
+plot_bcerror_profile(
+  bcerror_summary,
+  refs = plot_trnas,
+  mods = mods,
+  colors = c(wt = "#E69F00", tb = "#56B4E9"),
+  ncol = 2
+)
+```
+
+## Modification landscape
+
+`plot_mod_landscape()` creates a stacked panel plot showing multiple metrics
+along the tRNA sequence. Each metric gets its own panel sharing a common
+x-axis. This is useful for comparing error rates, mismatch types, or other
+per-position statistics side by side.
+
+First, prepare single-tRNA data with Sprinzl coordinates and region
+annotations.
+
+```{r}
+#| label: prep-landscape
+#| message: false
+# Pick one tRNA and reshape for landscape plotting
+landscape_data <- bcerror_summary |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1", condition == "wt")
+
+# Add Sprinzl coordinates and region info
+sprinzl_glu <- sprinzl |>
+  filter(trna_id == "tRNA-Glu-UUC-1-1") |>
+  select(pos, sprinzl_label, region)
+
+landscape_data <- landscape_data |>
+  left_join(sprinzl_glu, by = "pos") |>
+  filter(!is.na(sprinzl_label))
+
+# Add a logical column for known modification positions
+mod_positions <- mods |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1") |>
+  distinct(pos) |>
+  mutate(has_mod = TRUE)
+
+landscape_data <- landscape_data |>
+  left_join(mod_positions, by = "pos") |>
+  mutate(has_mod = tidyr::replace_na(has_mod, FALSE))
+```
+
+```{r}
+#| label: fig-landscape-basic
+#| fig.cap: "Stacked landscape of error rate and mismatch frequency."
+#| fig.height: 5
+plot_mod_landscape(
+  landscape_data,
+  metrics = c("mean_error", "mean_mis")
+)
+```
+
+### Region shading
+
+Pass `region_col` to add background shading for structural regions
+(acceptor-stem, D-loop, anticodon-stem, etc.).
+
+```{r}
+#| label: fig-landscape-regions
+#| fig.cap: "Landscape with structural region shading."
+#| fig.height: 5
+plot_mod_landscape(
+  landscape_data,
+  metrics = c("mean_error", "mean_mis"),
+  region_col = "region"
+)
+```
+
+### Sprinzl axis and modification highlights
+
+Add a secondary x-axis with Sprinzl position labels using `sprinzl_col`.
+Use `mod_col` to highlight known modification positions on that axis (shown
+in bold orange when ggtext is installed).
+
+```{r}
+#| label: fig-landscape-full
+#| fig.cap: "Full landscape with regions, Sprinzl axis, and modification highlights."
+#| fig.height: 5
+plot_mod_landscape(
+  landscape_data,
+  metrics = c("mean_error", "mean_mis"),
+  region_col = "region",
+  sprinzl_col = "sprinzl_label",
+  mod_col = "has_mod",
+  title = "tRNA-Glu-UUC-1-1 modification landscape",
+  heights = c(2, 1)
+)
+```
+
+## Session info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```
