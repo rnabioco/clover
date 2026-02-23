@@ -13,10 +13,10 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' charging <- read_charging("sample1.charging.cpm.tsv.gz")
-#' charging
-#' }
+#' path <- clover_example(
+#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.charging.cpm.tsv.gz"
+#' )
+#' read_charging(path)
 read_charging <- function(path) {
   readr::read_tsv(path, show_col_types = FALSE) |>
     dplyr::rename(ref = tRNA)
@@ -35,10 +35,10 @@ read_charging <- function(path) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' or_data <- read_odds_ratios("sample1.odds_ratios.tsv.gz")
-#' or_data
-#' }
+#' path <- clover_example(
+#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+#' )
+#' read_odds_ratios(path)
 read_odds_ratios <- function(path) {
   d <- readr::read_tsv(path, show_col_types = FALSE)
   if ("tRNA" %in% names(d)) {
@@ -60,11 +60,15 @@ read_odds_ratios <- function(path) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' paths <- c(sample1 = "s1.charging.cpm.tsv.gz",
-#'            sample2 = "s2.charging.cpm.tsv.gz")
-#' charging <- read_charging_multi(paths)
-#' }
+#' paths <- c(
+#'   "wt-15-ctl-01" = clover_example(
+#'     "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.charging.cpm.tsv.gz"
+#'   ),
+#'   "wt-15-ctl-02" = clover_example(
+#'     "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.charging.cpm.tsv.gz"
+#'   )
+#' )
+#' read_charging_multi(paths)
 read_charging_multi <- function(paths) {
   read_multi(paths, read_charging)
 }
@@ -82,11 +86,15 @@ read_charging_multi <- function(paths) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' paths <- c(sample1 = "s1.odds_ratios.tsv.gz",
-#'            sample2 = "s2.odds_ratios.tsv.gz")
-#' or_data <- read_odds_ratios_multi(paths)
-#' }
+#' paths <- c(
+#'   "wt-15-ctl-01" = clover_example(
+#'     "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+#'   ),
+#'   "wt-15-ctl-02" = clover_example(
+#'     "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.odds_ratios.tsv.gz"
+#'   )
+#' )
+#' read_odds_ratios_multi(paths)
 read_odds_ratios_multi <- function(paths) {
   read_multi(paths, read_odds_ratios)
 }
@@ -142,23 +150,17 @@ read_multi <- function(paths, reader) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' paths <- c(
-#'   ctl1 = "ctl1.charging.cpm.tsv.gz",
-#'   ctl2 = "ctl2.charging.cpm.tsv.gz",
-#'   inf1 = "inf1.charging.cpm.tsv.gz",
-#'   inf2 = "inf2.charging.cpm.tsv.gz"
-#' )
-#' charging <- read_charging_multi(paths)
+#' config_path <- clover_example("ecoli/config.yaml")
+#' results <- read_pipeline_results(config_path, types = "charging")
+#' charging <- results$charging
 #' charging$condition <- ifelse(
 #'   grepl("ctl", charging$sample_id), "ctl", "inf"
 #' )
-#' diffs <- compute_charging_diffs(
+#' compute_charging_diffs(
 #'   charging,
 #'   numerator = "inf",
 #'   denominator = "ctl"
 #' )
-#' }
 compute_charging_diffs <- function(
   charging_data,
   condition_col = "condition",

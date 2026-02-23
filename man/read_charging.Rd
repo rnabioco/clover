@@ -18,8 +18,8 @@ Read a per-tRNA charging CPM file produced by the tRNA sequencing pipeline.
 These files contain counts and CPM values for charged and uncharged reads.
 }
 \examples{
-\dontrun{
-charging <- read_charging("sample1.charging.cpm.tsv.gz")
-charging
-}
+path <- clover_example(
+  "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.charging.cpm.tsv.gz"
+)
+read_charging(path)
 }

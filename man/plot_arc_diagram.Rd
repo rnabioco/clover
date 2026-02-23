@@ -29,8 +29,13 @@ Create a circular arc diagram from a tidygraph network built by
 \code{\link[=build_or_network]{build_or_network()}}. Requires the ggraph package.
 }
 \examples{
-\dontrun{
-graph <- build_or_network(or_data)
+\donttest{
+df <- tibble::tibble(
+  pos1 = c("20", "34", "20"),
+  pos2 = c("34", "58", "58"),
+  ror = c(1.5, -0.8, 0.3)
+)
+graph <- build_or_network(df)
 plot_arc_diagram(graph)
 }
 }

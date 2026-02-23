@@ -24,8 +24,9 @@ suitable for a DESeq2 interaction design that tests for differences in
 charging ratios between conditions.
 }
 \examples{
-\dontrun{
-charging <- read_charging_multi(paths)
-mat <- charging_count_matrix(charging)
-}
+results <- read_pipeline_results(
+  clover_example("ecoli/config.yaml"),
+  types = "charging"
+)
+charging_count_matrix(results$charging)
 }

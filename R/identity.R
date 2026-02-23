@@ -168,14 +168,14 @@ identity_organisms <- function() {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' coords <- read_sprinzl_coords(
 #'   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 #' )
-#' elems <- identity_elements("Saccharomyces cerevisiae",
-#'   amino_acid = "Ala")
+#' elems <- identity_elements(
+#'   "Saccharomyces cerevisiae",
+#'   amino_acid = "Ala"
+#' )
 #' map_identity_to_trna(elems, coords, "nuc-tRNA-Ala-AGC-1-1")
-#' }
 map_identity_to_trna <- function(elements, sprinzl_coords, trna_id) {
   coords <- sprinzl_coords[sprinzl_coords$trna_id == trna_id, ]
 
@@ -228,7 +228,7 @@ map_identity_to_trna <- function(elements, sprinzl_coords, trna_id) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' coords <- read_sprinzl_coords(
 #'   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 #' )
@@ -315,13 +315,12 @@ plot_identity_structure <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' coords <- read_sprinzl_coords(
 #'   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 #' )
 #' plot_identity_panel(
-#'   c("tRNA-Ala-AGC", "tRNA-Asp-GTC",
-#'     "tRNA-Phe-GAA", "tRNA-His-GTG"),
+#'   c("tRNA-Ala-AGC", "tRNA-Asp-GTC"),
 #'   "Saccharomyces cerevisiae",
 #'   coords
 #' )

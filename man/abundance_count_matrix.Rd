@@ -24,8 +24,9 @@ each row is a tRNA and each column is a sample. Values are total
 abundance (charged + uncharged counts).
 }
 \examples{
-\dontrun{
-charging <- read_charging_multi(paths)
-mat <- abundance_count_matrix(charging)
-}
+results <- read_pipeline_results(
+  clover_example("ecoli/config.yaml"),
+  types = "charging"
+)
+abundance_count_matrix(results$charging)
 }

@@ -50,16 +50,12 @@ annotate known modifications, order positions by canonical Sprinzl
 index, and shorten tRNA names for display.
 }
 \examples{
-\dontrun{
-bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
+bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
+bcerror_delta <- compute_bcerror_delta(
+  bcerror_rds$bcerror_summary, delta = wt - tb
+)
 sprinzl <- read_sprinzl_coords(
   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
 )
-mods <- modomics_mods(trna_fasta, organism = "Escherichia coli")
-heatmap_data <- prep_mod_heatmap(
-  bcerror_delta,
-  sprinzl_coords = sprinzl,
-  mods = mods
-)
-}
+prep_mod_heatmap(bcerror_delta, sprinzl_coords = sprinzl)
 }

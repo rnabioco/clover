@@ -9,6 +9,9 @@ clover_example(path)
 \arguments{
 \item{path}{path to file}
 }
+\value{
+A string with the path to the example file.
+}
 \description{
 Provide working directory for clover example files.
 }

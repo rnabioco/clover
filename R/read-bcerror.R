@@ -10,7 +10,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' counts <- read_counts("sample1.counts.tsv.gz")
+#' read_counts("sample1.counts.tsv.gz")
 #' }
 read_counts <- function(path) {
   readr::read_tsv(path, show_col_types = FALSE)

@@ -19,7 +19,5 @@ Returns the names of tRNAs for which cloverleaf structure SVGs
 are bundled with the package for the given organism.
 }
 \examples{
-\dontrun{
 structure_trnas("Escherichia coli")
-}
 }

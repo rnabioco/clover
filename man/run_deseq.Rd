@@ -25,7 +25,13 @@ Wrapper around \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()
 for tRNA abundance or charging data.
 }
 \examples{
-\dontrun{
-dds <- run_deseq(mat, coldata, design = ~ condition)
+\donttest{
+se <- create_clover(clover_example("ecoli/config.yaml"))
+counts <- SummarizedExperiment::assay(se, "counts")
+coldata <- as.data.frame(SummarizedExperiment::colData(se))
+coldata$condition <- ifelse(
+  grepl("ctl", coldata$sample_id), "ctl", "inf"
+)
+dds <- run_deseq(counts, coldata, design = ~condition)
 }
 }

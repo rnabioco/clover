@@ -87,12 +87,25 @@ interest.
 
 ```{r}
 #| label: mods-setup
-fasta_path <- clover_example("ecoli/validated.fa.gz")
+fasta_path <- clover_example("ecoli/trna_only.fa.gz")
 mods <- modomics_mods(fasta_path, "Escherichia coli")
 
 mods_glu <- mods |>
   filter(ref == "host-tRNA-Glu-TTC-1-1")
 mods_glu
+```
+
+Since `plot_tRNA_structure()` uses 1-based sequence positions, we load Sprinzl
+coordinates to convert named positions (like the anticodon at Sprinzl 34-36)
+to their actual sequence indices.
+
+```{r}
+#| label: sprinzl-setup
+sprinzl <- read_sprinzl_coords(
+  clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+)
+glu_coords <- sprinzl |>
+  filter(trna_id == "tRNA-Glu-UUC-1-1")
 ```
 
 ```{r}
@@ -126,8 +139,12 @@ MODOMICS modifications with your own entries and extend the palette.
 ```{r}
 #| label: custom-palette
 # Add anticodon positions (Sprinzl 34-36) as a custom category
+ac_pos <- glu_coords |>
+  filter(sprinzl_label %in% c("34", "35", "36")) |>
+  pull(pos)
+
 anticodon <- tibble::tibble(
-  pos = 34:36,
+  pos = ac_pos,
   mod1 = rep("anticodon", 3)
 )
 
@@ -159,8 +176,12 @@ colors.
 
 ```{r}
 #| label: outlines
-# Highlight the discriminator base (position 73)
-disc_outline <- tibble::tibble(pos = 73, group = "discriminator")
+# Highlight the discriminator base (Sprinzl position 73)
+disc_pos <- glu_coords |>
+  filter(sprinzl_label == "73") |>
+  pull(pos)
+
+disc_outline <- tibble::tibble(pos = disc_pos, group = "discriminator")
 
 svg <- plot_tRNA_structure(
   "tRNA-Glu-TTC",
@@ -183,9 +204,9 @@ positions. This takes a tibble with `pos` and `color` columns.
 
 ```{r}
 #| label: text-colors
-# Color the anticodon triplet green
+# Color the anticodon triplet (Sprinzl 34-36) green
 ac_text <- tibble::tibble(
-  pos = 34:36,
+  pos = ac_pos,
   color = rep("#4DAF4A", 3)
 )
 
@@ -208,8 +229,8 @@ Modifications, outlines, and text colors can all be used together.
 
 ```{r}
 #| label: combined
-disc_outline <- tibble::tibble(pos = 73, group = "discriminator")
-disc_text <- tibble::tibble(pos = 73, color = "#E41A1C")
+disc_outline <- tibble::tibble(pos = disc_pos, group = "discriminator")
+disc_text <- tibble::tibble(pos = disc_pos, color = "#E41A1C")
 
 svg <- plot_tRNA_structure(
   "tRNA-Glu-TTC",

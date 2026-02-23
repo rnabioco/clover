@@ -17,6 +17,6 @@ Read a per-tRNA counts file produced by the tRNA sequencing pipeline.
 }
 \examples{
 \dontrun{
-counts <- read_counts("sample1.counts.tsv.gz")
+read_counts("sample1.counts.tsv.gz")
 }
 }

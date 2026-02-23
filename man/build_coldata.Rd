@@ -23,12 +23,10 @@ Create a \code{data.frame} of sample metadata suitable for
 the \code{charge_status} factor is added automatically.
 }
 \examples{
-\dontrun{
-mat <- abundance_count_matrix(charging)
-sample_info <- data.frame(
-  sample_id = c("wt_1", "wt_2", "mut_1", "mut_2"),
-  condition = c("wt", "wt", "mut", "mut")
+results <- read_pipeline_results(
+  clover_example("ecoli/config.yaml"),
+  types = "charging"
 )
-coldata <- build_coldata(mat, sample_info)
-}
+mat <- abundance_count_matrix(results$charging)
+build_coldata(mat)
 }

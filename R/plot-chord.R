@@ -39,8 +39,12 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' or_data <- read_odds_ratios("sample1.odds_ratios.tsv.gz")
+#' \donttest{
+#' path <- clover_example(
+#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+#' )
+#' or_data <- read_odds_ratios(path)
+#' or_data <- dplyr::filter(or_data, ref == "host-tRNA-Glu-TTC-1-1")
 #' plot_chord_or(or_data)
 #' }
 plot_chord_or <- function(
@@ -123,13 +127,15 @@ plot_chord_or <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' combined_or <- read_odds_ratios_multi(paths)
-#' combined_or$condition <- ifelse(
-#'   grepl("wt", combined_or$sample_id), "wt", "mut"
+#' results <- read_pipeline_results(
+#'   clover_example("ecoli/config.yaml"),
+#'   types = "odds_ratios"
 #' )
-#' ror <- compute_ror(combined_or, numerator = "mut", denominator = "wt")
-#' }
+#' or_data <- results$odds_ratios
+#' or_data$condition <- ifelse(
+#'   grepl("ctl", or_data$sample_id), "ctl", "inf"
+#' )
+#' compute_ror(or_data, numerator = "inf", denominator = "ctl")
 compute_ror <- function(
   odds_data,
   condition_col = "condition",
@@ -201,8 +207,16 @@ compute_ror <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' ror <- compute_ror(combined_or, numerator = "mut", denominator = "wt")
+#' \donttest{
+#' results <- read_pipeline_results(
+#'   clover_example("ecoli/config.yaml"),
+#'   types = "odds_ratios"
+#' )
+#' or_data <- results$odds_ratios
+#' or_data$condition <- ifelse(
+#'   grepl("ctl", or_data$sample_id), "ctl", "inf"
+#' )
+#' ror <- compute_ror(or_data, numerator = "inf", denominator = "ctl")
 #' plot_chord_ror(ror)
 #' }
 plot_chord_ror <- function(

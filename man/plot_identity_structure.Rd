@@ -49,7 +49,7 @@ identity elements highlighted as colored outlines. Strong
 determinants are shown in red, weak determinants in blue.
 }
 \examples{
-\dontrun{
+\donttest{
 coords <- read_sprinzl_coords(
   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 )

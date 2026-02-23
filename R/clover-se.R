@@ -23,11 +23,9 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' se <- create_clover("path/to/config.yaml")
-#' SummarizedExperiment::assay(se, "counts")
+#' se <- create_clover(clover_example("ecoli/config.yaml"))
+#' SummarizedExperiment::assay(se, "counts")[1:3, ]
 #' SummarizedExperiment::colData(se)
-#' }
 create_clover <- function(
   config_path,
   types = c("charging", "bcerror", "odds_ratios"),
@@ -113,7 +111,7 @@ create_clover <- function(
 #' Read FASTA reference
 #'
 #' @examples
-#' fa <- clover_example("ecoli/validated.fa.gz")
+#' fa <- clover_example("ecoli/trna_only.fa.gz")
 #' read_fasta(fa)
 #'
 #' @param fa path to fasta file

@@ -30,12 +30,12 @@ structure plots via the \code{outlines} parameter of
 \code{\link[=plot_tRNA_structure]{plot_tRNA_structure()}}.
 }
 \examples{
-\dontrun{
 coords <- read_sprinzl_coords(
   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 )
-elems <- identity_elements("Saccharomyces cerevisiae",
-  amino_acid = "Ala")
+elems <- identity_elements(
+  "Saccharomyces cerevisiae",
+  amino_acid = "Ala"
+)
 map_identity_to_trna(elems, coords, "nuc-tRNA-Ala-AGC-1-1")
-}
 }

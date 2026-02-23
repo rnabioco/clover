@@ -18,9 +18,13 @@ Read and combine charging CPM files from multiple samples into a single
 tibble with a \code{sample_id} column.
 }
 \examples{
-\dontrun{
-paths <- c(sample1 = "s1.charging.cpm.tsv.gz",
-           sample2 = "s2.charging.cpm.tsv.gz")
-charging <- read_charging_multi(paths)
-}
+paths <- c(
+  "wt-15-ctl-01" = clover_example(
+    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.charging.cpm.tsv.gz"
+  ),
+  "wt-15-ctl-02" = clover_example(
+    "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.charging.cpm.tsv.gz"
+  )
+)
+read_charging_multi(paths)
 }

@@ -39,9 +39,7 @@ structure_organisms <- function() {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' structure_trnas("Escherichia coli")
-#' }
 structure_trnas <- function(organism) {
   org_dir <- structure_org_dir(organism)
   svg_files <- list.files(org_dir, pattern = "\\.svg$")
@@ -97,17 +95,8 @@ structure_trnas <- function(organism) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Base structure only
-#' plot_tRNA_structure("tRNA-Ala-GGC", "Escherichia coli")
-#'
-#' # With MODOMICS modifications
-#' fa <- clover_example("ecoli/validated.fa.gz")
-#' mods <- modomics_mods(fa, "Escherichia coli")
-#' plot_tRNA_structure(
-#'   "tRNA-Ala-GGC", "Escherichia coli",
-#'   modifications = mods
-#' )
+#' \donttest{
+#' plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
 #' }
 plot_tRNA_structure <- function(
   trna,
@@ -243,9 +232,9 @@ plot_tRNA_structure <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
-#' png <- structure_to_png(svg)
+#' structure_to_png(svg)
 #' }
 structure_to_png <- function(
   svg_path,
@@ -286,7 +275,7 @@ structure_to_png <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
 #' structure_html(svg)
 #' }

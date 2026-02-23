@@ -25,9 +25,7 @@ reference path. Relative paths are resolved relative to the config file
 directory.
 }
 \examples{
-\dontrun{
-config <- read_pipeline_config("path/to/config.yaml")
+config <- read_pipeline_config(clover_example("ecoli/config.yaml"))
 config$samples
 config$output_dir
-}
 }

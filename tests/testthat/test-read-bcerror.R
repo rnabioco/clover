@@ -43,8 +43,18 @@ test_that("compute_bcerror_delta computes lhs - rhs", {
     condition = c("wt", "mut")
   )
   df$mean_error <- c(
-    0.1, 0.2, 0.3, 0.05, 0.15, 0.25,
-    0.4, 0.5, 0.6, 0.35, 0.45, 0.55
+    0.1,
+    0.2,
+    0.3,
+    0.05,
+    0.15,
+    0.25,
+    0.4,
+    0.5,
+    0.6,
+    0.35,
+    0.45,
+    0.55
   )
 
   result <- compute_bcerror_delta(df, delta = wt - mut)
@@ -57,14 +67,20 @@ test_that("compute_bcerror_delta computes lhs - rhs", {
 
 test_that("compute_bcerror_delta errors on invalid delta expression", {
   df <- tibble::tibble(
-    ref = "tRNA-Ala", pos = 1L, condition = "wt", mean_error = 0.1
+    ref = "tRNA-Ala",
+    pos = 1L,
+    condition = "wt",
+    mean_error = 0.1
   )
   expect_snapshot(compute_bcerror_delta(df, delta = wt + mut), error = TRUE)
 })
 
 test_that("compute_bcerror_delta errors on missing condition level", {
   df <- tibble::tibble(
-    ref = "tRNA-Ala", pos = 1L, condition = "wt", mean_error = 0.1
+    ref = "tRNA-Ala",
+    pos = 1L,
+    condition = "wt",
+    mean_error = 0.1
   )
   expect_snapshot(compute_bcerror_delta(df, delta = wt - missing), error = TRUE)
 })

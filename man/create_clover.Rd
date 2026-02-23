@@ -40,9 +40,7 @@ contains count matrices as assays, tRNA metadata as rowData, and
 sample metadata as colData.
 }
 \examples{
-\dontrun{
-se <- create_clover("path/to/config.yaml")
-SummarizedExperiment::assay(se, "counts")
+se <- create_clover(clover_example("ecoli/config.yaml"))
+SummarizedExperiment::assay(se, "counts")[1:3, ]
 SummarizedExperiment::colData(se)
-}
 }

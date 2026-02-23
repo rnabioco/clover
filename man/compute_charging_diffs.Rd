@@ -55,21 +55,15 @@ conditions, summarizing replicates with mean and standard error and
 computing the between-condition difference with propagated SE.
 }
 \examples{
-\dontrun{
-paths <- c(
-  ctl1 = "ctl1.charging.cpm.tsv.gz",
-  ctl2 = "ctl2.charging.cpm.tsv.gz",
-  inf1 = "inf1.charging.cpm.tsv.gz",
-  inf2 = "inf2.charging.cpm.tsv.gz"
-)
-charging <- read_charging_multi(paths)
+config_path <- clover_example("ecoli/config.yaml")
+results <- read_pipeline_results(config_path, types = "charging")
+charging <- results$charging
 charging$condition <- ifelse(
   grepl("ctl", charging$sample_id), "ctl", "inf"
 )
-diffs <- compute_charging_diffs(
+compute_charging_diffs(
   charging,
   numerator = "inf",
   denominator = "ctl"
 )
-}
 }

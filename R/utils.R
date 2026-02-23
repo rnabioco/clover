@@ -2,6 +2,8 @@
 #'
 #' @param path path to file
 #'
+#' @return A string with the path to the example file.
+#'
 #' @examples
 #' clover_example("ecoli/config.yaml")
 #'

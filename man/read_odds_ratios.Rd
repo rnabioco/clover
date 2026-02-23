@@ -18,8 +18,8 @@ Read a per-position-pair odds ratio file produced by the tRNA sequencing
 pipeline. These files contain pairwise modification co-occurrence statistics.
 }
 \examples{
-\dontrun{
-or_data <- read_odds_ratios("sample1.odds_ratios.tsv.gz")
-or_data
-}
+path <- clover_example(
+  "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+)
+read_odds_ratios(path)
 }

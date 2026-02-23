@@ -43,13 +43,12 @@ arranged in a horizontal row, each annotated with aminoacylation
 identity elements. Inspired by Figure 2 of Giege & Eriani (2023).
 }
 \examples{
-\dontrun{
+\donttest{
 coords <- read_sprinzl_coords(
   clover_example("sprinzl/sacCer_global_coords.tsv.gz")
 )
 plot_identity_panel(
-  c("tRNA-Ala-AGC", "tRNA-Asp-GTC",
-    "tRNA-Phe-GAA", "tRNA-His-GTG"),
+  c("tRNA-Ala-AGC", "tRNA-Asp-GTC"),
   "Saccharomyces cerevisiae",
   coords
 )

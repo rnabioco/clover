@@ -18,11 +18,9 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' config <- read_pipeline_config("path/to/config.yaml")
+#' config <- read_pipeline_config(clover_example("ecoli/config.yaml"))
 #' config$samples
 #' config$output_dir
-#' }
 read_pipeline_config <- function(config_path) {
   config_path <- normalizePath(config_path, mustWork = TRUE)
   config_dir <- dirname(config_path)
@@ -65,10 +63,8 @@ read_pipeline_config <- function(config_path) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' config <- read_pipeline_config("path/to/config.yaml")
+#' config <- read_pipeline_config(clover_example("ecoli/config.yaml"))
 #' list_pipeline_files(config, types = c("charging", "bcerror"))
-#' }
 list_pipeline_files <- function(
   config,
   types = c("charging", "bcerror", "odds_ratios", "align_stats")
@@ -119,11 +115,9 @@ list_pipeline_files <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' results <- read_pipeline_results("path/to/config.yaml")
+#' results <- read_pipeline_results(clover_example("ecoli/config.yaml"))
 #' results$charging
 #' results$odds_ratios
-#' }
 read_pipeline_results <- function(
   config_path,
   types = c("charging", "bcerror", "odds_ratios")

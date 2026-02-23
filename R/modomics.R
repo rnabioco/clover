@@ -26,10 +26,9 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' fa <- clover_example("ecoli/validated.fa.gz")
-#' mods <- modomics_mods(fa, "Escherichia coli")
-#' mods
+#' \donttest{
+#' fa <- clover_example("ecoli/trna_only.fa.gz")
+#' modomics_mods(fa, "Escherichia coli")
 #' }
 modomics_mods <- function(fasta, organism, min_identity = 0.7) {
   rlang::check_installed("pwalign")

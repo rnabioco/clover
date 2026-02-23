@@ -16,7 +16,7 @@ A \link[Biostrings:XStringSet-class]{Biostrings::DNAStringSet}.
 Read FASTA reference
 }
 \examples{
-fa <- clover_example("ecoli/validated.fa.gz")
+fa <- clover_example("ecoli/trna_only.fa.gz")
 read_fasta(fa)
 
 }

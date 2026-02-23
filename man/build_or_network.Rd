@@ -27,7 +27,7 @@ significant co-occurrence relationship. Requires the tidygraph and
 igraph packages.
 }
 \examples{
-\dontrun{
+\donttest{
 df <- tibble::tibble(
   pos1 = c("20", "34", "20"),
   pos2 = c("34", "58", "58"),

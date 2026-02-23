@@ -18,10 +18,11 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' charging <- read_charging_multi(paths)
-#' mat <- abundance_count_matrix(charging)
-#' }
+#' results <- read_pipeline_results(
+#'   clover_example("ecoli/config.yaml"),
+#'   types = "charging"
+#' )
+#' abundance_count_matrix(results$charging)
 abundance_count_matrix <- function(charging_data, min_count = 10) {
   abundance <- charging_data |>
     dplyr::mutate(
@@ -63,10 +64,11 @@ abundance_count_matrix <- function(charging_data, min_count = 10) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' charging <- read_charging_multi(paths)
-#' mat <- charging_count_matrix(charging)
-#' }
+#' results <- read_pipeline_results(
+#'   clover_example("ecoli/config.yaml"),
+#'   types = "charging"
+#' )
+#' charging_count_matrix(results$charging)
 charging_count_matrix <- function(charging_data, min_count = 10) {
   long <- charging_data |>
     dplyr::mutate(
@@ -115,14 +117,12 @@ charging_count_matrix <- function(charging_data, min_count = 10) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' mat <- abundance_count_matrix(charging)
-#' sample_info <- data.frame(
-#'   sample_id = c("wt_1", "wt_2", "mut_1", "mut_2"),
-#'   condition = c("wt", "wt", "mut", "mut")
+#' results <- read_pipeline_results(
+#'   clover_example("ecoli/config.yaml"),
+#'   types = "charging"
 #' )
-#' coldata <- build_coldata(mat, sample_info)
-#' }
+#' mat <- abundance_count_matrix(results$charging)
+#' build_coldata(mat)
 build_coldata <- function(count_matrix, sample_info = NULL) {
   col_names <- colnames(count_matrix)
 
@@ -181,8 +181,14 @@ build_coldata <- function(count_matrix, sample_info = NULL) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' dds <- run_deseq(mat, coldata, design = ~ condition)
+#' \donttest{
+#' se <- create_clover(clover_example("ecoli/config.yaml"))
+#' counts <- SummarizedExperiment::assay(se, "counts")
+#' coldata <- as.data.frame(SummarizedExperiment::colData(se))
+#' coldata$condition <- ifelse(
+#'   grepl("ctl", coldata$sample_id), "ctl", "inf"
+#' )
+#' dds <- run_deseq(counts, coldata, design = ~condition)
 #' }
 run_deseq <- function(count_matrix, coldata, design, ...) {
   rlang::check_installed("DESeq2", reason = "to run differential analysis.")
@@ -214,9 +220,15 @@ run_deseq <- function(count_matrix, coldata, design, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' res <- tidy_deseq_results(dds, contrast = c("condition", "mut", "wt"))
-#' res
+#' \donttest{
+#' se <- create_clover(clover_example("ecoli/config.yaml"))
+#' counts <- SummarizedExperiment::assay(se, "counts")
+#' coldata <- as.data.frame(SummarizedExperiment::colData(se))
+#' coldata$condition <- ifelse(
+#'   grepl("ctl", coldata$sample_id), "ctl", "inf"
+#' )
+#' dds <- run_deseq(counts, coldata, design = ~condition)
+#' tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
 #' }
 tidy_deseq_results <- function(dds, contrast, padj_cutoff = 0.05) {
   rlang::check_installed("DESeq2", reason = "to extract results.")

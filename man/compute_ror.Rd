@@ -40,11 +40,13 @@ the ratio of odds ratios (ROR). Replicates within each condition are
 aggregated using the specified function.
 }
 \examples{
-\dontrun{
-combined_or <- read_odds_ratios_multi(paths)
-combined_or$condition <- ifelse(
-  grepl("wt", combined_or$sample_id), "wt", "mut"
+results <- read_pipeline_results(
+  clover_example("ecoli/config.yaml"),
+  types = "odds_ratios"
 )
-ror <- compute_ror(combined_or, numerator = "mut", denominator = "wt")
-}
+or_data <- results$odds_ratios
+or_data$condition <- ifelse(
+  grepl("ctl", or_data$sample_id), "ctl", "inf"
+)
+compute_ror(or_data, numerator = "inf", denominator = "ctl")
 }

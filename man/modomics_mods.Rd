@@ -37,9 +37,8 @@ included in the package (see \code{\link[=modomics_organisms]{modomics_organisms
 organisms, falls back to \code{\link[=fetch_modomics_mods]{fetch_modomics_mods()}}.
 }
 \examples{
-\dontrun{
-fa <- clover_example("ecoli/validated.fa.gz")
-mods <- modomics_mods(fa, "Escherichia coli")
-mods
+\donttest{
+fa <- clover_example("ecoli/trna_only.fa.gz")
+modomics_mods(fa, "Escherichia coli")
 }
 }

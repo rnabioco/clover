@@ -76,16 +76,7 @@ nucleotide letters; outlines are shown as colored circle borders;
 linkages are drawn as Bezier curve arcs between position pairs.
 }
 \examples{
-\dontrun{
-# Base structure only
-plot_tRNA_structure("tRNA-Ala-GGC", "Escherichia coli")
-
-# With MODOMICS modifications
-fa <- clover_example("ecoli/validated.fa.gz")
-mods <- modomics_mods(fa, "Escherichia coli")
-plot_tRNA_structure(
-  "tRNA-Ala-GGC", "Escherichia coli",
-  modifications = mods
-)
+\donttest{
+plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
 }
 }

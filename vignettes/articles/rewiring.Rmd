@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 #| label: setup
 #| message: false
 library(clover)
+library(SummarizedExperiment)
+library(S4Vectors)
 library(dplyr)
 ```
 
@@ -54,7 +56,7 @@ se <- create_clover(
   sample_info = sample_info
 )
 
-or_data <- S4Vectors::metadata(se)$odds_ratios
+or_data <- metadata(se)$odds_ratios
 or_data$condition <- ifelse(grepl("ctl", or_data$sample_id), "ctl", "inf")
 ```
 

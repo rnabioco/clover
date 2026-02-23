@@ -11,6 +11,8 @@ navbar:
     articles:
       text: Articles
       menu:
+      - text: Plotting modification heatmaps
+        href: articles/heatmap.html
       - text: Modification rewiring analysis
         href: articles/rewiring.html
       - text: Plotting tRNA structures
@@ -100,3 +102,4 @@ articles:
     contents:
     - articles/heatmap
     - articles/rewiring
+    - articles/structure

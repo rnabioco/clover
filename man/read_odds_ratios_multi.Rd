@@ -18,9 +18,13 @@ Read and combine odds ratio files from multiple samples into a single
 tibble with a \code{sample_id} column.
 }
 \examples{
-\dontrun{
-paths <- c(sample1 = "s1.odds_ratios.tsv.gz",
-           sample2 = "s2.odds_ratios.tsv.gz")
-or_data <- read_odds_ratios_multi(paths)
-}
+paths <- c(
+  "wt-15-ctl-01" = clover_example(
+    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+  ),
+  "wt-15-ctl-02" = clover_example(
+    "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.odds_ratios.tsv.gz"
+  )
+)
+read_odds_ratios_multi(paths)
 }

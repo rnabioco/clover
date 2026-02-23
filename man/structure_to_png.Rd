@@ -28,8 +28,8 @@ to a PNG bitmap. Requires the
 \href{https://cran.r-project.org/package=rsvg}{rsvg} package.
 }
 \examples{
-\dontrun{
+\donttest{
 svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
-png <- structure_to_png(svg)
+structure_to_png(svg)
 }
 }

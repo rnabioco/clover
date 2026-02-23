@@ -25,9 +25,7 @@ and loads data for the requested result types. Each result type is returned
 as a combined tibble with a \code{sample_id} column.
 }
 \examples{
-\dontrun{
-results <- read_pipeline_results("path/to/config.yaml")
+results <- read_pipeline_results(clover_example("ecoli/config.yaml"))
 results$charging
 results$odds_ratios
-}
 }

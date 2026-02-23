@@ -34,8 +34,15 @@ comparisons and colored by Euclidean rewiring magnitude. The top
 \code{\link[ggrepel:geom_text_repel]{ggrepel::geom_text_repel()}}.
 }
 \examples{
-\dontrun{
-mat <- prepare_rewiring_matrix(ror_data)
+\donttest{
+mat <- matrix(
+  c(1.5, -0.8, 0.3, 2.1, 0.5, -1.2),
+  nrow = 3,
+  dimnames = list(
+    c("tRNA-Ala", "tRNA-Gly", "tRNA-Ser"),
+    c("20_vs_34", "34_vs_58")
+  )
+)
 scores <- calculate_rewiring_scores(mat)
 pcoa <- perform_pcoa(mat)
 plot_pcoa_rewiring(pcoa, scores)

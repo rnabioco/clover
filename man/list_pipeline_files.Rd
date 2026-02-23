@@ -23,8 +23,6 @@ Given a parsed pipeline configuration, construct expected file paths for
 each sample and result type.
 }
 \examples{
-\dontrun{
-config <- read_pipeline_config("path/to/config.yaml")
+config <- read_pipeline_config(clover_example("ecoli/config.yaml"))
 list_pipeline_files(config, types = c("charging", "bcerror"))
-}
 }

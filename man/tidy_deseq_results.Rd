@@ -25,8 +25,14 @@ Extract results from a DESeq2 analysis and return a tidy tibble with
 tRNA identifiers and significance flags.
 }
 \examples{
-\dontrun{
-res <- tidy_deseq_results(dds, contrast = c("condition", "mut", "wt"))
-res
+\donttest{
+se <- create_clover(clover_example("ecoli/config.yaml"))
+counts <- SummarizedExperiment::assay(se, "counts")
+coldata <- as.data.frame(SummarizedExperiment::colData(se))
+coldata$condition <- ifelse(
+  grepl("ctl", coldata$sample_id), "ctl", "inf"
+)
+dds <- run_deseq(counts, coldata, design = ~condition)
+tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
 }
 }

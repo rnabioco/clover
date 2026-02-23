@@ -120,18 +120,14 @@ cluster_refs_by_group <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
+#' bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
+#' bcerror_delta <- compute_bcerror_delta(
+#'   bcerror_rds$bcerror_summary, delta = wt - tb
+#' )
 #' sprinzl <- read_sprinzl_coords(
 #'   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
 #' )
-#' mods <- modomics_mods(trna_fasta, organism = "Escherichia coli")
-#' heatmap_data <- prep_mod_heatmap(
-#'   bcerror_delta,
-#'   sprinzl_coords = sprinzl,
-#'   mods = mods
-#' )
-#' }
+#' prep_mod_heatmap(bcerror_delta, sprinzl_coords = sprinzl)
 prep_mod_heatmap <- function(
   data,
   value_col = "delta",
@@ -965,8 +961,15 @@ plot_mod_landscape <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' mat <- prepare_rewiring_matrix(ror_data)
+#' \donttest{
+#' mat <- matrix(
+#'   c(1.5, -0.8, 0.3, 2.1, 0.5, -1.2),
+#'   nrow = 3,
+#'   dimnames = list(
+#'     c("tRNA-Ala", "tRNA-Gly", "tRNA-Ser"),
+#'     c("20_vs_34", "34_vs_58")
+#'   )
+#' )
 #' scores <- calculate_rewiring_scores(mat)
 #' pcoa <- perform_pcoa(mat)
 #' plot_pcoa_rewiring(pcoa, scores)

@@ -20,7 +20,7 @@ and wraps it in a centering \verb{<div>}, returning an
 Quarto documents.
 }
 \examples{
-\dontrun{
+\donttest{
 svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
 structure_html(svg)
 }
