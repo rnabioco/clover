@@ -4,7 +4,7 @@ clover facilitates analysis and visualization of nanopore tRNA
 sequencing data, including differential expression, base-calling error
 analysis, and modification co-occurrence networks.
 
-**clover is under active development.** *Caveat emptor*.
+🚧🚧 **clover is under active development.** *Caveat emptor*. 🚧🚧
 
 ## Installation
 
