@@ -78,3 +78,73 @@ read_bcerror <- function(bcerr_path) {
       mean_qual
     )
 }
+
+#' Compute per-position delta between two conditions.
+#'
+#' Take a summarized bcerror tibble (with columns for reference, position,
+#' condition, and a value such as mean error rate) and compute the
+#' difference between two conditions at each position.
+#'
+#' @param data A summarized bcerror tibble with at least `ref`, `pos`,
+#'   and columns named by `value_col` and `condition_col`.
+#' @param delta A bare expression of the form `lhs - rhs`, where `lhs`
+#'   and `rhs` are condition levels. The result is `lhs - rhs`.
+#' @param value_col Column name (string) containing the values to
+#'   pivot. Default `"mean_error"`.
+#' @param condition_col Column name (string) containing condition
+#'   labels. Default `"condition"`.
+#'
+#' @return A tibble with columns `ref`, `pos`, one column per condition
+#'   level, and `delta` (the computed difference).
+#'
+#' @export
+#'
+#' @examples
+#' df <- tidyr::expand_grid(
+#'   ref = c("tRNA-Ala", "tRNA-Gly"),
+#'   pos = 1:5,
+#'   condition = c("wt", "mut")
+#' )
+#' df$mean_error <- runif(nrow(df), 0, 0.3)
+#' compute_bcerror_delta(df, delta = wt - mut)
+compute_bcerror_delta <- function(
+  data,
+  delta,
+  value_col = "mean_error",
+  condition_col = "condition"
+) {
+  expr <- rlang::enexpr(delta)
+
+  if (!rlang::is_call(expr, "-") || length(expr) != 3L) {
+    cli_abort(
+      "{.arg delta} must be an expression of the form {.code lhs - rhs}."
+    )
+  }
+
+  lhs <- as.character(expr[[2]])
+  rhs <- as.character(expr[[3]])
+
+  levels <- unique(data[[condition_col]])
+  if (!lhs %in% levels) {
+    cli_abort(
+      "Level {.val {lhs}} not found in column {.field {condition_col}}."
+    )
+  }
+  if (!rhs %in% levels) {
+    cli_abort(
+      "Level {.val {rhs}} not found in column {.field {condition_col}}."
+    )
+  }
+
+  data |>
+    dplyr::select(
+      dplyr::all_of(c("ref", "pos", condition_col, value_col))
+    ) |>
+    tidyr::pivot_wider(
+      names_from = dplyr::all_of(condition_col),
+      values_from = dplyr::all_of(value_col)
+    ) |>
+    dplyr::mutate(
+      delta = .data[[lhs]] - .data[[rhs]]
+    )
+}
