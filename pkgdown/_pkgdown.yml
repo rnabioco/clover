@@ -13,6 +13,8 @@ navbar:
       menu:
       - text: Modification rewiring analysis
         href: articles/rewiring.html
+      - text: Plotting tRNA structures
+        href: articles/structure.html
 
 reference:
   - title: Read
