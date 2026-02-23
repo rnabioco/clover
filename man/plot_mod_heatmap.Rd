@@ -18,7 +18,7 @@ plot_mod_heatmap(
   label_min = 0.05,
   label_size = 2.5,
   highlight_col = NULL,
-  highlight_size = 0.8,
+  highlight_size = 0.4,
   highlight_offset = c(-0.35, 0.35),
   cluster_threshold = NULL,
   group_col = NULL,

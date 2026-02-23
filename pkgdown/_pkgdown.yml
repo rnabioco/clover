@@ -29,6 +29,7 @@ reference:
     - calculate_rewiring_scores
     - charging_count_matrix
     - clean_odds_ratios
+    - compute_bcerror_delta
     - compute_charging_diffs
     - filter_linkages
     - compute_odds_ratios
@@ -42,6 +43,7 @@ reference:
 
   - title: Plot
     contents:
+    - prep_mod_heatmap
     - starts_with("plot_")
 
   - title: Network
@@ -84,6 +86,7 @@ reference:
     - aa_colors
     - charging_colors
     - clover_example
+    - dna_to_rna_anticodon
     - list_pipeline_files
     - order_sprinzl_positions
     - trna_regions
