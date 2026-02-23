@@ -4,7 +4,7 @@ clover facilitates analysis and visualization of nanopore tRNA
 sequencing data, including differential expression, base-calling error
 analysis, and modification co-occurrence networks.
 
-🚧🚧 **clover is under active development.** *Caveat emptor*. 🚧🚧
+**clover is under active development.** *Caveat emptor*.
 
 ## Installation
 
@@ -22,42 +22,30 @@ clover reads output from the
 [aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
 and stores the results in a `SummarizedExperiment`.
 
-``` r
-library(clover)
-library(SummarizedExperiment)
+![Annotated tRNA cloverleaf structure showing known modifications,
+anticodon highlight, and discriminator
+base.](reference/figures/README-structure-annotated.svg)
 
-# Load pipeline results into a SummarizedExperiment
-se <- create_clover(
-  config_path = clover_example("ecoli/config.yaml"),
-  sample_info = data.frame(
-    sample_id = c(
-      "wt-15-ctl-01",
-      "wt-15-ctl-02",
-      "wt-15-ctl-03",
-      "wt-15-inf-01",
-      "wt-15-inf-02",
-      "wt-15-inf-03"
-    ),
-    condition = rep(c("control", "infected"), each = 3)
-  )
-)
+## Features
 
-# Differential tRNA abundance with DESeq2
-dds <- run_deseq(
-  assay(se, "counts"),
-  colData(se),
-  design = ~condition
-)
+clover provides a complete toolkit for nanopore tRNA-seq analysis:
 
-res <- tidy_deseq_results(
-  dds,
-  contrast = c("condition", "infected", "control")
-)
-
-plot_volcano(res)
-```
-
-![](reference/figures/README-example-1.png)
+- **Differential tRNA abundance** — Test for expression changes between
+  conditions using DESeq2, with volcano plots and tabular summaries.
+- **Charging analysis** — Measure aminoacylation levels per tRNA and
+  compare across conditions, including joint abundance-charging
+  visualizations.
+- **Base-calling error profiles** — Visualize per-position error rates
+  that reflect RNA modifications, with annotation overlays from
+  [MODOMICS](https://genesilico.pl/modomics/).
+- **Modification heatmaps** — Map error rate differences to Sprinzl
+  coordinates for cross-tRNA comparison of modification signatures.
+- **tRNA secondary structure** — Render cloverleaf diagrams annotated
+  with modifications, co-occurrence linkages, and custom highlights
+  (shown above).
+- **Modification co-occurrence** — Compute odds ratios for pairwise
+  modification co-occurrence and visualize as chord diagrams, arc plots,
+  or structure overlays.
 
 See
 [`vignette("clover")`](https://rnabioco.github.io/clover/articles/clover.md)
