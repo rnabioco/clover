@@ -232,43 +232,6 @@ plot_mod_heatmap(
 )
 ```
 
-### Modification landscape
-
-For a detailed per-position view of a single tRNA, `plot_mod_landscape()`
-stacks multiple metrics into aligned panels. Here we show the error rate
-difference and mismatch difference for one tRNA.
-
-```{r}
-#| label: fig-mod-landscape
-#| fig.cap: "Modification landscape for tRNA-Glu-TTC-1-1."
-#| fig.height: 5
-glu_delta <- bcerror_sprinzl |>
-  filter(ref == "tRNA-Glu-TTC-1-1")
-
-glu_landscape <- bcerror_charged |>
-  filter(ref == "host-tRNA-Glu-TTC-1-1") |>
-  group_by(pos, condition) |>
-  summarise(
-    mean_error = mean(error_rate),
-    mean_mis = mean(mis),
-    .groups = "drop"
-  ) |>
-  pivot_wider(
-    names_from = condition,
-    values_from = c(mean_error, mean_mis)
-  ) |>
-  mutate(
-    delta_error = mean_error_inf - mean_error_ctl,
-    delta_mis = mean_mis_inf - mean_mis_ctl
-  )
-
-plot_mod_landscape(
-  glu_landscape,
-  metrics = c("delta_error", "delta_mis"),
-  title = "tRNA-Glu-TTC-1-1"
-)
-```
-
 ## Modification annotations from MODOMICS
 
 The [MODOMICS](https://genesilico.pl/modomics/) database catalogs known RNA
