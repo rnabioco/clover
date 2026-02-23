@@ -29,8 +29,8 @@ read_charging <- function(path) {
 #'
 #' @param path Path to a `{sample}.odds_ratios.tsv.gz` file.
 #'
-#' @return A tibble with columns including `pos1`, `pos2`, `odds_ratio`,
-#'   `log_odds_ratio`, `p_value`, and `total_obs`.
+#' @return A tibble with columns including `ref`, `pos1`, `pos2`,
+#'   `odds_ratio`, `log_odds_ratio`, `p_value`, and `total_obs`.
 #'
 #' @export
 #'
@@ -40,7 +40,8 @@ read_charging <- function(path) {
 #' or_data
 #' }
 read_odds_ratios <- function(path) {
-  readr::read_tsv(path, show_col_types = FALSE)
+  readr::read_tsv(path, show_col_types = FALSE) |>
+    dplyr::rename(ref = tRNA)
 }
 
 #' Read charging CPM files for multiple samples.
