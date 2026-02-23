@@ -168,7 +168,9 @@ plot_mod_heatmap <- function(
   caption = NULL
 ) {
   # --- order x-axis by Sprinzl position ---
-  data$sprinzl_label <- order_sprinzl_positions(data$sprinzl_label)
+  if (!is.factor(data$sprinzl_label)) {
+    data$sprinzl_label <- order_sprinzl_positions(data$sprinzl_label)
+  }
 
   # --- cluster rows ---
   refs <- unique(data[[ref_col]])
@@ -232,7 +234,7 @@ plot_mod_heatmap <- function(
     labs(x = "Sprinzl Position", y = "", caption = caption) +
     cowplot::theme_cowplot() +
     theme(
-      axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
+      axis.text.x = element_text(angle = 45, hjust = 1, size = 5),
       legend.position = "bottom",
       legend.key.width = grid::unit(1.5, "cm")
     )

@@ -178,6 +178,7 @@ plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
 #| label: fig-bcerror-delta
 #| fig.cap: "Difference in mean base-calling error (inf - ctl) across all tRNAs and positions."
 #| fig.height: 5
+#| message: false
 # Compute delta (inf - ctl)
 bcerror_delta <- bcerror_summary |>
   select(ref, pos, condition, mean_error) |>
@@ -193,19 +194,41 @@ sprinzl <- read_sprinzl_coords(
 bcerror_delta <- bcerror_delta |>
   mutate(trna_id = dna_to_rna_anticodon(sub("^host-", "", ref)))
 
-# Join with sprinzl coords to get structural labels
+# Fetch known modification positions from MODOMICS
+fasta_path <- S4Vectors::metadata(se)$config$fasta
+mods <- modomics_mods(fasta_path, organism = "Escherichia coli")
+
+# Join with sprinzl coords and modification annotations
 bcerror_sprinzl <- bcerror_delta |>
   left_join(
-    sprinzl |> select(trna_id, pos, sprinzl_label),
+    sprinzl |> select(trna_id, pos, sprinzl_label, global_index),
     by = c("trna_id", "pos")
   ) |>
-  filter(!is.na(sprinzl_label))
+  filter(!is.na(sprinzl_label)) |>
+  left_join(
+    mods |> distinct(ref, pos) |> mutate(has_mod = TRUE),
+    by = c("ref", "pos")
+  ) |>
+  mutate(has_mod = tidyr::replace_na(has_mod, FALSE))
+
+# Order positions by canonical Sprinzl sequence and clean ref names
+label_order <- bcerror_sprinzl |>
+  distinct(sprinzl_label, global_index) |>
+  arrange(global_index) |>
+  pull(sprinzl_label)
+
+bcerror_sprinzl <- bcerror_sprinzl |>
+  mutate(
+    ref = sub("^host-", "", ref),
+    sprinzl_label = factor(sprinzl_label, levels = label_order)
+  )
 
 plot_mod_heatmap(
   bcerror_sprinzl,
   value_col = "delta",
   ref_col = "ref",
-  color_limits = c(-0.1, 0.1)
+  color_limits = c(-0.1, 0.1),
+  highlight_col = "has_mod"
 )
 ```
 
@@ -220,7 +243,7 @@ difference and mismatch difference for one tRNA.
 #| fig.cap: "Modification landscape for tRNA-Glu-TTC-1-1."
 #| fig.height: 5
 glu_delta <- bcerror_sprinzl |>
-  filter(ref == "host-tRNA-Glu-TTC-1-1")
+  filter(ref == "tRNA-Glu-TTC-1-1")
 
 glu_landscape <- bcerror_charged |>
   filter(ref == "host-tRNA-Glu-TTC-1-1") |>
@@ -242,23 +265,21 @@ glu_landscape <- bcerror_charged |>
 plot_mod_landscape(
   glu_landscape,
   metrics = c("delta_error", "delta_mis"),
-  title = "host-tRNA-Glu-TTC-1-1"
+  title = "tRNA-Glu-TTC-1-1"
 )
 ```
 
 ## Modification annotations from MODOMICS
 
 The [MODOMICS](https://genesilico.pl/modomics/) database catalogs known RNA
-modifications. `modomics_mods()` maps known tRNA modification positions onto
-your reference sequences using pairwise alignment. Data for common organisms
-is bundled with the package (see `modomics_organisms()`), so no internet
-connection is needed.
+modifications. We already used `modomics_mods()` above to annotate the
+heatmap with known modification positions. This function maps MODOMICS
+entries onto your reference sequences using pairwise alignment. Data for
+common organisms is bundled with the package (see `modomics_organisms()`),
+so no internet connection is needed.
 
 ```{r}
 #| label: modomics-fetch
-#| message: true
-fasta_path <- S4Vectors::metadata(se)$config$fasta
-mods <- modomics_mods(fasta_path, organism = "Escherichia coli")
 mods
 ```
 
