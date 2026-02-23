@@ -1,3 +1,89 @@
+test_that("prep_mod_heatmap joins sprinzl coords and orders labels", {
+  data <- tibble::tibble(
+    ref = rep("host-tRNA-Glu-TTC-1-1", 3),
+    pos = c(1L, 2L, 3L),
+    delta = c(0.1, -0.05, 0.2)
+  )
+  sprinzl <- tibble::tibble(
+    trna_id = rep("tRNA-Glu-UUC-1-1", 3),
+    pos = c(1L, 2L, 3L),
+    sprinzl_label = c("1", "2", "3"),
+    global_index = c(1L, 2L, 3L)
+  )
+
+  result <- prep_mod_heatmap(data, sprinzl_coords = sprinzl)
+
+  expect_s3_class(result, "tbl_df")
+  expect_true("sprinzl_label" %in% names(result))
+  expect_true(is.factor(result$sprinzl_label))
+  expect_true("trna_label" %in% names(result))
+  expect_equal(result$trna_label[1], "Glu-TTC")
+  # ref should have prefix stripped
+
+  expect_equal(result$ref[1], "tRNA-Glu-TTC-1-1")
+})
+
+test_that("prep_mod_heatmap annotates modifications", {
+  data <- tibble::tibble(
+    ref = rep("host-tRNA-Glu-TTC-1-1", 2),
+    pos = c(1L, 2L),
+    delta = c(0.1, -0.05)
+  )
+  sprinzl <- tibble::tibble(
+    trna_id = rep("tRNA-Glu-UUC-1-1", 2),
+    pos = c(1L, 2L),
+    sprinzl_label = c("1", "2"),
+    global_index = c(1L, 2L)
+  )
+  mods <- tibble::tibble(
+    ref = "host-tRNA-Glu-TTC-1-1",
+    pos = 1L
+  )
+
+  result <- prep_mod_heatmap(data, sprinzl_coords = sprinzl, mods = mods)
+
+  expect_true("has_mod" %in% names(result))
+  expect_equal(result$has_mod, c(TRUE, FALSE))
+})
+
+test_that("prep_mod_heatmap filters positions without sprinzl labels", {
+  data <- tibble::tibble(
+    ref = rep("host-tRNA-Glu-TTC-1-1", 3),
+    pos = c(1L, 2L, 99L),
+    delta = c(0.1, -0.05, 0.3)
+  )
+  sprinzl <- tibble::tibble(
+    trna_id = rep("tRNA-Glu-UUC-1-1", 2),
+    pos = c(1L, 2L),
+    sprinzl_label = c("1", "2"),
+    global_index = c(1L, 2L)
+  )
+
+  result <- prep_mod_heatmap(data, sprinzl_coords = sprinzl)
+  expect_equal(nrow(result), 2)
+})
+
+test_that("prep_mod_heatmap works without label shortening", {
+  data <- tibble::tibble(
+    ref = rep("host-tRNA-Glu-TTC-1-1", 2),
+    pos = c(1L, 2L),
+    delta = c(0.1, -0.05)
+  )
+  sprinzl <- tibble::tibble(
+    trna_id = rep("tRNA-Glu-UUC-1-1", 2),
+    pos = c(1L, 2L),
+    sprinzl_label = c("1", "2"),
+    global_index = c(1L, 2L)
+  )
+
+  result <- prep_mod_heatmap(
+    data,
+    sprinzl_coords = sprinzl,
+    shorten_labels = FALSE
+  )
+  expect_false("trna_label" %in% names(result))
+})
+
 test_that("plot_mod_heatmap returns a ggplot object", {
   df <- tidyr::expand_grid(
     ref = paste0("tRNA-", c("Ala", "Gly", "Ser")),
