@@ -236,8 +236,7 @@ plot_mod_heatmap <- function(
     theme(
       axis.text.x = element_text(angle = 45, hjust = 1, size = 5),
       axis.text.y = element_text(size = rel(0.6)),
-      legend.position = "inside",
-      legend.position.inside = c(1, 0),
+      legend.position = "bottom",
       legend.justification = c(1, 0),
       legend.direction = "horizontal",
       legend.key.width = grid::unit(1, "cm"),
