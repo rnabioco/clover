@@ -1,0 +1,392 @@
+---
+title: "Plotting tRNA structures"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10,
+  fig.height = 6,
+  warning = FALSE
+)
+```
+
+```{r}
+#| label: setup
+#| message: false
+library(clover)
+library(dplyr)
+```
+
+## Overview
+
+clover includes pre-computed tRNA cloverleaf SVGs that can be annotated with
+modification highlights, outline circles, text color changes, and linkage arcs.
+This vignette walks through every customization option for
+`plot_tRNA_structure()` and related functions.
+
+## Discovering available structures
+
+Bundled SVGs are organized by organism. Use `structure_organisms()` to list
+available organisms and `structure_trnas()` to list tRNAs within an organism.
+
+```{r}
+#| label: available-organisms
+structure_organisms()
+```
+
+```{r}
+#| label: available-trnas
+head(structure_trnas("Escherichia coli"))
+```
+
+## Basic structure
+
+The simplest call renders the bare cloverleaf with base-pair lines,
+nucleotide letters, and position markers every 10 nucleotides.
+
+```{r}
+#| label: basic-structure
+svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+```
+
+```{r}
+#| label: fig-basic-structure
+#| echo: false
+structure_html(svg)
+```
+
+## Position markers
+
+By default, grey position numbers are drawn every 10 nucleotides. Set
+`position_markers = FALSE` to hide them.
+
+```{r}
+#| label: no-markers
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  position_markers = FALSE
+)
+```
+
+```{r}
+#| label: fig-no-markers
+#| echo: false
+structure_html(svg)
+```
+
+## Modification highlights
+
+Modifications are shown as colored filled circles behind nucleotide letters.
+The `modifications` argument takes a tibble with `pos` and `mod1` columns.
+Output from `modomics_mods()` works directly after filtering to the tRNA of
+interest.
+
+```{r}
+#| label: mods-setup
+fasta_path <- clover_example("ecoli/validated.fa.gz")
+mods <- modomics_mods(fasta_path, "Escherichia coli")
+
+mods_glu <- mods |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1")
+mods_glu
+```
+
+```{r}
+#| label: mods-highlight
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = mods_glu
+)
+```
+
+```{r}
+#| label: fig-mods-highlight
+#| echo: false
+structure_html(svg)
+```
+
+## Custom modification palettes
+
+`default_mod_palette()` returns a named character vector mapping modification
+short names to colors. You can extend or override it.
+
+```{r}
+#| label: default-palette
+head(default_mod_palette(), 10)
+```
+
+To add a custom category (e.g., highlighting anticodon positions), combine
+MODOMICS modifications with your own entries and extend the palette.
+
+```{r}
+#| label: custom-palette
+# Add anticodon positions (Sprinzl 34-36) as a custom category
+anticodon <- tibble::tibble(
+  pos = 34:36,
+  mod1 = rep("anticodon", 3)
+)
+
+all_mods <- bind_rows(mods_glu, anticodon)
+
+# Extend the palette with a color for the new category
+custom_palette <- c(default_mod_palette(), anticodon = "#4DAF4A")
+
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = all_mods,
+  mod_palette = custom_palette
+)
+```
+
+```{r}
+#| label: fig-custom-palette
+#| echo: false
+structure_html(svg)
+```
+
+## Outline circles
+
+Outlines draw stroke-only circles around nucleotides, useful for highlighting
+positions without covering the base letter. The `outlines` argument takes a
+tibble with `pos` and `group` columns; `outline_palette` maps group names to
+colors.
+
+```{r}
+#| label: outlines
+# Highlight the discriminator base (position 73)
+disc_outline <- tibble::tibble(pos = 73, group = "discriminator")
+
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  outlines = disc_outline,
+  outline_palette = c(discriminator = "#E41A1C")
+)
+```
+
+```{r}
+#| label: fig-outlines
+#| echo: false
+structure_html(svg)
+```
+
+## Text colors
+
+Use `text_colors` to change the color of nucleotide letters at specific
+positions. This takes a tibble with `pos` and `color` columns.
+
+```{r}
+#| label: text-colors
+# Color the anticodon triplet green
+ac_text <- tibble::tibble(
+  pos = 34:36,
+  color = rep("#4DAF4A", 3)
+)
+
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  text_colors = ac_text
+)
+```
+
+```{r}
+#| label: fig-text-colors
+#| echo: false
+structure_html(svg)
+```
+
+## Combining annotations
+
+Modifications, outlines, and text colors can all be used together.
+
+```{r}
+#| label: combined
+disc_outline <- tibble::tibble(pos = 73, group = "discriminator")
+disc_text <- tibble::tibble(pos = 73, color = "#E41A1C")
+
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = all_mods,
+  mod_palette = custom_palette,
+  outlines = disc_outline,
+  outline_palette = c(discriminator = "#E41A1C"),
+  text_colors = disc_text
+)
+```
+
+```{r}
+#| label: fig-combined
+#| echo: false
+structure_html(svg)
+```
+
+## Linkage arcs
+
+Pairwise modification co-occurrence can be visualized as arcs on the
+cloverleaf. The `linkages` argument takes a tibble with `pos1`, `pos2`, and
+optionally `value` columns. If a `log_odds_ratio` column is present (as in
+output from `clean_odds_ratios()` / `filter_linkages()`), it is used
+automatically.
+
+Arc color encodes direction: blue for mutual exclusivity (negative log OR)
+and vermillion for co-occurrence (positive log OR). Stroke width encodes
+magnitude.
+
+```{r}
+#| label: linkages-setup
+or_path <- clover_example(
+  "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+)
+or_data <- read_odds_ratios(or_path)
+
+linkages_glu <- or_data |>
+  filter(ref == "host-tRNA-Glu-TTC-1-1") |>
+  clean_odds_ratios() |>
+  filter_linkages()
+```
+
+```{r}
+#| label: linkages-plot
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  modifications = mods_glu,
+  linkages = linkages_glu
+)
+```
+
+```{r}
+#| label: fig-linkages-plot
+#| echo: false
+structure_html(svg)
+```
+
+## Custom linkage palettes
+
+The `linkage_palette` parameter is a character vector of length 2: the first
+color is used for negative values (exclusive), the second for positive values
+(co-occurring). The default is `c("#0072B2", "#D55E00")`.
+
+```{r}
+#| label: custom-linkage-palette
+svg <- plot_tRNA_structure(
+  "tRNA-Glu-TTC",
+  "Escherichia coli",
+  linkages = linkages_glu,
+  linkage_palette = c("#7570B3", "#D95F02")
+)
+```
+
+```{r}
+#| label: fig-custom-linkage-palette
+#| echo: false
+structure_html(svg)
+```
+
+## Long variable arm tRNAs
+
+Leu and Ser tRNAs have a long variable arm with an extra stem-loop. These
+are properly rendered from the tRNAscan-SE covariance model alignment.
+
+```{r}
+#| label: long-arm
+svg <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
+```
+
+```{r}
+#| label: fig-long-arm
+#| echo: false
+structure_html(svg)
+```
+
+```{r}
+#| label: long-arm-ser
+svg <- plot_tRNA_structure("tRNA-Ser-GGA", "Escherichia coli")
+```
+
+```{r}
+#| label: fig-long-arm-ser
+#| echo: false
+structure_html(svg)
+```
+
+## Identity elements
+
+`plot_identity_structure()` overlays experimentally validated aminoacylation
+identity elements (from Giege & Eriani, 2023) onto the cloverleaf. Strong
+determinants are outlined in red, weak determinants in blue.
+
+This requires Sprinzl coordinates to map element positions onto the tRNA
+sequence. Bundled coordinate files are available for *E. coli* and
+*S. cerevisiae*.
+
+```{r}
+#| label: identity-single
+coords <- read_sprinzl_coords(
+  clover_example("sprinzl/sacCer_global_coords.tsv.gz")
+)
+
+svg <- plot_identity_structure(
+  "tRNA-Ala-AGC",
+  "Saccharomyces cerevisiae",
+  coords
+)
+```
+
+```{r}
+#| label: fig-identity-single
+#| echo: false
+structure_html(svg)
+```
+
+### Identity element panel
+
+`plot_identity_panel()` arranges multiple tRNAs side by side, each annotated
+with its amino acid family's identity elements.
+
+```{r}
+#| label: identity-panel
+svg <- plot_identity_panel(
+  c("tRNA-Ala-AGC", "tRNA-Asp-GTC", "tRNA-Phe-GAA", "tRNA-His-GTG"),
+  "Saccharomyces cerevisiae",
+  coords
+)
+```
+
+```{r}
+#| label: fig-identity-panel
+#| echo: false
+structure_html(svg)
+```
+
+## Output formats
+
+`plot_tRNA_structure()` writes an SVG file and returns the path invisibly.
+For embedding in R Markdown or Quarto, use `structure_html()` to wrap the
+SVG in a centered `<div>`. For raster output, use `structure_to_png()`.
+
+```{r}
+#| label: output-formats
+#| eval: false
+# Embed as HTML (used throughout this vignette)
+svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+structure_html(svg)
+
+# Convert to PNG
+png <- structure_to_png(svg, width = 600)
+```
+
+## Session info
+
+```{r}
+#| label: session-info
+sessionInfo()
+```
