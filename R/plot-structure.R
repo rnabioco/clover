@@ -771,6 +771,7 @@ add_structure_legend <- function(
         y = as.character(y_offset),
         "font-size" = "10",
         "font-weight" = "bold",
+        "font-family" = "Helvetica, Arial, sans-serif",
         "Modifications"
       )
       y_offset <- y_offset + 15
@@ -795,6 +796,7 @@ add_structure_legend <- function(
           x = "16",
           y = as.character(y_offset),
           "font-size" = "9",
+          "font-family" = "Helvetica, Arial, sans-serif",
           mod
         )
         y_offset <- y_offset + 14
@@ -816,6 +818,7 @@ add_structure_legend <- function(
         y = as.character(y_offset),
         "font-size" = "10",
         "font-weight" = "bold",
+        "font-family" = "Helvetica, Arial, sans-serif",
         "Outlines"
       )
       y_offset <- y_offset + 15
@@ -837,6 +840,7 @@ add_structure_legend <- function(
           x = "16",
           y = as.character(y_offset),
           "font-size" = "9",
+          "font-family" = "Helvetica, Arial, sans-serif",
           out
         )
         y_offset <- y_offset + 14
@@ -858,6 +862,7 @@ add_structure_legend <- function(
       y = as.character(y_offset),
       "font-size" = "10",
       "font-weight" = "bold",
+      "font-family" = "Helvetica, Arial, sans-serif",
       "Linkages"
     )
     y_offset <- y_offset + 15
@@ -880,6 +885,7 @@ add_structure_legend <- function(
         x = "25",
         y = as.character(y_offset),
         "font-size" = "9",
+        "font-family" = "Helvetica, Arial, sans-serif",
         "Exclusive"
       )
       y_offset <- y_offset + 14
@@ -900,6 +906,7 @@ add_structure_legend <- function(
         x = "25",
         y = as.character(y_offset),
         "font-size" = "9",
+        "font-family" = "Helvetica, Arial, sans-serif",
         "Co-occurring"
       )
     } else if (has_value && has_neg) {
@@ -920,6 +927,7 @@ add_structure_legend <- function(
         x = "25",
         y = as.character(y_offset),
         "font-size" = "9",
+        "font-family" = "Helvetica, Arial, sans-serif",
         "Exclusive"
       )
     } else if (has_value && has_pos) {
@@ -940,6 +948,7 @@ add_structure_legend <- function(
         x = "25",
         y = as.character(y_offset),
         "font-size" = "9",
+        "font-family" = "Helvetica, Arial, sans-serif",
         "Co-occurring"
       )
     } else {
@@ -960,6 +969,7 @@ add_structure_legend <- function(
         x = "25",
         y = as.character(y_offset),
         "font-size" = "9",
+        "font-family" = "Helvetica, Arial, sans-serif",
         "Linkage"
       )
     }
