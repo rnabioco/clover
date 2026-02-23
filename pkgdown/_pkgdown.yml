@@ -6,11 +6,15 @@ template:
   bslib:
     primary: "#009E73"
 
-articles:
-  - title: Articles
-    contents:
-    - articles/rewiring
-    - articles/structure
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+      - text: Modification rewiring analysis
+        href: articles/rewiring.html
+      - text: Plotting tRNA structures
+        href: articles/structure.html
 
 reference:
   - title: Read
