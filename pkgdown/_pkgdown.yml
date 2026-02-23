@@ -78,6 +78,7 @@ reference:
     - aa_colors
     - charging_colors
     - clover_example
+    - dna_to_rna_anticodon
     - list_pipeline_files
     - order_sprinzl_positions
     - trna_regions
