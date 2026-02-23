@@ -6,6 +6,12 @@ template:
   bslib:
     primary: "#009E73"
 
+articles:
+  - title: Articles
+    contents:
+    - articles/rewiring
+    - articles/structure
+
 reference:
   - title: Read
     contents:
