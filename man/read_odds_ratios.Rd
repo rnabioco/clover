@@ -10,8 +10,8 @@ read_odds_ratios(path)
 \item{path}{Path to a \verb{\{sample\}.odds_ratios.tsv.gz} file.}
 }
 \value{
-A tibble with columns including \code{pos1}, \code{pos2}, \code{odds_ratio},
-\code{log_odds_ratio}, \code{p_value}, and \code{total_obs}.
+A tibble with columns including \code{ref}, \code{pos1}, \code{pos2},
+\code{odds_ratio}, \code{log_odds_ratio}, \code{p_value}, and \code{total_obs}.
 }
 \description{
 Read a per-position-pair odds ratio file produced by the tRNA sequencing
