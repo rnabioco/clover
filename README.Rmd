@@ -34,11 +34,23 @@ You can install the development version of clover from
 pak::pak("rnabioco/clover")
 ```
 
+## Features
+
+clover provides a complete toolkit for nanopore tRNA-seq analysis:
+
+- **Differential tRNA abundance** --- Test for expression changes between conditions using DESeq2, with volcano plots and tabular summaries.
+- **Charging analysis** --- Measure aminoacylation levels per tRNA and compare across conditions, including joint abundance-charging visualizations.
+- **Base-calling error profiles** --- Visualize per-position error rates that reflect RNA modifications, with annotation overlays from [MODOMICS](https://genesilico.pl/modomics/).
+- **Modification heatmaps** --- Map error rate differences to Sprinzl coordinates for cross-tRNA comparison of modification signatures.
+- **tRNA secondary structure** --- Render cloverleaf diagrams annotated with modifications, co-occurrence linkages, and custom highlights (shown above).
+- **Modification co-occurrence** --- Compute odds ratios for pairwise modification co-occurrence and visualize as chord diagrams, arc plots, or structure overlays.
+
+clover is very opinionated about file inputs and assumes that data have been processed by the [aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline).
+
 ## Example
 
-clover reads output from the
-[aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
-and stores the results in a `SummarizedExperiment`.
+clover ships tRNA structure references for major expeirmental systems that enable
+structure-based tRNA annotation.
 
 ```{r}
 #| label: example
@@ -48,7 +60,6 @@ and stores the results in a `SummarizedExperiment`.
 #| results: hide
 library(clover)
 library(dplyr)
-library(SummarizedExperiment)
 
 trna_fasta <- clover_example("ecoli/trna_only.fa.gz")
 mods <- modomics_mods(trna_fasta, organism = "Escherichia coli")
@@ -98,17 +109,6 @@ file.copy(svg_path, dest, overwrite = TRUE)
 <p align="center">
   <img src="man/figures/README-structure-annotated.svg" width="350" alt="Annotated tRNA cloverleaf structure showing known modifications, anticodon highlight, and discriminator base.">
 </p>
-
-## Features
-
-clover provides a complete toolkit for nanopore tRNA-seq analysis:
-
-- **Differential tRNA abundance** --- Test for expression changes between conditions using DESeq2, with volcano plots and tabular summaries.
-- **Charging analysis** --- Measure aminoacylation levels per tRNA and compare across conditions, including joint abundance-charging visualizations.
-- **Base-calling error profiles** --- Visualize per-position error rates that reflect RNA modifications, with annotation overlays from [MODOMICS](https://genesilico.pl/modomics/).
-- **Modification heatmaps** --- Map error rate differences to Sprinzl coordinates for cross-tRNA comparison of modification signatures.
-- **tRNA secondary structure** --- Render cloverleaf diagrams annotated with modifications, co-occurrence linkages, and custom highlights (shown above).
-- **Modification co-occurrence** --- Compute odds ratios for pairwise modification co-occurrence and visualize as chord diagrams, arc plots, or structure overlays.
 
 See `vignette("clover")` for a complete walkthrough.
 
