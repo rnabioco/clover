@@ -16,16 +16,6 @@ You can install the development version of clover from
 pak::pak("rnabioco/clover")
 ```
 
-## Example
-
-clover reads output from the
-[aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline)
-and stores the results in a `SummarizedExperiment`.
-
-![Annotated tRNA cloverleaf structure showing known modifications,
-anticodon highlight, and discriminator
-base.](reference/figures/README-structure-annotated.svg)
-
 ## Features
 
 clover provides a complete toolkit for nanopore tRNA-seq analysis:
@@ -46,6 +36,19 @@ clover provides a complete toolkit for nanopore tRNA-seq analysis:
 - **Modification co-occurrence** — Compute odds ratios for pairwise
   modification co-occurrence and visualize as chord diagrams, arc plots,
   or structure overlays.
+
+clover is very opinionated about file inputs and assumes that data have
+been processed by the
+[aa-tRNA-seq-pipeline](https://github.com/rnabioco/aa-tRNA-seq-pipeline).
+
+## Example
+
+clover ships tRNA structure references for major expeirmental systems
+that enable structure-based tRNA annotation.
+
+![Annotated tRNA cloverleaf structure showing known modifications,
+anticodon highlight, and discriminator
+base.](reference/figures/README-structure-annotated.svg)
 
 See
 [`vignette("clover")`](https://rnabioco.github.io/clover/articles/clover.md)
