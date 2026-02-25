@@ -10,7 +10,9 @@ organisms <- c(
   "Homo sapiens",
   "Mus musculus",
   "Drosophila melanogaster",
-  "Caenorhabditis elegans"
+  "Caenorhabditis elegans",
+  "Enterobacteria phage T4",
+  "Enterobacteria phage T5"
 )
 
 out_dir <- "inst/extdata/modomics"
