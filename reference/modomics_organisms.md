@@ -20,6 +20,7 @@ A character vector of organism names.
 ``` r
 modomics_organisms()
 #> [1] "Caenorhabditis elegans"   "Drosophila melanogaster" 
-#> [3] "Escherichia coli"         "Homo sapiens"            
-#> [5] "Mus musculus"             "Saccharomyces cerevisiae"
+#> [3] "Enterobacteria phage T4"  "Enterobacteria phage T5" 
+#> [5] "Escherichia coli"         "Homo sapiens"            
+#> [7] "Mus musculus"             "Saccharomyces cerevisiae"
 ```
