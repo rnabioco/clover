@@ -81,11 +81,15 @@ clean_odds_ratios <- function(data, cap_inf = 2) {
 filter_linkages <- function(data, max_p = 0.01, min_obs = 100, min_lor = 1.0) {
   data |>
     dplyr::filter(
-      p_adjusted < max_p,
-      total_obs >= min_obs,
-      abs(log_odds_ratio) >= min_lor
+      .data$p_adjusted < max_p,
+      .data$total_obs >= min_obs,
+      abs(.data$log_odds_ratio) >= min_lor
     ) |>
-    dplyr::transmute(pos1, pos2, value = log_odds_ratio)
+    dplyr::transmute(
+      pos1 = .data$pos1,
+      pos2 = .data$pos2,
+      value = .data$log_odds_ratio
+    )
 }
 
 #' Aggregate odds ratios to isodecoder level.

@@ -9,9 +9,9 @@ filter_linkages(data, max_p = 0.01, min_obs = 100, min_lor = 1)
 \arguments{
 \item{data}{A tibble of odds ratio data, typically from
 \code{\link[=clean_odds_ratios]{clean_odds_ratios()}}, with columns \code{pos1}, \code{pos2},
-\code{log_odds_ratio}, \code{p_value}, and \code{total_obs}.}
+\code{log_odds_ratio}, \code{p_adjusted}, and \code{total_obs}.}
 
-\item{max_p}{Maximum p-value to retain. Default \code{0.01}.}
+\item{max_p}{Maximum adjusted p-value (BH FDR) to retain. Default \code{0.01}.}
 
 \item{min_obs}{Minimum total observations to retain. Default \code{100}.}
 
@@ -25,8 +25,8 @@ odds ratio), ready for \code{\link[=plot_tRNA_structure]{plot_tRNA_structure()}}
 \description{
 Convenience filter for odds ratio data that returns a tibble ready
 for the \code{linkages} parameter of \code{\link[=plot_tRNA_structure]{plot_tRNA_structure()}}. Filters
-by p-value, observation count, and log odds ratio magnitude, then
-selects the columns needed for plotting.
+by BH-adjusted p-value, observation count, and log odds ratio
+magnitude, then selects the columns needed for plotting.
 }
 \examples{
 df <- tibble::tibble(
@@ -34,7 +34,7 @@ df <- tibble::tibble(
   pos2 = c(34, 58, 45),
   odds_ratio = c(4.0, 0.3, 1.1),
   log_odds_ratio = c(1.4, -1.2, 0.1),
-  p_value = c(0.001, 0.005, 0.5),
+  p_adjusted = c(0.001, 0.005, 0.5),
   total_obs = c(200, 150, 50)
 )
 filter_linkages(df)
