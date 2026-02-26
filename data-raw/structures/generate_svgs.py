@@ -442,23 +442,19 @@ def postprocess_svg(svg_content: str, trna_name: str) -> str:
 
 
 def ensure_cca_tail(sequence: str, structure: str) -> tuple[str, str]:
-    """Append CCA tail and amino acid placeholder to sequence if missing.
+    """Append CCA tail to sequence if missing.
 
     Most eukaryotic tRNAs in genomic sequences lack the post-transcriptionally
-    added CCA tail. We add it plus a lowercase 'a' placeholder for the amino
-    acid attachment site. This extra position can be used to visualize
-    aminoacylation state alongside modification data.
+    added CCA tail. We add it as unpaired nucleotides so the structure diagram
+    includes the full mature tRNA sequence.
     """
     upper_seq = sequence.upper()
     if upper_seq.endswith("CCA"):
-        # Already has CCA, just add amino acid placeholder
-        sequence = sequence + "a"
-        structure = structure + "."
         return sequence, structure
 
-    # Append CCA + amino acid placeholder as unpaired nucleotides
-    sequence = sequence + "CCAa"
-    structure = structure + "...."
+    # Append CCA as unpaired nucleotides
+    sequence = sequence + "CCA"
+    structure = structure + "..."
     return sequence, structure
 
 
