@@ -82,7 +82,7 @@ cluster_refs_by_group <- function(
     } else {
       ordered <- refs
     }
-    ref_order <- c(ref_order, ordered)
+    ref_order <- c(ref_order, setdiff(ordered, ref_order))
     group_sizes <- c(group_sizes, stats::setNames(length(ref_order), g))
   }
 
