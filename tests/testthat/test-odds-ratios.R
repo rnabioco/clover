@@ -55,7 +55,7 @@ test_that("filter_linkages applies all filters", {
     pos2 = c(34, 58, 45),
     odds_ratio = c(4.0, 0.3, 1.1),
     log_odds_ratio = c(1.4, -1.2, 0.1),
-    p_value = c(0.001, 0.005, 0.5),
+    p_adjusted = c(0.001, 0.005, 0.5),
     total_obs = c(200, 150, 50)
   )
   result <- filter_linkages(df)
@@ -70,7 +70,7 @@ test_that("filter_linkages respects custom thresholds", {
     pos2 = c(34, 58),
     odds_ratio = c(4.0, 0.3),
     log_odds_ratio = c(1.4, -1.2),
-    p_value = c(0.001, 0.005),
+    p_adjusted = c(0.001, 0.005),
     total_obs = c(200, 150)
   )
   result <- filter_linkages(df, max_p = 0.002, min_obs = 100, min_lor = 1.0)

@@ -74,7 +74,7 @@ list_pipeline_files <- function(
   suffix_map <- c(
     charging = "charging.cpm",
     bcerror = "bcerror",
-    odds_ratios = "odds_ratios",
+    odds_ratios = "odds_ratios_filtered",
     align_stats = "align_stats"
   )
 

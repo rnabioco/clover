@@ -40,7 +40,25 @@ read_charging <- function(path) {
 #' )
 #' read_odds_ratios(path)
 read_odds_ratios <- function(path) {
-  d <- readr::read_tsv(path, show_col_types = FALSE)
+  col_types <- readr::cols(
+    tRNA = readr::col_character(),
+    pos1 = readr::col_character(),
+    pos2 = readr::col_character(),
+    n00 = readr::col_double(),
+    n01 = readr::col_double(),
+    n10 = readr::col_double(),
+    n11 = readr::col_double(),
+    total_obs = readr::col_double(),
+    odds_ratio = readr::col_double(),
+    log_odds_ratio = readr::col_double(),
+    se_log_or = readr::col_double(),
+    ci_lower = readr::col_double(),
+    ci_upper = readr::col_double(),
+    fisher_or = readr::col_double(),
+    p_value = readr::col_double(),
+    p_adjusted = readr::col_double()
+  )
+  d <- readr::read_tsv(path, col_types = col_types)
   if ("tRNA" %in% names(d)) {
     d <- dplyr::rename(d, ref = tRNA)
   }
