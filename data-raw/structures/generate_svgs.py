@@ -47,6 +47,10 @@ ORGANISMS = {
         "fasta": FASTA_DIR / "hg38-mature-tRNAs.fa",
         "cm": CM_DIR / "TRNAinf-euk.cm",
     },
+    "T4_phage": {
+        "fasta": FASTA_DIR / "phageT4-tRNAs.fa",
+        "cm": CM_DIR / "TRNAinf-bact.cm",
+    },
 }
 
 
@@ -229,7 +233,7 @@ def parse_cmalign_stockholm(sto_path: Path) -> dict:
 
     # Extract per-sequence ungapped structures
     trnas = {}
-    name_pattern = re.compile(r"tRNA-(\w+)-(\w+)-\d+-\d+")
+    name_pattern = re.compile(r"tRNA-(\w+)-([A-Z]{3})(?:-\d+-\d+)?$")
 
     for seq_name, aligned_seq in full_seqs.items():
         # Extract tRNA identity from name
