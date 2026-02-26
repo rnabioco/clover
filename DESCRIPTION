@@ -4,9 +4,9 @@ Version: 0.0.0.9000
 Authors@R: c(
     person("Jay", "Hesselberth", , "jay.hesselberth@cuanschutz.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-6299-179X")),
-    person("Jill", "Bilodeaux", , "jill.bilodeuax@cuanschutz.edu", role = "ctb",
+    person("Jill", "Bilodeaux", , "jill.bilodeuax@cuanschutz.edu", role = "aut",
            comment = c(ORCID = "0000-0002-1326-7092")),
-    person("Laura", "White", , "laura.k.white@cuanschutz.edu", role = "ctb",
+    person("Laura", "White", , "laura.k.white@cuanschutz.edu", role = "aut",
            comment = c(ORCID = "0000-0003-2909-6627")),
     person("RNA Bioscience Initiative", role = c("fnd", "cph"),
            comment = c(ROR = "https://ror.org/03wmf1y16"))
