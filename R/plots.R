@@ -185,8 +185,7 @@ prep_mod_heatmap <- function(
   if (shorten_labels) {
     result <- dplyr::mutate(
       result,
-      trna_label = sub("^tRNA-", "", .data[[ref_col]]) |>
-        sub("-\\d+-\\d+$", "", x = _)
+      trna_label = shorten_trna_names(.data[[ref_col]], strip_prefix = "^$")
     )
   }
 
@@ -524,7 +523,8 @@ plot_volcano <- function(
 #' [ggrepel::geom_text_repel()].
 #'
 #' @param deseq_res A tibble from [tidy_deseq_results()] with at least
-#'   `ref`, `log2FoldChange`, and `padj` columns.
+#'   `ref`, `log2FoldChange`, and `padj` columns. When `error_bars` is
+#'   `TRUE`, an `lfcSE` column is also expected.
 #' @param charging_diffs A tibble from [compute_charging_diffs()] with
 #'   at least `ref` and `diff` columns.
 #' @param lab_col Column name (string) used for point labels. Default
@@ -537,6 +537,14 @@ plot_volcano <- function(
 #'   `2`.
 #' @param label_size Numeric size for [ggrepel::geom_text_repel()].
 #'   Default `3`.
+#' @param shorten Logical; if `TRUE` (default), shorten tRNA names in
+#'   point labels via [shorten_trna_names()].
+#' @param source_col Optional column name (string) for faceting, e.g.,
+#'   `"source"` to separate host and phage tRNAs. When provided, the
+#'   column must exist in `deseq_res`. Default `NULL`.
+#' @param error_bars Logical; if `TRUE` (default), draw horizontal
+#'   error bars (`lfcSE`) on significant points. Requires an `lfcSE`
+#'   column in `deseq_res`.
 #'
 #' @return A ggplot object.
 #'
@@ -561,11 +569,23 @@ plot_abundance_charging <- function(
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 2,
-  label_size = 3
+  label_size = 3,
+  shorten = TRUE,
+  source_col = NULL,
+  error_bars = TRUE
 ) {
   rlang::check_installed("ggrepel", reason = "to label significant points.")
 
   data <- dplyr::inner_join(deseq_res, charging_diffs, by = "ref")
+
+  if (shorten) {
+    data <- dplyr::mutate(
+      data,
+      .plot_label = shorten_trna_names(.data[[lab_col]])
+    )
+  } else {
+    data <- dplyr::mutate(data, .plot_label = .data[[lab_col]])
+  }
 
   data <- dplyr::mutate(
     data,
@@ -600,7 +620,26 @@ plot_abundance_charging <- function(
 
   p <- ggplot(data, aes(x = log2FoldChange, y = diff)) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "grey40") +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "grey40")
+
+  # Error bars on significant points
+  has_lfcse <- "lfcSE" %in% names(data)
+  if (error_bars && has_lfcse) {
+    p <- p +
+      geom_errorbar(
+        data = function(x) dplyr::filter(x, .data$significant),
+        aes(
+          xmin = log2FoldChange - .data$lfcSE,
+          xmax = log2FoldChange + .data$lfcSE
+        ),
+        orientation = "y",
+        linewidth = 0.3,
+        alpha = 0.4,
+        color = "grey40"
+      )
+  }
+
+  p <- p +
     geom_point(
       aes(color = quadrant),
       size = point_size,
@@ -608,7 +647,7 @@ plot_abundance_charging <- function(
     ) +
     ggrepel::geom_text_repel(
       data = function(x) dplyr::filter(x, .data$significant),
-      aes(label = .data[[lab_col]]),
+      aes(label = .data$.plot_label),
       size = label_size,
       max.overlaps = max_overlaps
     ) +
@@ -625,6 +664,11 @@ plot_abundance_charging <- function(
     theme(legend.position = "bottom") +
     theme_markdown_axes()
 
+  if (!is.null(source_col)) {
+    p <- p +
+      facet_wrap(vars(.data[[source_col]]), scales = "free")
+  }
+
   p
 }
 
@@ -638,6 +682,12 @@ plot_abundance_charging <- function(
 #'   `ref` (factor), `diff`, and `se_diff` columns.
 #' @param point_size Numeric size for [ggplot2::geom_point()]. Default
 #'   `2.5`.
+#' @param source_col Optional column name (string) for faceting, e.g.,
+#'   `"source"` to separate host and phage tRNAs. Default `NULL`.
+#' @param label_col Column name (string) to use for y-axis labels.
+#'   Default `"ref"`.
+#' @param shorten Logical; if `TRUE` (default), shorten tRNA names on
+#'   the y-axis via [shorten_trna_names()].
 #'
 #' @return A ggplot object.
 #'
@@ -650,8 +700,29 @@ plot_abundance_charging <- function(
 #'   se_diff = rep(0.03, 5)
 #' )
 #' plot_charging_diffs(df)
-plot_charging_diffs <- function(data, point_size = 2.5) {
-  ggplot(data, aes(x = diff, y = ref)) +
+plot_charging_diffs <- function(
+  data,
+  point_size = 2.5,
+  source_col = NULL,
+  label_col = "ref",
+  shorten = TRUE
+) {
+  if (shorten) {
+    data <- dplyr::mutate(
+      data,
+      .plot_label = shorten_trna_names(.data[[label_col]])
+    )
+  } else {
+    data <- dplyr::mutate(
+      data,
+      .plot_label = .data[[label_col]]
+    )
+  }
+
+  p <- ggplot(
+    data,
+    aes(x = diff, y = stats::reorder(.data$.plot_label, diff))
+  ) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
     geom_point(size = point_size) +
     geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +
@@ -660,6 +731,91 @@ plot_charging_diffs <- function(data, point_size = 2.5) {
       y = ""
     ) +
     cowplot::theme_minimal_vgrid()
+
+  if (!is.null(source_col)) {
+    p <- p +
+      facet_wrap(vars(.data[[source_col]]), scales = "free_y")
+  }
+
+  p
+}
+
+#' Plot per-tRNA charging ratios.
+#'
+#' Create a box-and-jitter plot of raw charging ratios grouped by
+#' condition. Expects the tibble stored in
+#' `metadata(se)$charging_ratios`.
+#'
+#' @param data A tibble with at least `ref`, `charging_ratio`, and the
+#'   column named by `group_col`.
+#' @param group_col Column name (string) for the x-axis grouping
+#'   variable (e.g., `"condition"`). Default `"condition"`.
+#' @param facet_col Optional column name (string) for faceting (e.g.,
+#'   `"strain"`). Default `NULL`.
+#' @param shorten Logical; if `TRUE` (default), shorten tRNA names on
+#'   the y-axis via [shorten_trna_names()].
+#' @param point_size Numeric size for [ggplot2::geom_jitter()]. Default
+#'   `0.8`.
+#' @param point_alpha Numeric alpha for jittered points. Default `0.4`.
+#'
+#' @return A ggplot object.
+#'
+#' @export
+#'
+#' @examples
+#' df <- tibble::tibble(
+#'   ref = rep(paste0("tRNA-Ala-AGC-", 1:3, "-1"), each = 6),
+#'   condition = rep(c("ctl", "inf"), each = 3, times = 3),
+#'   charging_ratio = runif(18, 0.3, 0.9)
+#' )
+#' plot_charging_ratios(df)
+plot_charging_ratios <- function(
+  data,
+  group_col = "condition",
+  facet_col = NULL,
+  shorten = TRUE,
+  point_size = 0.8,
+  point_alpha = 0.4
+) {
+  if (shorten) {
+    data <- dplyr::mutate(
+      data,
+      .plot_label = shorten_trna_names(.data$ref)
+    )
+  } else {
+    data <- dplyr::mutate(data, .plot_label = .data$ref)
+  }
+
+  p <- ggplot(
+    data,
+    aes(x = .data[[group_col]], y = charging_ratio)
+  ) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(
+      width = 0.2,
+      size = point_size,
+      alpha = point_alpha
+    ) +
+    facet_wrap(~.plot_label, scales = "free_y") +
+    labs(
+      x = NULL,
+      y = "Charging ratio"
+    ) +
+    cowplot::theme_cowplot() +
+    theme(
+      strip.text = element_text(size = rel(0.7)),
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    )
+
+  if (!is.null(facet_col)) {
+    p <- p +
+      facet_wrap(
+        vars(.data$.plot_label, .data[[facet_col]]),
+        scales = "free_y"
+      )
+  }
+
+  p
 }
 
 #' Plot per-position base-calling error profiles.

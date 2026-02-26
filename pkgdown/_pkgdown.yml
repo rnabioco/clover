@@ -93,6 +93,7 @@ reference:
     - charging_colors
     - clover_example
     - dna_to_rna_anticodon
+    - shorten_trna_names
     - list_pipeline_files
     - order_sprinzl_positions
     - trna_regions

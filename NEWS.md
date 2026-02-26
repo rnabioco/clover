@@ -1,5 +1,13 @@
 # clover 0.0.0.9000
 
+* `plot_abundance_charging()` gains `shorten`, `source_col`, and `error_bars` parameters. Labels are auto-shortened via `shorten_trna_names()`, an optional faceting column separates host and phage tRNAs, and horizontal error bars show `lfcSE` on significant points when present.
+
+* `plot_charging_diffs()` gains `source_col`, `label_col`, and `shorten` parameters. Labels are auto-shortened via `shorten_trna_names()` and an optional faceting column separates host and phage tRNAs.
+
+* `plot_charging_ratios()` creates a box-and-jitter plot of raw charging ratios grouped by condition, with optional faceting and auto-shortened tRNA labels.
+
+* `shorten_trna_names()` extracts the tRNA label-shortening logic into a reusable utility function, stripping source prefixes, the `tRNA-` prefix, and gene-copy suffixes.
+
 * `compute_bcerror_delta()` computes per-position differences in base-calling error rates between two conditions from a summarized bcerror tibble.
 
 * `prep_mod_heatmap()` prepares bcerror delta data for `plot_mod_heatmap()` by joining Sprinzl coordinates, annotating known modifications, and shortening tRNA labels.

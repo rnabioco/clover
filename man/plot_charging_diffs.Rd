@@ -4,7 +4,13 @@
 \alias{plot_charging_diffs}
 \title{Plot per-tRNA charging ratio differences.}
 \usage{
-plot_charging_diffs(data, point_size = 2.5)
+plot_charging_diffs(
+  data,
+  point_size = 2.5,
+  source_col = NULL,
+  label_col = "ref",
+  shorten = TRUE
+)
 }
 \arguments{
 \item{data}{A tibble from \code{\link[=compute_charging_diffs]{compute_charging_diffs()}} with at least
@@ -12,6 +18,15 @@ plot_charging_diffs(data, point_size = 2.5)
 
 \item{point_size}{Numeric size for \code{\link[ggplot2:geom_point]{ggplot2::geom_point()}}. Default
 \code{2.5}.}
+
+\item{source_col}{Optional column name (string) for faceting, e.g.,
+\code{"source"} to separate host and phage tRNAs. Default \code{NULL}.}
+
+\item{label_col}{Column name (string) to use for y-axis labels.
+Default \code{"ref"}.}
+
+\item{shorten}{Logical; if \code{TRUE} (default), shorten tRNA names on
+the y-axis via \code{\link[=shorten_trna_names]{shorten_trna_names()}}.}
 }
 \value{
 A ggplot object.

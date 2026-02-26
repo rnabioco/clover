@@ -229,6 +229,101 @@ test_that("plot_charging_diffs respects point_size", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("plot_charging_diffs shortens labels by default", {
+  df <- tibble::tibble(
+    ref = paste0("host-tRNA-", c("Ala-AGC-1-1", "Gly-GCC-2-1")),
+    diff = c(-0.1, 0.1),
+    se_diff = rep(0.03, 2)
+  )
+  p <- plot_charging_diffs(df)
+  expect_s3_class(p, "ggplot")
+  # Labels should be shortened
+  expect_true(all(grepl("^[A-Z][a-z]+-[A-Z]+$", p$data$.plot_label)))
+})
+
+test_that("plot_charging_diffs supports source_col faceting", {
+  df <- tibble::tibble(
+    ref = paste0("tRNA-", 1:4),
+    diff = c(-0.1, 0.05, 0.1, -0.05),
+    se_diff = rep(0.03, 4),
+    source = c("Host", "Host", "Phage", "Phage")
+  )
+  p <- plot_charging_diffs(df, source_col = "source")
+  expect_s3_class(p, "ggplot")
+  expect_true("FacetWrap" %in% class(p$facet))
+})
+
+test_that("plot_charging_ratios returns a ggplot object", {
+  df <- tibble::tibble(
+    ref = rep(paste0("tRNA-Ala-AGC-", 1:3, "-1"), each = 6),
+    condition = rep(c("ctl", "inf"), each = 3, times = 3),
+    charging_ratio = runif(18, 0.3, 0.9)
+  )
+  p <- plot_charging_ratios(df)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot_charging_ratios shortens labels", {
+  df <- tibble::tibble(
+    ref = rep("host-tRNA-Ala-AGC-1-1", 6),
+    condition = rep(c("ctl", "inf"), 3),
+    charging_ratio = runif(6, 0.3, 0.9)
+  )
+  p <- plot_charging_ratios(df)
+  expect_s3_class(p, "ggplot")
+  expect_equal(unique(p$data$.plot_label), "Ala-AGC")
+})
+
+test_that("plot_abundance_charging supports shorten and error_bars", {
+  deseq_res <- tibble::tibble(
+    ref = paste0("host-tRNA-", c("Ala-AGC-1-1", "Gly-GCC-2-1")),
+    log2FoldChange = c(1, -1),
+    lfcSE = c(0.3, 0.4),
+    padj = c(0.01, 0.02)
+  )
+  charging_diffs <- tibble::tibble(
+    ref = paste0("host-tRNA-", c("Ala-AGC-1-1", "Gly-GCC-2-1")),
+    diff = c(0.1, -0.1),
+    se_diff = rep(0.03, 2)
+  )
+  p <- plot_abundance_charging(
+    deseq_res,
+    charging_diffs,
+    shorten = TRUE,
+    error_bars = TRUE
+  )
+  expect_s3_class(p, "ggplot")
+  expect_true(all(grepl("^[A-Z][a-z]+-[A-Z]+$", p$data$.plot_label)))
+  # Should have error bar layer
+  layer_types <- vapply(
+    p$layers,
+    function(l) class(l$geom)[1],
+    character(1)
+  )
+  expect_true("GeomErrorbar" %in% layer_types)
+})
+
+test_that("plot_abundance_charging supports source_col faceting", {
+  deseq_res <- tibble::tibble(
+    ref = paste0("tRNA-", 1:4),
+    log2FoldChange = c(1, -1, 0.5, -0.5),
+    padj = c(0.01, 0.02, 0.5, 0.6),
+    source = c("Host", "Host", "Phage", "Phage")
+  )
+  charging_diffs <- tibble::tibble(
+    ref = paste0("tRNA-", 1:4),
+    diff = c(0.1, -0.1, 0.05, -0.05),
+    se_diff = rep(0.03, 4)
+  )
+  p <- plot_abundance_charging(
+    deseq_res,
+    charging_diffs,
+    source_col = "source"
+  )
+  expect_s3_class(p, "ggplot")
+  expect_true("FacetWrap" %in% class(p$facet))
+})
+
 test_that("plot_bcerror_profile returns a ggplot object", {
   df <- tidyr::expand_grid(
     ref = c("tRNA-Ala", "tRNA-Gly"),

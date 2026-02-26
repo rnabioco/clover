@@ -32,3 +32,27 @@ dna_to_rna_anticodon <- function(x) {
     paste0(parts[, 2], chartr("T", "U", parts[, 3]), parts[, 4])
   )
 }
+
+#' Shorten tRNA name strings for display.
+#'
+#' Strips source prefixes (e.g., `host-`, `phage-`), the `tRNA-` prefix,
+#' and the gene-copy suffix (`-\d+-\d+`) to produce compact labels
+#' suitable for plot axes.
+#'
+#' @param x Character vector of tRNA name strings.
+#' @param strip_prefix Regex pattern for source prefixes to remove.
+#'   Default `"^(host|phage)-"`.
+#'
+#' @return Character vector of shortened names (e.g.,
+#'   `"host-tRNA-Ser-CGT-1-1"` becomes `"Ser-CGT"`).
+#'
+#' @export
+#' @examples
+#' shorten_trna_names("host-tRNA-Ser-CGT-1-1")
+#' shorten_trna_names(c("phage-tRNA-Glu-TTC-2-1", "tRNA-Ala-AGC-3-1"))
+shorten_trna_names <- function(x, strip_prefix = "^(host|phage)-") {
+  x |>
+    sub(strip_prefix, "", x = _) |>
+    sub("^tRNA-", "", x = _) |>
+    sub("-\\d+-\\d+$", "", x = _)
+}

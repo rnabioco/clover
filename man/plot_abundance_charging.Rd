@@ -11,12 +11,16 @@ plot_abundance_charging(
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 2,
-  label_size = 3
+  label_size = 3,
+  shorten = TRUE,
+  source_col = NULL,
+  error_bars = TRUE
 )
 }
 \arguments{
 \item{deseq_res}{A tibble from \code{\link[=tidy_deseq_results]{tidy_deseq_results()}} with at least
-\code{ref}, \code{log2FoldChange}, and \code{padj} columns.}
+\code{ref}, \code{log2FoldChange}, and \code{padj} columns. When \code{error_bars} is
+\code{TRUE}, an \code{lfcSE} column is also expected.}
 
 \item{charging_diffs}{A tibble from \code{\link[=compute_charging_diffs]{compute_charging_diffs()}} with
 at least \code{ref} and \code{diff} columns.}
@@ -35,6 +39,17 @@ Default \code{0.05}.}
 
 \item{label_size}{Numeric size for \code{\link[ggrepel:geom_text_repel]{ggrepel::geom_text_repel()}}.
 Default \code{3}.}
+
+\item{shorten}{Logical; if \code{TRUE} (default), shorten tRNA names in
+point labels via \code{\link[=shorten_trna_names]{shorten_trna_names()}}.}
+
+\item{source_col}{Optional column name (string) for faceting, e.g.,
+\code{"source"} to separate host and phage tRNAs. When provided, the
+column must exist in \code{deseq_res}. Default \code{NULL}.}
+
+\item{error_bars}{Logical; if \code{TRUE} (default), draw horizontal
+error bars (\code{lfcSE}) on significant points. Requires an \code{lfcSE}
+column in \code{deseq_res}.}
 }
 \value{
 A ggplot object.
