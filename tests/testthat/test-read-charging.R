@@ -20,22 +20,16 @@ test_that("read_charging reads a TSV file", {
 })
 
 test_that("read_odds_ratios reads a TSV file", {
-  tmp <- withr::local_tempfile(fileext = ".tsv")
-  writeLines(
-    c(
-      "pos1\tpos2\todds_ratio\tlog_odds_ratio\tp_value\ttotal_obs",
-      "20\t34\t2.5\t0.916\t0.01\t100",
-      "26\t44\t0.5\t-0.693\t0.03\t200"
-    ),
-    tmp
+  path <- clover_example(
+    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
   )
-
-  result <- read_odds_ratios(tmp)
+  result <- read_odds_ratios(path)
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(nrow(result), 2)
+  expect_true(nrow(result) > 0)
   expect_true(all(
-    c("pos1", "pos2", "odds_ratio", "log_odds_ratio") %in% names(result)
+    c("ref", "pos1", "pos2", "odds_ratio", "log_odds_ratio", "p_adjusted") %in%
+      names(result)
   ))
 })
 
@@ -64,20 +58,20 @@ test_that("read_charging_multi errors on unnamed paths", {
 })
 
 test_that("read_odds_ratios_multi combines samples", {
-  tmp1 <- withr::local_tempfile(fileext = ".tsv")
-  tmp2 <- withr::local_tempfile(fileext = ".tsv")
-
-  header <- "pos1\tpos2\todds_ratio\tlog_odds_ratio\tp_value\ttotal_obs"
-  writeLines(c(header, "20\t34\t2.5\t0.916\t0.01\t100"), tmp1)
-  writeLines(c(header, "20\t34\t3.0\t1.099\t0.005\t150"), tmp2)
-
-  paths <- c(wt = tmp1, mut = tmp2)
+  paths <- c(
+    ctl = clover_example(
+      "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
+    ),
+    inf = clover_example(
+      "ecoli/summary/tables/wt-15-inf-01/wt-15-inf-01.odds_ratios_filtered.tsv.gz"
+    )
+  )
   result <- read_odds_ratios_multi(paths)
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(nrow(result), 2)
+  expect_true(nrow(result) > 0)
   expect_true("sample_id" %in% names(result))
-  expect_equal(sort(unique(result$sample_id)), c("mut", "wt"))
+  expect_equal(sort(unique(result$sample_id)), c("ctl", "inf"))
 })
 
 test_that("read_odds_ratios_multi errors on unnamed paths", {
@@ -284,18 +278,4 @@ test_that("pairwise_fisher_exact uses Haldane correction for zero cells", {
 
   expected_or <- (3 + 0.5) * (5 + 0.5) / ((0 + 0.5) * (2 + 0.5))
   expect_equal(result$odds_ratio, expected_or)
-})
-
-test_that("read_odds_ratios works with ecoli test data", {
-  path <- clover_example(
-    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
-  )
-  result <- read_odds_ratios(path)
-
-  expect_s3_class(result, "tbl_df")
-  expect_true(nrow(result) > 0)
-  expect_true(all(
-    c("ref", "pos1", "pos2", "odds_ratio", "log_odds_ratio") %in%
-      names(result)
-  ))
 })

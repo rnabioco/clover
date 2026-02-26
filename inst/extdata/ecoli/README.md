@@ -17,13 +17,13 @@ Example data from a T4 phage infection time-course experiment on wild-type
 
 ### Pipeline output (`summary/tables/{sample}/`)
 
-These TSV files are subsets of the full pipeline output, containing 5 host
-tRNAs (charged + uncharged = 10 total). They are used by `create_clover()`
-to demonstrate the data-loading workflow.
+These TSV files are subsets of the full pipeline output, containing 7 host
+tRNAs (charged + uncharged). They are used by `create_clover()` to
+demonstrate the data-loading workflow.
 
 - `{sample}.bcerror.tsv.gz` -- per-position base-calling error rates
 - `{sample}.charging.cpm.tsv.gz` -- charging counts per million
-- `{sample}.odds_ratios.tsv.gz` -- pairwise modification co-occurrence
+- `{sample}.odds_ratios_filtered.tsv.gz` -- pairwise modification co-occurrence (BH-filtered)
 - `{sample}.align_stats.tsv.gz` -- alignment statistics
 
 ### Preprocessed data
