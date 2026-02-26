@@ -7,7 +7,7 @@
 read_odds_ratios(path)
 }
 \arguments{
-\item{path}{Path to a \verb{\{sample\}.odds_ratios.tsv.gz} file.}
+\item{path}{Path to a \verb{\{sample\}.odds_ratios_filtered.tsv.gz} file.}
 }
 \value{
 A tibble with columns including \code{ref}, \code{pos1}, \code{pos2},
@@ -19,7 +19,7 @@ pipeline. These files contain pairwise modification co-occurrence statistics.
 }
 \examples{
 path <- clover_example(
-  "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+  "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
 )
 read_odds_ratios(path)
 }

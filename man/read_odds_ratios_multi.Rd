@@ -20,10 +20,10 @@ tibble with a \code{sample_id} column.
 \examples{
 paths <- c(
   "wt-15-ctl-01" = clover_example(
-    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
   ),
   "wt-15-ctl-02" = clover_example(
-    "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.odds_ratios.tsv.gz"
+    "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.odds_ratios_filtered.tsv.gz"
   )
 )
 read_odds_ratios_multi(paths)

@@ -27,7 +27,7 @@ read_charging <- function(path) {
 #' Read a per-position-pair odds ratio file produced by the tRNA sequencing
 #' pipeline. These files contain pairwise modification co-occurrence statistics.
 #'
-#' @param path Path to a `{sample}.odds_ratios.tsv.gz` file.
+#' @param path Path to a `{sample}.odds_ratios_filtered.tsv.gz` file.
 #'
 #' @return A tibble with columns including `ref`, `pos1`, `pos2`,
 #'   `odds_ratio`, `log_odds_ratio`, `p_value`, and `total_obs`.
@@ -36,7 +36,7 @@ read_charging <- function(path) {
 #'
 #' @examples
 #' path <- clover_example(
-#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
 #' )
 #' read_odds_ratios(path)
 read_odds_ratios <- function(path) {
@@ -106,10 +106,10 @@ read_charging_multi <- function(paths) {
 #' @examples
 #' paths <- c(
 #'   "wt-15-ctl-01" = clover_example(
-#'     "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+#'     "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
 #'   ),
 #'   "wt-15-ctl-02" = clover_example(
-#'     "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.odds_ratios.tsv.gz"
+#'     "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.odds_ratios_filtered.tsv.gz"
 #'   )
 #' )
 #' read_odds_ratios_multi(paths)

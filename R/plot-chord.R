@@ -41,7 +41,7 @@
 #' @examples
 #' \donttest{
 #' path <- clover_example(
-#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"
+#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
 #' )
 #' or_data <- read_odds_ratios(path)
 #' or_data <- dplyr::filter(or_data, ref == "host-tRNA-Glu-TTC-1-1")
