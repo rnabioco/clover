@@ -110,31 +110,33 @@ create_clover <- function(
 
 #' Read FASTA reference
 #'
+#' @param fa Path to a FASTA file.
+#'
+#' @return A [Biostrings::DNAStringSet].
+#'
+#' @export
+#'
 #' @examples
 #' fa <- clover_example("ecoli/trna_only.fa.gz")
 #' read_fasta(fa)
-#'
-#' @param fa path to fasta file
-#'
-#' @return A [Biostrings::DNAStringSet].
-#' @import Biostrings
-#' @export
 read_fasta <- function(fa) {
   Biostrings::readDNAStringSet(fa)
 }
 
 #' Read modifications file
 #'
-#' TSV file with 4 columns:
+#' Read a TSV file with 4 columns: `ref`, `pos`, `mod_full`, `mod1`.
 #'
-#' 1. `ref`
-#' 2. `pos`
-#' 3. `mod_full`
-#' 4. `mod1`
+#' @param mods Path to a modifications TSV file.
 #'
-#' @param mods path to modifications file
 #' @return A tibble.
+#'
 #' @export
+#'
+#' @examples
+#' \dontrun{
+#' read_mod_annotations("modifications.tsv")
+#' }
 read_mod_annotations <- function(mods) {
   readr::read_tsv(mods, show_col_types = FALSE)
 }

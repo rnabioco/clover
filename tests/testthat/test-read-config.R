@@ -155,8 +155,35 @@ test_that("list_pipeline_files validates types", {
     output_dir = "/out"
   )
 
-  expect_error(
+  expect_snapshot(
     list_pipeline_files(config, types = "invalid_type"),
-    "should be one of"
+    error = TRUE
   )
+})
+
+test_that("read_pipeline_results loads charging data", {
+  config_path <- clover_example("ecoli/config.yaml")
+  results <- read_pipeline_results(config_path, types = "charging")
+
+  expect_type(results, "list")
+  expect_s3_class(results$charging, "tbl_df")
+  expect_true(nrow(results$charging) > 0)
+  expect_true("sample_id" %in% names(results$charging))
+})
+
+test_that("read_pipeline_results returns NULL for missing types", {
+  tmp <- withr::local_tempdir()
+  config_text <- paste(
+    "samples:",
+    "  s1: data/s1.pod5",
+    "output_dir: results",
+    sep = "\n"
+  )
+  config_path <- file.path(tmp, "config.yaml")
+  writeLines(config_text, config_path)
+
+  results <- read_pipeline_results(config_path, types = "charging")
+
+  expect_type(results, "list")
+  expect_null(results$charging)
 })

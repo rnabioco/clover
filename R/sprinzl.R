@@ -28,14 +28,14 @@ read_sprinzl_coords <- function(path) {
     col_types = readr::cols(sprinzl_label = readr::col_character()),
     show_col_types = FALSE
   ) |>
-    dplyr::rename(pos = seq_index) |>
+    dplyr::rename("pos" = "seq_index") |>
     dplyr::select(
-      trna_id,
-      pos,
-      sprinzl_label,
-      global_index,
-      region,
-      residue
+      "trna_id",
+      "pos",
+      "sprinzl_label",
+      "global_index",
+      "region",
+      "residue"
     )
 }
 
@@ -54,28 +54,30 @@ read_sprinzl_coords <- function(path) {
 #' order_sprinzl_positions(c("20a", "20", "1", "21"))
 order_sprinzl_positions <- function(labels) {
   ordering <- tibble::tibble(label = unique(labels)) |>
-    dplyr::filter(!is.na(label), label != "") |>
+    dplyr::filter(!is.na(.data$label), .data$label != "") |>
     dplyr::mutate(
       # Variable arm extra positions (e.g., e11, e1, e21) go between 45-46
-      .is_var_extra = stringr::str_detect(label, "^e\\d+$"),
+      .is_var_extra = stringr::str_detect(.data$label, "^e\\d+$"),
       base_num = dplyr::case_when(
-        .is_var_extra ~ 45,
-        .default = as.numeric(stringr::str_extract(label, "^\\d+"))
+        .data$.is_var_extra ~ 45,
+        .default = as.numeric(stringr::str_extract(.data$label, "^\\d+"))
       ),
-      suffix = stringr::str_extract(label, "[a-zA-Z]$|:e\\d+$"),
+      suffix = stringr::str_extract(.data$label, "[a-zA-Z]$|:e\\d+$"),
       suffix_order = dplyr::case_when(
-        .is_var_extra ~
-          500 + as.numeric(stringr::str_extract(label, "\\d+$")),
-        is.na(suffix) ~ 0,
-        stringr::str_detect(suffix, "^[a-z]$") ~ match(suffix, letters),
-        stringr::str_detect(suffix, "^[A-Z]$") ~ match(suffix, LETTERS),
-        stringr::str_detect(suffix, "^:e") ~
-          100 + as.numeric(stringr::str_extract(suffix, "\\d+$")),
+        .data$.is_var_extra ~
+          500 + as.numeric(stringr::str_extract(.data$label, "\\d+$")),
+        is.na(.data$suffix) ~ 0,
+        stringr::str_detect(.data$suffix, "^[a-z]$") ~
+          match(.data$suffix, letters),
+        stringr::str_detect(.data$suffix, "^[A-Z]$") ~
+          match(.data$suffix, LETTERS),
+        stringr::str_detect(.data$suffix, "^:e") ~
+          100 + as.numeric(stringr::str_extract(.data$suffix, "\\d+$")),
         .default = 0
       ),
-      sort_key = base_num + suffix_order / 1000
+      sort_key = .data$base_num + .data$suffix_order / 1000
     ) |>
-    dplyr::arrange(sort_key)
+    dplyr::arrange(.data$sort_key)
 
   factor(labels, levels = ordering$label)
 }

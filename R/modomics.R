@@ -64,25 +64,7 @@ modomics_mods <- function(fasta, organism, min_identity = 0.7) {
     "Processing {nrow(modomics_seqs)} MODOMICS sequence{?s}."
   )
 
-  modomics_entries <- purrr::map(
-    seq_len(nrow(modomics_seqs)),
-    function(i) {
-      mods <- extract_mod_positions(
-        modomics_seqs$seq[i],
-        mod_dict
-      )
-      plain_seq <- strip_modifications(
-        modomics_seqs$seq[i],
-        mod_dict
-      )
-      list(
-        subtype = modomics_seqs$subtype[i],
-        anticodon = modomics_seqs$anticodon[i],
-        mods = mods,
-        plain_seq = plain_seq
-      )
-    }
-  )
+  modomics_entries <- build_modomics_entries(modomics_seqs, mod_dict)
 
   cli::cli_inform(
     "Matching MODOMICS sequences to reference FASTA."
@@ -121,6 +103,28 @@ modomics_organisms <- function() {
   rds_files <- list.files(modomics_dir, pattern = "\\.rds$")
   rds_files <- rds_files[rds_files != "modifications.rds"]
   gsub("_", " ", tools::file_path_sans_ext(rds_files))
+}
+
+build_modomics_entries <- function(modomics_seqs, mod_dict) {
+  purrr::map(
+    seq_len(nrow(modomics_seqs)),
+    function(i) {
+      mods <- extract_mod_positions(
+        modomics_seqs$seq[i],
+        mod_dict
+      )
+      plain_seq <- strip_modifications(
+        modomics_seqs$seq[i],
+        mod_dict
+      )
+      list(
+        subtype = modomics_seqs$subtype[i],
+        anticodon = modomics_seqs$anticodon[i],
+        mods = mods,
+        plain_seq = plain_seq
+      )
+    }
+  )
 }
 
 load_cached_modifications <- function() {
@@ -212,25 +216,7 @@ fetch_modomics_mods <- function(
     "Processing {nrow(modomics_seqs)} MODOMICS sequence{?s}."
   )
 
-  modomics_entries <- purrr::map(
-    seq_len(nrow(modomics_seqs)),
-    function(i) {
-      mods <- extract_mod_positions(
-        modomics_seqs$seq[i],
-        mod_dict
-      )
-      plain_seq <- strip_modifications(
-        modomics_seqs$seq[i],
-        mod_dict
-      )
-      list(
-        subtype = modomics_seqs$subtype[i],
-        anticodon = modomics_seqs$anticodon[i],
-        mods = mods,
-        plain_seq = plain_seq
-      )
-    }
-  )
+  modomics_entries <- build_modomics_entries(modomics_seqs, mod_dict)
 
   cli::cli_inform(
     "Matching MODOMICS sequences to reference FASTA."

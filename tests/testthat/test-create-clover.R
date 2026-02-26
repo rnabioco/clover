@@ -1,3 +1,25 @@
+test_that("read_fasta returns DNAStringSet with correct names", {
+  fa <- clover_example("ecoli/trna_only.fa.gz")
+  result <- read_fasta(fa)
+
+  expect_s4_class(result, "DNAStringSet")
+  expect_true(length(result) > 0)
+  expect_true(all(nchar(as.character(result)) > 0))
+})
+
+test_that("read_mod_annotations returns tibble with expected columns", {
+  tmp <- withr::local_tempfile(fileext = ".tsv")
+  writeLines(
+    c("ref\tpos\tmod_full\tmod1", "tRNA-Ala\t20\t1-methyladenosine\tm1A"),
+    tmp
+  )
+  result <- read_mod_annotations(tmp)
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(result, c("ref", "pos", "mod_full", "mod1"))
+  expect_equal(nrow(result), 1)
+})
+
 test_that("create_clover builds SE from ecoli test data", {
   config_path <- clover_example("ecoli/config.yaml")
 

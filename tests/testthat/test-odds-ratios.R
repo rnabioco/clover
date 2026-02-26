@@ -168,3 +168,42 @@ test_that("compute_ror_isodecoder caps extreme values", {
   result <- compute_ror_isodecoder(num, den, ror_cap = 10)
   expect_equal(result$ror, 10)
 })
+
+test_that("compute_ror computes basic two-condition ROR", {
+  or_data <- tibble::tibble(
+    condition = rep(c("ctl", "inf"), each = 2),
+    sample_id = c("s1", "s2", "s3", "s4"),
+    pos1 = rep("20", 4),
+    pos2 = rep("34", 4),
+    log_odds_ratio = c(1.0, 1.2, 2.0, 2.4),
+    total_obs = rep(200, 4)
+  )
+  result <- compute_ror(or_data, numerator = "inf", denominator = "ctl")
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 1)
+  expect_named(
+    result,
+    c("pos1", "pos2", "or_numerator", "or_denominator", "log_ror", "ror")
+  )
+  expect_equal(result$or_numerator, mean(c(2.0, 2.4)))
+  expect_equal(result$or_denominator, mean(c(1.0, 1.2)))
+})
+
+test_that("compute_ror filters by min_obs", {
+  or_data <- tibble::tibble(
+    condition = c("ctl", "inf"),
+    sample_id = c("s1", "s2"),
+    pos1 = c("20", "20"),
+    pos2 = c("34", "34"),
+    log_odds_ratio = c(1.0, 2.0),
+    total_obs = c(50, 50)
+  )
+  result <- compute_ror(
+    or_data,
+    numerator = "inf",
+    denominator = "ctl",
+    min_obs = 100
+  )
+  expect_equal(nrow(result), 0)
+})

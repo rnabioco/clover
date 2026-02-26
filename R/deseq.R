@@ -27,13 +27,13 @@ abundance_count_matrix <- function(charging_data, min_count = 10) {
   abundance <- charging_data |>
     dplyr::mutate(
       total_count = as.integer(
-        round(counts_charged + counts_uncharged)
+        round(.data$counts_charged + .data$counts_uncharged)
       )
     ) |>
-    dplyr::select(ref, sample_id, total_count) |>
+    dplyr::select("ref", "sample_id", "total_count") |>
     tidyr::pivot_wider(
-      names_from = sample_id,
-      values_from = total_count,
+      names_from = "sample_id",
+      values_from = "total_count",
       values_fill = 0L
     )
 
@@ -72,22 +72,22 @@ abundance_count_matrix <- function(charging_data, min_count = 10) {
 charging_count_matrix <- function(charging_data, min_count = 10) {
   long <- charging_data |>
     dplyr::mutate(
-      counts_charged = as.integer(round(counts_charged)),
-      counts_uncharged = as.integer(round(counts_uncharged))
+      counts_charged = as.integer(round(.data$counts_charged)),
+      counts_uncharged = as.integer(round(.data$counts_uncharged))
     ) |>
     tidyr::pivot_longer(
-      cols = c(counts_charged, counts_uncharged),
+      cols = dplyr::all_of(c("counts_charged", "counts_uncharged")),
       names_to = "charge_status",
       values_to = "count"
     ) |>
     dplyr::mutate(
-      charge_status = sub("^counts_", "", charge_status),
-      col_name = paste0(sample_id, "_", charge_status)
+      charge_status = sub("^counts_", "", .data$charge_status),
+      col_name = paste0(.data$sample_id, "_", .data$charge_status)
     ) |>
-    dplyr::select(ref, col_name, count) |>
+    dplyr::select("ref", "col_name", "count") |>
     tidyr::pivot_wider(
-      names_from = col_name,
-      values_from = count,
+      names_from = "col_name",
+      values_from = "count",
       values_fill = 0L
     )
 

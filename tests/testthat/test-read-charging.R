@@ -51,9 +51,9 @@ test_that("read_charging_multi combines samples", {
 })
 
 test_that("read_charging_multi errors on unnamed paths", {
-  expect_error(
+  expect_snapshot(
     read_charging_multi(c("/fake/path1", "/fake/path2")),
-    "named character vector"
+    error = TRUE
   )
 })
 
@@ -75,9 +75,9 @@ test_that("read_odds_ratios_multi combines samples", {
 })
 
 test_that("read_odds_ratios_multi errors on unnamed paths", {
-  expect_error(
+  expect_snapshot(
     read_odds_ratios_multi(c("/fake/path1")),
-    "named character vector"
+    error = TRUE
   )
 })
 

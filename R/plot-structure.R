@@ -188,7 +188,7 @@ plot_tRNA_structure <- function(
     if (
       "log_odds_ratio" %in% names(linkages) && !"value" %in% names(linkages)
     ) {
-      linkages <- dplyr::rename(linkages, value = log_odds_ratio)
+      linkages <- dplyr::rename(linkages, "value" = "log_odds_ratio")
     }
     svg_doc <- add_linkage_arcs(svg_doc, nucs, linkages, linkage_palette)
   }
@@ -375,11 +375,7 @@ add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
   svg_ns <- xml2::xml_ns(svg_doc)
   root <- xml2::xml_root(svg_doc)
 
-  # Find the first child group to insert before (so circles are behind text)
-  children <- xml2::xml_children(root)
-  first_child <- if (length(children) > 0) children[[1]] else NULL
-
-  # Create a group for modification circles
+  # Create a group for modification circles (inserted at position 0, behind text)
   mod_group <- xml2::xml_add_child(
     root,
     "g",
@@ -1188,20 +1184,6 @@ add_position_markers <- function(svg_doc, nucs) {
   }
 
   svg_doc
-}
-
-interpolate_color <- function(value, range, palette) {
-  if (range[1] == range[2]) {
-    return(palette[1])
-  }
-  t <- (value - range[1]) / (range[2] - range[1])
-  t <- max(0, min(1, t))
-
-  col1 <- grDevices::col2rgb(palette[1]) / 255
-  col2 <- grDevices::col2rgb(palette[2]) / 255
-  mixed <- col1 * (1 - t) + col2 * t
-
-  grDevices::rgb(mixed[1], mixed[2], mixed[3])
 }
 
 #' Default modification color palette

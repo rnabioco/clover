@@ -41,9 +41,9 @@ clean_odds_ratios <- function(data, cap_inf = 2) {
   dplyr::mutate(
     data,
     log_or_clean = dplyr::case_when(
-      is.infinite(log_odds_ratio) & log_odds_ratio > 0 ~ upper,
-      is.infinite(log_odds_ratio) & log_odds_ratio < 0 ~ lower,
-      .default = log_odds_ratio
+      is.infinite(.data$log_odds_ratio) & .data$log_odds_ratio > 0 ~ upper,
+      is.infinite(.data$log_odds_ratio) & .data$log_odds_ratio < 0 ~ lower,
+      .default = .data$log_odds_ratio
     )
   )
 }
@@ -124,15 +124,15 @@ filter_linkages <- function(data, max_p = 0.01, min_obs = 100, min_lor = 1.0) {
 aggregate_or_isodecoder <- function(data, pattern = "-\\d+-\\d+$") {
   data |>
     dplyr::mutate(
-      isodecoder = stringr::str_replace(ref, pattern, "")
+      isodecoder = stringr::str_replace(.data$ref, pattern, "")
     ) |>
-    dplyr::group_by(isodecoder, pos1, pos2) |>
+    dplyr::group_by(.data$isodecoder, .data$pos1, .data$pos2) |>
     dplyr::summarise(
-      mean_or = mean(odds_ratio, na.rm = TRUE),
-      mean_log_or = mean(log_or_clean, na.rm = TRUE),
-      sd_log_or = stats::sd(log_or_clean, na.rm = TRUE),
-      min_pval = min(p_value, na.rm = TRUE),
-      total_reads = sum(total_obs, na.rm = TRUE),
+      mean_or = mean(.data$odds_ratio, na.rm = TRUE),
+      mean_log_or = mean(.data$log_or_clean, na.rm = TRUE),
+      sd_log_or = stats::sd(.data$log_or_clean, na.rm = TRUE),
+      min_pval = min(.data$p_value, na.rm = TRUE),
+      total_reads = sum(.data$total_obs, na.rm = TRUE),
       n_copies = dplyr::n(),
       .groups = "drop"
     )
@@ -188,37 +188,191 @@ compute_ror_isodecoder <- function(
   joined <- dplyr::inner_join(
     dplyr::select(
       data_num,
-      isodecoder,
-      pos1,
-      pos2,
-      mean_log_or_num = mean_log_or,
-      se_num = sd_log_or
+      "isodecoder",
+      "pos1",
+      "pos2",
+      "mean_log_or_num" = "mean_log_or",
+      "se_num" = "sd_log_or"
     ),
     dplyr::select(
       data_den,
-      isodecoder,
-      pos1,
-      pos2,
-      mean_log_or_den = mean_log_or,
-      se_den = sd_log_or
+      "isodecoder",
+      "pos1",
+      "pos2",
+      "mean_log_or_den" = "mean_log_or",
+      "se_den" = "sd_log_or"
     ),
     by = c("isodecoder", "pos1", "pos2")
   )
 
   joined |>
     dplyr::mutate(
-      ror = mean_log_or_num - mean_log_or_den,
+      ror = .data$mean_log_or_num - .data$mean_log_or_den,
       ror = dplyr::case_when(
-        ror > ror_cap ~ ror_cap,
-        ror < -ror_cap ~ -ror_cap,
-        .default = ror
+        .data$ror > ror_cap ~ ror_cap,
+        .data$ror < -ror_cap ~ -ror_cap,
+        .default = .data$ror
       ),
-      ror_se = sqrt(se_num^2 + se_den^2),
-      z_score = ror / ror_se,
-      p_value = 2 * stats::pnorm(-abs(z_score)),
-      p_adj = stats::p.adjust(p_value, method = p_method),
-      ci_lower = ror - 1.96 * ror_se,
-      ci_upper = ror + 1.96 * ror_se,
-      significant = p_adj < alpha
+      ror_se = sqrt(.data$se_num^2 + .data$se_den^2),
+      z_score = .data$ror / .data$ror_se,
+      p_value = 2 * stats::pnorm(-abs(.data$z_score)),
+      p_adj = stats::p.adjust(.data$p_value, method = p_method),
+      ci_lower = .data$ror - 1.96 * .data$ror_se,
+      ci_upper = .data$ror + 1.96 * .data$ror_se,
+      significant = .data$p_adj < alpha
     )
+}
+
+#' Compute ratio of odds ratios between conditions.
+#'
+#' Compare modification co-occurrence between two conditions by computing
+#' the ratio of odds ratios (ROR). Replicates within each condition are
+#' aggregated using the specified function.
+#'
+#' @param odds_data A combined tibble of odds ratio data with a `condition`
+#'   column (or column specified by `condition_col`) and `sample_id`.
+#' @param condition_col Column name (string) for condition labels.
+#'   Default `"condition"`.
+#' @param numerator Value of `condition_col` for the numerator condition.
+#' @param denominator Value of `condition_col` for the denominator condition.
+#' @param min_obs Minimum `total_obs` for a pair to be included.
+#'   Default `100`.
+#' @param agg_fun Function to aggregate replicate log odds ratios.
+#'   Default `mean`.
+#'
+#' @return A tibble with columns: `pos1`, `pos2`, `or_numerator`,
+#'   `or_denominator`, `ror`, and `log_ror`.
+#'
+#' @export
+#'
+#' @examples
+#' results <- read_pipeline_results(
+#'   clover_example("ecoli/config.yaml"),
+#'   types = "odds_ratios"
+#' )
+#' or_data <- results$odds_ratios
+#' or_data$condition <- ifelse(
+#'   grepl("ctl", or_data$sample_id), "ctl", "inf"
+#' )
+#' compute_ror(or_data, numerator = "inf", denominator = "ctl")
+compute_ror <- function(
+  odds_data,
+  condition_col = "condition",
+  numerator,
+  denominator,
+  min_obs = 100,
+  agg_fun = mean
+) {
+  # Filter by minimum observations
+  filtered <- odds_data |>
+    dplyr::filter(.data$total_obs >= min_obs)
+
+  # Aggregate replicates within each condition
+  agg <- filtered |>
+    dplyr::group_by(
+      .data[[condition_col]],
+      .data$pos1,
+      .data$pos2
+    ) |>
+    dplyr::summarise(
+      mean_log_or = agg_fun(.data$log_odds_ratio),
+      .groups = "drop"
+    )
+
+  # Separate numerator and denominator
+  num <- agg |>
+    dplyr::filter(.data[[condition_col]] == numerator) |>
+    dplyr::select("pos1", "pos2", "or_numerator" = "mean_log_or")
+
+  denom <- agg |>
+    dplyr::filter(.data[[condition_col]] == denominator) |>
+    dplyr::select("pos1", "pos2", "or_denominator" = "mean_log_or")
+
+  # Join and compute ROR
+  dplyr::inner_join(num, denom, by = c("pos1", "pos2")) |>
+    dplyr::mutate(
+      log_ror = .data$or_numerator - .data$or_denominator,
+      ror = exp(.data$log_ror)
+    )
+}
+
+#' Compute pairwise modification co-occurrence odds ratios.
+#'
+#' Given a modkit `mod_calls.tsv.gz` file, build a per-read binary
+#' modification matrix for each tRNA and compute Fisher's exact test
+#' for each pair of positions. This is computationally expensive for
+#' full datasets; use the `refs` parameter to restrict to specific
+#' tRNAs.
+#'
+#' @param mod_calls_path Path to a `{sample}.mod_calls.tsv.gz` file
+#'   from modkit.
+#' @param refs Optional character vector of reference names to
+#'   include. If `NULL`, all references are processed.
+#' @param min_reads Minimum number of reads required for a tRNA to be
+#'   included. Default `10`.
+#'
+#' @return A tibble with columns: `ref`, `pos1`, `pos2`,
+#'   `odds_ratio`, `log_odds_ratio`, `p_value`, `total_obs`.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' compute_odds_ratios("sample.mod_calls.tsv.gz")
+#' }
+compute_odds_ratios <- function(mod_calls_path, refs = NULL, min_reads = 10) {
+  mc <- readr::read_tsv(mod_calls_path, show_col_types = FALSE) |>
+    dplyr::filter(.data$within_alignment == TRUE)
+
+  if (!is.null(refs)) {
+    mc <- mc |> dplyr::filter(.data$chrom %in% refs)
+  }
+
+  all_refs <- unique(mc$chrom)
+  results <- list()
+
+  for (r in all_refs) {
+    ref_data <- mc |> dplyr::filter(.data$chrom == r)
+
+    # Build read x position binary matrix (modified = call_code != "-")
+    mat_data <- ref_data |>
+      dplyr::mutate(modified = as.integer(.data$call_code != "-")) |>
+      dplyr::select("read_id", "ref_position", "modified") |>
+      dplyr::group_by(.data$read_id, .data$ref_position) |>
+      dplyr::summarize(modified = max(.data$modified), .groups = "drop") |>
+      tidyr::pivot_wider(
+        names_from = "ref_position",
+        values_from = "modified",
+        values_fill = 0L
+      )
+
+    if (nrow(mat_data) < min_reads) {
+      next
+    }
+
+    pos_cols <- setdiff(names(mat_data), "read_id")
+    if (length(pos_cols) < 2) {
+      next
+    }
+
+    # Compute Fisher's test for each pair via C++
+    int_mat <- as.matrix(mat_data[, pos_cols, drop = FALSE])
+    storage.mode(int_mat) <- "integer"
+
+    pair_results <- pairwise_fisher_exact(int_mat)
+
+    if (nrow(pair_results) > 0) {
+      results[[length(results) + 1]] <- tibble::tibble(
+        ref = r,
+        pos1 = pos_cols[pair_results$pos1],
+        pos2 = pos_cols[pair_results$pos2],
+        odds_ratio = pair_results$odds_ratio,
+        log_odds_ratio = pair_results$log_odds_ratio,
+        p_value = pair_results$p_value,
+        total_obs = pair_results$total_obs
+      )
+    }
+  }
+
+  dplyr::bind_rows(results)
 }

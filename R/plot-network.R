@@ -35,8 +35,8 @@ build_or_network <- function(data, value_col = "ror", min_weight = 0) {
   edges <- data |>
     dplyr::filter(abs(.data[[value_col]]) > min_weight) |>
     dplyr::mutate(
-      from = as.character(pmin(pos1, pos2)),
-      to = as.character(pmax(pos1, pos2)),
+      from = as.character(pmin(.data$pos1, .data$pos2)),
+      to = as.character(pmax(.data$pos1, .data$pos2)),
       edge_type = dplyr::case_when(
         .data[[value_col]] > 0 ~ "co-occurring",
         .data[[value_col]] < 0 ~ "exclusive",
@@ -44,7 +44,7 @@ build_or_network <- function(data, value_col = "ror", min_weight = 0) {
       ),
       weight = abs(.data[[value_col]])
     ) |>
-    dplyr::select(from, to, edge_type, weight)
+    dplyr::select("from", "to", "edge_type", "weight")
 
   if (nrow(edges) == 0) {
     cli_warn("No edges remain after filtering.")
@@ -109,9 +109,9 @@ plot_arc_diagram <- function(
   ggraph::ggraph(graph, layout = "linear", circular = TRUE) +
     ggraph::geom_edge_arc(
       aes(
-        edge_width = weight,
-        edge_alpha = weight,
-        edge_colour = edge_type
+        edge_width = .data$weight,
+        edge_alpha = .data$weight,
+        edge_colour = .data$edge_type
       ),
       strength = 0.5
     ) +
@@ -119,8 +119,12 @@ plot_arc_diagram <- function(
       values = c("co-occurring" = co_color, "exclusive" = ex_color),
       name = "Edge type"
     ) +
-    ggraph::geom_node_point(aes(size = degree), color = "grey30") +
-    ggraph::geom_node_text(aes(label = position), repel = TRUE, size = 3) +
+    ggraph::geom_node_point(aes(size = .data$degree), color = "grey30") +
+    ggraph::geom_node_text(
+      aes(label = .data$position),
+      repel = TRUE,
+      size = 3
+    ) +
     ggraph::scale_edge_width(range = c(0.5, 3), name = "|ROR|") +
     ggraph::scale_edge_alpha(range = c(0.3, 0.9), guide = "none") +
     scale_size_continuous(range = c(2, 6), name = "Degree") +

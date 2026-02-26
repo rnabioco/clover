@@ -19,7 +19,7 @@
 #' read_charging(path)
 read_charging <- function(path) {
   readr::read_tsv(path, show_col_types = FALSE) |>
-    dplyr::rename(ref = tRNA)
+    dplyr::rename("ref" = "tRNA")
 }
 
 #' Read an odds ratios file.
@@ -60,7 +60,7 @@ read_odds_ratios <- function(path) {
   )
   d <- readr::read_tsv(path, col_types = col_types)
   if ("tRNA" %in% names(d)) {
-    d <- dplyr::rename(d, ref = tRNA)
+    d <- dplyr::rename(d, "ref" = "tRNA")
   }
   d
 }
@@ -183,7 +183,6 @@ compute_charging_diffs <- function(
   charging_data,
   condition_col = "condition",
   numerator,
-
   denominator,
   min_count = 50,
   n_top = NULL
@@ -196,32 +195,31 @@ compute_charging_diffs <- function(
 
   # Filter uncharged variants and compute per-sample charging ratio
   ratios <- charging_data |>
-    dplyr::filter(!grepl("-uncharged$", ref)) |>
+    dplyr::filter(!grepl("-uncharged$", .data$ref)) |>
     dplyr::mutate(
-      total = counts_charged + counts_uncharged,
-      charging_ratio = counts_charged / total
+      total = .data$counts_charged + .data$counts_uncharged,
+      charging_ratio = .data$counts_charged / .data$total
     ) |>
-    dplyr::filter(total >= min_count)
+    dplyr::filter(.data$total >= min_count)
 
   # Optionally keep only top N tRNAs by total abundance
-
   if (!is.null(n_top)) {
     top_refs <- ratios |>
-      dplyr::group_by(ref) |>
-      dplyr::summarise(total = sum(total), .groups = "drop") |>
-      dplyr::slice_max(total, n = n_top) |>
-      dplyr::pull(ref)
+      dplyr::group_by(.data$ref) |>
+      dplyr::summarise(total = sum(.data$total), .groups = "drop") |>
+      dplyr::slice_max(.data$total, n = n_top) |>
+      dplyr::pull(.data$ref)
 
     ratios <- ratios |>
-      dplyr::filter(ref %in% top_refs)
+      dplyr::filter(.data$ref %in% top_refs)
   }
 
   # Summarize by tRNA and condition
   ratio_summary <- ratios |>
-    dplyr::group_by(ref, .data[[condition_col]]) |>
+    dplyr::group_by(.data$ref, .data[[condition_col]]) |>
     dplyr::summarise(
-      mean_ratio = mean(charging_ratio),
-      se_ratio = stats::sd(charging_ratio) / sqrt(dplyr::n()),
+      mean_ratio = mean(.data$charging_ratio),
+      se_ratio = stats::sd(.data$charging_ratio) / sqrt(dplyr::n()),
       .groups = "drop"
     )
 
@@ -229,7 +227,7 @@ compute_charging_diffs <- function(
   wide <- ratio_summary |>
     tidyr::pivot_wider(
       names_from = dplyr::all_of(condition_col),
-      values_from = c(mean_ratio, se_ratio)
+      values_from = c("mean_ratio", "se_ratio")
     )
 
   num_ratio <- paste0("mean_ratio_", numerator)
@@ -239,7 +237,7 @@ compute_charging_diffs <- function(
 
   wide |>
     dplyr::transmute(
-      ref,
+      ref = .data$ref,
       ratio_numerator = .data[[num_ratio]],
       ratio_denominator = .data[[den_ratio]],
       se_numerator = .data[[num_se]],
@@ -247,82 +245,6 @@ compute_charging_diffs <- function(
       diff = .data[[num_ratio]] - .data[[den_ratio]],
       se_diff = sqrt(.data[[num_se]]^2 + .data[[den_se]]^2)
     ) |>
-    dplyr::filter(!is.na(diff)) |>
-    dplyr::mutate(ref = forcats::fct_reorder(ref, diff))
-}
-
-# Odds ratio computation from mod_calls -----------------------------------------
-
-#' Compute pairwise modification co-occurrence odds ratios.
-#'
-#' Given a modkit `mod_calls.tsv.gz` file, build a per-read binary modification
-#' matrix for each tRNA and compute Fisher's exact test for each pair of
-#' positions. This is computationally expensive for full datasets; use the
-#' `refs` parameter to restrict to specific tRNAs.
-#'
-#' @param mod_calls_path Path to a `{sample}.mod_calls.tsv.gz` file from modkit.
-#' @param refs Optional character vector of reference names to include.
-#'   If `NULL`, all references are processed.
-#' @param min_reads Minimum number of reads required for a tRNA to be
-#'   included. Default `10`.
-#'
-#' @return A tibble with columns: `ref`, `pos1`, `pos2`, `odds_ratio`,
-#'   `log_odds_ratio`, `p_value`, `total_obs`.
-#'
-#' @export
-compute_odds_ratios <- function(mod_calls_path, refs = NULL, min_reads = 10) {
-  mc <- readr::read_tsv(mod_calls_path, show_col_types = FALSE) |>
-    dplyr::filter(within_alignment == TRUE)
-
-  if (!is.null(refs)) {
-    mc <- mc |> dplyr::filter(chrom %in% refs)
-  }
-
-  all_refs <- unique(mc$chrom)
-  results <- list()
-
-  for (r in all_refs) {
-    ref_data <- mc |> dplyr::filter(chrom == r)
-
-    # Build read x position binary matrix (modified = call_code != "-")
-    mat_data <- ref_data |>
-      dplyr::mutate(modified = as.integer(call_code != "-")) |>
-      dplyr::select(read_id, ref_position, modified) |>
-      dplyr::group_by(read_id, ref_position) |>
-      dplyr::summarize(modified = max(modified), .groups = "drop") |>
-      tidyr::pivot_wider(
-        names_from = ref_position,
-        values_from = modified,
-        values_fill = 0L
-      )
-
-    if (nrow(mat_data) < min_reads) {
-      next
-    }
-
-    pos_cols <- setdiff(names(mat_data), "read_id")
-    if (length(pos_cols) < 2) {
-      next
-    }
-
-    # Compute Fisher's test for each pair via C++
-    int_mat <- as.matrix(mat_data[, pos_cols, drop = FALSE])
-    storage.mode(int_mat) <- "integer"
-
-    pair_results <- pairwise_fisher_exact(int_mat)
-
-    if (nrow(pair_results) > 0) {
-      results[[length(results) + 1]] <- tibble::tibble(
-        ref = r,
-        pos1 = pos_cols[pair_results$pos1],
-        pos2 = pos_cols[pair_results$pos2],
-        odds_ratio = pair_results$odds_ratio,
-        log_odds_ratio = pair_results$log_odds_ratio,
-        p_value = pair_results$p_value,
-        total_obs = pair_results$total_obs
-      )
-    }
-  }
-
-  dplyr::bind_rows(results)
+    dplyr::filter(!is.na(.data$diff)) |>
+    dplyr::mutate(ref = forcats::fct_reorder(.data$ref, .data$diff))
 }

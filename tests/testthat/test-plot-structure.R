@@ -36,17 +36,6 @@ test_that("default_mod_palette returns named character vector", {
   expect_true(all(nchar(names(pal)) > 0))
 })
 
-test_that("interpolate_color returns valid color", {
-  col <- interpolate_color(0.5, c(0, 1), c("#0072B2", "#D55E00"))
-  expect_type(col, "character")
-  expect_match(col, "^#[0-9A-Fa-f]{6}$")
-})
-
-test_that("interpolate_color handles equal range", {
-  col <- interpolate_color(5, c(5, 5), c("#0072B2", "#D55E00"))
-  expect_type(col, "character")
-})
-
 test_that("add_mod_circles annotates SVG with circles", {
   svg_text <- paste0(
     '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">',

@@ -32,50 +32,51 @@ read_counts <- function(path) {
 #' - `error_rate`: total base-calling error (mis + ins + del)
 #' - `mean_qual`: mean base quality at position
 #'
+#' @param bcerr_path Path to bcerror file.
+#'
+#' @return A tibble.
+#'
+#' @export
+#'
 #' @examples
 #' bcerr_path <- clover_example(
 #'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.bcerror.tsv.gz"
 #' )
 #' read_bcerror(bcerr_path)
-#'
-#' @param bcerr_path Path to bcerror file.
-#'
-#' @return A tibble
-#' @export
 read_bcerror <- function(bcerr_path) {
   raw_tbl <- readr::read_tsv(bcerr_path, show_col_types = FALSE)
 
   raw_tbl |>
     dplyr::rename(
-      ref = Reference,
-      pos = Position,
-      cov = Spanning_Reads,
-      a_freq = A_Freq,
-      t_freq = T_Freq,
-      g_freq = G_Freq,
-      c_freq = C_Freq,
-      mis = MismatchFreq,
-      ins = InsertionFreq,
-      del = DeletionFreq,
-      error_rate = BCErrorFreq,
-      mean_qual = MeanQual
+      "ref" = "Reference",
+      "pos" = "Position",
+      "cov" = "Spanning_Reads",
+      "a_freq" = "A_Freq",
+      "t_freq" = "T_Freq",
+      "g_freq" = "G_Freq",
+      "c_freq" = "C_Freq",
+      "mis" = "MismatchFreq",
+      "ins" = "InsertionFreq",
+      "del" = "DeletionFreq",
+      "error_rate" = "BCErrorFreq",
+      "mean_qual" = "MeanQual"
     ) |>
     dplyr::mutate(
-      pos = as.integer(pos)
+      pos = as.integer(.data$pos)
     ) |>
     dplyr::select(
-      ref,
-      pos,
-      cov,
-      a_freq,
-      t_freq,
-      g_freq,
-      c_freq,
-      mis,
-      ins,
-      del,
-      error_rate,
-      mean_qual
+      "ref",
+      "pos",
+      "cov",
+      "a_freq",
+      "t_freq",
+      "g_freq",
+      "c_freq",
+      "mis",
+      "ins",
+      "del",
+      "error_rate",
+      "mean_qual"
     )
 }
 

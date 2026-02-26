@@ -50,7 +50,16 @@ reference:
   - title: Plot
     contents:
     - prep_mod_heatmap
-    - starts_with("plot_")
+    - plot_abundance_charging
+    - plot_bcerror_profile
+    - plot_charging_diffs
+    - plot_charging_ratios
+    - plot_chord_or
+    - plot_chord_ror
+    - plot_mod_heatmap
+    - plot_mod_landscape
+    - plot_pcoa_rewiring
+    - plot_volcano
 
   - title: Network
     contents:

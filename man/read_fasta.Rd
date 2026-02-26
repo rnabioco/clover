@@ -7,7 +7,7 @@
 read_fasta(fa)
 }
 \arguments{
-\item{fa}{path to fasta file}
+\item{fa}{Path to a FASTA file.}
 }
 \value{
 A \link[Biostrings:XStringSet-class]{Biostrings::DNAStringSet}.
@@ -18,5 +18,4 @@ Read FASTA reference
 \examples{
 fa <- clover_example("ecoli/trna_only.fa.gz")
 read_fasta(fa)
-
 }

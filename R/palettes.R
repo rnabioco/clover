@@ -56,3 +56,30 @@ charging_colors <- function() {
     "Uncharged" = "#da7400ff"
   )
 }
+
+#' @noRd
+nucleotide_colors <- function() {
+  c(
+    "A" = "#4DAF4A",
+    "C" = "#377EB8",
+    "G" = "#FFD92F",
+    "U" = "#E41A1C"
+  )
+}
+
+#' @noRd
+region_colors <- function() {
+  c(
+    "acceptor-stem" = "#E41A1C",
+    "acceptor-tail" = "#E41A1C",
+    "D-stem" = "#377EB8",
+    "D-loop" = "#4DAF4A",
+    "anticodon-stem" = "#984EA3",
+    "anticodon-loop" = "#FF7F00",
+    "variable-region" = "#A65628",
+    "variable-arm" = "#A65628",
+    "T-stem" = "#F781BF",
+    "T-loop" = "#999999",
+    "unknown" = "grey70"
+  )
+}

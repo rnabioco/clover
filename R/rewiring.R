@@ -29,23 +29,23 @@
 #' prepare_rewiring_matrix(df)
 prepare_rewiring_matrix <- function(data, sig_only = TRUE, value_cap = 10) {
   if (sig_only) {
-    data <- dplyr::filter(data, significant)
+    data <- dplyr::filter(data, .data$significant)
   }
 
   data <- dplyr::mutate(
     data,
-    comparison = paste0(pos1, "_vs_", pos2)
+    comparison = paste0(.data$pos1, "_vs_", .data$pos2)
   )
 
   # Aggregate duplicates
   data_agg <- data |>
-    dplyr::group_by(isodecoder, comparison) |>
-    dplyr::summarise(ror = mean(ror, na.rm = TRUE), .groups = "drop")
+    dplyr::group_by(.data$isodecoder, .data$comparison) |>
+    dplyr::summarise(ror = mean(.data$ror, na.rm = TRUE), .groups = "drop")
 
   mat <- data_agg |>
     tidyr::pivot_wider(
-      names_from = comparison,
-      values_from = ror,
+      names_from = "comparison",
+      values_from = "ror",
       values_fill = 0
     ) |>
     tibble::column_to_rownames("isodecoder") |>
@@ -89,7 +89,7 @@ calculate_rewiring_scores <- function(mat) {
     }),
     n_nonzero = rowSums(mat != 0)
   ) |>
-    dplyr::arrange(dplyr::desc(euclidean_magnitude))
+    dplyr::arrange(dplyr::desc(.data$euclidean_magnitude))
 }
 
 #' Perform PCoA on a rewiring matrix.

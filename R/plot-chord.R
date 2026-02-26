@@ -69,7 +69,7 @@ plot_chord_or <- function(
       is.finite(.data[[or_col]]),
       abs(.data[[or_col]]) >= or_cutoff,
       .data[[p_col]] <= p_cutoff,
-      total_obs >= min_obs
+      .data$total_obs >= min_obs
     )
 
   if (nrow(sig_data) == 0) {
@@ -102,79 +102,6 @@ plot_chord_or <- function(
     legend_labels = c("Co-occurring", "Exclusive"),
     legend_colors = c(positive_color, negative_color)
   )
-}
-
-#' Compute ratio of odds ratios between conditions.
-#'
-#' Compare modification co-occurrence between two conditions by computing
-#' the ratio of odds ratios (ROR). Replicates within each condition are
-#' aggregated using the specified function.
-#'
-#' @param odds_data A combined tibble of odds ratio data with a `condition`
-#'   column (or column specified by `condition_col`) and `sample_id`.
-#' @param condition_col Column name (string) for condition labels.
-#'   Default `"condition"`.
-#' @param numerator Value of `condition_col` for the numerator condition.
-#' @param denominator Value of `condition_col` for the denominator condition.
-#' @param min_obs Minimum `total_obs` for a pair to be included.
-#'   Default `100`.
-#' @param agg_fun Function to aggregate replicate log odds ratios.
-#'   Default `mean`.
-#'
-#' @return A tibble with columns: `pos1`, `pos2`, `or_numerator`,
-#'   `or_denominator`, `ror`, and `log_ror`.
-#'
-#' @export
-#'
-#' @examples
-#' results <- read_pipeline_results(
-#'   clover_example("ecoli/config.yaml"),
-#'   types = "odds_ratios"
-#' )
-#' or_data <- results$odds_ratios
-#' or_data$condition <- ifelse(
-#'   grepl("ctl", or_data$sample_id), "ctl", "inf"
-#' )
-#' compute_ror(or_data, numerator = "inf", denominator = "ctl")
-compute_ror <- function(
-  odds_data,
-  condition_col = "condition",
-  numerator,
-  denominator,
-  min_obs = 100,
-  agg_fun = mean
-) {
-  # Filter by minimum observations
-  filtered <- odds_data |>
-    dplyr::filter(total_obs >= min_obs)
-
-  # Aggregate replicates within each condition
-  agg <- filtered |>
-    dplyr::group_by(
-      .data[[condition_col]],
-      pos1,
-      pos2
-    ) |>
-    dplyr::summarise(
-      mean_log_or = agg_fun(log_odds_ratio),
-      .groups = "drop"
-    )
-
-  # Separate numerator and denominator
-  num <- agg |>
-    dplyr::filter(.data[[condition_col]] == numerator) |>
-    dplyr::select(pos1, pos2, or_numerator = mean_log_or)
-
-  denom <- agg |>
-    dplyr::filter(.data[[condition_col]] == denominator) |>
-    dplyr::select(pos1, pos2, or_denominator = mean_log_or)
-
-  # Join and compute ROR
-  dplyr::inner_join(num, denom, by = c("pos1", "pos2")) |>
-    dplyr::mutate(
-      log_ror = or_numerator - or_denominator,
-      ror = exp(log_ror)
-    )
 }
 
 #' Plot a chord diagram of modification rewiring between conditions.
@@ -233,7 +160,7 @@ plot_chord_ror <- function(
 
   # Filter by ROR cutoff (drop Inf values that break circlize)
   sig_data <- ror_data |>
-    dplyr::filter(is.finite(log_ror), abs(log_ror) >= ror_cutoff)
+    dplyr::filter(is.finite(.data$log_ror), abs(.data$log_ror) >= ror_cutoff)
 
   if (nrow(sig_data) == 0) {
     cli_inform("No pairs exceed the ROR cutoff.")
@@ -364,29 +291,28 @@ render_chord <- function(
 #' @noRd
 map_to_sprinzl <- function(chord_df, sprinzl_coords) {
   lookup <- sprinzl_coords |>
-    dplyr::select(pos, sprinzl_label) |>
-    dplyr::distinct(pos, .keep_all = TRUE) |>
-    dplyr::filter(!is.na(sprinzl_label))
+    dplyr::select("pos", "sprinzl_label") |>
+    dplyr::distinct(.data$pos, .keep_all = TRUE) |>
+    dplyr::filter(!is.na(.data$sprinzl_label))
 
   chord_df$from_idx <- as.numeric(chord_df$from)
   chord_df$to_idx <- as.numeric(chord_df$to)
 
   chord_df <- chord_df |>
     dplyr::left_join(lookup, by = c("from_idx" = "pos")) |>
-    dplyr::rename(from_label = sprinzl_label) |>
+    dplyr::rename("from_label" = "sprinzl_label") |>
     dplyr::left_join(lookup, by = c("to_idx" = "pos")) |>
-    dplyr::rename(to_label = sprinzl_label)
+    dplyr::rename("to_label" = "sprinzl_label")
 
   # Drop pairs where either position has no mapping
-
   chord_df <- chord_df |>
-    dplyr::filter(!is.na(from_label), !is.na(to_label))
+    dplyr::filter(!is.na(.data$from_label), !is.na(.data$to_label))
 
   chord_df$from <- chord_df$from_label
   chord_df$to <- chord_df$to_label
 
   chord_df |>
-    dplyr::select(-from_idx, -to_idx, -from_label, -to_label)
+    dplyr::select(-"from_idx", -"to_idx", -"from_label", -"to_label")
 }
 
 #' Set up chord diagram sectors from position pairs.
@@ -395,8 +321,8 @@ setup_chord_sectors <- function(chord_df, sprinzl_coords = NULL) {
   if (!is.null(sprinzl_coords)) {
     # Use ALL non-NA Sprinzl positions as sectors
     all_labels <- sprinzl_coords |>
-      dplyr::filter(!is.na(sprinzl_label)) |>
-      dplyr::pull(sprinzl_label) |>
+      dplyr::filter(!is.na(.data$sprinzl_label)) |>
+      dplyr::pull(.data$sprinzl_label) |>
       unique()
 
     ordered <- order_sprinzl_positions(all_labels)
@@ -404,17 +330,17 @@ setup_chord_sectors <- function(chord_df, sprinzl_coords = NULL) {
 
     # Build region mapping for the outer ring
     region_map <- sprinzl_coords |>
-      dplyr::filter(!is.na(sprinzl_label)) |>
-      dplyr::select(sprinzl_label, region) |>
-      dplyr::distinct(sprinzl_label, .keep_all = TRUE)
+      dplyr::filter(!is.na(.data$sprinzl_label)) |>
+      dplyr::select("sprinzl_label", "region") |>
+      dplyr::distinct(.data$sprinzl_label, .keep_all = TRUE)
 
     regions <- stats::setNames(region_map$region, region_map$sprinzl_label)
 
     # Build residue mapping for the nucleotide ring
     residue_map <- sprinzl_coords |>
-      dplyr::filter(!is.na(sprinzl_label)) |>
-      dplyr::select(sprinzl_label, residue) |>
-      dplyr::distinct(sprinzl_label, .keep_all = TRUE)
+      dplyr::filter(!is.na(.data$sprinzl_label)) |>
+      dplyr::select("sprinzl_label", "residue") |>
+      dplyr::distinct(.data$sprinzl_label, .keep_all = TRUE)
 
     residues <- stats::setNames(
       residue_map$residue,
@@ -623,9 +549,9 @@ add_nucleotide_ring <- function(residues) {
 add_modification_ring <- function(mods, sprinzl_coords, sector_order) {
   # Map mod positions to Sprinzl labels
   lookup <- sprinzl_coords |>
-    dplyr::select(pos, sprinzl_label) |>
-    dplyr::distinct(pos, .keep_all = TRUE) |>
-    dplyr::filter(!is.na(sprinzl_label))
+    dplyr::select("pos", "sprinzl_label") |>
+    dplyr::distinct(.data$pos, .keep_all = TRUE) |>
+    dplyr::filter(!is.na(.data$sprinzl_label))
 
   mod_mapped <- mods |>
     dplyr::inner_join(lookup, by = "pos")
@@ -696,34 +622,5 @@ add_chord_legend <- function(labels, colors) {
     border = NA,
     bty = "n",
     cex = 0.7
-  )
-}
-
-#' Named color palette for nucleotides.
-#' @noRd
-nucleotide_colors <- function() {
-  c(
-    "A" = "#4DAF4A",
-    "C" = "#377EB8",
-    "G" = "#FFD92F",
-    "U" = "#E41A1C"
-  )
-}
-
-#' Named color palette for tRNA structural regions.
-#' @noRd
-region_colors <- function() {
-  c(
-    "acceptor-stem" = "#E41A1C",
-    "acceptor-tail" = "#E41A1C",
-    "D-stem" = "#377EB8",
-    "D-loop" = "#4DAF4A",
-    "anticodon-stem" = "#984EA3",
-    "anticodon-loop" = "#FF7F00",
-    "variable-region" = "#A65628",
-    "variable-arm" = "#A65628",
-    "T-stem" = "#F781BF",
-    "T-loop" = "#999999",
-    "unknown" = "grey70"
   )
 }

@@ -29,7 +29,7 @@ cluster_refs <- function(data, ref_col, value_col, threshold = NULL) {
   if (!is.null(threshold)) {
     # Find positions where any row exceeds the threshold
     informative <- cluster_data |>
-      dplyr::group_by(sprinzl_label) |>
+      dplyr::group_by(.data$sprinzl_label) |>
       dplyr::filter(any(abs(.data[[value_col]]) > threshold)) |>
       dplyr::ungroup()
 
@@ -43,7 +43,7 @@ cluster_refs <- function(data, ref_col, value_col, threshold = NULL) {
       dplyr::all_of(c(ref_col, "sprinzl_label", value_col))
     ) |>
     tidyr::pivot_wider(
-      names_from = sprinzl_label,
+      names_from = "sprinzl_label",
       values_from = dplyr::all_of(value_col),
       values_fill = 0
     ) |>
@@ -310,7 +310,7 @@ plot_mod_heatmap <- function(
     by = c(ref_col, "sprinzl_label")
   ) |>
     dplyr::mutate(
-      sprinzl_label = factor(sprinzl_label, levels = all_positions),
+      sprinzl_label = factor(.data$sprinzl_label, levels = all_positions),
       !!ref_col := factor(.data[[ref_col]], levels = rev(ref_order))
     )
 
@@ -318,7 +318,7 @@ plot_mod_heatmap <- function(
   p <- ggplot(
     plot_data,
     aes(
-      x = sprinzl_label,
+      x = .data$sprinzl_label,
       y = .data[[ref_col]],
       fill = .data[[value_col]]
     )
@@ -388,7 +388,7 @@ plot_mod_heatmap <- function(
         geom_point(
           data = highlight_data,
           aes(
-            x = as.numeric(sprinzl_label) + highlight_offset[1],
+            x = as.numeric(.data$sprinzl_label) + highlight_offset[1],
             y = as.numeric(.data[[ref_col]]) + highlight_offset[2]
           ),
           color = "black",
@@ -480,14 +480,14 @@ plot_volcano <- function(
 ) {
   rlang::check_installed("ggrepel", reason = "to label significant points.")
 
-  p <- ggplot(data, aes(x = log2FoldChange, y = -log10(padj))) +
+  p <- ggplot(data, aes(x = .data$log2FoldChange, y = -log10(.data$padj))) +
     geom_point(
-      aes(color = significant),
+      aes(color = .data$significant),
       size = point_size,
       alpha = 0.7
     ) +
     ggrepel::geom_text_repel(
-      data = function(x) dplyr::filter(x, significant),
+      data = function(x) dplyr::filter(x, .data$significant),
       aes(label = .data[[lab_col]]),
       size = label_size,
       max.overlaps = max_overlaps
@@ -591,11 +591,11 @@ plot_abundance_charging <- function(
     data,
     significant = !is.na(.data$padj) & .data$padj < padj_cutoff,
     quadrant = dplyr::case_when(
-      !significant ~ "ns",
-      log2FoldChange >= 0 & diff >= 0 ~ "up_up",
-      log2FoldChange < 0 & diff < 0 ~ "down_down",
-      log2FoldChange >= 0 & diff < 0 ~ "up_down",
-      log2FoldChange < 0 & diff >= 0 ~ "down_up"
+      !.data$significant ~ "ns",
+      .data$log2FoldChange >= 0 & .data$diff >= 0 ~ "up_up",
+      .data$log2FoldChange < 0 & .data$diff < 0 ~ "down_down",
+      .data$log2FoldChange >= 0 & .data$diff < 0 ~ "up_down",
+      .data$log2FoldChange < 0 & .data$diff >= 0 ~ "down_up"
     )
   )
 
@@ -616,9 +616,9 @@ plot_abundance_charging <- function(
   )
 
   # Only include quadrants present in the data
-  present <- intersect(names(quad_colors), unique(data$quadrant))
+  present <- intersect(names(quad_colors), unique(data[["quadrant"]]))
 
-  p <- ggplot(data, aes(x = log2FoldChange, y = diff)) +
+  p <- ggplot(data, aes(x = .data$log2FoldChange, y = .data$diff)) +
     geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
     geom_vline(xintercept = 0, linetype = "dashed", color = "grey40")
 
@@ -629,8 +629,8 @@ plot_abundance_charging <- function(
       geom_errorbar(
         data = function(x) dplyr::filter(x, .data$significant),
         aes(
-          xmin = log2FoldChange - .data$lfcSE,
-          xmax = log2FoldChange + .data$lfcSE
+          xmin = .data$log2FoldChange - .data$lfcSE,
+          xmax = .data$log2FoldChange + .data$lfcSE
         ),
         orientation = "y",
         linewidth = 0.3,
@@ -641,7 +641,7 @@ plot_abundance_charging <- function(
 
   p <- p +
     geom_point(
-      aes(color = quadrant),
+      aes(color = .data$quadrant),
       size = point_size,
       alpha = 0.7
     ) +
@@ -721,11 +721,14 @@ plot_charging_diffs <- function(
 
   p <- ggplot(
     data,
-    aes(x = diff, y = stats::reorder(.data$.plot_label, diff))
+    aes(x = .data$diff, y = stats::reorder(.data$.plot_label, .data$diff))
   ) +
     geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
     geom_point(size = point_size) +
-    geom_linerange(aes(xmin = diff - se_diff, xmax = diff + se_diff)) +
+    geom_linerange(aes(
+      xmin = .data$diff - .data$se_diff,
+      xmax = .data$diff + .data$se_diff
+    )) +
     labs(
       x = "Difference in charging ratio",
       y = ""
@@ -788,7 +791,7 @@ plot_charging_ratios <- function(
 
   p <- ggplot(
     data,
-    aes(x = .data[[group_col]], y = charging_ratio)
+    aes(x = .data[[group_col]], y = .data$charging_ratio)
   ) +
     geom_boxplot(outlier.shape = NA) +
     geom_jitter(
@@ -796,7 +799,7 @@ plot_charging_ratios <- function(
       size = point_size,
       alpha = point_alpha
     ) +
-    facet_wrap(~.plot_label, scales = "free_y") +
+    facet_wrap(vars(.data$.plot_label), scales = "free_y") +
     labs(
       x = NULL,
       y = "Charging ratio"
@@ -855,21 +858,24 @@ plot_bcerror_profile <- function(
   ncol = 1
 ) {
   if (!is.null(refs)) {
-    data <- dplyr::filter(data, ref %in% refs)
+    data <- dplyr::filter(data, .data$ref %in% refs)
   }
 
-  p <- ggplot(data, aes(x = pos, y = mean_error, color = condition)) +
+  p <- ggplot(
+    data,
+    aes(x = .data$pos, y = .data$mean_error, color = .data$condition)
+  ) +
     geom_line(linewidth = 0.5) +
     geom_point(size = 0.8)
 
   if (!is.null(mods)) {
     if (!is.null(refs)) {
-      mods <- dplyr::filter(mods, ref %in% refs)
+      mods <- dplyr::filter(mods, .data$ref %in% refs)
     }
     p <- p +
       geom_vline(
         data = mods,
-        aes(xintercept = pos),
+        aes(xintercept = .data$pos),
         linetype = "dashed",
         color = "grey40",
         alpha = 0.5,
@@ -878,7 +884,7 @@ plot_bcerror_profile <- function(
   }
 
   p +
-    facet_wrap(~ref, ncol = ncol, scales = "free_y") +
+    facet_wrap(vars(.data$ref), ncol = ncol, scales = "free_y") +
     scale_color_manual(values = colors) +
     labs(
       x = "Position",
@@ -1145,22 +1151,26 @@ plot_pcoa_rewiring <- function(
   )
 
   top_trnas <- plot_data |>
-    dplyr::arrange(dplyr::desc(euclidean_magnitude)) |>
+    dplyr::arrange(dplyr::desc(.data$euclidean_magnitude)) |>
     utils::head(n_label) |>
-    dplyr::pull(isodecoder)
+    dplyr::pull(.data$isodecoder)
 
   plot_data <- dplyr::mutate(
     plot_data,
-    label = ifelse(isodecoder %in% top_trnas, isodecoder, NA_character_)
+    label = ifelse(
+      .data$isodecoder %in% top_trnas,
+      .data$isodecoder,
+      NA_character_
+    )
   )
 
-  ggplot(plot_data, aes(x = PC1, y = PC2)) +
+  ggplot(plot_data, aes(x = .data$PC1, y = .data$PC2)) +
     geom_point(
-      aes(size = n_nonzero, color = euclidean_magnitude),
+      aes(size = .data$n_nonzero, color = .data$euclidean_magnitude),
       alpha = 0.7
     ) +
     ggrepel::geom_text_repel(
-      aes(label = label),
+      aes(label = .data$label),
       size = 3,
       max.overlaps = 20,
       box.padding = 0.5,

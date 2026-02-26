@@ -35,10 +35,7 @@ test_that("build_or_network returns NULL when no edges", {
     pos2 = "34",
     ror = 0.1
   )
-  expect_warning(
-    graph <- build_or_network(df, min_weight = 5.0),
-    "No edges"
-  )
+  expect_snapshot(graph <- build_or_network(df, min_weight = 5.0))
   expect_null(graph)
 })
 

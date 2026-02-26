@@ -108,18 +108,18 @@ identity_elements <- function(
 
   result <- result |>
     dplyr::select(
-      amino_acid,
-      domain,
-      sprinzl_pos,
-      nucleotide,
-      region,
-      type,
-      strength,
-      pair_pos,
-      pair_type,
-      against_aars,
-      universal,
-      description
+      "amino_acid",
+      "domain",
+      "sprinzl_pos",
+      "nucleotide",
+      "region",
+      "type",
+      "strength",
+      "pair_pos",
+      "pair_type",
+      "against_aars",
+      "universal",
+      "description"
     )
 
   if (!is.null(amino_acid)) {
@@ -487,7 +487,7 @@ plot_identity_panel <- function(
 find_sprinzl_id <- function(trna, sprinzl_coords) {
   parts <- strsplit(trna, "-")[[1]]
   if (length(parts) >= 3) {
-    parts[3] <- gsub("T", "U", parts[3])
+    parts[3] <- chartr("T", "U", parts[3])
   }
   rna_name <- paste(parts, collapse = "-")
   pattern <- paste0("^nuc-", rna_name, "-")

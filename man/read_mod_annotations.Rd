@@ -7,19 +7,16 @@
 read_mod_annotations(mods)
 }
 \arguments{
-\item{mods}{path to modifications file}
+\item{mods}{Path to a modifications TSV file.}
 }
 \value{
 A tibble.
 }
 \description{
-TSV file with 4 columns:
+Read a TSV file with 4 columns: \code{ref}, \code{pos}, \code{mod_full}, \code{mod1}.
 }
-\details{
-\enumerate{
-\item \code{ref}
-\item \code{pos}
-\item \code{mod_full}
-\item \code{mod1}
+\examples{
+\dontrun{
+read_mod_annotations("modifications.tsv")
 }
 }
