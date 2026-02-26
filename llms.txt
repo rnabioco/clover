@@ -153,6 +153,9 @@ for a complete walkthrough.
 - [`plot_charging_diffs()`](https://rnabioco.github.io/clover/reference/plot_charging_diffs.md)
   : Plot per-tRNA charging ratio differences.
 
+- [`plot_charging_ratios()`](https://rnabioco.github.io/clover/reference/plot_charging_ratios.md)
+  : Plot per-tRNA charging ratios.
+
 - [`plot_chord_or()`](https://rnabioco.github.io/clover/reference/plot_chord_or.md)
   : Plot a chord diagram of modification co-occurrence.
 
@@ -245,6 +248,8 @@ for a complete walkthrough.
   : Provide working directory for clover example files.
 - [`dna_to_rna_anticodon()`](https://rnabioco.github.io/clover/reference/dna_to_rna_anticodon.md)
   : Convert DNA anticodon to RNA in tRNA name strings
+- [`shorten_trna_names()`](https://rnabioco.github.io/clover/reference/shorten_trna_names.md)
+  : Shorten tRNA name strings for display.
 - [`list_pipeline_files()`](https://rnabioco.github.io/clover/reference/list_pipeline_files.md)
   : List pipeline output files for each sample.
 - [`order_sprinzl_positions()`](https://rnabioco.github.io/clover/reference/order_sprinzl_positions.md)

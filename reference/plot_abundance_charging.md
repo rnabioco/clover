@@ -15,7 +15,10 @@ plot_abundance_charging(
   padj_cutoff = 0.05,
   max_overlaps = 20,
   point_size = 2,
-  label_size = 3
+  label_size = 3,
+  shorten = TRUE,
+  source_col = NULL,
+  error_bars = TRUE
 )
 ```
 
@@ -25,7 +28,8 @@ plot_abundance_charging(
 
   A tibble from
   [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)
-  with at least `ref`, `log2FoldChange`, and `padj` columns.
+  with at least `ref`, `log2FoldChange`, and `padj` columns. When
+  `error_bars` is `TRUE`, an `lfcSE` column is also expected.
 
 - charging_diffs:
 
@@ -58,6 +62,22 @@ plot_abundance_charging(
   Numeric size for
   [`ggrepel::geom_text_repel()`](https://ggrepel.slowkow.com/reference/geom_text_repel.html).
   Default `3`.
+
+- shorten:
+
+  Logical; if `TRUE` (default), shorten tRNA names in point labels via
+  [`shorten_trna_names()`](https://rnabioco.github.io/clover/reference/shorten_trna_names.md).
+
+- source_col:
+
+  Optional column name (string) for faceting, e.g., `"source"` to
+  separate host and phage tRNAs. When provided, the column must exist in
+  `deseq_res`. Default `NULL`.
+
+- error_bars:
+
+  Logical; if `TRUE` (default), draw horizontal error bars (`lfcSE`) on
+  significant points. Requires an `lfcSE` column in `deseq_res`.
 
 ## Value
 

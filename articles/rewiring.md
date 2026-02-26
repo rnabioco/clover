@@ -55,18 +55,27 @@ caps these at a reasonable threshold.
 ``` r
 or_clean <- clean_odds_ratios(or_data)
 glimpse(or_clean)
-#> Rows: 63,823
-#> Columns: 10
+#> Rows: 5,432
+#> Columns: 19
 #> $ sample_id      <chr> "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-ctl-01", "wt-15-…
-#> $ ref            <chr> "host-tRNA-Asp-GTC-1-1", "host-tRNA-Asp-GTC-1-1", "host…
-#> $ pos1           <dbl> 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,…
-#> $ pos2           <dbl> 23, 26, 28, 31, 32, 35, 36, 37, 39, 40, 43, 45, 47, 48,…
-#> $ odds_ratio     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-#> $ log_odds_ratio <dbl> -23.02585, -23.02585, -23.02585, -23.02585, -23.02585, …
-#> $ p_value        <dbl> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-#> $ total_obs      <dbl> 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1488, 1…
+#> $ ref            <chr> "host-tRNA-Ala-GGC-1-1", "host-tRNA-Ala-GGC-1-1", "host…
+#> $ pos1           <chr> "1", "2", "3", "4", "6", "10", "11", "15", "18", "24", …
+#> $ pos2           <chr> "2", "3", "4", "6", "7", "11", "58", "16", "45", "25", …
+#> $ n00            <dbl> 1345, 1477, 1577, 1504, 1298, 1511, 1417, 685, 1006, 18…
+#> $ n01            <dbl> 36, 12, 14, 8, 25, 7, 2, 33, 728, 25, 59, 11, 216, 77, …
+#> $ n10            <dbl> 34, 40, 12, 15, 0, 11, 8, 290, 73, 73, 72, 77, 62, 69, …
+#> $ n11            <dbl> 7, 5, 7, 3, 3, 3, 2, 48, 125, 8, 13, 6, 20, 11, 14, 2, …
+#> $ total_obs      <dbl> 1422, 1534, 1610, 1530, 1326, 1532, 1429, 1056, 1932, 1…
+#> $ odds_ratio     <dbl> 7.691993e+00, 1.538542e+01, 6.570833e+01, 3.760000e+01,…
+#> $ log_odds_ratio <dbl> 2.0401800, 2.7334201, 4.1852258, 3.6270041, 5.8761967, …
+#> $ se_log_or      <dbl> 0.44809617, 0.55588702, 0.54612559, 0.72502751, 1.52502…
+#> $ ci_lower       <dbl> 3.196037e+00, 5.175218e+00, 2.252937e+01, 9.078874e+00,…
+#> $ ci_upper       <dbl> 18.5125425, 45.7393352, 191.6425500, 155.7197589, 7081.…
+#> $ fisher_or      <dbl> 7.69199346, 15.38541667, 65.70833333, 37.60000000, Inf,…
+#> $ p_value        <dbl> 1.461474e-04, 8.252984e-05, 9.729250e-10, 2.130145e-04,…
+#> $ p_adjusted     <dbl> 5.647847e-03, 3.437767e-03, 9.913278e-08, 7.867121e-03,…
 #> $ condition      <chr> "ctl", "ctl", "ctl", "ctl", "ctl", "ctl", "ctl", "ctl",…
-#> $ log_or_clean   <dbl> -23.02585, -23.02585, -23.02585, -23.02585, -23.02585, …
+#> $ log_or_clean   <dbl> 2.0401800, 2.7334201, 4.1852258, 3.6270041, 5.8761967, …
 ```
 
 Next, collapse per-gene odds ratios to the isodecoder level. This
@@ -83,20 +92,20 @@ or_inf <- or_clean |>
   aggregate_or_isodecoder()
 
 or_ctl
-#> # A tibble: 18,030 × 9
-#>    isodecoder      pos1  pos2 mean_or mean_log_or sd_log_or min_pval total_reads
-#>    <chr>          <dbl> <dbl>   <dbl>       <dbl>     <dbl>    <dbl>       <dbl>
-#>  1 host-tRNA-Ala…    18    33       0       -23.0        NA        1         438
-#>  2 host-tRNA-Ala…    19    18       0       -23.0        NA        1         438
-#>  3 host-tRNA-Ala…    19    33       0       -23.0        NA        1         438
-#>  4 host-tRNA-Ala…    19    38       0       -23.0        NA        1         327
-#>  5 host-tRNA-Ala…    19    75       0       -23.0        NA        1         327
-#>  6 host-tRNA-Ala…    19    76       0       -23.0        NA        1         327
-#>  7 host-tRNA-Ala…    19   101       0       -23.0        NA        1         327
-#>  8 host-tRNA-Ala…    28    18       0       -23.0        NA        1         438
-#>  9 host-tRNA-Ala…    28    19       0       -23.0        NA        1         438
-#> 10 host-tRNA-Ala…    28    30       0       -23.0        NA        1         438
-#> # ℹ 18,020 more rows
+#> # A tibble: 1,051 × 9
+#>    isodecoder     pos1  pos2  mean_or mean_log_or sd_log_or min_pval total_reads
+#>    <chr>          <chr> <chr>   <dbl>       <dbl>     <dbl>    <dbl>       <dbl>
+#>  1 host-tRNA-Ala… 1     2       7.69        2.04     NA     1.46e- 4        1422
+#>  2 host-tRNA-Ala… 10    11     58.9         4.08     NA     7.03e- 5        1532
+#>  3 host-tRNA-Ala… 10    999     4.70        1.55     NA     2.03e- 6        1641
+#>  4 host-tRNA-Ala… 11    58    177.          5.18     NA     2.63e- 4        1429
+#>  5 host-tRNA-Ala… 15    16      4.25        1.43      0.276 1.03e-11        2219
+#>  6 host-tRNA-Ala… 15    18      0.472      -0.750    NA     6.93e- 7        1921
+#>  7 host-tRNA-Ala… 18    45      2.04        0.699     0.229 1.69e- 8        4079
+#>  8 host-tRNA-Ala… 2     3      15.4         2.73     NA     8.25e- 5        1534
+#>  9 host-tRNA-Ala… 24    25     12.4         2.45      0.506 7.50e- 8        4516
+#> 10 host-tRNA-Ala… 26    27     17.4         2.86     NA     6.03e- 6        2737
+#> # ℹ 1,041 more rows
 #> # ℹ 1 more variable: n_copies <int>
 ```
 
@@ -109,20 +118,20 @@ z-score significance testing.
 ``` r
 ror <- compute_ror_isodecoder(or_inf, or_ctl)
 ror
-#> # A tibble: 13,348 × 15
-#>    isodecoder     pos1  pos2 mean_log_or_num se_num mean_log_or_den se_den   ror
-#>    <chr>         <dbl> <dbl>           <dbl>  <dbl>           <dbl>  <dbl> <dbl>
-#>  1 host-tRNA-Al…    19    33           -23.0     NA           -23.0     NA     0
-#>  2 host-tRNA-Al…    28    19           -23.0     NA           -23.0     NA     0
-#>  3 host-tRNA-Al…    28    30           -23.0     NA           -23.0     NA     0
-#>  4 host-tRNA-Al…    28    31           -23.0     NA           -23.0     NA     0
-#>  5 host-tRNA-Al…    28    32           -23.0     NA           -23.0     NA     0
-#>  6 host-tRNA-Al…    28    33           -23.0     NA           -23.0     NA     0
-#>  7 host-tRNA-Al…    28    36           -23.0     NA           -23.0     NA     0
-#>  8 host-tRNA-Al…    28    40           -23.0     NA           -23.0     NA     0
-#>  9 host-tRNA-Al…    28    48           -23.0     NA           -23.0     NA     0
-#> 10 host-tRNA-Al…    28    54           -23.0     NA           -23.0     NA     0
-#> # ℹ 13,338 more rows
+#> # A tibble: 944 × 15
+#>    isodecoder pos1  pos2  mean_log_or_num  se_num mean_log_or_den se_den     ror
+#>    <chr>      <chr> <chr>           <dbl>   <dbl>           <dbl>  <dbl>   <dbl>
+#>  1 host-tRNA… 1     2               2.62   0.468            2.04  NA      0.575 
+#>  2 host-tRNA… 10    11              3.91   0.449            4.08  NA     -0.164 
+#>  3 host-tRNA… 15    16              1.78   0.186            1.43   0.276  0.355 
+#>  4 host-tRNA… 15    18             -0.599  0.0722          -0.750 NA      0.151 
+#>  5 host-tRNA… 18    45              0.737  0.209            0.699  0.229  0.0380
+#>  6 host-tRNA… 2     3               3.65   0.192            2.73  NA      0.920 
+#>  7 host-tRNA… 24    25              2.25  NA                2.45   0.506 -0.200 
+#>  8 host-tRNA… 26    27              2.52   0.515            2.86  NA     -0.339 
+#>  9 host-tRNA… 26    30              1.43   0.269            1.90  NA     -0.468 
+#> 10 host-tRNA… 3     4               4.09   0.222            4.19  NA     -0.0996
+#> # ℹ 934 more rows
 #> # ℹ 7 more variables: ror_se <dbl>, z_score <dbl>, p_value <dbl>, p_adj <dbl>,
 #> #   ci_lower <dbl>, ci_upper <dbl>, significant <lgl>
 ```
@@ -139,10 +148,10 @@ scores |> arrange(desc(euclidean_magnitude))
 #> # A tibble: 4 × 5
 #>   isodecoder        euclidean_magnitude mean_abs_change max_abs_change n_nonzero
 #>   <chr>                           <dbl>           <dbl>          <dbl>     <dbl>
-#> 1 host-tRNA-Arg-ACG                37.4           4.83              10        14
-#> 2 host-tRNA-Glu-TTC                22.4           1.78              10         7
-#> 3 host-tRNA-Asp-GTC                22.4           1.74              10         6
-#> 4 host-tRNA-Gly-GCC                14.1           0.690             10         2
+#> 1 host-tRNA-Gly-GCC               1.80           0.368           1.27          5
+#> 2 host-tRNA-Glu-TTC               0.701          0.0987          0.543         2
+#> 3 host-tRNA-Arg-ACG               0.611          0.0611          0.611         1
+#> 4 host-tRNA-Asn-GTT               0.196          0.0264          0.174         2
 ```
 
 Run PCoA for dimensionality reduction and visualize the result.
@@ -213,7 +222,7 @@ sessionInfo()
 #> loaded via a namespace (and not attached):
 #>  [1] shape_1.4.6.1       circlize_0.4.17     gtable_0.3.6       
 #>  [4] xfun_0.56           bslib_0.10.0        ggplot2_4.0.2      
-#>  [7] GlobalOptions_0.1.3 htmlwidgets_1.6.4   ggrepel_0.9.6      
+#>  [7] GlobalOptions_0.1.3 htmlwidgets_1.6.4   ggrepel_0.9.7      
 #> [10] lattice_0.22-7      tzdb_0.5.0          vctrs_0.7.1        
 #> [13] tools_4.5.2         parallel_4.5.2      tibble_3.3.1       
 #> [16] pkgconfig_2.0.3     Matrix_1.7-4        RColorBrewer_1.1-3 

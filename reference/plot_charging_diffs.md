@@ -8,7 +8,13 @@ by
 ## Usage
 
 ``` r
-plot_charging_diffs(data, point_size = 2.5)
+plot_charging_diffs(
+  data,
+  point_size = 2.5,
+  source_col = NULL,
+  label_col = "ref",
+  shorten = TRUE
+)
 ```
 
 ## Arguments
@@ -24,6 +30,20 @@ plot_charging_diffs(data, point_size = 2.5)
   Numeric size for
   [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html).
   Default `2.5`.
+
+- source_col:
+
+  Optional column name (string) for faceting, e.g., `"source"` to
+  separate host and phage tRNAs. Default `NULL`.
+
+- label_col:
+
+  Column name (string) to use for y-axis labels. Default `"ref"`.
+
+- shorten:
+
+  Logical; if `TRUE` (default), shorten tRNA names on the y-axis via
+  [`shorten_trna_names()`](https://rnabioco.github.io/clover/reference/shorten_trna_names.md).
 
 ## Value
 

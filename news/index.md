@@ -2,6 +2,28 @@
 
 ## clover 0.0.0.9000
 
+- [`plot_abundance_charging()`](https://rnabioco.github.io/clover/reference/plot_abundance_charging.md)
+  gains `shorten`, `source_col`, and `error_bars` parameters. Labels are
+  auto-shortened via
+  [`shorten_trna_names()`](https://rnabioco.github.io/clover/reference/shorten_trna_names.md),
+  an optional faceting column separates host and phage tRNAs, and
+  horizontal error bars show `lfcSE` on significant points when present.
+
+- [`plot_charging_diffs()`](https://rnabioco.github.io/clover/reference/plot_charging_diffs.md)
+  gains `source_col`, `label_col`, and `shorten` parameters. Labels are
+  auto-shortened via
+  [`shorten_trna_names()`](https://rnabioco.github.io/clover/reference/shorten_trna_names.md)
+  and an optional faceting column separates host and phage tRNAs.
+
+- [`plot_charging_ratios()`](https://rnabioco.github.io/clover/reference/plot_charging_ratios.md)
+  creates a box-and-jitter plot of raw charging ratios grouped by
+  condition, with optional faceting and auto-shortened tRNA labels.
+
+- [`shorten_trna_names()`](https://rnabioco.github.io/clover/reference/shorten_trna_names.md)
+  extracts the tRNA label-shortening logic into a reusable utility
+  function, stripping source prefixes, the `tRNA-` prefix, and gene-copy
+  suffixes.
+
 - [`compute_bcerror_delta()`](https://rnabioco.github.io/clover/reference/compute_bcerror_delta.md)
   computes per-position differences in base-calling error rates between
   two conditions from a summarized bcerror tibble.

@@ -16,13 +16,15 @@ Useful links:
 **Maintainer**: Jay Hesselberth <jay.hesselberth@cuanschutz.edu>
 ([ORCID](https://orcid.org/0000-0002-6299-179X))
 
-Other contributors:
+Authors:
 
 - Jill Bilodeaux <jill.bilodeuax@cuanschutz.edu>
-  ([ORCID](https://orcid.org/0000-0002-1326-7092)) \[contributor\]
+  ([ORCID](https://orcid.org/0000-0002-1326-7092))
 
 - Laura White <laura.k.white@cuanschutz.edu>
-  ([ORCID](https://orcid.org/0000-0003-2909-6627)) \[contributor\]
+  ([ORCID](https://orcid.org/0000-0003-2909-6627))
 
-- RNA Bioscience Initiative ([ROR](https://ror.org/03wmf1y16)) \[funder,
+Other contributors:
+
+- RNA Bioscience Initiative (https://ror.org/03wmf1y16) \[funder,
   copyright holder\]

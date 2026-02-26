@@ -58,7 +58,13 @@ returned by <code><a href="compute_charging_diffs.html">compute_charging_diffs()
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_charging_diffs</span><span class="op">(</span><span class="va">data</span>, point_size <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_charging_diffs</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  point_size <span class="op">=</span> <span class="fl">2.5</span>,</span>
+<span>  source_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  label_col <span class="op">=</span> <span class="st">"ref"</span>,</span>
+<span>  shorten <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,6 +79,21 @@ returned by <code><a href="compute_charging_diffs.html">compute_charging_diffs()
 <dt id="arg-point-size">point_size<a class="anchor" aria-label="anchor" href="#arg-point-size"></a></dt>
 <dd><p>Numeric size for <code><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">ggplot2::geom_point()</a></code>. Default
 <code>2.5</code>.</p></dd>
+
+
+<dt id="arg-source-col">source_col<a class="anchor" aria-label="anchor" href="#arg-source-col"></a></dt>
+<dd><p>Optional column name (string) for faceting, e.g.,
+<code>"source"</code> to separate host and phage tRNAs. Default <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-label-col">label_col<a class="anchor" aria-label="anchor" href="#arg-label-col"></a></dt>
+<dd><p>Column name (string) to use for y-axis labels.
+Default <code>"ref"</code>.</p></dd>
+
+
+<dt id="arg-shorten">shorten<a class="anchor" aria-label="anchor" href="#arg-shorten"></a></dt>
+<dd><p>Logical; if <code>TRUE</code> (default), shorten tRNA names on
+the y-axis via <code><a href="shorten_trna_names.html">shorten_trna_names()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

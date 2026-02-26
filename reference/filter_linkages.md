@@ -3,8 +3,8 @@
 Convenience filter for odds ratio data that returns a tibble ready for
 the `linkages` parameter of
 [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md).
-Filters by p-value, observation count, and log odds ratio magnitude,
-then selects the columns needed for plotting.
+Filters by BH-adjusted p-value, observation count, and log odds ratio
+magnitude, then selects the columns needed for plotting.
 
 ## Usage
 
@@ -18,12 +18,12 @@ filter_linkages(data, max_p = 0.01, min_obs = 100, min_lor = 1)
 
   A tibble of odds ratio data, typically from
   [`clean_odds_ratios()`](https://rnabioco.github.io/clover/reference/clean_odds_ratios.md),
-  with columns `pos1`, `pos2`, `log_odds_ratio`, `p_value`, and
+  with columns `pos1`, `pos2`, `log_odds_ratio`, `p_adjusted`, and
   `total_obs`.
 
 - max_p:
 
-  Maximum p-value to retain. Default `0.01`.
+  Maximum adjusted p-value (BH FDR) to retain. Default `0.01`.
 
 - min_obs:
 
@@ -47,7 +47,7 @@ df <- tibble::tibble(
   pos2 = c(34, 58, 45),
   odds_ratio = c(4.0, 0.3, 1.1),
   log_odds_ratio = c(1.4, -1.2, 0.1),
-  p_value = c(0.001, 0.005, 0.5),
+  p_adjusted = c(0.001, 0.005, 0.5),
   total_obs = c(200, 150, 50)
 )
 filter_linkages(df)

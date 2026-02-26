@@ -63,7 +63,7 @@ pipeline. These files contain pairwise modification co-occurrence statistics.</p
 
 
 <dl><dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
-<dd><p>Path to a <code>{sample}.odds_ratios.tsv.gz</code> file.</p></dd>
+<dd><p>Path to a <code>{sample}.odds_ratios_filtered.tsv.gz</code> file.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -75,23 +75,25 @@ pipeline. These files contain pairwise modification co-occurrence statistics.</p
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="clover_example.html">clover_example</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="st">"ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios.tsv.gz"</span></span></span>
+<span class="r-in"><span>  <span class="st">"ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">read_odds_ratios</span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 11,310 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    ref                    pos1  pos2 odds_ratio log_odds_ratio p_value total_obs</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> host-tRNA-Asp-GTC-1-1    20    23          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> host-tRNA-Asp-GTC-1-1    20    26          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> host-tRNA-Asp-GTC-1-1    20    28          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> host-tRNA-Asp-GTC-1-1    20    31          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> host-tRNA-Asp-GTC-1-1    20    32          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> host-tRNA-Asp-GTC-1-1    20    35          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> host-tRNA-Asp-GTC-1-1    20    36          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> host-tRNA-Asp-GTC-1-1    20    37          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> host-tRNA-Asp-GTC-1-1    20    39          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> host-tRNA-Asp-GTC-1-1    20    40          0          -<span style="color: #BB0000;">23.0</span>       1      <span style="text-decoration: underline;">1</span>488</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 11,300 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 720 × 16</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ref   pos1  pos2    n00   n01   n10   n11 total_obs odds_ratio log_odds_ratio</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> host… 1     2      <span style="text-decoration: underline;">1</span>345    36    34     7      <span style="text-decoration: underline;">1</span>422       7.69          2.04 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> host… 2     3      <span style="text-decoration: underline;">1</span>477    12    40     5      <span style="text-decoration: underline;">1</span>534      15.4           2.73 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> host… 3     4      <span style="text-decoration: underline;">1</span>577    14    12     7      <span style="text-decoration: underline;">1</span>610      65.7           4.19 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> host… 4     6      <span style="text-decoration: underline;">1</span>504     8    15     3      <span style="text-decoration: underline;">1</span>530      37.6           3.63 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> host… 6     7      <span style="text-decoration: underline;">1</span>298    25     0     3      <span style="text-decoration: underline;">1</span>326     356.            5.88 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> host… 10    11     <span style="text-decoration: underline;">1</span>511     7    11     3      <span style="text-decoration: underline;">1</span>532      58.9           4.08 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> host… 11    58     <span style="text-decoration: underline;">1</span>417     2     8     2      <span style="text-decoration: underline;">1</span>429     177.            5.18 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> host… 15    16      685    33   290    48      <span style="text-decoration: underline;">1</span>056       3.44          1.23 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> host… 18    45     <span style="text-decoration: underline;">1</span>006   728    73   125      <span style="text-decoration: underline;">1</span>932       2.37          0.861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> host… 24    25     <span style="text-decoration: underline;">1</span>852    25    73     8      <span style="text-decoration: underline;">1</span>958       8.12          2.09 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 710 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 6 more variables: se_log_or &lt;dbl&gt;, ci_lower &lt;dbl&gt;, ci_upper &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   fisher_or &lt;dbl&gt;, p_value &lt;dbl&gt;, p_adjusted &lt;dbl&gt;</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

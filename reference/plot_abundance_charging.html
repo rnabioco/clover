@@ -68,7 +68,10 @@ colored by quadrant and labeled with
 <span>  padj_cutoff <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  max_overlaps <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  point_size <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  label_size <span class="op">=</span> <span class="fl">3</span></span>
+<span>  label_size <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  shorten <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  source_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  error_bars <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -78,7 +81,8 @@ colored by quadrant and labeled with
 
 <dl><dt id="arg-deseq-res">deseq_res<a class="anchor" aria-label="anchor" href="#arg-deseq-res"></a></dt>
 <dd><p>A tibble from <code><a href="tidy_deseq_results.html">tidy_deseq_results()</a></code> with at least
-<code>ref</code>, <code>log2FoldChange</code>, and <code>padj</code> columns.</p></dd>
+<code>ref</code>, <code>log2FoldChange</code>, and <code>padj</code> columns. When <code>error_bars</code> is
+<code>TRUE</code>, an <code>lfcSE</code> column is also expected.</p></dd>
 
 
 <dt id="arg-charging-diffs">charging_diffs<a class="anchor" aria-label="anchor" href="#arg-charging-diffs"></a></dt>
@@ -109,6 +113,23 @@ Default <code>0.05</code>.</p></dd>
 <dt id="arg-label-size">label_size<a class="anchor" aria-label="anchor" href="#arg-label-size"></a></dt>
 <dd><p>Numeric size for <code><a href="https://ggrepel.slowkow.com/reference/geom_text_repel.html" class="external-link">ggrepel::geom_text_repel()</a></code>.
 Default <code>3</code>.</p></dd>
+
+
+<dt id="arg-shorten">shorten<a class="anchor" aria-label="anchor" href="#arg-shorten"></a></dt>
+<dd><p>Logical; if <code>TRUE</code> (default), shorten tRNA names in
+point labels via <code><a href="shorten_trna_names.html">shorten_trna_names()</a></code>.</p></dd>
+
+
+<dt id="arg-source-col">source_col<a class="anchor" aria-label="anchor" href="#arg-source-col"></a></dt>
+<dd><p>Optional column name (string) for faceting, e.g.,
+<code>"source"</code> to separate host and phage tRNAs. When provided, the
+column must exist in <code>deseq_res</code>. Default <code>NULL</code>.</p></dd>
+
+
+<dt id="arg-error-bars">error_bars<a class="anchor" aria-label="anchor" href="#arg-error-bars"></a></dt>
+<dd><p>Logical; if <code>TRUE</code> (default), draw horizontal
+error bars (<code>lfcSE</code>) on significant points. Requires an <code>lfcSE</code>
+column in <code>deseq_res</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
