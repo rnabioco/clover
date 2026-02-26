@@ -400,7 +400,8 @@ svg_path <- plot_tRNA_structure(
 
 For isodecoder-level modification rewiring analysis — including odds
 ratio aggregation, ratio of odds ratios, dimensionality reduction, and
-network visualization — see `vignette("rewiring", package = "clover")`.
+network visualization — see the [rewiring
+article](https://rnabioco.github.io/clover/articles/rewiring.html).
 
 ## Session info
 

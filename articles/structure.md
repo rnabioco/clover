@@ -404,7 +404,7 @@ sessionInfo()
 #> [25] textshaping_1.0.4           Biostrings_2.78.0          
 #> [27] Seqinfo_1.0.0               htmltools_0.5.9            
 #> [29] sass_0.4.10                 yaml_2.3.12                
-#> [31] pkgdown_2.2.0               pillar_1.11.1              
+#> [31] pillar_1.11.1               pkgdown_2.2.0              
 #> [33] crayon_1.5.3                jquerylib_0.1.4            
 #> [35] DelayedArray_0.36.0         cachem_1.1.0               
 #> [37] abind_1.4-8                 tidyselect_1.2.1           

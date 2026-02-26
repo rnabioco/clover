@@ -17,7 +17,7 @@ read_bcerror(bcerr_path)
 
 ## Value
 
-A tibble
+A tibble.
 
 ## Details
 

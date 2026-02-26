@@ -12,7 +12,7 @@ read_fasta(fa)
 
 - fa:
 
-  path to fasta file
+  Path to a FASTA file.
 
 ## Value
 

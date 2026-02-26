@@ -78,9 +78,6 @@
 - [`plot_abundance_charging()`](https://rnabioco.github.io/clover/reference/plot_abundance_charging.md)
   : Plot abundance changes versus charging ratio changes.
 
-- [`plot_arc_diagram()`](https://rnabioco.github.io/clover/reference/plot_arc_diagram.md)
-  : Plot a network as an arc diagram.
-
 - [`plot_bcerror_profile()`](https://rnabioco.github.io/clover/reference/plot_bcerror_profile.md)
   : Plot per-position base-calling error profiles.
 
@@ -96,12 +93,6 @@
 - [`plot_chord_ror()`](https://rnabioco.github.io/clover/reference/plot_chord_ror.md)
   : Plot a chord diagram of modification rewiring between conditions.
 
-- [`plot_identity_panel()`](https://rnabioco.github.io/clover/reference/plot_identity_panel.md)
-  : Plot identity elements for multiple tRNAs side by side
-
-- [`plot_identity_structure()`](https://rnabioco.github.io/clover/reference/plot_identity_structure.md)
-  : Plot tRNA structure with identity element overlays
-
 - [`plot_mod_heatmap()`](https://rnabioco.github.io/clover/reference/plot_mod_heatmap.md)
   : Plot a delta-signal modification heatmap.
 
@@ -110,9 +101,6 @@
 
 - [`plot_pcoa_rewiring()`](https://rnabioco.github.io/clover/reference/plot_pcoa_rewiring.md)
   : Plot PCoA of tRNA rewiring scores.
-
-- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
-  : Plot tRNA secondary structure with modifications and linkages
 
 - [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md)
   : Plot a volcano plot of differential expression results.

@@ -31,3 +31,11 @@ compute_odds_ratios(mod_calls_path, refs = NULL, min_reads = 10)
 
 A tibble with columns: `ref`, `pos1`, `pos2`, `odds_ratio`,
 `log_odds_ratio`, `p_value`, `total_obs`.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+compute_odds_ratios("sample.mod_calls.tsv.gz")
+} # }
+```

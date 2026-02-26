@@ -1,6 +1,6 @@
 # Read modifications file
 
-TSV file with 4 columns:
+Read a TSV file with 4 columns: `ref`, `pos`, `mod_full`, `mod1`.
 
 ## Usage
 
@@ -12,18 +12,16 @@ read_mod_annotations(mods)
 
 - mods:
 
-  path to modifications file
+  Path to a modifications TSV file.
 
 ## Value
 
 A tibble.
 
-## Details
+## Examples
 
-1.  `ref`
-
-2.  `pos`
-
-3.  `mod_full`
-
-4.  `mod1`
+``` r
+if (FALSE) { # \dontrun{
+read_mod_annotations("modifications.tsv")
+} # }
+```
