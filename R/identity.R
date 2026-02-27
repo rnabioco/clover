@@ -291,11 +291,11 @@ plot_identity_structure <- function(
   )
 }
 
-#' Plot identity elements for multiple tRNAs side by side
+#' Plot identity elements for multiple tRNAs in a grid
 #'
 #' Generates a combined SVG showing tRNA cloverleaf structures
-#' arranged in a horizontal row, each annotated with aminoacylation
-#' identity elements. Inspired by Figure 2 of Giege & Eriani (2023).
+#' arranged in a grid, each annotated with aminoacylation identity
+#' elements. Inspired by Figure 2 of Giege & Eriani (2023).
 #'
 #' @param trnas Character vector of tRNA identifiers
 #'   (e.g., `c("tRNA-Ala-AGC", "tRNA-Phe-GAA")`).
@@ -306,7 +306,9 @@ plot_identity_structure <- function(
 #'   writes to a temporary file.
 #' @param outline_palette Named character vector of colors keyed by
 #'   strength. Default uses red for strong and blue for weak.
-#' @param gap Horizontal gap in SVG units between panels. Default 20.
+#' @param ncol Number of columns in the panel grid. If `NULL`
+#'   (default), all tRNAs are placed in a single row.
+#' @param gap Gap in SVG units between panels. Default 20.
 #' @param ... Additional arguments passed to
 #'   [plot_identity_structure()].
 #'
@@ -331,6 +333,7 @@ plot_identity_panel <- function(
   sprinzl_coords,
   output = NULL,
   outline_palette = NULL,
+  ncol = NULL,
   gap = 20,
   ...
 ) {
@@ -382,11 +385,22 @@ plot_identity_panel <- function(
     numeric(1)
   )
 
+  # Grid layout
+  n <- length(trnas)
+  if (is.null(ncol)) {
+    ncol <- n
+  }
+  nrow <- ceiling(n / ncol)
+
   # Label height
   label_h <- 16
 
-  total_width <- sum(widths) + gap * (length(trnas) - 1)
-  total_height <- max(heights) + label_h
+  # Cell dimensions based on the largest panel
+  cell_w <- max(widths)
+  cell_h <- max(heights) + label_h
+
+  total_width <- ncol * cell_w + (ncol - 1) * gap
+  total_height <- nrow * cell_h + (nrow - 1) * gap
 
   # Build combined SVG
   combined <- xml2::read_xml(paste0(
@@ -405,12 +419,23 @@ plot_identity_panel <- function(
   ))
   root <- xml2::xml_root(combined)
 
-  x_offset <- 0
   for (i in seq_along(svg_docs)) {
+    col_idx <- (i - 1) %% ncol
+    row_idx <- (i - 1) %/% ncol
+
+    x_offset <- col_idx * (cell_w + gap)
+    y_offset <- row_idx * (cell_h + gap)
+
     panel_g <- xml2::xml_add_child(
       root,
       "g",
-      transform = paste0("translate(", x_offset, ",", label_h, ")")
+      transform = paste0(
+        "translate(",
+        x_offset,
+        ",",
+        y_offset + label_h,
+        ")"
+      )
     )
 
     # Copy all children from the individual SVG
@@ -426,7 +451,7 @@ plot_identity_panel <- function(
       root,
       "text",
       x = as.character(label_x),
-      y = as.character(label_h - 3),
+      y = as.character(y_offset + label_h - 3),
       "text-anchor" = "middle",
       "font-family" = "Helvetica, Arial, sans-serif",
       "font-size" = "11",
@@ -434,8 +459,6 @@ plot_identity_panel <- function(
       fill = "#333333"
     )
     xml2::xml_set_text(label_node, aa)
-
-    x_offset <- x_offset + widths[i] + gap
   }
 
   # Add shared legend

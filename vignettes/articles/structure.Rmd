@@ -370,15 +370,17 @@ structure_html(svg)
 
 ### Identity element panel
 
-`plot_identity_panel()` arranges multiple tRNAs side by side, each annotated
-with its amino acid family's identity elements.
+`plot_identity_panel()` arranges multiple tRNAs in a grid, each annotated
+with its amino acid family's identity elements. Use `ncol` to control the
+number of columns.
 
 ```{r}
 #| label: identity-panel
 svg <- plot_identity_panel(
   c("tRNA-Ala-AGC", "tRNA-Asp-GTC", "tRNA-Phe-GAA", "tRNA-His-GTG"),
   "Saccharomyces cerevisiae",
-  coords
+  coords,
+  ncol = 2
 )
 ```
 

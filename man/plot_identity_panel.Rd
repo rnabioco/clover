@@ -2,7 +2,7 @@
 % Please edit documentation in R/identity.R
 \name{plot_identity_panel}
 \alias{plot_identity_panel}
-\title{Plot identity elements for multiple tRNAs side by side}
+\title{Plot identity elements for multiple tRNAs in a grid}
 \usage{
 plot_identity_panel(
   trnas,
@@ -10,6 +10,7 @@ plot_identity_panel(
   sprinzl_coords,
   output = NULL,
   outline_palette = NULL,
+  ncol = NULL,
   gap = 20,
   ...
 )
@@ -29,7 +30,10 @@ writes to a temporary file.}
 \item{outline_palette}{Named character vector of colors keyed by
 strength. Default uses red for strong and blue for weak.}
 
-\item{gap}{Horizontal gap in SVG units between panels. Default 20.}
+\item{ncol}{Number of columns in the panel grid. If \code{NULL}
+(default), all tRNAs are placed in a single row.}
+
+\item{gap}{Gap in SVG units between panels. Default 20.}
 
 \item{...}{Additional arguments passed to
 \code{\link[=plot_identity_structure]{plot_identity_structure()}}.}
@@ -39,8 +43,8 @@ The path to the combined SVG file (invisibly).
 }
 \description{
 Generates a combined SVG showing tRNA cloverleaf structures
-arranged in a horizontal row, each annotated with aminoacylation
-identity elements. Inspired by Figure 2 of Giege & Eriani (2023).
+arranged in a grid, each annotated with aminoacylation identity
+elements. Inspired by Figure 2 of Giege & Eriani (2023).
 }
 \examples{
 \donttest{
