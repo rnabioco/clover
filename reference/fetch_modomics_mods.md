@@ -49,9 +49,28 @@ A tibble with columns:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 fa <- clover_example("ecoli/validated.fa.gz")
 mods <- fetch_modomics_mods(fa, "Escherichia coli")
+#> Fetching MODOMICS modification dictionary.
+#> Fetching MODOMICS tRNA sequences for "Escherichia coli".
+#> Processing 182 MODOMICS sequences.
+#> Matching MODOMICS sequences to reference FASTA.
+#> Found 695 modification annotations.
 mods
-} # }
+#> # A tibble: 695 × 4
+#>    ref                     pos mod_full                 mod1 
+#>    <chr>                 <int> <chr>                    <chr>
+#>  1 host-tRNA-Ala-TGC-1-1    41 dihydrouridine           D    
+#>  2 host-tRNA-Ala-TGC-1-1    58 uridine 5-oxyacetic acid cmo5U
+#>  3 host-tRNA-Ala-TGC-1-1    70 7-methylguanosine        m7G  
+#>  4 host-tRNA-Ala-TGC-1-1    78 5-methyluridine          m5U  
+#>  5 host-tRNA-Ala-TGC-1-1    79 pseudouridine            Y    
+#>  6 host-tRNA-Ala-GGC-1-1    41 dihydrouridine           D    
+#>  7 host-tRNA-Ala-GGC-1-1    70 7-methylguanosine        m7G  
+#>  8 host-tRNA-Ala-GGC-1-1    78 5-methyluridine          m5U  
+#>  9 host-tRNA-Ala-GGC-1-1    79 pseudouridine            Y    
+#> 10 host-tRNA-Arg-ACG-1-1    32 4-thiouridine            s4U  
+#> # ℹ 685 more rows
+# }
 ```

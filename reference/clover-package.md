@@ -11,6 +11,8 @@ Useful links:
 
 - <https://github.com/rnabioco/clover>
 
+- Report bugs at <https://github.com/rnabioco/clover/issues>
+
 ## Author
 
 **Maintainer**: Jay Hesselberth <jay.hesselberth@cuanschutz.edu>

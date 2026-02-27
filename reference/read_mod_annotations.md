@@ -21,7 +21,12 @@ A tibble.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-read_mod_annotations("modifications.tsv")
-} # }
+path <- clover_example("ecoli/mod_annotations.tsv")
+read_mod_annotations(path)
+#> # A tibble: 3 × 4
+#>   ref                     pos mod_full          mod1 
+#>   <chr>                 <dbl> <chr>             <chr>
+#> 1 host-tRNA-Glu-TTC-1-1    34 5-methyluridine   m5U  
+#> 2 host-tRNA-Glu-TTC-1-1    46 7-methylguanosine m7G  
+#> 3 host-tRNA-Phe-GAA-1-1    34 5-methyluridine   m5U  
 ```

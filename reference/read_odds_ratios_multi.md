@@ -23,13 +23,17 @@ A tibble with all samples combined and a `sample_id` column.
 ## Examples
 
 ``` r
+or_file1 <- paste0(
+  "ecoli/summary/tables/wt-15-ctl-01/",
+  "wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
+)
+or_file2 <- paste0(
+  "ecoli/summary/tables/wt-15-ctl-02/",
+  "wt-15-ctl-02.odds_ratios_filtered.tsv.gz"
+)
 paths <- c(
-  "wt-15-ctl-01" = clover_example(
-    "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
-  ),
-  "wt-15-ctl-02" = clover_example(
-    "ecoli/summary/tables/wt-15-ctl-02/wt-15-ctl-02.odds_ratios_filtered.tsv.gz"
-  )
+  "wt-15-ctl-01" = clover_example(or_file1),
+  "wt-15-ctl-02" = clover_example(or_file2)
 )
 read_odds_ratios_multi(paths)
 #> # A tibble: 1,585 × 17
