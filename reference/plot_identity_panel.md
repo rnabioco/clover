@@ -1,8 +1,8 @@
-# Plot identity elements for multiple tRNAs side by side
+# Plot identity elements for multiple tRNAs in a grid
 
 Generates a combined SVG showing tRNA cloverleaf structures arranged in
-a horizontal row, each annotated with aminoacylation identity elements.
-Inspired by Figure 2 of Giege & Eriani (2023).
+a grid, each annotated with aminoacylation identity elements. Inspired
+by Figure 2 of Giege & Eriani (2023).
 
 ## Usage
 
@@ -13,6 +13,7 @@ plot_identity_panel(
   sprinzl_coords,
   output = NULL,
   outline_palette = NULL,
+  ncol = NULL,
   gap = 20,
   ...
 )
@@ -44,9 +45,14 @@ plot_identity_panel(
   Named character vector of colors keyed by strength. Default uses red
   for strong and blue for weak.
 
+- ncol:
+
+  Number of columns in the panel grid. If `NULL` (default), all tRNAs
+  are placed in a single row.
+
 - gap:
 
-  Horizontal gap in SVG units between panels. Default 20.
+  Gap in SVG units between panels. Default 20.
 
 - ...:
 

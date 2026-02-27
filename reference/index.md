@@ -145,7 +145,7 @@
 - [`map_identity_to_trna()`](https://rnabioco.github.io/clover/reference/map_identity_to_trna.md)
   : Map identity elements to tRNA sequence positions
 - [`plot_identity_panel()`](https://rnabioco.github.io/clover/reference/plot_identity_panel.md)
-  : Plot identity elements for multiple tRNAs side by side
+  : Plot identity elements for multiple tRNAs in a grid
 - [`plot_identity_structure()`](https://rnabioco.github.io/clover/reference/plot_identity_structure.md)
   : Plot tRNA structure with identity element overlays
 
