@@ -84,7 +84,7 @@ The simplest call passes the prepared data with appropriate column mappings.
 ```{r}
 #| label: fig-basic
 #| fig.cap: "Basic modification heatmap with default settings."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -100,7 +100,7 @@ Control the diverging color scale with `color_limits`, `color_low`,
 ```{r}
 #| label: fig-color-scale
 #| fig.cap: "Custom color scale with tighter limits and purple-green palette."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -124,7 +124,7 @@ order.
 ```{r}
 #| label: fig-cluster-on
 #| fig.cap: "Clustered rows (default)."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -136,7 +136,7 @@ plot_mod_heatmap(
 ```{r}
 #| label: fig-cluster-off
 #| fig.cap: "Alphabetical row order (cluster = FALSE)."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -155,7 +155,7 @@ tRNA exceeds the threshold in absolute value.
 ```{r}
 #| label: fig-cluster-threshold
 #| fig.cap: "Clustering uses only positions with |delta| > 0.05."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -180,7 +180,7 @@ heatmap_grouped <- heatmap_data |>
 ```{r}
 #| label: fig-group-cluster
 #| fig.cap: "Clustering within amino acid groups, separated by dividers."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_grouped,
   value_col = "delta",
@@ -195,7 +195,7 @@ Control the divider line thickness with `divider_linewidth`.
 ```{r}
 #| label: fig-divider-width
 #| fig.cap: "Thicker dividers between groups."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_grouped,
   value_col = "delta",
@@ -215,7 +215,7 @@ cells.
 ```{r}
 #| label: fig-highlight
 #| fig.cap: "MODOMICS modification sites marked with dots."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -231,7 +231,7 @@ displacement from tile center).
 ```{r}
 #| label: fig-highlight-custom
 #| fig.cap: "Larger highlight dots with custom offset."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -267,7 +267,7 @@ heatmap_labeled <- heatmap_data |>
 ```{r}
 #| label: fig-labels
 #| fig.cap: "Reference bases overlaid on tiles where |delta| >= 0.03."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_labeled,
   value_col = "delta",
@@ -287,7 +287,7 @@ explanatory text with `caption`.
 ```{r}
 #| label: fig-legend-caption
 #| fig.cap: "Custom legend title, breaks, and caption."
-#| fig.height: 5
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -308,7 +308,7 @@ for wide heatmaps with many positions.
 ```{r}
 #| label: fig-square-false
 #| fig.cap: "Free aspect ratio stretches tiles to fill the plot area."
-#| fig.height: 4
+#| fig.height: 3
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",

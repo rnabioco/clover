@@ -179,7 +179,7 @@ plot_bcerror_profile(bcerror_summary, refs = plot_trnas)
 ```{r}
 #| label: fig-bcerror-delta
 #| fig.cap: "Difference in mean base-calling error (wt - TruB-del) across all tRNAs and positions."
-#| fig.height: 5
+#| fig.height: 3
 #| message: false
 # Compute delta (wt - tb); positive = higher error in wt (modification present)
 bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
