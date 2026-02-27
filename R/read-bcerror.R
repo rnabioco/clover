@@ -9,9 +9,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' read_counts("sample1.counts.tsv.gz")
-#' }
+#' read_counts(clover_example("ecoli/counts.tsv"))
 read_counts <- function(path) {
   readr::read_tsv(path, show_col_types = FALSE)
 }

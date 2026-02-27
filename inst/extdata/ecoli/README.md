@@ -52,6 +52,14 @@ demonstrate the data-loading workflow.
   | host-tRNA-Arg-CCT-1-1 | Least abundant |
   | host-tRNA-Ser-CGA-1-1 | Least abundant |
 
+### Minimal example files
+
+Small example files used in roxygen `@examples`:
+
+- `counts.tsv` -- 3-row counts file for `read_counts()`
+- `mod_annotations.tsv` -- 3-row modification annotations for `read_mod_annotations()`
+- `mod_calls.tsv.gz` -- synthetic mod calls (15 reads, 1 tRNA) for `compute_odds_ratios()`
+
 ### Other files
 
 - `config.yaml` -- pipeline configuration file (used by `create_clover()`)

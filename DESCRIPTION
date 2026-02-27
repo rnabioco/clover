@@ -15,8 +15,9 @@ Description: Analyze direct tRNA sequencing data. Provides differential
     expression, modification, and tools for visualization.
 License: MIT + file LICENSE
 URL: https://rnabioco.github.io/clover, https://github.com/rnabioco/clover
+BugReports: https://github.com/rnabioco/clover/issues
 Depends:
-    R (>= 4.3.0)
+    R (>= 4.5.0)
 Imports:
     Biostrings,
     cli,
@@ -55,11 +56,11 @@ Suggests:
     testthat (>= 3.0.0),
     tidygraph,
     withr
-LinkingTo: 
+LinkingTo:
     cpp11
-VignetteBuilder: 
+VignetteBuilder:
     knitr
-bioCViews: RNASeq, Visualization
+biocViews: RNASeq, Visualization
 Config/Needs/dev: devtools, roxygen2, pkgdown
 Config/Needs/website: rnabioco/rbitemplate
 Config/testthat/edition: 3

@@ -16,7 +16,6 @@ A tibble.
 Read a TSV file with 4 columns: \code{ref}, \code{pos}, \code{mod_full}, \code{mod1}.
 }
 \examples{
-\dontrun{
-read_mod_annotations("modifications.tsv")
-}
+path <- clover_example("ecoli/mod_annotations.tsv")
+read_mod_annotations(path)
 }

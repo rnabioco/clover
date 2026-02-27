@@ -181,7 +181,7 @@ load_cached_sequences <- function(organism) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fa <- clover_example("ecoli/validated.fa.gz")
 #' mods <- fetch_modomics_mods(fa, "Escherichia coli")
 #' mods

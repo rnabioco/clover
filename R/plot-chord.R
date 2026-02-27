@@ -40,9 +40,11 @@
 #'
 #' @examples
 #' \donttest{
-#' path <- clover_example(
-#'   "ecoli/summary/tables/wt-15-ctl-01/wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
+#' or_file <- paste0(
+#'   "ecoli/summary/tables/wt-15-ctl-01/",
+#'   "wt-15-ctl-01.odds_ratios_filtered.tsv.gz"
 #' )
+#' path <- clover_example(or_file)
 #' or_data <- read_odds_ratios(path)
 #' or_data <- dplyr::filter(or_data, ref == "host-tRNA-Glu-TTC-1-1")
 #' plot_chord_or(or_data)
@@ -353,10 +355,12 @@ setup_chord_sectors <- function(chord_df, sprinzl_coords = NULL) {
   } else {
     all_positions <- unique(c(chord_df$from, chord_df$to))
     # Sort positions numerically where possible
-    sector_order <- all_positions[order(
-      suppressWarnings(as.numeric(all_positions)),
-      all_positions
-    )]
+    numeric_pos <- ifelse(
+      grepl("^-?[0-9.]+$", all_positions),
+      as.numeric(all_positions),
+      NA_real_
+    )
+    sector_order <- all_positions[order(numeric_pos, all_positions)]
     grid_col <- rep("grey70", length(sector_order))
     names(grid_col) <- sector_order
     regions <- NULL

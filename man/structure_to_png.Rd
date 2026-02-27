@@ -29,7 +29,9 @@ to a PNG bitmap. Requires the
 }
 \examples{
 \donttest{
-svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
-structure_to_png(svg)
+if (requireNamespace("rsvg", quietly = TRUE)) {
+  svg <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+  structure_to_png(svg)
+}
 }
 }

@@ -28,7 +28,6 @@ full datasets; use the \code{refs} parameter to restrict to specific
 tRNAs.
 }
 \examples{
-\dontrun{
-compute_odds_ratios("sample.mod_calls.tsv.gz")
-}
+path <- clover_example("ecoli/mod_calls.tsv.gz")
+compute_odds_ratios(path)
 }

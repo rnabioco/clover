@@ -13,6 +13,7 @@ Useful links:
 \itemize{
   \item \url{https://rnabioco.github.io/clover}
   \item \url{https://github.com/rnabioco/clover}
+  \item Report bugs at \url{https://github.com/rnabioco/clover/issues}
 }
 
 }

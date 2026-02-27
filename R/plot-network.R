@@ -86,13 +86,15 @@ build_or_network <- function(data, value_col = "ror", min_weight = 0) {
 #'
 #' @examples
 #' \donttest{
-#' df <- tibble::tibble(
-#'   pos1 = c("20", "34", "20"),
-#'   pos2 = c("34", "58", "58"),
-#'   ror = c(1.5, -0.8, 0.3)
-#' )
-#' graph <- build_or_network(df)
-#' plot_arc_diagram(graph)
+#' if (requireNamespace("ggraph", quietly = TRUE)) {
+#'   df <- tibble::tibble(
+#'     pos1 = c("20", "34", "20"),
+#'     pos2 = c("34", "58", "58"),
+#'     ror = c(1.5, -0.8, 0.3)
+#'   )
+#'   graph <- build_or_network(df)
+#'   plot_arc_diagram(graph)
+#' }
 #' }
 plot_arc_diagram <- function(
   graph,

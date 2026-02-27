@@ -134,9 +134,8 @@ read_fasta <- function(fa) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' read_mod_annotations("modifications.tsv")
-#' }
+#' path <- clover_example("ecoli/mod_annotations.tsv")
+#' read_mod_annotations(path)
 read_mod_annotations <- function(mods) {
   readr::read_tsv(mods, show_col_types = FALSE)
 }

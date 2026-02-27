@@ -16,7 +16,5 @@ A tibble.
 Read a per-tRNA counts file produced by the tRNA sequencing pipeline.
 }
 \examples{
-\dontrun{
-read_counts("sample1.counts.tsv.gz")
-}
+read_counts(clover_example("ecoli/counts.tsv"))
 }

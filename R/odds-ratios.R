@@ -317,9 +317,8 @@ compute_ror <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' compute_odds_ratios("sample.mod_calls.tsv.gz")
-#' }
+#' path <- clover_example("ecoli/mod_calls.tsv.gz")
+#' compute_odds_ratios(path)
 compute_odds_ratios <- function(mod_calls_path, refs = NULL, min_reads = 10) {
   mc <- readr::read_tsv(mod_calls_path, show_col_types = FALSE) |>
     dplyr::filter(.data$within_alignment == TRUE)
