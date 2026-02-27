@@ -3,7 +3,7 @@ output: github_document
 ---
 
 ```{r}
-#| include = FALSE
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",

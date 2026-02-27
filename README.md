@@ -68,3 +68,4 @@ See `vignette("clover")` for a complete walkthrough.
 - [nanoblot](https://github.com/SamDeMario-lab/NanoBlot) facilitates
   visualization of nanopore sequencing data, including a “virtual gel”
   plot.
+
