@@ -164,9 +164,13 @@ prep_mod_heatmap <- function(
       dplyr::mutate(has_mod = tidyr::replace_na(.data$has_mod, FALSE))
   }
 
-  # Order sprinzl_label by global_index
+  # Order sprinzl_label by global_index. Use min to resolve ties when
+  # a label maps to different global indices across tRNAs.
   label_order <- result |>
-    dplyr::distinct(.data$sprinzl_label, .data$global_index) |>
+    dplyr::summarize(
+      global_index = min(.data$global_index),
+      .by = "sprinzl_label"
+    ) |>
     dplyr::arrange(.data$global_index) |>
     dplyr::pull(.data$sprinzl_label)
 
