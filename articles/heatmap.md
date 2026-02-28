@@ -74,20 +74,20 @@ heatmap_data <- prep_mod_heatmap(
 )
 
 heatmap_data
-#> # A tibble: 776 × 10
+#> # A tibble: 795 × 10
 #>    ref     pos     tb     wt    delta trna_id sprinzl_label global_index has_mod
 #>    <chr> <dbl>  <dbl>  <dbl>    <dbl> <chr>   <fct>                <dbl> <lgl>  
 #>  1 tRNA…     1 0.0334 0.0405  7.11e-3 tRNA-A… 1                        1 FALSE  
-#>  2 tRNA…     2 0.0660 0.0896  2.36e-2 tRNA-A… 2                        3 FALSE  
-#>  3 tRNA…     3 0.0587 0.0809  2.21e-2 tRNA-A… 3                        4 FALSE  
-#>  4 tRNA…     4 0.195  0.201   5.84e-3 tRNA-A… 4                        8 FALSE  
-#>  5 tRNA…     5 0.258  0.288   2.92e-2 tRNA-A… 5                        9 FALSE  
-#>  6 tRNA…     6 0.117  0.134   1.70e-2 tRNA-A… 6                       11 FALSE  
-#>  7 tRNA…     7 0.125  0.133   7.20e-3 tRNA-A… 7                       12 FALSE  
-#>  8 tRNA…     8 0.0644 0.0706  6.17e-3 tRNA-A… 8                       13 TRUE   
-#>  9 tRNA…     9 0.0623 0.0619 -3.87e-4 tRNA-A… 9                       14 FALSE  
-#> 10 tRNA…    10 0.0295 0.0266 -2.95e-3 tRNA-A… 10                      15 FALSE  
-#> # ℹ 766 more rows
+#>  2 tRNA…     2 0.0660 0.0896  2.36e-2 tRNA-A… 2                        2 FALSE  
+#>  3 tRNA…     3 0.0587 0.0809  2.21e-2 tRNA-A… 3                        3 FALSE  
+#>  4 tRNA…     4 0.195  0.201   5.84e-3 tRNA-A… 4                        4 FALSE  
+#>  5 tRNA…     5 0.258  0.288   2.92e-2 tRNA-A… 5                        5 FALSE  
+#>  6 tRNA…     6 0.117  0.134   1.70e-2 tRNA-A… 6                        6 FALSE  
+#>  7 tRNA…     7 0.125  0.133   7.20e-3 tRNA-A… 7                        7 FALSE  
+#>  8 tRNA…     8 0.0644 0.0706  6.17e-3 tRNA-A… 8                        8 TRUE   
+#>  9 tRNA…     9 0.0623 0.0619 -3.87e-4 tRNA-A… 9                        9 FALSE  
+#> 10 tRNA…    10 0.0295 0.0266 -2.95e-3 tRNA-A… 10                      10 FALSE  
+#> # ℹ 785 more rows
 #> # ℹ 1 more variable: trna_label <chr>
 ```
 
