@@ -86,23 +86,30 @@ build_cm_mapping <- function() {
 parse_stockholm <- function(sto_file) {
   lines <- readLines(sto_file)
 
-  # Extract RF and SS_cons
-  rf_line <- grep("^#=GC RF", lines, value = TRUE)
-  rf_str <- sub("^#=GC RF\\s+", "", rf_line)
+  # Extract RF and SS_cons (concatenate across wrapped blocks)
+  rf_lines <- grep("^#=GC RF", lines, value = TRUE)
+  rf_str <- paste0(sub("^#=GC RF\\s+", "", rf_lines), collapse = "")
   rf_chars <- strsplit(rf_str, "")[[1]]
 
-  ss_line <- grep("^#=GC SS_cons", lines, value = TRUE)
-  ss_str <- sub("^#=GC SS_cons\\s+", "", ss_line)
+  ss_lines <- grep("^#=GC SS_cons", lines, value = TRUE)
+  ss_str <- paste0(sub("^#=GC SS_cons\\s+", "", ss_lines), collapse = "")
   ss_chars <- strsplit(ss_str, "")[[1]]
 
   # Extract sequence lines (not comments, not PP, not GC, not blank)
   seq_lines <- lines[!grepl("^#|^//|^$", lines)]
   seq_lines <- seq_lines[!grepl("\\s+PP\\s+", seq_lines)]
 
+  # Concatenate wrapped sequence blocks by name
   seqs <- list()
   for (sl in seq_lines) {
     parts <- strsplit(trimws(sl), "\\s+")[[1]]
-    seqs[[parts[1]]] <- parts[2]
+    name <- parts[1]
+    chunk <- parts[2]
+    if (is.null(seqs[[name]])) {
+      seqs[[name]] <- chunk
+    } else {
+      seqs[[name]] <- paste0(seqs[[name]], chunk)
+    }
   }
 
   list(rf = rf_chars, ss = ss_chars, seqs = seqs)
@@ -293,19 +300,26 @@ run_cmalign <- function(fasta_path, cm_path) {
 generate_sprinzl_coords <- function(fasta_path, cm_path, trna_prefix = "") {
   # Convert FASTA to RNA if needed
   fa <- Biostrings::readDNAStringSet(fasta_path)
-  rna_file <- tempfile(fileext = ".fa")
-  rna <- Biostrings::RNAStringSet(fa)
-  Biostrings::writeXStringSet(rna, rna_file)
+  cm_map <- build_cm_mapping()
 
   cli::cli_inform(
     "Aligning {length(fa)} sequence{?s} against bacterial CM."
   )
-  sto_file <- run_cmalign(rna_file, cm_path)
-  parsed <- parse_stockholm(sto_file)
-  cm_map <- build_cm_mapping()
 
+  # Align each sequence individually to avoid batch alignment artifacts
+  # (batch alignments can introduce ~ characters in the RF line for
+  # elided consensus columns, which breaks CM column counting)
   results <- list()
-  for (name in names(parsed$seqs)) {
+  for (i in seq_along(fa)) {
+    name <- names(fa)[i]
+    rna_file <- tempfile(fileext = ".fa")
+    rna <- Biostrings::RNAStringSet(fa[i])
+    Biostrings::writeXStringSet(rna, rna_file)
+
+    sto_file <- run_cmalign(rna_file, cm_path)
+    parsed <- parse_stockholm(sto_file)
+    unlink(c(rna_file, sto_file))
+
     coords <- assign_sprinzl(parsed$seqs[[name]], parsed$rf, cm_map)
     # Build trna_id: strip prefix, convert anticodon DNA→RNA
     trna_id <- sub("^host-|^phage-", "", name)
@@ -325,7 +339,7 @@ generate_sprinzl_coords <- function(fasta_path, cm_path, trna_prefix = "") {
     results[[name]] <- coords
   }
 
-  result <- dplyr::bind_rows(results) |>
+  dplyr::bind_rows(results) |>
     dplyr::select(
       trna_id,
       seq_index,
@@ -334,11 +348,6 @@ generate_sprinzl_coords <- function(fasta_path, cm_path, trna_prefix = "") {
       region,
       residue
     )
-
-  # Clean up temp files
-  unlink(c(rna_file, sto_file))
-
-  result
 }
 
 # --- Extract T4 phage tRNAs from test data ---
@@ -446,6 +455,24 @@ fname <- "phageT5_global_coords.tsv.gz"
 readr::write_tsv(t5_coords, file.path(out_dir, fname))
 cli::cli_inform(
   "Saved {nrow(t5_coords)} position{?s} for {length(unique(t5_coords$trna_id))} tRNA{?s} to {fname}."
+)
+
+# --- E. coli K12 host tRNAs ---
+
+cli::cli_h1("E. coli K12 host tRNAs")
+
+ecoli_fasta <- file.path(fasta_dir, "ecoliK12-tRNAs.fa")
+extract_phage_fasta(
+  "inst/extdata/ecoli/trna_only.fa.gz",
+  "host-",
+  ecoli_fasta
+)
+
+ecoli_coords <- generate_sprinzl_coords(ecoli_fasta, cm_file)
+fname <- "ecoliK12_global_coords.tsv.gz"
+readr::write_tsv(ecoli_coords, file.path(out_dir, fname))
+cli::cli_inform(
+  "Saved {nrow(ecoli_coords)} position{?s} for {length(unique(ecoli_coords$trna_id))} tRNA{?s} to {fname}."
 )
 
 cli::cli_h1("Done")
