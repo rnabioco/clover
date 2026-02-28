@@ -255,7 +255,7 @@ black and white for contrast.
 # Add the reference base at each position for labeling
 ref_seqs <- Biostrings::readDNAStringSet(trna_fasta)
 ref_bases <- tibble::tibble(
-  ref = rep(names(ref_seqs), Biostrings::width(ref_seqs)),
+  ref = sub("^host-", "", rep(names(ref_seqs), Biostrings::width(ref_seqs))),
   pos = unlist(lapply(Biostrings::width(ref_seqs), seq_len)),
   ref_base = strsplit(as.character(unlist(ref_seqs)), "") |> unlist()
 )
