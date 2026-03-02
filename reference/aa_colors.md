@@ -18,9 +18,9 @@ A named character vector of hex colors.
 ``` r
 aa_colors()
 #>       Ala       Arg       Asn       Asp       Cys       Gln       Glu       Gly 
-#> "#1f77b4" "#ff7f0e" "#2ca02c" "#d62728" "#9467bd" "#8c564b" "#e377c2" "#7f7f7f" 
+#> "#D5F6E2" "#A5C2F6" "#FF9902" "#9A00FF" "#D9B5FF" "#44B3E1" "#D10C0D" "#000000" 
 #>       His       Ile       Leu       Lys       Met       Phe       Pro       Ser 
-#> "#bcbd22" "#17becf" "#aec7e8" "#ffbb78" "#98df8a" "#ff9896" "#c5b0d5" "#c49c94" 
+#> "#0070C0" "#FFFF00" "#FF00FF" "#FFD9AF" "#ADADAD" "#C99D89" "#12501A" "#FFC000" 
 #>       Thr       Trp       Tyr       Val      fMet      Ile2       SeC 
-#> "#f7b6d2" "#c7c7c7" "#dbdb8d" "#9edae5" "#393b79" "#5254a3" "#6b6ecf" 
+#> "#002060" "#800000" "#47D359" "#FFCAE2" "#ADADAD" "#FFFF00" "#FFC000" 
 ```
