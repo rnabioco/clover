@@ -19,7 +19,7 @@ A data frame with row names matching \code{colnames(count_matrix)}.
 }
 \description{
 Create a \code{data.frame} of sample metadata suitable for
-\code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()}}. For charging count matrices,
+\code{\link[DESeq2:DESeqDataSetFromMatrix]{DESeq2::DESeqDataSetFromMatrix()}}. For charging count matrices,
 the \code{charge_status} factor is added automatically.
 }
 \examples{

@@ -1,5 +1,9 @@
 # clover 0.0.0.9000
 
+* `read_bedmethyl()` reads per-position modification percentages from bedMethyl files produced by `modkit pileup`, enabling integration of nanopore modification data with the heatmap workflow.
+
+* `summarize_mod_calls()` summarizes per-read modification calls from `modkit extract` output into per-position modification frequencies, ready for delta computation and heatmap visualization.
+
 * `plot_abundance_charging()` gains `shorten`, `source_col`, and `error_bars` parameters. Labels are auto-shortened via `shorten_trna_names()`, an optional faceting column separates host and phage tRNAs, and horizontal error bars show `lfcSE` on significant points when present.
 
 * `plot_charging_diffs()` gains `source_col`, `label_col`, and `shorten` parameters. Labels are auto-shortened via `shorten_trna_names()` and an optional faceting column separates host and phage tRNAs.

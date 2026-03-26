@@ -21,7 +21,7 @@ or \code{\link[=charging_count_matrix]{charging_count_matrix()}}).}
 A \code{DESeqDataSet} object.
 }
 \description{
-Wrapper around \code{\link[DESeq2:DESeqDataSet]{DESeq2::DESeqDataSetFromMatrix()}} and \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}
+Wrapper around \code{\link[DESeq2:DESeqDataSetFromMatrix]{DESeq2::DESeqDataSetFromMatrix()}} and \code{\link[DESeq2:DESeq]{DESeq2::DESeq()}}
 for tRNA abundance or charging data.
 }
 \examples{
