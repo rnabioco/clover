@@ -63,6 +63,7 @@
 <url><loc>https://rnabioco.github.io/clover/reference/propagate_error_diff.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/propagate_error_ratio.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/read_bcerror.html</loc></url>
+<url><loc>https://rnabioco.github.io/clover/reference/read_bedmethyl.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/read_charging.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/read_charging_multi.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/read_counts.html</loc></url>
@@ -79,6 +80,7 @@
 <url><loc>https://rnabioco.github.io/clover/reference/structure_organisms.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/structure_to_png.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/structure_trnas.html</loc></url>
+<url><loc>https://rnabioco.github.io/clover/reference/summarize_mod_calls.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/tabulate_deseq.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/tidy_deseq_results.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/trna_regions.html</loc></url>

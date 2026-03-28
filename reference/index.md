@@ -4,6 +4,8 @@
 
 - [`read_bcerror()`](https://rnabioco.github.io/clover/reference/read_bcerror.md)
   : Read base-calling error ("bcerror") TSV files.
+- [`read_bedmethyl()`](https://rnabioco.github.io/clover/reference/read_bedmethyl.md)
+  : Read a bedMethyl file from modkit pileup
 - [`read_charging()`](https://rnabioco.github.io/clover/reference/read_charging.md)
   : Read a charging CPM file.
 - [`read_charging_multi()`](https://rnabioco.github.io/clover/reference/read_charging_multi.md)
@@ -52,6 +54,8 @@
   : Filter odds ratios for structure linkage arcs.
 - [`compute_odds_ratios()`](https://rnabioco.github.io/clover/reference/compute_odds_ratios.md)
   : Compute pairwise modification co-occurrence odds ratios.
+- [`summarize_mod_calls()`](https://rnabioco.github.io/clover/reference/summarize_mod_calls.md)
+  : Summarize per-position modification frequency from modkit extract
 - [`compute_ror()`](https://rnabioco.github.io/clover/reference/compute_ror.md)
   : Compute ratio of odds ratios between conditions.
 - [`compute_ror_isodecoder()`](https://rnabioco.github.io/clover/reference/compute_ror_isodecoder.md)

@@ -27,5 +27,5 @@ A single numeric value for the effect size.
 
 ``` r
 cohens_d(rnorm(20, mean = 5), rnorm(20, mean = 3))
-#> [1] 1.677686
+#> [1] 1.58177
 ```

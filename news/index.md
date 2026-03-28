@@ -2,6 +2,16 @@
 
 ## clover 0.0.0.9000
 
+- [`read_bedmethyl()`](https://rnabioco.github.io/clover/reference/read_bedmethyl.md)
+  reads per-position modification percentages from bedMethyl files
+  produced by `modkit pileup`, enabling integration of nanopore
+  modification data with the heatmap workflow.
+
+- [`summarize_mod_calls()`](https://rnabioco.github.io/clover/reference/summarize_mod_calls.md)
+  summarizes per-read modification calls from `modkit extract` output
+  into per-position modification frequencies, ready for delta
+  computation and heatmap visualization.
+
 - [`plot_abundance_charging()`](https://rnabioco.github.io/clover/reference/plot_abundance_charging.md)
   gains `shorten`, `source_col`, and `error_bars` parameters. Labels are
   auto-shortened via

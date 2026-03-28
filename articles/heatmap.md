@@ -504,13 +504,103 @@ highlights.](heatmap_files/figure-html/fig-landscape-full-1.png)
 
 Full landscape with regions, Sprinzl axis, and modification highlights.
 
+## Heatmaps from modkit data
+
+The heatmap workflow also supports modification data from Oxford
+Nanopore’s [modkit](https://nanoporetech.github.io/modkit/) tool. Two
+input formats are supported: per-read calls from `modkit extract` and
+per-position summaries from `modkit pileup`.
+
+### From modkit extract (per-read calls)
+
+[`summarize_mod_calls()`](https://rnabioco.github.io/clover/reference/summarize_mod_calls.md)
+reads a `mod_calls.tsv.gz` file (from `modkit extract --call-code`) and
+computes per-position modification frequency — the proportion of reads
+carrying a non-canonical base call at each position.
+
+``` r
+# Summarize per-position modification frequency from each sample
+wt_mods <- summarize_mod_calls("wt_sample.mod_calls.tsv.gz")
+mut_mods <- summarize_mod_calls("mut_sample.mod_calls.tsv.gz")
+
+# Bind with condition labels
+mod_summary <- bind_rows(
+  mutate(wt_mods, condition = "wt"),
+  mutate(mut_mods, condition = "mut")
+)
+
+# Compute delta (reuses compute_bcerror_delta with mod_freq as value)
+mod_delta <- compute_bcerror_delta(
+  mod_summary,
+  delta = wt - mut,
+  value_col = "mod_freq"
+)
+
+# Prepare and plot (same workflow as bcerror data)
+mod_heatmap <- prep_mod_heatmap(
+  mod_delta,
+  value_col = "delta",
+  sprinzl_coords = sprinzl,
+  mods = mods
+)
+
+plot_mod_heatmap(
+  mod_heatmap,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.5, 0.5),
+  fill_name = "\u0394 mod frequency"
+)
+```
+
+### From modkit pileup (bedMethyl)
+
+[`read_bedmethyl()`](https://rnabioco.github.io/clover/reference/read_bedmethyl.md)
+reads the 18-column bedMethyl format produced by `modkit pileup`. The
+`percent_mod` column contains the percentage of reads with a given
+modification at each position, which can be compared across conditions.
+
+``` r
+# Read bedMethyl files
+wt_bed <- read_bedmethyl("wt_sample.bed.gz", min_cov = 10)
+mut_bed <- read_bedmethyl("mut_sample.bed.gz", min_cov = 10)
+
+# Bind with condition labels
+bed_summary <- bind_rows(
+  mutate(wt_bed, condition = "wt"),
+  mutate(mut_bed, condition = "mut")
+)
+
+# Compute delta using percent_mod (0-100 scale)
+bed_delta <- compute_bcerror_delta(
+  bed_summary,
+  delta = wt - mut,
+  value_col = "percent_mod"
+)
+
+# Prepare and plot
+bed_heatmap <- prep_mod_heatmap(
+  bed_delta,
+  value_col = "delta",
+  sprinzl_coords = sprinzl
+)
+
+plot_mod_heatmap(
+  bed_heatmap,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-50, 50),
+  fill_name = "\u0394 % modified"
+)
+```
+
 ## Session info
 
 ``` r
 sessionInfo()
-#> R version 4.5.2 (2025-10-31)
+#> R version 4.5.3 (2026-03-11)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -533,19 +623,19 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.40.0 gtable_0.3.6               
-#>  [3] xfun_0.56                   bslib_0.10.0               
+#>  [3] xfun_0.57                   bslib_0.10.0               
 #>  [5] ggplot2_4.0.2               htmlwidgets_1.6.4          
-#>  [7] Biobase_2.70.0              lattice_0.22-7             
-#>  [9] tzdb_0.5.0                  vctrs_0.7.1                
-#> [11] tools_4.5.2                 generics_0.1.4             
-#> [13] stats4_4.5.2                parallel_4.5.2             
+#>  [7] Biobase_2.70.0              lattice_0.22-9             
+#>  [9] tzdb_0.5.0                  vctrs_0.7.2                
+#> [11] tools_4.5.3                 generics_0.1.4             
+#> [13] stats4_4.5.3                parallel_4.5.3             
 #> [15] tibble_3.3.1                pkgconfig_2.0.3            
 #> [17] Matrix_1.7-4                RColorBrewer_1.1-3         
 #> [19] S7_0.2.1                    desc_1.4.3                 
 #> [21] S4Vectors_0.48.0            lifecycle_1.0.5            
-#> [23] stringr_1.6.0               compiler_4.5.2             
+#> [23] stringr_1.6.0               compiler_4.5.3             
 #> [25] farver_2.1.2                Biostrings_2.78.0          
-#> [27] textshaping_1.0.4           Seqinfo_1.0.0              
+#> [27] textshaping_1.0.5           Seqinfo_1.0.0              
 #> [29] litedown_0.9                htmltools_0.5.9            
 #> [31] sass_0.4.10                 yaml_2.3.12                
 #> [33] pillar_1.11.1               pkgdown_2.2.0              
@@ -556,15 +646,15 @@ sessionInfo()
 #> [43] digest_0.6.39               stringi_1.8.7              
 #> [45] purrr_1.2.1                 labeling_0.4.3             
 #> [47] cowplot_1.2.0               fastmap_1.2.0              
-#> [49] grid_4.5.2                  cli_3.6.5                  
-#> [51] SparseArray_1.10.8          magrittr_2.0.4             
+#> [49] grid_4.5.3                  cli_3.6.5                  
+#> [51] SparseArray_1.10.9          magrittr_2.0.4             
 #> [53] patchwork_1.3.2             S4Arrays_1.10.1            
 #> [55] utf8_1.2.6                  readr_2.2.0                
 #> [57] withr_3.0.2                 scales_1.4.0               
-#> [59] bit64_4.6.0-1               rmarkdown_2.30             
+#> [59] bit64_4.6.0-1               rmarkdown_2.31             
 #> [61] pwalign_1.6.0               XVector_0.50.0             
 #> [63] matrixStats_1.5.0           ggtext_0.1.2               
-#> [65] bit_4.6.0                   ragg_1.5.0                 
+#> [65] bit_4.6.0                   ragg_1.5.2                 
 #> [67] hms_1.1.4                   evaluate_1.0.5             
 #> [69] knitr_1.51                  GenomicRanges_1.62.1       
 #> [71] IRanges_2.44.0              markdown_2.0               
@@ -573,5 +663,5 @@ sessionInfo()
 #> [77] xml2_1.5.2                  BiocGenerics_0.56.0        
 #> [79] vroom_1.7.0                 jsonlite_2.0.0             
 #> [81] R6_2.6.1                    MatrixGenerics_1.22.0      
-#> [83] systemfonts_1.3.1           fs_1.6.6
+#> [83] systemfonts_1.3.2           fs_2.0.1
 ```

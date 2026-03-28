@@ -53,16 +53,16 @@ df <- tidyr::expand_grid(
 df$mean_error <- runif(nrow(df), 0, 0.3)
 compute_bcerror_delta(df, delta = wt - mut)
 #> # A tibble: 10 × 5
-#>    ref        pos      wt    mut   delta
-#>    <chr>    <int>   <dbl>  <dbl>   <dbl>
-#>  1 tRNA-Ala     1 0.152   0.198  -0.0458
-#>  2 tRNA-Ala     2 0.154   0.251  -0.0971
-#>  3 tRNA-Ala     3 0.213   0.262  -0.0496
-#>  4 tRNA-Ala     4 0.00344 0.266  -0.263 
-#>  5 tRNA-Ala     5 0.299   0.150   0.149 
-#>  6 tRNA-Gly     1 0.108   0.232  -0.125 
-#>  7 tRNA-Gly     2 0.175   0.190  -0.0149
-#>  8 tRNA-Gly     3 0.258   0.170   0.0875
-#>  9 tRNA-Gly     4 0.0759  0.276  -0.200 
-#> 10 tRNA-Gly     5 0.260   0.0746  0.186 
+#>    ref        pos      wt    mut    delta
+#>    <chr>    <int>   <dbl>  <dbl>    <dbl>
+#>  1 tRNA-Ala     1 0.158   0.180  -0.0218 
+#>  2 tRNA-Ala     2 0.0784  0.0870 -0.00860
+#>  3 tRNA-Ala     3 0.144   0.276  -0.132  
+#>  4 tRNA-Ala     4 0.120   0.0640  0.0563 
+#>  5 tRNA-Ala     5 0.202   0.0176  0.184  
+#>  6 tRNA-Gly     1 0.299   0.0447  0.254  
+#>  7 tRNA-Gly     2 0.156   0.254  -0.0983 
+#>  8 tRNA-Gly     3 0.215   0.0724  0.143  
+#>  9 tRNA-Gly     4 0.164   0.250  -0.0863 
+#> 10 tRNA-Gly     5 0.00839 0.141  -0.132  
 ```
