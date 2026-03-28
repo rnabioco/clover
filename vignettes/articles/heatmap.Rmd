@@ -449,6 +449,100 @@ plot_mod_landscape(
 )
 ```
 
+## Heatmaps from modkit data
+
+The heatmap workflow also supports modification data from Oxford Nanopore's
+[modkit](https://nanoporetech.github.io/modkit/) tool. Two input formats are
+supported: per-read calls from `modkit extract` and per-position summaries
+from `modkit pileup`.
+
+### From modkit extract (per-read calls)
+
+`summarize_mod_calls()` reads a `mod_calls.tsv.gz` file (from
+`modkit extract --call-code`) and computes per-position modification
+frequency --- the proportion of reads carrying a non-canonical base call
+at each position.
+
+```{r}
+#| label: modkit-extract
+#| eval: false
+# Summarize per-position modification frequency from each sample
+wt_mods <- summarize_mod_calls("wt_sample.mod_calls.tsv.gz")
+mut_mods <- summarize_mod_calls("mut_sample.mod_calls.tsv.gz")
+
+# Bind with condition labels
+mod_summary <- bind_rows(
+  mutate(wt_mods, condition = "wt"),
+  mutate(mut_mods, condition = "mut")
+)
+
+# Compute delta (reuses compute_bcerror_delta with mod_freq as value)
+mod_delta <- compute_bcerror_delta(
+  mod_summary,
+  delta = wt - mut,
+  value_col = "mod_freq"
+)
+
+# Prepare and plot (same workflow as bcerror data)
+mod_heatmap <- prep_mod_heatmap(
+  mod_delta,
+  value_col = "delta",
+  sprinzl_coords = sprinzl,
+  mods = mods
+)
+
+plot_mod_heatmap(
+  mod_heatmap,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-0.5, 0.5),
+  fill_name = "\u0394 mod frequency"
+)
+```
+
+### From modkit pileup (bedMethyl)
+
+`read_bedmethyl()` reads the 18-column bedMethyl format produced by
+`modkit pileup`. The `percent_mod` column contains the percentage of reads
+with a given modification at each position, which can be compared across
+conditions.
+
+```{r}
+#| label: modkit-pileup
+#| eval: false
+# Read bedMethyl files
+wt_bed <- read_bedmethyl("wt_sample.bed.gz", min_cov = 10)
+mut_bed <- read_bedmethyl("mut_sample.bed.gz", min_cov = 10)
+
+# Bind with condition labels
+bed_summary <- bind_rows(
+  mutate(wt_bed, condition = "wt"),
+  mutate(mut_bed, condition = "mut")
+)
+
+# Compute delta using percent_mod (0-100 scale)
+bed_delta <- compute_bcerror_delta(
+  bed_summary,
+  delta = wt - mut,
+  value_col = "percent_mod"
+)
+
+# Prepare and plot
+bed_heatmap <- prep_mod_heatmap(
+  bed_delta,
+  value_col = "delta",
+  sprinzl_coords = sprinzl
+)
+
+plot_mod_heatmap(
+  bed_heatmap,
+  value_col = "delta",
+  ref_col = "trna_label",
+  color_limits = c(-50, 50),
+  fill_name = "\u0394 % modified"
+)
+```
+
 ## Session info
 
 ```{r}

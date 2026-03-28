@@ -39,6 +39,7 @@ reference:
     - compute_charging_diffs
     - filter_linkages
     - compute_odds_ratios
+    - summarize_mod_calls
     - compute_ror
     - compute_ror_isodecoder
     - perform_pcoa
