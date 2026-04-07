@@ -38,19 +38,30 @@ ORGANISMS = {
     "Escherichia_coli": {
         "fasta": FASTA_DIR / "eschColi_K_12_MG1655-mature-tRNAs.fa",
         "cm": CM_DIR / "TRNAinf-bact.cm",
+        "sec_cm": CM_DIR / "TRNAinf-bact-SeC.cm",
     },
     "Saccharomyces_cerevisiae": {
         "fasta": FASTA_DIR / "sacCer3-mature-tRNAs.fa",
         "cm": CM_DIR / "TRNAinf-euk.cm",
+        "sec_cm": CM_DIR / "TRNAinf-euk-SeC.cm",
     },
     "Homo_sapiens": {
         "fasta": FASTA_DIR / "hg38-mature-tRNAs.fa",
         "cm": CM_DIR / "TRNAinf-euk.cm",
+        "sec_cm": CM_DIR / "TRNAinf-euk-SeC.cm",
     },
     "T4_phage": {
         "fasta": FASTA_DIR / "phageT4-tRNAs.fa",
         "cm": CM_DIR / "TRNAinf-bact.cm",
+        "sec_cm": CM_DIR / "TRNAinf-bact-SeC.cm",
     },
+}
+
+# Map GtRNAdb isotype names to MODOMICS subtype names
+ISOTYPE_TO_MODOMICS = {
+    "fMet": "Ini",
+    "Ile2": "Ile",
+    "SeC": "Sec",
 }
 
 
@@ -64,20 +75,36 @@ def main():
         org_dir = OUTPUT_DIR / org_name
         org_dir.mkdir(parents=True, exist_ok=True)
 
-        # Step 1: Align sequences against tRNAscan-SE CM
+        # Step 1: Split FASTA into standard and SeC sequences
         fasta_path = org_info["fasta"]
         if not fasta_path.exists():
             print(f"  WARNING: FASTA not found: {fasta_path}")
             continue
 
+        std_fasta, sec_fasta = split_sec_fasta(fasta_path)
+
+        # Step 2a: Align standard sequences against tRNAscan-SE CM
         cm_path = org_info["cm"]
-        sto_path = run_cmalign(fasta_path, cm_path)
+        sto_path = run_cmalign(std_fasta, cm_path)
         if sto_path is None:
             print(f"  WARNING: cmalign failed for {org_name}")
             continue
 
-        # Step 2: Parse aligned sequences and structures
         trnas = parse_cmalign_stockholm(sto_path)
+
+        # Step 2b: Align SeC sequences with the SeC-specific CM
+        if sec_fasta is not None:
+            sec_cm = org_info.get("sec_cm")
+            if sec_cm and sec_cm.exists():
+                sec_sto = run_cmalign(sec_fasta, sec_cm)
+                if sec_sto is not None:
+                    sec_trnas = parse_cmalign_stockholm(sec_sto)
+                    trnas.update(sec_trnas)
+                    print(f"  Added {len(sec_trnas)} SeC tRNA(s)")
+                else:
+                    print("  WARNING: cmalign failed for SeC sequences")
+            else:
+                print("  WARNING: SeC CM not found, skipping SeC tRNAs")
 
         if not trnas:
             print(f"  WARNING: No tRNA data extracted for {org_name}")
@@ -97,7 +124,10 @@ def main():
             filtered = {
                 k: v
                 for k, v in trnas.items()
-                if extract_isotype(k) in modomics_isotypes
+                if ISOTYPE_TO_MODOMICS.get(
+                    extract_isotype(k), extract_isotype(k)
+                )
+                in modomics_isotypes
             }
             print(
                 f"  Filtered to {len(filtered)}/{len(trnas)} tRNAs "
@@ -183,6 +213,57 @@ def run_cmalign(fasta_path: Path, cm_path: Path) -> Path | None:
         print("  ERROR: cmalign timed out")
         sto_path.unlink(missing_ok=True)
         return None
+
+
+def split_sec_fasta(fasta_path: Path) -> tuple[Path, Path | None]:
+    """Split a FASTA into standard and selenocysteine tRNA sequences.
+
+    SeC tRNAs need a different covariance model for structural alignment.
+    Returns (standard_fasta_path, sec_fasta_path_or_None).
+    """
+    std_records = []
+    sec_records = []
+
+    with open(fasta_path) as f:
+        header = None
+        seq_lines = []
+        for line in f:
+            line = line.rstrip()
+            if line.startswith(">"):
+                if header is not None:
+                    record = header + "\n" + "\n".join(seq_lines) + "\n"
+                    if "tRNA-SeC-" in header or "tRNA-Sec-" in header:
+                        sec_records.append(record)
+                    else:
+                        std_records.append(record)
+                header = line
+                seq_lines = []
+            else:
+                seq_lines.append(line)
+        if header is not None:
+            record = header + "\n" + "\n".join(seq_lines) + "\n"
+            if "tRNA-SeC-" in header or "tRNA-Sec-" in header:
+                sec_records.append(record)
+            else:
+                std_records.append(record)
+
+    # Write standard sequences to temp file
+    std_fd, std_path = tempfile.mkstemp(suffix=".fa")
+    with open(std_path, "w") as f:
+        f.writelines(std_records)
+    std_path = Path(std_path)
+
+    # Write SeC sequences if any
+    sec_path = None
+    if sec_records:
+        sec_fd, sec_path = tempfile.mkstemp(suffix=".fa")
+        with open(sec_path, "w") as f:
+            f.writelines(sec_records)
+        sec_path = Path(sec_path)
+        print(f"  Split FASTA: {len(std_records)} standard, "
+              f"{len(sec_records)} SeC sequences")
+
+    return std_path, sec_path
 
 
 def parse_cmalign_stockholm(sto_path: Path) -> dict:
