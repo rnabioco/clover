@@ -1,6 +1,7 @@
 # Introduction to clover
 
 ``` r
+
 library(clover)
 library(SummarizedExperiment)
 library(S4Vectors)
@@ -26,6 +27,7 @@ which reads a pipeline configuration file and assembles a
 `SummarizedExperiment`.
 
 ``` r
+
 config_path <- clover_example("ecoli/config.yaml")
 
 sample_info <- data.frame(
@@ -67,6 +69,7 @@ The SE object contains:
   reference, and pipeline config
 
 ``` r
+
 assay(se, "counts")[1:5, ]
 #>                                 wt-15-ctl-01 wt-15-ctl-02 wt-15-ctl-03
 #> host-tRNA-Ala-GGC-1-1                    298          397          113
@@ -98,6 +101,7 @@ We can test for differential tRNA abundance between infected and
 uninfected conditions using the DESeq2 wrappers.
 
 ``` r
+
 counts <- assay(se, "counts")
 coldata <- as.data.frame(colData(se))
 
@@ -112,6 +116,7 @@ res <- tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
 ```
 
 ``` r
+
 plot_volcano(res)
 ```
 
@@ -123,6 +128,7 @@ Volcano plot of differential tRNA abundance (inf vs ctl).
 ### Top changing tRNAs
 
 ``` r
+
 tabulate_deseq(res)
 ```
 
@@ -133,6 +139,7 @@ levels. We can test whether the ratio of charged to uncharged reads
 changes upon infection.
 
 ``` r
+
 charging <- metadata(se)$charging
 charging$condition <- ifelse(grepl("ctl", charging$sample_id), "ctl", "inf")
 
@@ -159,6 +166,7 @@ ratio changes on a single scatter plot. This highlights tRNAs where
 expression and aminoacylation are coordinately or discordantly affected.
 
 ``` r
+
 plot_abundance_charging(res, ratio_diff)
 ```
 
@@ -174,6 +182,7 @@ nanopore basecaller to misidentify bases. Comparing error profiles
 between conditions can reveal modification changes.
 
 ``` r
+
 # Load preprocessed bcerror data comparing wt vs TruB-del (tb) for 10 tRNAs
 bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
 bcerror_charged <- bcerror_rds$bcerror_charged
@@ -181,6 +190,7 @@ bcerror_summary <- bcerror_rds$bcerror_summary
 ```
 
 ``` r
+
 # Plot error profiles for a few tRNAs
 plot_trnas <- c(
   "host-tRNA-Asn-GTT-1-1",
@@ -199,6 +209,7 @@ Base-calling error profiles for selected tRNAs.
 ### Error rate difference heatmap
 
 ``` r
+
 # Compute delta (wt - tb); positive = higher error in wt (modification present)
 bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
 
@@ -244,6 +255,7 @@ package (see
 so no internet connection is needed.
 
 ``` r
+
 mods
 #> # A tibble: 698 × 4
 #>    ref                     pos mod_full                 mod1 
@@ -266,6 +278,7 @@ Positions with known modifications often correspond to elevated error
 rates, since the basecaller misidentifies modified nucleotides.
 
 ``` r
+
 plot_bcerror_profile(bcerror_summary, refs = plot_trnas, mods = mods)
 ```
 
@@ -281,6 +294,7 @@ organisms. You can overlay modification annotations, circle outlines,
 and text color changes onto these structures.
 
 ``` r
+
 # List available organisms and tRNAs
 structure_organisms()
 #> [1] "Escherichia coli"         "Homo sapiens"            
@@ -296,6 +310,7 @@ The simplest call renders the bare cloverleaf with base-pair lines and
 nucleotide letters.
 
 ``` r
+
 svg_path <- plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
 ```
 
@@ -308,6 +323,7 @@ discriminator base with an outline, and change the text color of
 specific positions.
 
 ``` r
+
 # Known modifications for this tRNA
 mods_glu_struct <- mods |>
   filter(ref == "host-tRNA-Glu-TTC-1-1")
@@ -360,6 +376,7 @@ which is properly rendered from the tRNAscan-SE covariance model
 alignment.
 
 ``` r
+
 svg_path <- plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli")
 ```
 
@@ -374,6 +391,7 @@ vermillion arcs indicate co-occurrence (positive log OR). Stroke width
 encodes the magnitude.
 
 ``` r
+
 or_data <- metadata(se)$odds_ratios
 
 # Filter OR data for one tRNA and one sample, clean, and filter for
@@ -406,8 +424,9 @@ article](https://rnabioco.github.io/clover/articles/rewiring.html).
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -429,40 +448,40 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] tidyr_1.3.2                 dplyr_1.2.0                
-#>  [3] SummarizedExperiment_1.40.0 Biobase_2.70.0             
-#>  [5] GenomicRanges_1.62.1        Seqinfo_1.0.0              
-#>  [7] IRanges_2.44.0              S4Vectors_0.48.0           
-#>  [9] BiocGenerics_0.56.0         generics_0.1.4             
-#> [11] MatrixGenerics_1.22.0       matrixStats_1.5.0          
+#>  [1] tidyr_1.3.2                 dplyr_1.2.1                
+#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
+#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
+#>  [7] IRanges_2.46.0              S4Vectors_0.50.0           
+#>  [9] BiocGenerics_0.58.0         generics_0.1.4             
+#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
 #> [13] clover_0.0.0.9000          
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1    farver_2.1.2        Biostrings_2.78.0  
-#>  [4] S7_0.2.1            fastmap_1.2.0       digest_0.6.39      
-#>  [7] lifecycle_1.0.5     pwalign_1.6.0       magrittr_2.0.4     
-#> [10] compiler_4.5.3      rlang_1.1.7         sass_0.4.10        
-#> [13] tools_4.5.3         utf8_1.2.6          yaml_2.3.12        
-#> [16] gt_1.3.0            knitr_1.51          S4Arrays_1.10.1    
+#>  [1] tidyselect_1.2.1    farver_2.1.2        Biostrings_2.80.0  
+#>  [4] S7_0.2.2            fastmap_1.2.0       digest_0.6.39      
+#>  [7] lifecycle_1.0.5     pwalign_1.8.0       magrittr_2.0.5     
+#> [10] compiler_4.6.0      rlang_1.2.0         sass_0.4.10        
+#> [13] tools_4.6.0         utf8_1.2.6          yaml_2.3.12        
+#> [16] gt_1.3.0            knitr_1.51          S4Arrays_1.12.0    
 #> [19] labeling_0.4.3      htmlwidgets_1.6.4   bit_4.6.0          
-#> [22] DelayedArray_0.36.0 xml2_1.5.2          RColorBrewer_1.1-3 
-#> [25] abind_1.4-8         BiocParallel_1.44.0 withr_3.0.2        
-#> [28] purrr_1.2.1         desc_1.4.3          grid_4.5.3         
-#> [31] ggplot2_4.0.2       scales_1.4.0        cli_3.6.5          
+#> [22] DelayedArray_0.38.1 xml2_1.5.2          RColorBrewer_1.1-3 
+#> [25] abind_1.4-8         BiocParallel_1.46.0 withr_3.0.2        
+#> [28] purrr_1.2.2         desc_1.4.3          grid_4.6.0         
+#> [31] ggplot2_4.0.3       scales_1.4.0        cli_3.6.6          
 #> [34] rmarkdown_2.31      crayon_1.5.3        ragg_1.5.2         
 #> [37] tzdb_0.5.0          commonmark_2.0.0    cachem_1.1.0       
-#> [40] stringr_1.6.0       parallel_4.5.3      XVector_0.50.0     
-#> [43] vctrs_0.7.2         Matrix_1.7-4        jsonlite_2.0.0     
-#> [46] litedown_0.9        hms_1.1.4           bit64_4.6.0-1      
+#> [40] stringr_1.6.0       parallel_4.6.0      XVector_0.52.0     
+#> [43] vctrs_0.7.3         Matrix_1.7-5        jsonlite_2.0.0     
+#> [46] litedown_0.9        hms_1.1.4           bit64_4.8.0        
 #> [49] ggrepel_0.9.8       systemfonts_1.3.2   locfit_1.5-9.12    
-#> [52] jquerylib_0.1.4     glue_1.8.0          reactR_0.6.1       
+#> [52] jquerylib_0.1.4     glue_1.8.1          reactR_0.6.1       
 #> [55] pkgdown_2.2.0       codetools_0.2-20    ggtext_0.1.2       
 #> [58] cowplot_1.2.0       stringi_1.8.7       gtable_0.3.6       
 #> [61] tibble_3.3.1        pillar_1.11.1       htmltools_0.5.9    
 #> [64] reactable_0.4.5     R6_2.6.1            textshaping_1.0.5  
-#> [67] vroom_1.7.0         evaluate_1.0.5      lattice_0.22-9     
+#> [67] vroom_1.7.1         evaluate_1.0.5      lattice_0.22-9     
 #> [70] markdown_2.0        readr_2.2.0         gridtext_0.1.6     
-#> [73] bslib_0.10.0        Rcpp_1.1.1          SparseArray_1.10.9 
-#> [76] DESeq2_1.50.2       xfun_0.57           fs_2.0.1           
+#> [73] bslib_0.10.0        Rcpp_1.1.1-1.1      SparseArray_1.12.2 
+#> [76] DESeq2_1.52.0       xfun_0.57           fs_2.1.0           
 #> [79] forcats_1.0.1       pkgconfig_2.0.3
 ```

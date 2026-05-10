@@ -97,6 +97,7 @@ pkgdown::build_site()
 ### Function Patterns
 
 ``` r
+
 # Exported function with roxygen2
 #' Brief description
 #'
@@ -126,6 +127,7 @@ function_name <- function(arg) {
 Tests live in `tests/testthat/`. Run with:
 
 ``` r
+
 devtools::test()
 testthat::test_file("tests/testthat/test-specific.R")
 ```

@@ -72,6 +72,13 @@
   [`htmltools::HTML`](https://rstudio.github.io/htmltools/reference/HTML.html)
   object, simplifying embedding in R Markdown and Quarto documents.
 
+- [`tertiary_contacts()`](https://rnabioco.github.io/clover/reference/tertiary_contacts.md)
+  returns the canonical tRNA cloverleaf tertiary contacts (four base
+  triples and five tertiary base pairs) for a given organism, using
+  Sprinzl numbering and matching the schema of
+  [`identity_elements()`](https://rnabioco.github.io/clover/reference/identity_elements.md)
+  for downstream comparison against in-vitro transcripts.
+
 - [`filter_linkages()`](https://rnabioco.github.io/clover/reference/filter_linkages.md)
   filters odds ratio data by p-value, observation count, and log odds
   ratio magnitude, returning a tibble ready for the `linkages` parameter

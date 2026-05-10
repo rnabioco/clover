@@ -17,6 +17,7 @@ sequencing data.
 ### roxygen2 Documentation
 
 ``` r
+
 #' Brief description
 #'
 #' @param arg Description
@@ -31,6 +32,7 @@ sequencing data.
 Use tidyverse verbs:
 
 ``` r
+
 data |>
   dplyr::filter(condition) |>
   dplyr::mutate(new_col = transformation) |>
@@ -42,6 +44,7 @@ data |>
 Use ggplot2:
 
 ``` r
+
 ggplot(data, aes(x = x, y = y)) +
   geom_point() +
   theme_minimal()
@@ -58,6 +61,7 @@ ggplot(data, aes(x = x, y = y)) +
 Use testthat edition 3:
 
 ``` r
+
 test_that("description", {
   expect_equal(actual, expected)
 })

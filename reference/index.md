@@ -152,6 +152,8 @@
   : Plot identity elements for multiple tRNAs in a grid
 - [`plot_identity_structure()`](https://rnabioco.github.io/clover/reference/plot_identity_structure.md)
   : Plot tRNA structure with identity element overlays
+- [`tertiary_contacts()`](https://rnabioco.github.io/clover/reference/tertiary_contacts.md)
+  : Retrieve canonical tRNA tertiary contacts
 
 ## Statistics
 

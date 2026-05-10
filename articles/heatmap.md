@@ -1,6 +1,7 @@
 # Plotting modification heatmaps
 
 ``` r
+
 library(clover)
 library(dplyr)
 ```
@@ -27,6 +28,7 @@ The bundled RDS contains pre-summarized bcerror data comparing wild-type
 (`wt`) and TruB-deletion (`tb`) *E. coli* across 10 tRNAs.
 
 ``` r
+
 bcerror_rds <- readRDS(clover_example("ecoli/bcerror_summary.rds"))
 bcerror_summary <- bcerror_rds$bcerror_summary
 bcerror_charged <- bcerror_rds$bcerror_charged
@@ -36,6 +38,7 @@ Compute the per-position delta (wt minus TruB-del). Positive values mean
 higher error in wild-type, indicating a modification lost in the mutant.
 
 ``` r
+
 bcerror_delta <- compute_bcerror_delta(bcerror_summary, delta = wt - tb)
 bcerror_delta
 #> # A tibble: 796 × 5
@@ -61,6 +64,7 @@ joins Sprinzl coordinates, optionally annotates known modifications from
 MODOMICS, and shortens tRNA names for display.
 
 ``` r
+
 sprinzl <- read_sprinzl_coords(
   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
 )
@@ -101,6 +105,7 @@ The simplest call passes the prepared data with appropriate column
 mappings.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -119,6 +124,7 @@ Control the diverging color scale with `color_limits`, `color_low`,
 `color_high`, and `na_value`.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -146,6 +152,7 @@ on the Sprinzl-position value matrix. Set `cluster = FALSE` to keep
 alphabetical order.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -160,6 +167,7 @@ plot_mod_heatmap(
 Clustered rows (default).
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -181,6 +189,7 @@ Setting `cluster_threshold` restricts clustering to positions where at
 least one tRNA exceeds the threshold in absolute value.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -202,11 +211,13 @@ When tRNAs belong to natural groups (e.g., amino acid families), use
 between them. First, add an amino acid column to the data.
 
 ``` r
+
 heatmap_grouped <- heatmap_data |>
   mutate(amino_acid = sub("-.*", "", trna_label))
 ```
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_grouped,
   value_col = "delta",
@@ -224,6 +235,7 @@ Clustering within amino acid groups, separated by dividers.
 Control the divider line thickness with `divider_linewidth`.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_grouped,
   value_col = "delta",
@@ -247,6 +259,7 @@ is called with `mods`, a logical `has_mod` column marks known
 modification sites. Use `highlight_col` to overlay dots on those cells.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -265,6 +278,7 @@ Adjust dot appearance with `highlight_size` and `highlight_offset` (x/y
 displacement from tile center).
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -288,6 +302,7 @@ Overlay text on tiles with `label_col`. Labels are only shown where
 black and white for contrast.
 
 ``` r
+
 # Add the reference base at each position for labeling
 ref_seqs <- Biostrings::readDNAStringSet(trna_fasta)
 ref_bases <- tibble::tibble(
@@ -301,6 +316,7 @@ heatmap_labeled <- heatmap_data |>
 ```
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_labeled,
   value_col = "delta",
@@ -323,6 +339,7 @@ Customize the fill legend with `fill_name` and `fill_breaks`, and add
 explanatory text with `caption`.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -346,6 +363,7 @@ tiles. Set `square = FALSE` to let ggplot2 fill the available space,
 which is useful for wide heatmaps with many positions.
 
 ``` r
+
 plot_mod_heatmap(
   heatmap_data,
   value_col = "delta",
@@ -367,6 +385,7 @@ creates line plots of per-position error rates, faceted by tRNA and
 colored by condition.
 
 ``` r
+
 plot_trnas <- c(
   "host-tRNA-Asn-GTT-1-1",
   "host-tRNA-Glu-TTC-1-1",
@@ -387,6 +406,7 @@ Pass a `mods` tibble to overlay vertical dashed lines at known
 modification positions.
 
 ``` r
+
 plot_bcerror_profile(bcerror_summary, refs = plot_trnas, mods = mods)
 ```
 
@@ -401,6 +421,7 @@ Override condition colors with a named vector, and change the facet
 layout with `ncol`.
 
 ``` r
+
 plot_bcerror_profile(
   bcerror_summary,
   refs = plot_trnas,
@@ -427,6 +448,7 @@ First, prepare single-tRNA data with Sprinzl coordinates and region
 annotations.
 
 ``` r
+
 # Pick one tRNA and reshape for landscape plotting
 landscape_data <- bcerror_summary |>
   filter(ref == "host-tRNA-Glu-TTC-1-1", condition == "wt")
@@ -452,6 +474,7 @@ landscape_data <- landscape_data |>
 ```
 
 ``` r
+
 plot_mod_landscape(
   landscape_data,
   metrics = c("mean_error", "mean_mis")
@@ -469,6 +492,7 @@ Pass `region_col` to add background shading for structural regions
 (acceptor-stem, D-loop, anticodon-stem, etc.).
 
 ``` r
+
 plot_mod_landscape(
   landscape_data,
   metrics = c("mean_error", "mean_mis"),
@@ -488,6 +512,7 @@ Use `mod_col` to highlight known modification positions on that axis
 (shown in bold orange when ggtext is installed).
 
 ``` r
+
 plot_mod_landscape(
   landscape_data,
   metrics = c("mean_error", "mean_mis"),
@@ -519,6 +544,7 @@ computes per-position modification frequency — the proportion of reads
 carrying a non-canonical base call at each position.
 
 ``` r
+
 # Summarize per-position modification frequency from each sample
 wt_mods <- summarize_mod_calls("wt_sample.mod_calls.tsv.gz")
 mut_mods <- summarize_mod_calls("mut_sample.mod_calls.tsv.gz")
@@ -561,6 +587,7 @@ reads the 18-column bedMethyl format produced by `modkit pileup`. The
 modification at each position, which can be compared across conditions.
 
 ``` r
+
 # Read bedMethyl files
 wt_bed <- read_bedmethyl("wt_sample.bed.gz", min_cov = 10)
 mut_bed <- read_bedmethyl("mut_sample.bed.gz", min_cov = 10)
@@ -597,8 +624,9 @@ plot_mod_heatmap(
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -619,49 +647,49 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] dplyr_1.2.0       clover_0.0.0.9000
+#> [1] dplyr_1.2.1       clover_0.0.0.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] SummarizedExperiment_1.40.0 gtable_0.3.6               
+#>  [1] SummarizedExperiment_1.42.0 gtable_0.3.6               
 #>  [3] xfun_0.57                   bslib_0.10.0               
-#>  [5] ggplot2_4.0.2               htmlwidgets_1.6.4          
-#>  [7] Biobase_2.70.0              lattice_0.22-9             
-#>  [9] tzdb_0.5.0                  vctrs_0.7.2                
-#> [11] tools_4.5.3                 generics_0.1.4             
-#> [13] stats4_4.5.3                parallel_4.5.3             
+#>  [5] ggplot2_4.0.3               htmlwidgets_1.6.4          
+#>  [7] Biobase_2.72.0              lattice_0.22-9             
+#>  [9] tzdb_0.5.0                  vctrs_0.7.3                
+#> [11] tools_4.6.0                 generics_0.1.4             
+#> [13] stats4_4.6.0                parallel_4.6.0             
 #> [15] tibble_3.3.1                pkgconfig_2.0.3            
-#> [17] Matrix_1.7-4                RColorBrewer_1.1-3         
-#> [19] S7_0.2.1                    desc_1.4.3                 
-#> [21] S4Vectors_0.48.0            lifecycle_1.0.5            
-#> [23] stringr_1.6.0               compiler_4.5.3             
-#> [25] farver_2.1.2                Biostrings_2.78.0          
-#> [27] textshaping_1.0.5           Seqinfo_1.0.0              
+#> [17] Matrix_1.7-5                RColorBrewer_1.1-3         
+#> [19] S7_0.2.2                    desc_1.4.3                 
+#> [21] S4Vectors_0.50.0            lifecycle_1.0.5            
+#> [23] stringr_1.6.0               compiler_4.6.0             
+#> [25] farver_2.1.2                Biostrings_2.80.0          
+#> [27] textshaping_1.0.5           Seqinfo_1.2.0              
 #> [29] litedown_0.9                htmltools_0.5.9            
 #> [31] sass_0.4.10                 yaml_2.3.12                
 #> [33] pillar_1.11.1               pkgdown_2.2.0              
 #> [35] crayon_1.5.3                jquerylib_0.1.4            
-#> [37] tidyr_1.3.2                 DelayedArray_0.36.0        
+#> [37] tidyr_1.3.2                 DelayedArray_0.38.1        
 #> [39] cachem_1.1.0                abind_1.4-8                
 #> [41] commonmark_2.0.0            tidyselect_1.2.1           
 #> [43] digest_0.6.39               stringi_1.8.7              
-#> [45] purrr_1.2.1                 labeling_0.4.3             
+#> [45] purrr_1.2.2                 labeling_0.4.3             
 #> [47] cowplot_1.2.0               fastmap_1.2.0              
-#> [49] grid_4.5.3                  cli_3.6.5                  
-#> [51] SparseArray_1.10.9          magrittr_2.0.4             
-#> [53] patchwork_1.3.2             S4Arrays_1.10.1            
+#> [49] grid_4.6.0                  cli_3.6.6                  
+#> [51] SparseArray_1.12.2          magrittr_2.0.5             
+#> [53] patchwork_1.3.2             S4Arrays_1.12.0            
 #> [55] utf8_1.2.6                  readr_2.2.0                
 #> [57] withr_3.0.2                 scales_1.4.0               
-#> [59] bit64_4.6.0-1               rmarkdown_2.31             
-#> [61] pwalign_1.6.0               XVector_0.50.0             
+#> [59] bit64_4.8.0                 rmarkdown_2.31             
+#> [61] pwalign_1.8.0               XVector_0.52.0             
 #> [63] matrixStats_1.5.0           ggtext_0.1.2               
 #> [65] bit_4.6.0                   ragg_1.5.2                 
 #> [67] hms_1.1.4                   evaluate_1.0.5             
-#> [69] knitr_1.51                  GenomicRanges_1.62.1       
-#> [71] IRanges_2.44.0              markdown_2.0               
-#> [73] rlang_1.1.7                 Rcpp_1.1.1                 
-#> [75] gridtext_0.1.6              glue_1.8.0                 
-#> [77] xml2_1.5.2                  BiocGenerics_0.56.0        
-#> [79] vroom_1.7.0                 jsonlite_2.0.0             
-#> [81] R6_2.6.1                    MatrixGenerics_1.22.0      
-#> [83] systemfonts_1.3.2           fs_2.0.1
+#> [69] knitr_1.51                  GenomicRanges_1.64.0       
+#> [71] IRanges_2.46.0              markdown_2.0               
+#> [73] rlang_1.2.0                 Rcpp_1.1.1-1.1             
+#> [75] gridtext_0.1.6              glue_1.8.1                 
+#> [77] xml2_1.5.2                  BiocGenerics_0.58.0        
+#> [79] vroom_1.7.1                 jsonlite_2.0.0             
+#> [81] R6_2.6.1                    MatrixGenerics_1.24.0      
+#> [83] systemfonts_1.3.2           fs_2.1.0
 ```

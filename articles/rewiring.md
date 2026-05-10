@@ -1,6 +1,7 @@
 # Modification rewiring analysis
 
 ``` r
+
 library(clover)
 library(SummarizedExperiment)
 library(S4Vectors)
@@ -21,6 +22,7 @@ phage infection dataset as the main vignette.
 ## Load data
 
 ``` r
+
 config_path <- clover_example("ecoli/config.yaml")
 
 sample_info <- data.frame(
@@ -53,6 +55,7 @@ contingency tables.
 caps these at a reasonable threshold.
 
 ``` r
+
 or_clean <- clean_odds_ratios(or_data)
 glimpse(or_clean)
 #> Rows: 5,432
@@ -83,6 +86,7 @@ averages across gene copies (e.g., `tRNA-Glu-TTC-1-1` and
 `tRNA-Glu-TTC-2-1` become `tRNA-Glu-TTC`).
 
 ``` r
+
 or_ctl <- or_clean |>
   filter(condition == "ctl") |>
   aggregate_or_isodecoder()
@@ -116,6 +120,7 @@ computes the relative odds ratio (ROR) between two conditions with
 z-score significance testing.
 
 ``` r
+
 ror <- compute_ror_isodecoder(or_inf, or_ctl)
 ror
 #> # A tibble: 944 × 15
@@ -142,6 +147,7 @@ Build a matrix of ROR values (isodecoders × position pairs) and compute
 per-isodecoder rewiring scores.
 
 ``` r
+
 mat <- prepare_rewiring_matrix(ror)
 scores <- calculate_rewiring_scores(mat)
 scores |> arrange(desc(euclidean_magnitude))
@@ -157,6 +163,7 @@ scores |> arrange(desc(euclidean_magnitude))
 Run PCoA for dimensionality reduction and visualize the result.
 
 ``` r
+
 pcoa <- perform_pcoa(mat)
 plot_pcoa_rewiring(pcoa, scores)
 ```
@@ -173,6 +180,7 @@ Build a chord diagram from the ROR data to visualize modification
 rewiring between positions.
 
 ``` r
+
 ror_agg <- ror |>
   dplyr::group_by(pos1, pos2) |>
   dplyr::summarise(log_ror = mean(ror), .groups = "drop")
@@ -189,8 +197,9 @@ conditions.
 ## Session info
 
 ``` r
+
 sessionInfo()
-#> R version 4.5.3 (2026-03-11)
+#> R version 4.6.0 (2026-04-24)
 #> Platform: x86_64-pc-linux-gnu
 #> Running under: Ubuntu 24.04.4 LTS
 #> 
@@ -212,36 +221,36 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] dplyr_1.2.0                 SummarizedExperiment_1.40.0
-#>  [3] Biobase_2.70.0              GenomicRanges_1.62.1       
-#>  [5] Seqinfo_1.0.0               IRanges_2.44.0             
-#>  [7] S4Vectors_0.48.0            BiocGenerics_0.56.0        
-#>  [9] generics_0.1.4              MatrixGenerics_1.22.0      
+#>  [1] dplyr_1.2.1                 SummarizedExperiment_1.42.0
+#>  [3] Biobase_2.72.0              GenomicRanges_1.64.0       
+#>  [5] Seqinfo_1.2.0               IRanges_2.46.0             
+#>  [7] S4Vectors_0.50.0            BiocGenerics_0.58.0        
+#>  [9] generics_0.1.4              MatrixGenerics_1.24.0      
 #> [11] matrixStats_1.5.0           clover_0.0.0.9000          
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] shape_1.4.6.1       circlize_0.4.17     gtable_0.3.6       
-#>  [4] xfun_0.57           bslib_0.10.0        ggplot2_4.0.2      
-#>  [7] GlobalOptions_0.1.3 htmlwidgets_1.6.4   ggrepel_0.9.8      
-#> [10] lattice_0.22-9      tzdb_0.5.0          vctrs_0.7.2        
-#> [13] tools_4.5.3         parallel_4.5.3      tibble_3.3.1       
-#> [16] pkgconfig_2.0.3     Matrix_1.7-4        RColorBrewer_1.1-3 
-#> [19] S7_0.2.1            desc_1.4.3          lifecycle_1.0.5    
-#> [22] compiler_4.5.3      farver_2.1.2        stringr_1.6.0      
-#> [25] textshaping_1.0.5   Biostrings_2.78.0   htmltools_0.5.9    
+#>  [1] shape_1.4.6.1       circlize_0.4.18     gtable_0.3.6       
+#>  [4] xfun_0.57           bslib_0.10.0        ggplot2_4.0.3      
+#>  [7] GlobalOptions_0.1.4 htmlwidgets_1.6.4   ggrepel_0.9.8      
+#> [10] lattice_0.22-9      tzdb_0.5.0          vctrs_0.7.3        
+#> [13] tools_4.6.0         parallel_4.6.0      tibble_3.3.1       
+#> [16] pkgconfig_2.0.3     Matrix_1.7-5        RColorBrewer_1.1-3 
+#> [19] S7_0.2.2            desc_1.4.3          lifecycle_1.0.5    
+#> [22] compiler_4.6.0      farver_2.1.2        stringr_1.6.0      
+#> [25] textshaping_1.0.5   Biostrings_2.80.0   htmltools_0.5.9    
 #> [28] sass_0.4.10         yaml_2.3.12         pillar_1.11.1      
 #> [31] pkgdown_2.2.0       crayon_1.5.3        jquerylib_0.1.4    
-#> [34] tidyr_1.3.2         DelayedArray_0.36.0 cachem_1.1.0       
+#> [34] tidyr_1.3.2         DelayedArray_0.38.1 cachem_1.1.0       
 #> [37] abind_1.4-8         tidyselect_1.2.1    digest_0.6.39      
-#> [40] stringi_1.8.7       purrr_1.2.1         labeling_0.4.3     
-#> [43] cowplot_1.2.0       fastmap_1.2.0       grid_4.5.3         
-#> [46] colorspace_2.1-2    cli_3.6.5           SparseArray_1.10.9 
-#> [49] magrittr_2.0.4      S4Arrays_1.10.1     utf8_1.2.6         
+#> [40] stringi_1.8.7       purrr_1.2.2         labeling_0.4.3     
+#> [43] cowplot_1.2.0       fastmap_1.2.0       grid_4.6.0         
+#> [46] colorspace_2.1-2    cli_3.6.6           SparseArray_1.12.2 
+#> [49] magrittr_2.0.5      S4Arrays_1.12.0     utf8_1.2.6         
 #> [52] readr_2.2.0         withr_3.0.2         scales_1.4.0       
-#> [55] bit64_4.6.0-1       rmarkdown_2.31      XVector_0.50.0     
+#> [55] bit64_4.8.0         rmarkdown_2.31      XVector_0.52.0     
 #> [58] bit_4.6.0           ragg_1.5.2          hms_1.1.4          
 #> [61] evaluate_1.0.5      knitr_1.51          viridisLite_0.4.3  
-#> [64] rlang_1.1.7         Rcpp_1.1.1          glue_1.8.0         
-#> [67] vroom_1.7.0         jsonlite_2.0.0      R6_2.6.1           
-#> [70] systemfonts_1.3.2   fs_2.0.1
+#> [64] rlang_1.2.0         Rcpp_1.1.1-1.1      glue_1.8.1         
+#> [67] vroom_1.7.1         jsonlite_2.0.0      R6_2.6.1           
+#> [70] systemfonts_1.3.2   fs_2.1.0
 ```
