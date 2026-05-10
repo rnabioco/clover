@@ -145,6 +145,76 @@ identity_organisms <- function() {
   org_map$organism
 }
 
+#' Retrieve canonical tRNA tertiary contacts
+#'
+#' Returns the canonical cloverleaf tertiary interactions that
+#' stabilize the L-shape and elbow of the tRNA fold: four base
+#' triples and five tertiary base pairs. Numbering follows the
+#' Sprinzl convention. Modified bases (m7G46, Psi55, m1A58) are
+#' encoded as their unmodified equivalents (G, U, A) so callers can
+#' compare against in-vitro transcripts directly.
+#'
+#' Sources: Westhof & Auffinger (2012) and Giege & Eriani (2023).
+#' These tertiary contacts are not aaRS identity elements per se but
+#' constrain the tRNA fold and may indirectly affect aminoacylation
+#' specificity. Use [identity_elements()] for aaRS recognition
+#' determinants.
+#'
+#' @param organism Character string specifying the organism name
+#'   (e.g., `"Escherichia coli"`, `"Saccharomyces cerevisiae"`).
+#'   Use [identity_organisms()] to list supported organisms.
+#'
+#' @return A tibble with one row per contact and columns:
+#'   - `contact_id`: short label (e.g., `"U8-A14-A21"`, `"G15-C48"`)
+#'   - `contact_type`: `"triple"` or `"pair"`
+#'   - `domain`: `"Bacteria"` or `"Eukarya"`
+#'   - `pos1`, `pos2`, `pos3`: Sprinzl positions (`pos3 = NA` for pairs)
+#'   - `nuc1`, `nuc2`, `nuc3`: canonical bases (`nuc3 = NA` for pairs)
+#'   - `interaction`: geometry label (e.g., `"reverse-Hoogsteen"`,
+#'     `"trans-WC"`, `"Levitt"`)
+#'   - `universal`: `TRUE` for contacts conserved across all domains
+#'   - `description`: human-readable description
+#'
+#' @export
+#'
+#' @references
+#' Westhof E, Auffinger P (2012). "tRNA structure." *Encyclopedia of
+#' Life Sciences*. John Wiley & Sons.
+#'
+#' Giege R, Eriani G (2023). "The tRNA identity landscape for
+#' aminoacylation and beyond." *Nucleic Acids Research*, 51(4),
+#' 1528--1570. \doi{10.1093/nar/gkad007}
+#'
+#' @examples
+#' tertiary_contacts("Escherichia coli")
+#'
+#' # Just the four classical triples
+#' tc <- tertiary_contacts("Escherichia coli")
+#' tc[tc$contact_type == "triple", ]
+tertiary_contacts <- function(organism) {
+  org_map <- load_identity_organism_map()
+  domain <- org_map$domain[org_map$organism == organism]
+
+  if (length(domain) == 0) {
+    supported <- paste0(
+      "'",
+      org_map$organism,
+      "'",
+      collapse = ", "
+    )
+    cli::cli_abort(
+      c(
+        "Organism {.val {organism}} is not supported.",
+        "i" = "Supported organisms: {supported}.",
+        "i" = "Use {.fn identity_organisms} to list them."
+      )
+    )
+  }
+
+  contacts <- load_cached_tertiary()
+  contacts[contacts$domain == domain, ]
+}
+
 #' Map identity elements to tRNA sequence positions
 #'
 #' Converts Sprinzl positions in identity element data to 1-based
@@ -528,6 +598,16 @@ load_cached_determinants <- function() {
     "extdata",
     "identity",
     "determinants.rds",
+    package = "clover"
+  )
+  readRDS(path)
+}
+
+load_cached_tertiary <- function() {
+  path <- system.file(
+    "extdata",
+    "identity",
+    "tertiary.rds",
     package = "clover"
   )
   readRDS(path)

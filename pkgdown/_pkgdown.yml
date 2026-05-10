@@ -89,6 +89,7 @@ reference:
     - map_identity_to_trna
     - plot_identity_panel
     - plot_identity_structure
+    - tertiary_contacts
 
   - title: Statistics
     contents:
