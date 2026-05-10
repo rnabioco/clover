@@ -49,13 +49,16 @@ S = 7.56  # backbone spacing along a strand
 P = 7.56  # vertical pair spacing between rows of a stem
 
 # Combined acceptor + T helix at top
-TOP_Y = 35.0          # 3' strand row (acceptor 3' + T-stem 3'); CCA emerges UP from here
+TOP_Y = 40.0          # 3' strand row (acceptor 3' + T-stem 3'); CCA emerges UP from here
 BOT_Y = TOP_Y + P     # 5' strand row (acceptor 5' + T-stem 5'); side arms emerge DOWN from here
-ACC_X1 = 195.0        # x of pos 1 (5' free end) and pos 72 (paired with pos 1)
-GAP = S * 1.4         # break between T-stem and acceptor on the bottom strand
+ACC_X1 = 220.0        # x of pos 1 (5' free end) and pos 72 (paired with pos 1)
+GAP = S * 1.6         # break between T-stem and acceptor on the bottom strand
 
-# T-loop (54..60) curls at far LEFT of the combined helix
-T_LOOP_RADIUS = 13.0
+# T-loop (54..60) curls at far LEFT of the combined helix. With N residues
+# placed on a 180° arc at t = (k+0.5)/N, neighbors are 2R*sin(π/(2N)) apart.
+# Solve for R so chord = S → R = S / (2 sin(π/(2N))). Matches the cloverleaf
+# spacing so mod circles (radius 4.3) fit cleanly.
+T_LOOP_RADIUS = S / (2 * math.sin(math.pi / 14))  # 7 residues
 
 # Both D-arm and AC-arm hang DOWN as parallel vertical helices below the top
 # stack — D-arm to the LEFT (smaller, 4 bp + D-loop at the bottom-left),
@@ -63,15 +66,19 @@ T_LOOP_RADIUS = 13.0
 # the horizontal acceptor+T helix at the top this gives the canonical L-shape
 # elbow projection seen in textbook tRNA depictions (e.g., Matsumoto 2026
 # JBC fig 2A).
-D_X_LEFT = 110.0       # left column of D-stem (pos 10-13)
+#
+# Spacing is generous enough that the radius-4.3 modification circles and
+# radius ~5 outline circles used by plot_tRNA_structure() do not collide
+# with neighboring nucleotide letters.
+D_X_LEFT = 130.0       # left column of D-stem (pos 10-13)
 D_X_RIGHT = D_X_LEFT + P
-D_TOP_Y = BOT_Y + 22.0
-D_LOOP_RADIUS = 11.5
+D_TOP_Y = BOT_Y + 50.0
+D_LOOP_RADIUS = S / (2 * math.sin(math.pi / 16))  # 8 residues on 180° arc
 
-AC_X_LEFT = 138.0
+AC_X_LEFT = 158.0
 AC_X_RIGHT = AC_X_LEFT + P
 AC_TOP_Y = D_TOP_Y     # AC-arm aligned vertically with D-arm
-AC_LOOP_RADIUS = 13.0
+AC_LOOP_RADIUS = S / (2 * math.sin(math.pi / 14))  # 7 residues on 180° arc
 
 # --- variable-arm detection --------------------------------------------
 
@@ -317,15 +324,14 @@ def elbow_coord_table() -> dict[str, tuple[float, float]]:
     # bulges LEFT and DOWN from the bottom of the stem, matching the
     # canonical L-shape projection.
     # Hinges 8, 9 are the diagonal connector from pos 7 (top stack, bot row,
-    # at acc_left_x) DOWN-LEFT to pos 10 (top-left of D-arm).
-    coords["8"] = (
-        acc_left_x - (acc_left_x - D_X_LEFT) * 0.35,
-        BOT_Y + (D_TOP_Y - BOT_Y) * 0.4,
-    )
-    coords["9"] = (
-        acc_left_x - (acc_left_x - D_X_LEFT) * 0.7,
-        BOT_Y + (D_TOP_Y - BOT_Y) * 0.8,
-    )
+    # at acc_left_x) DOWN-LEFT to pos 10 (top-left of D-arm). Place evenly
+    # along the line so consecutive backbone neighbors are similarly spaced.
+    for k, n in enumerate(("8", "9"), start=1):
+        t = k / 3.0  # 1/3 and 2/3 along the line from pos 7 to pos 10
+        coords[n] = (
+            acc_left_x + (D_X_LEFT - acc_left_x) * t,
+            BOT_Y + (D_TOP_Y - BOT_Y) * t,
+        )
     # D-stem 5' (10..13) on LEFT column, top-to-bottom
     for n in range(10, 14):
         coords[str(n)] = (D_X_LEFT, D_TOP_Y + (n - 10) * S)
@@ -403,20 +409,45 @@ def elbow_coord_table() -> dict[str, tuple[float, float]]:
         coords[str(n)] = (x, y)
 
     # ----- variable region (44..48): smooth curve from AC-stem 3' top to pos 49 -----
-    # AC_X_LEFT was chosen so AC-arm sits roughly under the elbow region of the
-    # top stack; the variable region is then a bulge from pos 43 (top-right of
-    # AC-stem) up to pos 49 (T-stem 5' end on bottom row of top stack). The
-    # bezier control point is pushed well to the RIGHT so the path bows away
-    # from the AC-stem 3' column rather than overlapping it.
-    var_start = (AC_X_RIGHT, AC_TOP_Y - 0.7 * S)
-    var_end = (t_right_x - 0.3 * S, BOT_Y + 0.6 * S)
-    ctrl_x = max(var_start[0], var_end[0]) + 22
+    # The bulge runs from pos 43 (top-right of AC-stem) up to pos 49 (T-stem
+    # 5' end on bottom row of top stack). Quadratic bezier with control
+    # point bowed RIGHT so the path doesn't crowd the AC-stem 3' column.
+    # Positions are placed by ARC-LENGTH along the curve so consecutive
+    # neighbors are evenly spaced (a t-uniform sampling clusters at the apex).
+    var_start = (AC_X_RIGHT, AC_TOP_Y - 0.6 * S)
+    var_end = (t_right_x + 0.3 * S, BOT_Y + 0.6 * S)
+    ctrl_x = max(var_start[0], var_end[0]) + 18
     ctrl_y = (var_start[1] + var_end[1]) / 2
-    for k, n in enumerate(range(44, 49)):
-        t = (k + 0.5) / 5
+
+    def bez(t: float) -> tuple[float, float]:
         x = (1 - t) ** 2 * var_start[0] + 2 * (1 - t) * t * ctrl_x + t ** 2 * var_end[0]
         y = (1 - t) ** 2 * var_start[1] + 2 * (1 - t) * t * ctrl_y + t ** 2 * var_end[1]
-        coords[str(n)] = (x, y)
+        return x, y
+
+    # Sample the curve densely to build an arc-length lookup
+    n_samples = 200
+    samples = [bez(i / n_samples) for i in range(n_samples + 1)]
+    cum_lengths = [0.0]
+    for a, b in zip(samples, samples[1:]):
+        cum_lengths.append(cum_lengths[-1] + math.hypot(b[0] - a[0], b[1] - a[1]))
+    total_length = cum_lengths[-1]
+
+    def t_for_arc(target_arc: float) -> float:
+        for i, L in enumerate(cum_lengths):
+            if L >= target_arc:
+                # linear interpolate t around index i
+                if i == 0:
+                    return 0.0
+                prev = cum_lengths[i - 1]
+                frac = (target_arc - prev) / (L - prev) if L > prev else 0.0
+                return ((i - 1) + frac) / n_samples
+        return 1.0
+
+    # 5 residues, evenly spaced along the curve (1/6, 2/6, ..., 5/6 of total)
+    for k, n in enumerate(range(44, 49), start=1):
+        target = total_length * k / 6
+        t = t_for_arc(target)
+        coords[str(n)] = bez(t)
 
     return coords
 
