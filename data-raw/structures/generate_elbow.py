@@ -57,18 +57,20 @@ GAP = S * 1.4         # break between T-stem and acceptor on the bottom strand
 # T-loop (54..60) curls at far LEFT of the combined helix
 T_LOOP_RADIUS = 13.0
 
-# D-arm: horizontal, BELOW the top stack, extending LEFT from below pos 7.
-# Its junction-side end (pos 10/25) sits directly under pos 7 (acceptor 5' end).
-D_TOP_Y = BOT_Y + 18.0   # top row of D-stem
-D_BOT_Y = D_TOP_Y + P    # bottom row of D-stem
-D_LOOP_RADIUS = 12.0
+# Both D-arm and AC-arm hang DOWN as parallel vertical helices below the top
+# stack — D-arm to the LEFT (smaller, 4 bp + D-loop at the bottom-left),
+# AC-arm to the RIGHT (larger, 5 bp + AC-loop at the bottom). Together with
+# the horizontal acceptor+T helix at the top this gives the canonical L-shape
+# elbow projection seen in textbook tRNA depictions (e.g., Matsumoto 2026
+# JBC fig 2A).
+D_X_LEFT = 110.0       # left column of D-stem (pos 10-13)
+D_X_RIGHT = D_X_LEFT + P
+D_TOP_Y = BOT_Y + 22.0
+D_LOOP_RADIUS = 11.5
 
-# AC-arm: vertical, BELOW the elbow, going DOWN. AC-stem column placed under
-# the elbow region (between T-stem and acceptor) so the variable region's
-# path from pos 43 up to pos 49 is short and roughly vertical.
-AC_X_LEFT = 132.0
-AC_X_RIGHT = AC_X_LEFT + P     # column for AC-stem 3' (39..43)
-AC_TOP_Y = D_BOT_Y + 22.0      # y of pos 27 (top of AC-stem 5')
+AC_X_LEFT = 138.0
+AC_X_RIGHT = AC_X_LEFT + P
+AC_TOP_Y = D_TOP_Y     # AC-arm aligned vertically with D-arm
 AC_LOOP_RADIUS = 13.0
 
 # --- variable-arm detection --------------------------------------------
@@ -307,73 +309,79 @@ def elbow_coord_table() -> dict[str, tuple[float, float]]:
         # 73 just above 72 on the same column, 74-76 stacking up
         coords[str(n)] = (cca_x, TOP_Y - (k + 1) * S)
 
-    # ----- D-arm: horizontal stem, D-loop curls LEFT -----
-    # D-arm shifted LEFT of pos 7 so the variable-region curve from AC-stem 3'
-    # up to pos 49 does not collide with the D-stem on the right end.
-    # Hinge 8, 9 carry the backbone diagonally LEFT-and-DOWN from pos 7 to
-    # pos 10 (the junction-side end of D-stem 5').
-    d_anchor_x = acc_left_x - 2 * S  # x of pos 10
+    # ----- D-arm: VERTICAL stem, D-loop curls at BOTTOM-LEFT -----
+    # pos 10 (D-stem 5' first) at TOP-LEFT — paired with pos 25 at TOP-RIGHT.
+    # Stem extends DOWN from there; pos 13 at BOTTOM-LEFT, pos 22 at BOTTOM-
+    # RIGHT. D-loop (14..21) is a 180° arc connecting pos 13 (bottom-left)
+    # around the LEFT side back up to pos 22 (bottom-right) — i.e., it
+    # bulges LEFT and DOWN from the bottom of the stem, matching the
+    # canonical L-shape projection.
+    # Hinges 8, 9 are the diagonal connector from pos 7 (top stack, bot row,
+    # at acc_left_x) DOWN-LEFT to pos 10 (top-left of D-arm).
     coords["8"] = (
-        acc_left_x - 0.4 * S,
+        acc_left_x - (acc_left_x - D_X_LEFT) * 0.35,
         BOT_Y + (D_TOP_Y - BOT_Y) * 0.4,
     )
     coords["9"] = (
-        acc_left_x - 1.3 * S,
+        acc_left_x - (acc_left_x - D_X_LEFT) * 0.7,
         BOT_Y + (D_TOP_Y - BOT_Y) * 0.8,
     )
+    # D-stem 5' (10..13) on LEFT column, top-to-bottom
     for n in range(10, 14):
-        x = d_anchor_x - (n - 10) * S
-        coords[str(n)] = (x, D_TOP_Y)
+        coords[str(n)] = (D_X_LEFT, D_TOP_Y + (n - 10) * S)
+    # D-stem 3' (22..25) on RIGHT column; pair: 25-10, 24-11, 23-12, 22-13
     for n in range(22, 26):
-        # pair: 22-13, 23-12, 24-11, 25-10
-        # so pos 25 at d_anchor_x (paired with 10), pos 22 at d_anchor_x - 3*S (paired with 13)
-        x = d_anchor_x - (25 - n) * S
-        coords[str(n)] = (x, D_BOT_Y)
+        coords[str(n)] = (D_X_RIGHT, D_TOP_Y + (25 - n) * S)
 
-    d_loop_left_x = d_anchor_x - 3 * S  # x of pos 13 / pos 22
+    d_bot_y = D_TOP_Y + 3 * S  # y of pos 13 / pos 22
 
-    # ----- D-loop (14..21), 8 residues on 180° arc curling LEFT -----
-    # Some tRNAs include 17a, 20a, 20b insertions; we'll handle those by
-    # adding labels at interpolated positions below.
-    arc_cx_d = d_loop_left_x - D_LOOP_RADIUS * 0.35
-    arc_cy_d = (D_TOP_Y + D_BOT_Y) / 2
+    # ----- D-loop (14..21), 8 residues on a 180° arc curling LEFT-and-DOWN -----
+    # Arc center sits a bit DOWN-LEFT of the stem bottom. Sweep angle covers
+    # the LEFT half of the circle, from "just past pos 13" (top of arc, bot
+    # of stem on left col) curving DOWN through far-LEFT and back UP to
+    # "just before pos 22" (top of arc, bot of stem on right col).
+    arc_cx_d = D_X_LEFT + P / 2
+    arc_cy_d = d_bot_y + D_LOOP_RADIUS * 0.55
     for k, n in enumerate(range(14, 22)):
         t = (k + 0.5) / 8
-        theta = math.pi / 2 + t * math.pi
+        # Parameterize: angle from pi (left of stem-left-column-bottom)
+        # sweeping CCW through 3pi/2 (BOTTOM of arc) to 2pi (right side).
+        # In SVG y-down, y = cy + r*sin(theta) — sin pi to 2pi gives 0 to 0
+        # via -1 at 3pi/2; we want POSITIVE y at the bottom of the arc, so
+        # use abs offset.
+        theta = math.pi + t * math.pi
         x = arc_cx_d + D_LOOP_RADIUS * math.cos(theta)
-        y = arc_cy_d + D_LOOP_RADIUS * math.sin(theta)
+        y = arc_cy_d - D_LOOP_RADIUS * math.sin(theta)
         coords[str(n)] = (x, y)
 
     # D-loop insertions: 17a is between 17 and 18; 20a between 20 and 21;
     # 20b between 20a and 21. Place them on the same arc with offset t.
-    # (Sprinzl insertion convention: 17a immediately follows 17 in sequence.)
-    # We compute approximate t-values to keep the loop visually balanced.
     insertion_ts = {
-        "17a": (3.5 + 0.5) / 8,   # between 17 (k=3) and 18 (k=4)
-        "20a": (6.3 + 0.5) / 8,   # between 20 (k=6) and 21 (k=7)
+        "17a": (3.5 + 0.5) / 8,
+        "20a": (6.3 + 0.5) / 8,
         "20b": (6.6 + 0.5) / 8,
     }
     for label, t in insertion_ts.items():
-        theta = math.pi / 2 + t * math.pi
+        theta = math.pi + t * math.pi
         x = arc_cx_d + D_LOOP_RADIUS * math.cos(theta)
-        y = arc_cy_d + D_LOOP_RADIUS * math.sin(theta)
+        y = arc_cy_d - D_LOOP_RADIUS * math.sin(theta)
         coords[label] = (x, y)
 
-    # ----- pos 26 (hinge between D-stem 3' and AC-stem 5') -----
-    # diagonal from pos 25 (d_anchor_x, D_BOT_Y) to pos 27 (AC_X_LEFT, AC_TOP_Y).
+    # ----- pos 26 (hinge between D-stem 3' top and AC-stem 5' top) -----
+    # short horizontal bridge from D-arm TOP-RIGHT (pos 25) over to AC-arm
+    # TOP-LEFT (pos 27). Both at the same y as the top of the side arms.
     coords["26"] = (
-        d_anchor_x - (d_anchor_x - AC_X_LEFT) * 0.55,
-        D_BOT_Y + (AC_TOP_Y - D_BOT_Y) * 0.55,
+        (D_X_RIGHT + AC_X_LEFT) / 2,
+        D_TOP_Y - 2.5,
     )
 
     # ----- anticodon stem (27..31 left col, 39..43 right col) -----
-    # Pairs: 27-43, 28-42, 29-41, 30-40, 31-39
-    # 27 at top-left of AC-arm, 31 at bottom-left (just above AC-loop).
+    # VERTICAL helix to the RIGHT of the D-arm. Pairs: 27-43, 28-42, ..., 31-39
+    # 27 at top-left, 31 at bottom-left (just above AC-loop).
     for n in range(27, 32):
         y = AC_TOP_Y + (n - 27) * S
         coords[str(n)] = (AC_X_LEFT, y)
     for n in range(39, 44):
-        # 43 at top-right (paired with 27); 39 at bottom-right (paired with 31)
         y = AC_TOP_Y + (43 - n) * S
         coords[str(n)] = (AC_X_RIGHT, y)
 
