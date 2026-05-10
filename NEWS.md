@@ -28,6 +28,8 @@
 
 * `filter_linkages()` filters odds ratio data by p-value, observation count, and log odds ratio magnitude, returning a tibble ready for the `linkages` parameter of `plot_tRNA_structure()`.
 
+* `plot_tRNA_structure()` gains a `layout` argument with `"cloverleaf"` (default) and `"elbow"` forms; the elbow form stacks the acceptor stem and T-arm coaxially at the top with the D-arm extending horizontally and the anticodon arm vertically. Currently bundled for E. coli standard 3-arm tRNAs. `structure_trnas()` accepts the same `layout` argument.
+
 * `plot_tRNA_structure()` now accepts odds ratio tibbles directly as `linkages` input: if a `log_odds_ratio` column is present and `value` is not, it is automatically used as the arc value.
 
 * `plot_tRNA_structure()` now draws a 3' amino acid label (e.g., "Glu") connected by a line to the terminal nucleotide, and position markers every 10 nucleotides around the cloverleaf. Position markers can be disabled with `position_markers = FALSE`.
