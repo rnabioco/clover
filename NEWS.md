@@ -90,6 +90,8 @@
 
 * `modomics_mods()` maps MODOMICS tRNA modifications onto reference sequences using bundled data, eliminating the need for internet access. Use `modomics_organisms()` to list organisms with cached data. Falls back to `fetch_modomics_mods()` for unsupported organisms (#11).
 
+* `modomics_mods()` now correctly matches reference tRNA names with numeric suffixes such as tRNA-Ile2 (#29).
+
 * `plot_volcano()` creates a labeled volcano plot from `tidy_deseq_results()` output, with significant points highlighted and labeled using ggrepel.
 
 * `tabulate_deseq()` creates a formatted gt table of the top significant tRNAs from `tidy_deseq_results()` output, sorted by p-value. The table now includes zebra striping, search, column sorting, and pagination.

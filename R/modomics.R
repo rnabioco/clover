@@ -495,7 +495,7 @@ find_aa_candidates <- function(subtype, fasta_names) {
 
   candidate_idx <- integer(0)
   for (pat in patterns) {
-    aa_regex <- paste0("[-_]", pat, "[-_(]")
+    aa_regex <- paste0("[-_]", pat, "\\d*[-_(]")
     idx <- grep(aa_regex, fasta_names, ignore.case = TRUE)
     candidate_idx <- union(candidate_idx, idx)
   }
