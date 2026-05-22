@@ -34,6 +34,13 @@
 #'   - `universal`: `TRUE` if conserved across all domains
 #'   - `description`: human-readable description
 #'
+#' @section Limitations:
+#' Selenocysteine tRNA (SeC, anticodon UCA) is not currently
+#' supported. Its non-canonical 90-nt structure with an extended
+#' variable arm is not represented in the bundled determinant or
+#' antideterminant tables, and Sprinzl coordinates for SeC tRNAs are
+#' likewise unavailable.
+#'
 #' @export
 #'
 #' @references
@@ -174,6 +181,12 @@ identity_organisms <- function() {
 #'     `"trans-WC"`, `"Levitt"`)
 #'   - `universal`: `TRUE` for contacts conserved across all domains
 #'   - `description`: human-readable description
+#'
+#' @section Limitations:
+#' Selenocysteine tRNA (SeC, anticodon UCA) is not currently
+#' supported. Its non-canonical 90-nt fold with an extended variable
+#' arm does not share the canonical tertiary contact set bundled
+#' here, and SeC Sprinzl coordinates are not available.
 #'
 #' @export
 #'

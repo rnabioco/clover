@@ -164,6 +164,38 @@ test_that("find_aa_candidates returns empty for unknown AA", {
   expect_length(result, 0)
 })
 
+test_that("match_modomics_to_refs warns when no alignment passes min_identity", {
+  skip_if_not_installed("pwalign")
+
+  modomics_entries <- list(
+    list(
+      subtype = "Ala",
+      anticodon = "AGC",
+      mods = dplyr::tibble(
+        pos = 4L,
+        mod_full = "dihydrouridine",
+        mod1 = "D"
+      ),
+      plain_seq = "AUGUCGAUGUCGA"
+    )
+  )
+
+  # Candidate is found by name match, but min_identity > 1 guarantees
+  # no alignment can pass — triggers the warning code path.
+  ref_seq <- Biostrings::DNAStringSet("GGGGGGGGGGGGGGGGGGGG")
+  names(ref_seq) <- "tRNA-Ala-AGC-1"
+
+  expect_snapshot(
+    result <- match_modomics_to_refs(
+      modomics_entries,
+      ref_seq,
+      min_identity = 1.01
+    )
+  )
+
+  expect_equal(nrow(result), 0)
+})
+
 test_that("fetch_modomics_mods returns expected structure with mocked API", {
   skip_if_not_installed("httr2")
   skip_if_not_installed("jsonlite")

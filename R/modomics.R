@@ -23,6 +23,14 @@
 #'     (e.g., "1-methyladenosine")
 #'   - `mod1`: short modification name (e.g., "m1A")
 #'
+#' @section Limitations:
+#' Selenocysteine tRNA (SeC, anticodon UCA) is not currently
+#' supported. Its non-canonical 90-nt structure with an extended
+#' variable arm differs enough from canonical tRNAs that MODOMICS
+#' Sec sequences may fail to align at the default `min_identity`
+#' threshold; a warning is emitted in that case so the absence is
+#' visible rather than silent.
+#'
 #' @export
 #'
 #' @examples
@@ -456,6 +464,17 @@ match_modomics_to_refs <- function(
 
     valid <- identities >= min_identity
     if (!any(valid)) {
+      cli::cli_warn(
+        c(
+          "!" = paste0(
+            "No reference matched MODOMICS ",
+            "{.val {entry$subtype}-{entry$anticodon}} ",
+            "(length {nchar(entry$plain_seq)}) at ",
+            "min_identity = {min_identity}; best identity was ",
+            "{round(max(identities), 2)}."
+          )
+        )
+      )
       next
     }
 

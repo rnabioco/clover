@@ -36,6 +36,16 @@ alignment. No internet connection is required for organisms
 included in the package (see \code{\link[=modomics_organisms]{modomics_organisms()}}). For other
 organisms, falls back to \code{\link[=fetch_modomics_mods]{fetch_modomics_mods()}}.
 }
+\section{Limitations}{
+
+Selenocysteine tRNA (SeC, anticodon UCA) is not currently
+supported. Its non-canonical 90-nt structure with an extended
+variable arm differs enough from canonical tRNAs that MODOMICS
+Sec sequences may fail to align at the default \code{min_identity}
+threshold; a warning is emitted in that case so the absence is
+visible rather than silent.
+}
+
 \examples{
 \donttest{
 fa <- clover_example("ecoli/trna_only.fa.gz")
