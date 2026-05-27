@@ -127,6 +127,24 @@ test_that("find_aa_candidates matches amino acid in FASTA names", {
   expect_equal(gly_idx, 3L)
 })
 
+test_that("find_aa_candidates matches numeric suffix variants (#29)", {
+  fasta_names <- c(
+    "tRNA-Ile-GAT-1",
+    "tRNA-Ile2-CAT-1",
+    "tRNA-Lys3-CTT-1",
+    "tRNA-Alab-AGC-1"
+  )
+
+  ile_idx <- find_aa_candidates("Ile", fasta_names)
+  expect_equal(sort(ile_idx), c(1L, 2L))
+
+  lys_idx <- find_aa_candidates("Lys", fasta_names)
+  expect_equal(lys_idx, 3L)
+
+  ala_idx <- find_aa_candidates("Ala", fasta_names)
+  expect_equal(length(ala_idx), 0L)
+})
+
 test_that("find_aa_candidates maps Ini to Met variants", {
   fasta_names <- c(
     "tRNA-Met-CAT-1",
