@@ -49,6 +49,15 @@ and antideterminants) for tRNA aminoacylation, based on data from
 Giege & Eriani (2023). Elements are defined per amino acid family
 using Sprinzl numbering.
 }
+\section{Limitations}{
+
+Selenocysteine tRNA (SeC, anticodon UCA) is not currently
+supported. Its non-canonical 90-nt structure with an extended
+variable arm is not represented in the bundled determinant or
+antideterminant tables, and Sprinzl coordinates for SeC tRNAs are
+likewise unavailable.
+}
+
 \examples{
 # All identity elements for E. coli
 identity_elements("Escherichia coli")

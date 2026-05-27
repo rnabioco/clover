@@ -16,6 +16,8 @@
 
 * `prep_mod_heatmap()` prepares bcerror delta data for `plot_mod_heatmap()` by joining Sprinzl coordinates, annotating known modifications, and shortening tRNA labels.
 
+* `identity_elements()` and `tertiary_contacts()` documentation now notes that selenocysteine tRNA (SeC) is not currently supported because no SeC determinants, antideterminants, or Sprinzl coordinates are bundled (#30).
+
 * `identity_elements()` returns experimentally validated tRNA aminoacylation identity elements (determinants and antideterminants) for a given organism, based on Giege & Eriani (2023). Use `identity_organisms()` to list supported organisms.
 
 * `map_identity_to_trna()` converts Sprinzl-numbered identity elements to 1-based sequence positions for a specific tRNA, enabling overlay on `plot_tRNA_structure()` via the `outlines` parameter.
@@ -87,6 +89,8 @@
 * `compute_odds_ratios()` now uses a C++ implementation (via cpp11) for the pairwise Fisher's exact test inner loop, dramatically improving performance on large datasets. The odds ratio is now computed as the sample odds ratio with Haldane correction for zero cells, rather than the conditional MLE.
 
 * `fetch_modomics_mods()` downloads tRNA modification annotations from the MODOMICS database and maps them onto reference sequences using pairwise alignment (#11).
+
+* `modomics_mods()` now warns when a MODOMICS sequence has reference candidates but no alignment passes min_identity, instead of silently skipping (#30).
 
 * `modomics_mods()` maps MODOMICS tRNA modifications onto reference sequences using bundled data, eliminating the need for internet access. Use `modomics_organisms()` to list organisms with cached data. Falls back to `fetch_modomics_mods()` for unsupported organisms (#11).
 

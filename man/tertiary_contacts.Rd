@@ -40,6 +40,14 @@ constrain the tRNA fold and may indirectly affect aminoacylation
 specificity. Use \code{\link[=identity_elements]{identity_elements()}} for aaRS recognition
 determinants.
 }
+\section{Limitations}{
+
+Selenocysteine tRNA (SeC, anticodon UCA) is not currently
+supported. Its non-canonical 90-nt fold with an extended variable
+arm does not share the canonical tertiary contact set bundled
+here, and SeC Sprinzl coordinates are not available.
+}
+
 \examples{
 tertiary_contacts("Escherichia coli")
 

@@ -23,6 +23,15 @@
 #'     (e.g., "1-methyladenosine")
 #'   - `mod1`: short modification name (e.g., "m1A")
 #'
+#' @section Alignment warnings:
+#' If a MODOMICS sequence is named-matched to candidate reference
+#' tRNAs but no candidate alignment reaches `min_identity`, a
+#' warning is emitted naming the subtype, anticodon, MODOMICS
+#' sequence length, and best observed identity. This surfaces
+#' silent skips (e.g., for non-canonical tRNAs or curated
+#' references that diverge from MODOMICS) so they are visible
+#' rather than dropped without notice.
+#'
 #' @export
 #'
 #' @examples
@@ -456,6 +465,17 @@ match_modomics_to_refs <- function(
 
     valid <- identities >= min_identity
     if (!any(valid)) {
+      cli::cli_warn(
+        c(
+          "!" = paste0(
+            "No reference matched MODOMICS ",
+            "{.val {entry$subtype}-{entry$anticodon}} ",
+            "(length {nchar(entry$plain_seq)}) at ",
+            "min_identity = {min_identity}; best identity was ",
+            "{round(max(identities), 2)}."
+          )
+        )
+      )
       next
     }
 

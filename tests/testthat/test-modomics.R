@@ -164,6 +164,38 @@ test_that("find_aa_candidates returns empty for unknown AA", {
   expect_length(result, 0)
 })
 
+test_that("match_modomics_to_refs warns when no alignment passes min_identity", {
+  skip_if_not_installed("pwalign")
+
+  modomics_entries <- list(
+    list(
+      subtype = "Ala",
+      anticodon = "AGC",
+      mods = dplyr::tibble(
+        pos = 4L,
+        mod_full = "dihydrouridine",
+        mod1 = "D"
+      ),
+      plain_seq = "AUGUCGAUGUCGA"
+    )
+  )
+
+  # Candidate is found by name match, but min_identity > 1 guarantees
+  # no alignment can pass — triggers the warning code path.
+  ref_seq <- Biostrings::DNAStringSet("GGGGGGGGGGGGGGGGGGGG")
+  names(ref_seq) <- "tRNA-Ala-AGC-1"
+
+  expect_snapshot(
+    result <- match_modomics_to_refs(
+      modomics_entries,
+      ref_seq,
+      min_identity = 1.01
+    )
+  )
+
+  expect_equal(nrow(result), 0)
+})
+
 test_that("fetch_modomics_mods returns expected structure with mocked API", {
   skip_if_not_installed("httr2")
   skip_if_not_installed("jsonlite")
@@ -303,6 +335,20 @@ test_that("modomics_mods works with E. coli data", {
   expect_s3_class(mods, "tbl_df")
   expect_named(mods, c("ref", "pos", "mod_full", "mod1"))
   expect_gt(nrow(mods), 0)
+})
+
+test_that("modomics_mods annotates non-canonical SeC tRNA (#30)", {
+  skip_if_not_installed("pwalign")
+
+  fa <- read_fasta(clover_example("ecoli/trna_only.fa.gz"))
+  sec_idx <- grep("SeC", names(fa))
+  expect_length(sec_idx, 1)
+
+  mods <- suppressMessages(modomics_mods(fa[sec_idx], "Escherichia coli"))
+
+  expect_setequal(mods$ref, names(fa)[sec_idx])
+  expect_setequal(mods$mod1, c("s4U", "D", "i6A", "m5U", "Y"))
+  expect_equal(sort(mods$pos), c(10L, 20L, 38L, 72L, 73L))
 })
 
 test_that("modomics_mods falls back for unsupported organism", {
