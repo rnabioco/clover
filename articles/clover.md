@@ -454,7 +454,7 @@ sessionInfo()
 #>  [7] IRanges_2.46.0              S4Vectors_0.50.1           
 #>  [9] BiocGenerics_0.58.1         generics_0.1.4             
 #> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
-#> [13] clover_0.1.0               
+#> [13] clover_0.1.0.9000          
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] tidyselect_1.2.1    farver_2.1.2        Biostrings_2.80.1  

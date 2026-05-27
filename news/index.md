@@ -1,5 +1,7 @@
 # Changelog
 
+## clover 0.1.0.9000 (development version)
+
 ## clover 0.1.0
 
 - [`read_bedmethyl()`](https://rnabioco.github.io/clover/reference/read_bedmethyl.md)
