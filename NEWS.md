@@ -16,7 +16,7 @@
 
 * `prep_mod_heatmap()` prepares bcerror delta data for `plot_mod_heatmap()` by joining Sprinzl coordinates, annotating known modifications, and shortening tRNA labels.
 
-* `identity_elements()`, `tertiary_contacts()`, and `modomics_mods()` documentation now notes that selenocysteine tRNA (SeC) is not currently supported (#30).
+* `identity_elements()` and `tertiary_contacts()` documentation now notes that selenocysteine tRNA (SeC) is not currently supported because no SeC determinants, antideterminants, or Sprinzl coordinates are bundled (#30).
 
 * `identity_elements()` returns experimentally validated tRNA aminoacylation identity elements (determinants and antideterminants) for a given organism, based on Giege & Eriani (2023). Use `identity_organisms()` to list supported organisms.
 

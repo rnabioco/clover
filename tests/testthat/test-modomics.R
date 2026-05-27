@@ -337,6 +337,20 @@ test_that("modomics_mods works with E. coli data", {
   expect_gt(nrow(mods), 0)
 })
 
+test_that("modomics_mods annotates non-canonical SeC tRNA (#30)", {
+  skip_if_not_installed("pwalign")
+
+  fa <- read_fasta(clover_example("ecoli/trna_only.fa.gz"))
+  sec_idx <- grep("SeC", names(fa))
+  expect_length(sec_idx, 1)
+
+  mods <- suppressMessages(modomics_mods(fa[sec_idx], "Escherichia coli"))
+
+  expect_setequal(mods$ref, names(fa)[sec_idx])
+  expect_setequal(mods$mod1, c("s4U", "D", "i6A", "m5U", "Y"))
+  expect_equal(sort(mods$pos), c(10L, 20L, 38L, 72L, 73L))
+})
+
 test_that("modomics_mods falls back for unsupported organism", {
   skip_if_not_installed("pwalign")
 
