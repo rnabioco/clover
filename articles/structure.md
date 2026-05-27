@@ -429,7 +429,7 @@ sessionInfo()
 #> [29] sass_0.4.10                 yaml_2.3.12                
 #> [31] pillar_1.11.1               pkgdown_2.2.0              
 #> [33] crayon_1.5.3                jquerylib_0.1.4            
-#> [35] DelayedArray_0.38.1         cachem_1.1.0               
+#> [35] DelayedArray_0.38.2         cachem_1.1.0               
 #> [37] abind_1.4-8                 tidyselect_1.2.1           
 #> [39] digest_0.6.39               purrr_1.2.2                
 #> [41] fastmap_1.2.0               grid_4.6.0                 

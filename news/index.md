@@ -45,6 +45,14 @@
   shortening tRNA labels.
 
 - [`identity_elements()`](https://rnabioco.github.io/clover/reference/identity_elements.md)
+  and
+  [`tertiary_contacts()`](https://rnabioco.github.io/clover/reference/tertiary_contacts.md)
+  documentation now notes that selenocysteine tRNA (SeC) is not
+  currently supported because no SeC determinants, antideterminants, or
+  Sprinzl coordinates are bundled
+  ([\#30](https://github.com/rnabioco/clover/issues/30)).
+
+- [`identity_elements()`](https://rnabioco.github.io/clover/reference/identity_elements.md)
   returns experimentally validated tRNA aminoacylation identity elements
   (determinants and antideterminants) for a given organism, based on
   Giege & Eriani (2023). Use
@@ -247,6 +255,11 @@
   downloads tRNA modification annotations from the MODOMICS database and
   maps them onto reference sequences using pairwise alignment
   ([\#11](https://github.com/rnabioco/clover/issues/11)).
+
+- [`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md)
+  now warns when a MODOMICS sequence has reference candidates but no
+  alignment passes min_identity, instead of silently skipping
+  ([\#30](https://github.com/rnabioco/clover/issues/30)).
 
 - [`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md)
   maps MODOMICS tRNA modifications onto reference sequences using

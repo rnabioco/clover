@@ -67,6 +67,13 @@ A tibble with columns:
 
 - `description`: human-readable description
 
+## Limitations
+
+Selenocysteine tRNA (SeC, anticodon UCA) is not currently supported. Its
+non-canonical 90-nt structure with an extended variable arm is not
+represented in the bundled determinant or antideterminant tables, and
+Sprinzl coordinates for SeC tRNAs are likewise unavailable.
+
 ## References
 
 Giege R, Eriani G (2023). "The tRNA identity landscape for

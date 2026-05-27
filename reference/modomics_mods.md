@@ -43,6 +43,15 @@ A tibble with columns:
 
 - `mod1`: short modification name (e.g., "m1A")
 
+## Alignment warnings
+
+If a MODOMICS sequence is named-matched to candidate reference tRNAs but
+no candidate alignment reaches `min_identity`, a warning is emitted
+naming the subtype, anticodon, MODOMICS sequence length, and best
+observed identity. This surfaces silent skips (e.g., for non-canonical
+tRNAs or curated references that diverge from MODOMICS) so they are
+visible rather than dropped without notice.
+
 ## Examples
 
 ``` r

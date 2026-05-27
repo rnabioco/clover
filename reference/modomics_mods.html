@@ -97,6 +97,18 @@ sequence. Default <code>0.7</code>.</p></dd>
 (e.g., "1-methyladenosine")</p></li>
 <li><p><code>mod1</code>: short modification name (e.g., "m1A")</p></li>
 </ul></div>
+    <div class="section level2">
+    <h2 id="alignment-warnings">Alignment warnings<a class="anchor" aria-label="anchor" href="#alignment-warnings"></a></h2>
+
+
+<p>If a MODOMICS sequence is named-matched to candidate reference
+tRNAs but no candidate alignment reaches <code>min_identity</code>, a
+warning is emitted naming the subtype, anticodon, MODOMICS
+sequence length, and best observed identity. This surfaces
+silent skips (e.g., for non-canonical tRNAs or curated
+references that diverge from MODOMICS) so they are visible
+rather than dropped without notice.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

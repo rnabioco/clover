@@ -50,6 +50,13 @@ the tRNA fold and may indirectly affect aminoacylation specificity. Use
 [`identity_elements()`](https://rnabioco.github.io/clover/reference/identity_elements.md)
 for aaRS recognition determinants.
 
+## Limitations
+
+Selenocysteine tRNA (SeC, anticodon UCA) is not currently supported. Its
+non-canonical 90-nt fold with an extended variable arm does not share
+the canonical tertiary contact set bundled here, and SeC Sprinzl
+coordinates are not available.
+
 ## References
 
 Westhof E, Auffinger P (2012). "tRNA structure." *Encyclopedia of Life

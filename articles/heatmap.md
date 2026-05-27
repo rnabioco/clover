@@ -668,7 +668,7 @@ sessionInfo()
 #> [31] sass_0.4.10                 yaml_2.3.12                
 #> [33] pillar_1.11.1               pkgdown_2.2.0              
 #> [35] crayon_1.5.3                jquerylib_0.1.4            
-#> [37] tidyr_1.3.2                 DelayedArray_0.38.1        
+#> [37] tidyr_1.3.2                 DelayedArray_0.38.2        
 #> [39] cachem_1.1.0                abind_1.4-8                
 #> [41] commonmark_2.0.0            tidyselect_1.2.1           
 #> [43] digest_0.6.39               stringi_1.8.7              
