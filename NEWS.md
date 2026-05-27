@@ -1,4 +1,4 @@
-# clover 0.0.0.9000
+# clover 0.1.0
 
 * `read_bedmethyl()` reads per-position modification percentages from bedMethyl files produced by `modkit pileup`, enabling integration of nanopore modification data with the heatmap workflow.
 
