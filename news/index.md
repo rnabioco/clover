@@ -257,6 +257,10 @@
   for unsupported organisms
   ([\#11](https://github.com/rnabioco/clover/issues/11)).
 
+- [`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md)
+  now correctly matches reference tRNA names with numeric suffixes such
+  as tRNA-Ile2 ([\#29](https://github.com/rnabioco/clover/issues/29)).
+
 - [`plot_volcano()`](https://rnabioco.github.io/clover/reference/plot_volcano.md)
   creates a labeled volcano plot from
   [`tidy_deseq_results()`](https://rnabioco.github.io/clover/reference/tidy_deseq_results.md)

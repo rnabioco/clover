@@ -78,7 +78,7 @@ fasta_path <- clover_example("ecoli/trna_only.fa.gz")
 mods <- modomics_mods(fasta_path, "Escherichia coli")
 #> Processing 182 MODOMICS sequences.
 #> Matching MODOMICS sequences to reference FASTA.
-#> Found 698 modification annotations.
+#> Found 701 modification annotations.
 
 mods_glu <- mods |>
   filter(ref == "host-tRNA-Glu-TTC-1-1")
@@ -424,7 +424,7 @@ sessionInfo()
 #> [19] S7_0.2.2                    desc_1.4.3                 
 #> [21] S4Vectors_0.50.1            lifecycle_1.0.5            
 #> [23] compiler_4.6.0              farver_2.1.2               
-#> [25] textshaping_1.0.5           Biostrings_2.80.0          
+#> [25] textshaping_1.0.5           Biostrings_2.80.1          
 #> [27] Seqinfo_1.2.0               htmltools_0.5.9            
 #> [29] sass_0.4.10                 yaml_2.3.12                
 #> [31] pillar_1.11.1               pkgdown_2.2.0              

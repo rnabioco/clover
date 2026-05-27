@@ -257,7 +257,7 @@ so no internet connection is needed.
 ``` r
 
 mods
-#> # A tibble: 698 × 4
+#> # A tibble: 701 × 4
 #>    ref                     pos mod_full                 mod1 
 #>    <chr>                 <int> <chr>                    <chr>
 #>  1 host-tRNA-Ala-TGC-1-1    17 dihydrouridine           D    
@@ -270,7 +270,7 @@ mods
 #>  8 host-tRNA-Ala-GGC-1-1    54 5-methyluridine          m5U  
 #>  9 host-tRNA-Ala-GGC-1-1    55 pseudouridine            Y    
 #> 10 host-tRNA-Arg-ACG-1-1     8 4-thiouridine            s4U  
-#> # ℹ 688 more rows
+#> # ℹ 691 more rows
 ```
 
 We can overlay known modifications onto the base-calling error profiles.
@@ -457,7 +457,7 @@ sessionInfo()
 #> [13] clover_0.0.0.9000          
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1    farver_2.1.2        Biostrings_2.80.0  
+#>  [1] tidyselect_1.2.1    farver_2.1.2        Biostrings_2.80.1  
 #>  [4] S7_0.2.2            fastmap_1.2.0       digest_0.6.39      
 #>  [7] lifecycle_1.0.5     pwalign_1.8.0       magrittr_2.0.5     
 #> [10] compiler_4.6.0      rlang_1.2.0         sass_0.4.10        

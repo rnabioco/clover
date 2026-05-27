@@ -56,9 +56,9 @@ mods <- fetch_modomics_mods(fa, "Escherichia coli")
 #> Fetching MODOMICS tRNA sequences for "Escherichia coli".
 #> Processing 182 MODOMICS sequences.
 #> Matching MODOMICS sequences to reference FASTA.
-#> Found 695 modification annotations.
+#> Found 698 modification annotations.
 mods
-#> # A tibble: 695 × 4
+#> # A tibble: 698 × 4
 #>    ref                     pos mod_full                 mod1 
 #>    <chr>                 <int> <chr>                    <chr>
 #>  1 host-tRNA-Ala-TGC-1-1    41 dihydrouridine           D    
@@ -71,6 +71,6 @@ mods
 #>  8 host-tRNA-Ala-GGC-1-1    78 5-methyluridine          m5U  
 #>  9 host-tRNA-Ala-GGC-1-1    79 pseudouridine            Y    
 #> 10 host-tRNA-Arg-ACG-1-1    32 4-thiouridine            s4U  
-#> # ℹ 685 more rows
+#> # ℹ 688 more rows
 # }
 ```

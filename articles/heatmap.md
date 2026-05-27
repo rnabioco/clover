@@ -662,7 +662,7 @@ sessionInfo()
 #> [19] S7_0.2.2                    desc_1.4.3                 
 #> [21] S4Vectors_0.50.1            lifecycle_1.0.5            
 #> [23] stringr_1.6.0               compiler_4.6.0             
-#> [25] farver_2.1.2                Biostrings_2.80.0          
+#> [25] farver_2.1.2                Biostrings_2.80.1          
 #> [27] textshaping_1.0.5           Seqinfo_1.2.0              
 #> [29] litedown_0.9                htmltools_0.5.9            
 #> [31] sass_0.4.10                 yaml_2.3.12                

@@ -51,8 +51,8 @@ fa <- clover_example("ecoli/trna_only.fa.gz")
 modomics_mods(fa, "Escherichia coli")
 #> Processing 182 MODOMICS sequences.
 #> Matching MODOMICS sequences to reference FASTA.
-#> Found 698 modification annotations.
-#> # A tibble: 698 × 4
+#> Found 701 modification annotations.
+#> # A tibble: 701 × 4
 #>    ref                     pos mod_full                 mod1 
 #>    <chr>                 <int> <chr>                    <chr>
 #>  1 host-tRNA-Ala-TGC-1-1    17 dihydrouridine           D    
@@ -65,6 +65,6 @@ modomics_mods(fa, "Escherichia coli")
 #>  8 host-tRNA-Ala-GGC-1-1    54 5-methyluridine          m5U  
 #>  9 host-tRNA-Ala-GGC-1-1    55 pseudouridine            Y    
 #> 10 host-tRNA-Arg-ACG-1-1     8 4-thiouridine            s4U  
-#> # ℹ 688 more rows
+#> # ℹ 691 more rows
 # }
 ```
