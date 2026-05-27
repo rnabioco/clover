@@ -21,13 +21,13 @@ Source:
 [`DESCRIPTION`](https://github.com/rnabioco/clover/blob/devel/DESCRIPTION)
 
 Hesselberth J, Bilodeaux J, White L (2026). *clover: Plotting and
-analysis for nanopore tRNA sequencing data*. R package version
-0.0.0.9000, <https://rnabioco.github.io/clover>.
+analysis for nanopore tRNA sequencing data*. R package version 0.1.0,
+<https://rnabioco.github.io/clover>.
 
     @Manual{,
       title = {clover: Plotting and analysis for nanopore tRNA sequencing data},
       author = {Jay Hesselberth and Jill Bilodeaux and Laura White},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.1.0},
       url = {https://rnabioco.github.io/clover},
     }

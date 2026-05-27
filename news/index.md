@@ -1,6 +1,6 @@
 # Changelog
 
-## clover 0.0.0.9000
+## clover 0.1.0
 
 - [`read_bedmethyl()`](https://rnabioco.github.io/clover/reference/read_bedmethyl.md)
   reads per-position modification percentages from bedMethyl files
