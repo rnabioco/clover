@@ -273,6 +273,103 @@ test_that("structure_html errors on missing file", {
   )
 })
 
+# Sprinzl coordinate conversion ------------------------------------------------
+
+test_that("convert_sprinzl_positions maps labels to positions", {
+  trna_coords <- dplyr::tibble(
+    sprinzl_label = c("1", "2", "34", "35", "36"),
+    pos = c(1L, 2L, 30L, 31L, 32L)
+  )
+  df <- dplyr::tibble(pos = c("34", "35", "36"), mod1 = c("m1A", "m5C", "D"))
+  result <- convert_sprinzl_positions(df, "pos", trna_coords)
+  expect_equal(result$pos, c(30L, 31L, 32L))
+  expect_equal(result$mod1, c("m1A", "m5C", "D"))
+})
+
+test_that("convert_sprinzl_positions coerces numeric input", {
+  trna_coords <- dplyr::tibble(
+    sprinzl_label = c("34", "35"),
+    pos = c(30L, 31L)
+  )
+  df <- dplyr::tibble(pos = c(34, 35), mod1 = c("m1A", "m5C"))
+  result <- convert_sprinzl_positions(df, "pos", trna_coords)
+  expect_equal(result$pos, c(30L, 31L))
+})
+
+test_that("convert_sprinzl_positions warns on unmatched and drops rows", {
+  trna_coords <- dplyr::tibble(
+    sprinzl_label = c("1", "2"),
+    pos = c(1L, 2L)
+  )
+  df <- dplyr::tibble(pos = c("1", "99"), mod1 = c("m1A", "m5C"))
+  expect_snapshot(
+    result <- convert_sprinzl_positions(df, "pos", trna_coords)
+  )
+  expect_equal(nrow(result), 1)
+  expect_equal(result$pos, 1L)
+})
+
+test_that("convert_sprinzl_positions converts two columns for linkages", {
+  trna_coords <- dplyr::tibble(
+    sprinzl_label = c("34", "35", "36"),
+    pos = c(30L, 31L, 32L)
+  )
+  df <- dplyr::tibble(
+    pos1 = c("34", "35"),
+    pos2 = c("36", "34"),
+    value = c(1.5, -0.5)
+  )
+  result <- convert_sprinzl_positions(df, c("pos1", "pos2"), trna_coords)
+  expect_equal(result$pos1, c(30L, 31L))
+  expect_equal(result$pos2, c(32L, 30L))
+})
+
+test_that("plot_tRNA_structure errors when tRNA not in sprinzl_coords", {
+  skip_if(
+    length(structure_organisms()) == 0,
+    "No bundled structure SVGs"
+  )
+
+  org <- structure_organisms()[1]
+  trna <- structure_trnas(org)[1]
+  fake_coords <- dplyr::tibble(
+    trna_id = "nuc-tRNA-Fake-AAA-1-1",
+    pos = 1L,
+    sprinzl_label = "1"
+  )
+  expect_snapshot(
+    plot_tRNA_structure(trna, org, sprinzl_coords = fake_coords),
+    error = TRUE
+  )
+})
+
+test_that("plot_tRNA_structure converts sprinzl coords with real data", {
+  skip_if(
+    length(structure_organisms()) == 0,
+    "No bundled structure SVGs"
+  )
+  coords_path <- system.file(
+    "extdata",
+    "sprinzl",
+    "ecoliK12_global_coords.tsv.gz",
+    package = "clover"
+  )
+  skip_if(coords_path == "", "No bundled sprinzl coords")
+
+  coords <- read_sprinzl_coords(coords_path)
+  org <- "Escherichia coli"
+  trna <- "tRNA-Glu-TTC"
+
+  mods <- dplyr::tibble(pos = c("34", "35"), mod1 = c("m1A", "m5C"))
+  svg <- plot_tRNA_structure(
+    trna,
+    org,
+    modifications = mods,
+    sprinzl_coords = coords
+  )
+  expect_true(file.exists(svg))
+})
+
 test_that("plot_tRNA_structure respects position_markers = FALSE", {
   skip_if(
     length(structure_organisms()) == 0,
