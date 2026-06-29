@@ -270,10 +270,19 @@ determinants <- bind_rows(
     "Asn",
     "Bacteria",
     73,
-    NA_character_,
+    "G",
     "discriminator",
     "strong",
-    description = "discriminator base 73"
+    description = "G73 discriminator"
+  ),
+  det(
+    "Asn",
+    "Bacteria",
+    34,
+    "G",
+    "anticodon_loop",
+    "strong",
+    description = "G34 anticodon"
   ),
   det(
     "Asn",
@@ -713,15 +722,8 @@ determinants <- bind_rows(
   ),
 
   # === Glu ===
-  det(
-    "Glu",
-    "Bacteria",
-    73,
-    NA_character_,
-    "discriminator",
-    "strong",
-    description = "discriminator base 73"
-  ),
+  # Note: position 73 is NOT a GluRS identity determinant in E. coli
+  # (Glu and Thr are the two stated exceptions in Giege & Eriani 2023).
   det(
     "Glu",
     "Bacteria",
@@ -850,23 +852,45 @@ determinants <- bind_rows(
     "Gly",
     "Bacteria",
     2,
-    "G",
+    "C",
     "acceptor_stem",
     "weak",
     pair_pos = 71L,
     pair_type = "wc",
-    description = "G2-C71 base pair"
+    description = "C2-G71 base pair"
   ),
   det(
     "Gly",
     "Bacteria",
     71,
-    "C",
+    "G",
     "acceptor_stem",
     "weak",
     pair_pos = 2L,
     pair_type = "wc",
-    description = "G2-C71 base pair"
+    description = "C2-G71 base pair"
+  ),
+  det(
+    "Gly",
+    "Bacteria",
+    3,
+    "G",
+    "acceptor_stem",
+    "weak",
+    pair_pos = 70L,
+    pair_type = "wc",
+    description = "G3-C70 base pair"
+  ),
+  det(
+    "Gly",
+    "Bacteria",
+    70,
+    "C",
+    "acceptor_stem",
+    "weak",
+    pair_pos = 3L,
+    pair_type = "wc",
+    description = "G3-C70 base pair"
   ),
   det("Gly", "Bacteria", 10, "G", "d_arm", "weak", description = "G10"),
   det(
@@ -1640,15 +1664,9 @@ determinants <- bind_rows(
   ),
 
   # === Thr ===
-  det(
-    "Thr",
-    "Bacteria",
-    73,
-    "U",
-    "discriminator",
-    "strong",
-    description = "U73 discriminator"
-  ),
+  # Note: position 73 is NOT a ThrRS identity determinant in E. coli
+  # (Glu and Thr are the two stated exceptions in Giege & Eriani 2023;
+  # the E. coli tRNA-Thr discriminator is A73, shared with Val).
   det(
     "Thr",
     "Bacteria",
@@ -2192,24 +2210,6 @@ antideterminants <- bind_rows(
     "discriminator",
     against_aars = "TyrRS",
     description = "G73 in tRNA-Ser blocks TyrRS"
-  ),
-  anti(
-    "Met",
-    "Bacteria",
-    73,
-    "A",
-    "discriminator",
-    against_aars = "IleRS",
-    description = "A73 in tRNA-Met blocks IleRS"
-  ),
-  anti(
-    "Thr",
-    "Bacteria",
-    73,
-    "U",
-    "discriminator",
-    against_aars = "ValRS",
-    description = "U73 in tRNA-Thr blocks ValRS"
   ),
 
   # S. cerevisiae / H. sapiens antideterminants
