@@ -1,5 +1,7 @@
 # clover 0.1.0.9000 (development version)
 
+* `identity_elements()` corrects several bacterial (E. coli) tRNA identity elements: tRNA-Asn now carries its G34 anticodon determinant and G73 discriminator; the tRNA-Gly acceptor-stem C2-G71 pair orientation is fixed and the G3-C70 pair added; the non-determinant position-73 entries for tRNA-Glu and tRNA-Thr are removed (both are stated exceptions where N73 is not an identity element); and the unsupported A73-tRNA-Met-against-IleRS and U73-tRNA-Thr-against-ValRS antideterminants are removed (#35).
+
 # clover 0.1.0
 
 * `read_bedmethyl()` reads per-position modification percentages from bedMethyl files produced by `modkit pileup`, enabling integration of nanopore modification data with the heatmap workflow.
