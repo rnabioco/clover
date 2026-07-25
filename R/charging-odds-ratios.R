@@ -313,6 +313,115 @@ compute_charging_odds_ratios <- function(
     dplyr::arrange(.data$p_value, .data$ref, .data$pos)
 }
 
+#' Compute charging odds ratios from per-site counts.
+#'
+#' Test the same modification-against-charging association as
+#' [compute_charging_odds_ratios()], but from a table that already holds each
+#' site's 2x2 counts rather than from per-read calls.
+#'
+#' The aa-tRNA-seq pipeline accumulates these counts during the BAM walk it
+#' performs anyway, writing `{sample}.charging_error.tsv.gz` with one row per
+#' site instead of one row per read and position. That is the same information
+#' as far as this test is concerned -- the statistics are identical -- and it
+#' turns a table of tens of millions of rows into tens of thousands, so prefer
+#' this entry point unless you need read-level flexibility such as
+#' re-thresholding the charging call or joining other per-read features.
+#'
+#' The caveats on [compute_charging_odds_ratios()] apply unchanged, in
+#' particular that sites near the 3' end are not interpretable.
+#'
+#' @param counts Per-site counts, either a path to a
+#'   `{sample}.charging_error.tsv.gz` file or a tibble. Requires columns `ref`,
+#'   `pos`, `err_charged`, `err_uncharged`, `match_charged` and
+#'   `match_uncharged`.
+#' @param min_reads Minimum reads at a site for it to be tested. Default `10`.
+#' @param min_margin Minimum count in each margin of the 2x2 table. Default `1`.
+#' @param max_p Skip sites whose margins put this p-value out of reach. Default
+#'   `1`, which tests everything.
+#' @param p_method Method for p-value adjustment, passed to [stats::p.adjust()].
+#'   Default `"BH"`.
+#'
+#' @return A tibble with the same columns as [compute_charging_odds_ratios()].
+#'
+#' @seealso [compute_charging_odds_ratios()]
+#'
+#' @export
+#'
+#' @examples
+#' counts <- tibble::tibble(
+#'   ref = "tRNA-Ala-AGC-1-1",
+#'   pos = c(34L, 58L),
+#'   err_charged = c(120, 40),
+#'   err_uncharged = c(30, 45),
+#'   match_charged = c(200, 280),
+#'   match_uncharged = c(400, 385)
+#' )
+#' charging_odds_ratios_from_counts(counts)
+charging_odds_ratios_from_counts <- function(
+  counts,
+  min_reads = 10,
+  min_margin = 1,
+  max_p = 1,
+  p_method = "BH"
+) {
+  if (is.character(counts)) {
+    if (length(counts) != 1) {
+      cli_abort("{.arg counts} must be a single path or a data frame.")
+    }
+    counts <- readr::read_tsv(counts, show_col_types = FALSE)
+  }
+
+  if (!is.data.frame(counts)) {
+    cli_abort("{.arg counts} must be a single path or a data frame.")
+  }
+
+  required <- c(
+    "ref", "pos", "err_charged", "err_uncharged",
+    "match_charged", "match_uncharged"
+  )
+  missing <- setdiff(required, names(counts))
+  if (length(missing) > 0) {
+    cli_abort("{.arg counts} is missing column{?s} {.field {missing}}.")
+  }
+
+  out <- charging_odds_ratios_counts_cpp(
+    as.integer(counts$err_charged),
+    as.integer(counts$err_uncharged),
+    as.integer(counts$match_charged),
+    as.integer(counts$match_uncharged),
+    as.integer(min_reads),
+    as.integer(min_margin),
+    as.numeric(max_p)
+  )
+
+  if (nrow(out) == 0) {
+    return(empty_charging_or())
+  }
+
+  kept <- counts[out$idx, , drop = FALSE]
+  total <- kept$err_charged + kept$err_uncharged +
+    kept$match_charged + kept$match_uncharged
+
+  tibble::tibble(
+    ref = kept$ref,
+    pos = as.integer(kept$pos),
+    n11 = kept$err_charged,
+    n10 = kept$err_uncharged,
+    n01 = kept$match_charged,
+    n00 = kept$match_uncharged,
+    total_obs = total,
+    mod_freq = (kept$err_charged + kept$err_uncharged) / total,
+    charged_freq = (kept$err_charged + kept$match_charged) / total,
+    odds_ratio = out$odds_ratio,
+    log_odds_ratio = out$log_odds_ratio,
+    p_value = out$p_value
+  ) |>
+    dplyr::mutate(
+      p_adjusted = stats::p.adjust(.data$p_value, method = p_method)
+    ) |>
+    dplyr::arrange(.data$p_value, .data$ref, .data$pos)
+}
+
 empty_charging_or <- function() {
   tibble::tibble(
     ref = character(),

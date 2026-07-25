@@ -374,6 +374,62 @@ test_that("compute_charging_odds_ratios errors on malformed input", {
   )
 })
 
+test_that("charging_odds_ratios_from_counts matches the per-read path", {
+  # The counts table is a summary of the same reads, so the statistics must be
+  # identical whichever route they came by.
+  calls <- readr::read_tsv(mismatch_path(), show_col_types = FALSE)
+  charging <- read_charging_calls(charging_path())
+
+  from_reads <- compute_charging_odds_ratios(calls, charging, min_reads = 5)
+
+  counts <- calls |>
+    dplyr::mutate(err = .data$call_code != "-") |>
+    dplyr::left_join(
+      dplyr::select(charging, "read_id", "charged"),
+      by = "read_id"
+    ) |>
+    dplyr::rename(ref = "chrom", pos = "ref_position") |>
+    dplyr::summarize(
+      err_charged = sum(.data$err & .data$charged == 1),
+      err_uncharged = sum(.data$err & .data$charged == 0),
+      match_charged = sum(!.data$err & .data$charged == 1),
+      match_uncharged = sum(!.data$err & .data$charged == 0),
+      .by = c("ref", "pos")
+    )
+
+  from_counts <- charging_odds_ratios_from_counts(counts, min_reads = 5)
+
+  expect_equal(from_counts$ref, from_reads$ref)
+  expect_equal(from_counts$pos, from_reads$pos)
+  expect_equal(from_counts$odds_ratio, from_reads$odds_ratio)
+  expect_equal(from_counts$p_value, from_reads$p_value)
+  expect_equal(from_counts$total_obs, from_reads$total_obs)
+})
+
+test_that("charging_odds_ratios_from_counts applies the same pruning", {
+  counts <- tibble::tibble(
+    ref = "tRNA-Ala",
+    pos = c(10L, 20L),
+    err_charged = c(50, 1),
+    err_uncharged = c(10, 0),
+    match_charged = c(20, 60),
+    match_uncharged = c(60, 59)
+  )
+
+  expect_equal(nrow(charging_odds_ratios_from_counts(counts)), 2)
+  expect_equal(
+    charging_odds_ratios_from_counts(counts, min_margin = 5)$pos,
+    10L
+  )
+})
+
+test_that("charging_odds_ratios_from_counts errors on a missing column", {
+  expect_error(
+    charging_odds_ratios_from_counts(tibble::tibble(ref = "a", pos = 1L)),
+    "missing column"
+  )
+})
+
 test_that("compute_odds_ratios restricts pairs to supplied sites", {
   sites <- tibble::tibble(
     ref = "host-tRNA-Glu-TTC-1-1",

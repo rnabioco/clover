@@ -52,6 +52,76 @@ static double min_attainable_p(int R1, int R2, int C1) {
   return p_lo < p_hi ? p_lo : p_hi;
 }
 
+// Test one 2x2 table. Returns false if the site is pruned, otherwise fills the
+// odds ratio and p-value. Shared by both entry points so a table assembled here
+// and one summarized upstream are treated identically.
+static bool test_cell(int a, int b, int c, int d, int min_reads, int min_margin,
+                      double max_p, double* odds_ratio, double* p_value) {
+  if (a + b + c + d < min_reads) {
+    return false;
+  }
+
+  int R1 = a + b, R2 = c + d, C1 = a + c, C2 = b + d;
+
+  // With an empty margin the odds ratio is undefined; a thin one carries no
+  // power. min_margin >= 1 subsumes the empty case.
+  if (R1 < min_margin || R2 < min_margin || C1 < min_margin || C2 < min_margin) {
+    return false;
+  }
+
+  if (max_p < 1.0 && min_attainable_p(R1, R2, C1) > max_p) {
+    return false;
+  }
+
+  if (a > 0 && b > 0 && c > 0 && d > 0) {
+    *odds_ratio = (static_cast<double>(a) * d) / (static_cast<double>(b) * c);
+  } else {
+    // Haldane correction for an empty cell.
+    *odds_ratio = (a + 0.5) * (d + 0.5) / ((b + 0.5) * (c + 0.5));
+  }
+
+  *p_value = fisher_two_sided(a, c, b, d);
+  return true;
+}
+
+// Test 2x2 tables that were counted upstream, one row per site.
+//
+// The pipeline can accumulate these counts during the BAM walk it already
+// performs, which turns a call table of tens of millions of rows into one row
+// per site. The statistics are identical either way.
+[[cpp11::register]]
+writable::data_frame charging_odds_ratios_counts_cpp(integers n11, integers n10,
+                                                     integers n01, integers n00,
+                                                     int min_reads, int min_margin,
+                                                     double max_p) {
+  R_xlen_t n = n11.size();
+
+  writable::integers idx_out;
+  writable::doubles or_out, log_or_out, pval_out;
+
+  for (R_xlen_t k = 0; k < n; ++k) {
+    if (n11[k] == NA_INTEGER || n10[k] == NA_INTEGER || n01[k] == NA_INTEGER ||
+        n00[k] == NA_INTEGER) {
+      continue;
+    }
+
+    double odds_ratio, p_value;
+    if (!test_cell(n11[k], n10[k], n01[k], n00[k], min_reads, min_margin, max_p,
+                   &odds_ratio, &p_value)) {
+      continue;
+    }
+
+    idx_out.push_back(static_cast<int>(k) + 1);
+    or_out.push_back(odds_ratio);
+    log_or_out.push_back(std::log(odds_ratio));
+    pval_out.push_back(p_value);
+  }
+
+  return writable::data_frame({"idx"_nm = idx_out, "odds_ratio"_nm = or_out,
+                               "log_odds_ratio"_nm = log_or_out,
+                               "p_value"_nm = pval_out});
+}
+
 // Accumulate modified-by-charged counts for every (reference, position) cell in
 // a single pass over the long-form calls, then test each cell.
 //
@@ -112,28 +182,9 @@ writable::data_frame charging_odds_ratios_cpp(integers ref_idx, integers pos_idx
     int a = n11[cell], b = n10[cell], c = n01[cell], d = n00[cell];
     int total = a + b + c + d;
 
-    if (total < min_reads) {
+    double odds_ratio, p_value;
+    if (!test_cell(a, b, c, d, min_reads, min_margin, max_p, &odds_ratio, &p_value)) {
       continue;
-    }
-
-    int R1 = a + b, R2 = c + d, C1 = a + c, C2 = b + d;
-
-    // With an empty margin the odds ratio is undefined; a thin one carries no
-    // power. min_margin >= 1 subsumes the empty case.
-    if (R1 < min_margin || R2 < min_margin || C1 < min_margin || C2 < min_margin) {
-      continue;
-    }
-
-    if (max_p < 1.0 && min_attainable_p(R1, R2, C1) > max_p) {
-      continue;
-    }
-
-    double odds_ratio;
-    if (a > 0 && b > 0 && c > 0 && d > 0) {
-      odds_ratio = (static_cast<double>(a) * d) / (static_cast<double>(b) * c);
-    } else {
-      // Haldane correction for an empty cell.
-      odds_ratio = (a + 0.5) * (d + 0.5) / ((b + 0.5) * (c + 0.5));
     }
 
     ref_out.push_back(static_cast<int>(cell / static_cast<std::size_t>(n_pos)) + 1);
@@ -145,7 +196,7 @@ writable::data_frame charging_odds_ratios_cpp(integers ref_idx, integers pos_idx
     total_out.push_back(total);
     or_out.push_back(odds_ratio);
     log_or_out.push_back(std::log(odds_ratio));
-    pval_out.push_back(fisher_two_sided(a, c, b, d));
+    pval_out.push_back(p_value);
   }
 
   return writable::data_frame({"ref_idx"_nm = ref_out, "pos_idx"_nm = pos_out,
