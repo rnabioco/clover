@@ -157,6 +157,134 @@ test_that("compute_charging_odds_ratios excludes reads lacking a call", {
   expect_equal(result$total_obs[result$pos == 20L], 2)
 })
 
+test_that("compute_charging_odds_ratios collapses repeated calls per read", {
+  # modkit emits one row per modification channel, so a read modified at one
+  # position can appear several times there. It must still count once.
+  calls <- tibble::tibble(
+    read_id = c("r1", "r1", "r2", "r3", "r4"),
+    chrom = "tRNA-Ala",
+    ref_position = 10L,
+    within_alignment = TRUE,
+    call_code = c("m", "a", "-", "m", "-")
+  )
+  charging <- tibble::tibble(
+    read_id = c("r1", "r2", "r3", "r4"),
+    charged = c(1L, 0L, 1L, 0L)
+  )
+
+  result <- compute_charging_odds_ratios(calls, charging, min_reads = 2)
+
+  expect_equal(result$total_obs, 4)
+  expect_equal(result$n11, 2)
+  expect_equal(result$n00, 2)
+})
+
+test_that("compute_charging_odds_ratios dedupe = FALSE skips the collapse", {
+  # One row per read and position, as the pipeline's mismatch calls emit.
+  calls <- tibble::tibble(
+    read_id = c("r1", "r2", "r3", "r4"),
+    chrom = "tRNA-Ala",
+    ref_position = 10L,
+    within_alignment = TRUE,
+    call_code = c("X", "-", "X", "-")
+  )
+  charging <- tibble::tibble(
+    read_id = c("r1", "r2", "r3", "r4"),
+    charged = c(1L, 0L, 1L, 0L)
+  )
+
+  expect_equal(
+    compute_charging_odds_ratios(calls, charging, min_reads = 2, dedupe = FALSE),
+    compute_charging_odds_ratios(calls, charging, min_reads = 2, dedupe = TRUE)
+  )
+})
+
+test_that("compute_charging_odds_ratios prunes thin margins", {
+  # 20 reads, but only one of them is modified: the odds ratio is defined and
+  # the site is testable in principle, yet it carries no useful power.
+  calls <- tibble::tibble(
+    read_id = paste0("r", 1:20),
+    chrom = "tRNA-Ala",
+    ref_position = 10L,
+    within_alignment = TRUE,
+    call_code = c("m", rep("-", 19))
+  )
+  charging <- tibble::tibble(
+    read_id = paste0("r", 1:20),
+    charged = rep(c(1L, 0L), each = 10)
+  )
+
+  expect_equal(nrow(compute_charging_odds_ratios(calls, charging)), 1)
+  expect_equal(
+    nrow(compute_charging_odds_ratios(calls, charging, min_margin = 5)),
+    0
+  )
+})
+
+test_that("compute_charging_odds_ratios prunes sites that cannot reach max_p", {
+  # Six reads split 3/3 on charging with one modified read: the most extreme
+  # outcome available still cannot clear 0.05.
+  calls <- tibble::tibble(
+    read_id = paste0("r", 1:6),
+    chrom = "tRNA-Ala",
+    ref_position = 10L,
+    within_alignment = TRUE,
+    call_code = c("m", rep("-", 5))
+  )
+  charging <- tibble::tibble(
+    read_id = paste0("r", 1:6),
+    charged = rep(c(1L, 0L), each = 3)
+  )
+
+  unpruned <- compute_charging_odds_ratios(calls, charging, min_reads = 5)
+  expect_equal(nrow(unpruned), 1)
+  expect_gt(unpruned$p_value, 0.05)
+
+  expect_equal(
+    nrow(compute_charging_odds_ratios(
+      calls, charging, min_reads = 5, max_p = 0.05
+    )),
+    0
+  )
+})
+
+test_that("compute_charging_odds_ratios max_p keeps sites that can reach it", {
+  # A site with the same read count but a balanced modification margin can
+  # reach significance, so it must survive the same filter.
+  calls <- tibble::tibble(
+    read_id = paste0("r", 1:20),
+    chrom = "tRNA-Ala",
+    ref_position = 10L,
+    within_alignment = TRUE,
+    call_code = rep(c("m", "-"), each = 10)
+  )
+  charging <- tibble::tibble(
+    read_id = paste0("r", 1:20),
+    charged = rep(c(1L, 0L), each = 10)
+  )
+
+  result <- compute_charging_odds_ratios(
+    calls, charging, min_reads = 5, max_p = 0.05
+  )
+
+  expect_equal(nrow(result), 1)
+  expect_lt(result$p_value, 0.05)
+})
+
+test_that("compute_charging_odds_ratios pruning does not alter kept results", {
+  calls <- readr::read_tsv(mod_calls_path(), show_col_types = FALSE)
+  charging <- read_charging_calls(charging_path())
+
+  full <- compute_charging_odds_ratios(calls, charging, min_reads = 5)
+  pruned <- compute_charging_odds_ratios(
+    calls, charging, min_reads = 5, min_margin = 2
+  )
+
+  common <- dplyr::semi_join(full, pruned, by = c("ref", "pos"))
+  expect_equal(common$p_value, pruned$p_value)
+  expect_equal(common$odds_ratio, pruned$odds_ratio)
+})
+
 test_that("compute_charging_odds_ratios drops reads with no charging call", {
   calls <- tibble::tibble(
     read_id = c("r1", "r2", "r3"),

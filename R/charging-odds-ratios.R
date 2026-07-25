@@ -131,6 +131,37 @@ call_bcerror_sites <- function(
 #' Reads with no call at a site are excluded from that site's table rather
 #' than counted as unmodified, so `total_obs` varies between sites.
 #'
+#' # Pruning sites before testing
+#'
+#' A genome-wide site list is mostly sites that were never testable, and each
+#' one still consumes FDR budget. Two arguments drop them up front. `min_margin`
+#' requires a minimum count of modified, unmodified, charged and uncharged
+#' reads; `max_p` drops sites whose margins make the intended significance
+#' threshold unreachable no matter how the reads fall.
+#'
+#' Both filter on the margins of the 2x2 table, never on the observed odds
+#' ratio, and that distinction matters. The margins are ancillary, so filtering
+#' on them leaves the null distribution of the surviving p-values intact.
+#' Filtering on effect size would enrich for small p-values and invalidate the
+#' correction applied afterwards, so do not pre-filter `sites` on an effect
+#' measured from the same reads.
+#'
+#' # Sites near the 3' end are not interpretable
+#'
+#' Charging is called from the nanopore signal over the CCA 3' end, so a site
+#' in or near that window is not independent of the charging call it is being
+#' tested against. A charged and an uncharged read differ in signal exactly
+#' there, which changes base-calling behaviour at those positions, so an odds
+#' ratio between the two is close to tautological. In practice this dominates
+#' the result: on a zebrafish dataset every one of the strongest associations
+#' fell in the acceptor stem, discriminator or CCA.
+#'
+#' Restrict `sites` to internal positions before drawing any conclusion. The
+#' `region` column of a Sprinzl coordinate table is a convenient filter --
+#' dropping `cca`, `discriminator` and both acceptor stem arms removes the
+#' coupled window. This caveat applies whichever site source is used, since it
+#' concerns the charging call rather than the modification call.
+#'
 #' @param calls Per-read calls, either a path to a `mod_calls.tsv.gz` /
 #'   `mismatch_calls.tsv.gz` file or a tibble. Requires columns `read_id`,
 #'   `chrom` (or `ref`), `ref_position` (or `pos`), and either `call_code`
@@ -146,8 +177,21 @@ call_bcerror_sites <- function(
 #'   `NULL` (default), all references are processed.
 #' @param min_reads Minimum number of reads with both a call and a charging
 #'   status required for a site to be tested. Default `10`.
+#' @param min_margin Minimum count in each margin of the 2x2 table: modified,
+#'   unmodified, charged and uncharged reads. Default `1`, which only requires
+#'   the odds ratio to be defined. Raising it drops sites too thin to carry
+#'   power, such as a position where three of ten thousand reads are modified.
+#' @param max_p Skip sites where no arrangement of the reads could reach this
+#'   p-value, given the margins. Default `1`, which tests everything. Set it to
+#'   the significance threshold you intend to use.
 #' @param ml_threshold Charging likelihood threshold, used only when
 #'   `charging` is a path. Default `200`.
+#' @param dedupe Whether to collapse repeated calls for the same read and
+#'   position before counting. Needed for `modkit` output, where a read with
+#'   several modification channels at one position contributes a row per
+#'   channel. Default `TRUE`. Set `FALSE` for per-read mismatch calls, which
+#'   carry one row per read and position, to skip a grouping pass that is
+#'   costly on large tables.
 #' @param p_method Method for p-value adjustment, passed to [stats::p.adjust()].
 #'   Default `"BH"`.
 #'
@@ -185,7 +229,10 @@ compute_charging_odds_ratios <- function(
   sites = NULL,
   refs = NULL,
   min_reads = 10,
+  min_margin = 1,
+  max_p = 1,
   ml_threshold = 200,
+  dedupe = TRUE,
   p_method = "BH"
 ) {
   calls_tbl <- as_calls_table(calls)
@@ -212,122 +259,51 @@ compute_charging_odds_ratios <- function(
     return(empty_charging_or())
   }
 
-  results <- lapply(
-    split(calls_tbl, calls_tbl$ref),
-    charging_or_one_ref,
-    min_reads = min_reads
-  )
+  if (dedupe) {
+    calls_tbl <- dplyr::summarize(
+      calls_tbl,
+      modified = max(.data$modified),
+      .by = c("read_id", "ref", "pos", "charged")
+    )
+  }
 
-  out <- dplyr::bind_rows(results)
+  ref_f <- factor(calls_tbl$ref)
+  pos_f <- factor(calls_tbl$pos, levels = sort(unique(calls_tbl$pos)))
+
+  out <- charging_odds_ratios_cpp(
+    as.integer(ref_f),
+    as.integer(pos_f),
+    as.integer(calls_tbl$modified),
+    as.integer(calls_tbl$charged),
+    nlevels(ref_f),
+    nlevels(pos_f),
+    as.integer(min_reads),
+    as.integer(min_margin),
+    as.numeric(max_p)
+  )
 
   if (nrow(out) == 0) {
     return(empty_charging_or())
   }
 
-  out |>
+  tibble::tibble(
+    ref = levels(ref_f)[out$ref_idx],
+    pos = as.integer(levels(pos_f)[out$pos_idx]),
+    n11 = out$n11,
+    n10 = out$n10,
+    n01 = out$n01,
+    n00 = out$n00,
+    total_obs = out$total_obs,
+    mod_freq = (out$n11 + out$n10) / out$total_obs,
+    charged_freq = (out$n11 + out$n01) / out$total_obs,
+    odds_ratio = out$odds_ratio,
+    log_odds_ratio = out$log_odds_ratio,
+    p_value = out$p_value
+  ) |>
     dplyr::mutate(
       p_adjusted = stats::p.adjust(.data$p_value, method = p_method)
     ) |>
     dplyr::arrange(.data$p_value, .data$ref, .data$pos)
-}
-
-# Compute site-versus-charging odds ratios for a single reference.
-#
-# `data` holds one row per (read, position) with `modified` and `charged`.
-# Reads missing a call at a position are absent from the wide matrix (NA) and
-# are excluded from that position's table rather than treated as unmodified.
-charging_or_one_ref <- function(data, min_reads) {
-  ref <- data$ref[1]
-
-  wide <- data |>
-    dplyr::summarize(
-      modified = max(.data$modified),
-      .by = c("read_id", "pos")
-    ) |>
-    tidyr::pivot_wider(
-      names_from = "pos",
-      values_from = "modified"
-    )
-
-  # Index rather than join: the charging vector has to line up with the rows of
-  # the matrix built from `wide`, and a join does not guarantee that order.
-  chg_map <- dplyr::distinct(data, .data$read_id, .data$charged)
-  charged <- chg_map$charged[match(wide$read_id, chg_map$read_id)]
-
-  pos_cols <- setdiff(names(wide), "read_id")
-  if (length(pos_cols) == 0) {
-    return(NULL)
-  }
-
-  mat <- as.matrix(wide[, pos_cols, drop = FALSE])
-
-  is_mod <- !is.na(mat) & mat == 1
-  is_unmod <- !is.na(mat) & mat == 0
-  storage.mode(is_mod) <- "double"
-  storage.mode(is_unmod) <- "double"
-
-  chg <- as.numeric(charged)
-  unchg <- 1 - chg
-
-  n11 <- as.vector(crossprod(is_mod, chg))
-  n10 <- as.vector(crossprod(is_mod, unchg))
-  n01 <- as.vector(crossprod(is_unmod, chg))
-  n00 <- as.vector(crossprod(is_unmod, unchg))
-
-  total <- n11 + n10 + n01 + n00
-
-  # Drop sites with too few observations, or with an empty margin: with no
-  # variation in modification or in charging the odds ratio is undefined.
-  keep <-
-    total >= min_reads &
-    (n11 + n10) > 0 &
-    (n01 + n00) > 0 &
-    (n11 + n01) > 0 &
-    (n10 + n00) > 0
-
-  if (!any(keep)) {
-    return(NULL)
-  }
-
-  n11 <- n11[keep]
-  n10 <- n10[keep]
-  n01 <- n01[keep]
-  n00 <- n00[keep]
-  total <- total[keep]
-
-  # Sample odds ratio, with a Haldane correction when any cell is empty. This
-  # matches the definition used by compute_odds_ratios().
-  any_zero <- n11 == 0 | n10 == 0 | n01 == 0 | n00 == 0
-  odds_ratio <- ifelse(
-    any_zero,
-    ((n11 + 0.5) * (n00 + 0.5)) / ((n10 + 0.5) * (n01 + 0.5)),
-    (n11 * n00) / (n10 * n01)
-  )
-
-  p_value <- vapply(
-    seq_along(n11),
-    function(i) {
-      stats::fisher.test(
-        matrix(c(n11[i], n01[i], n10[i], n00[i]), nrow = 2)
-      )$p.value
-    },
-    numeric(1)
-  )
-
-  tibble::tibble(
-    ref = ref,
-    pos = as.integer(pos_cols[keep]),
-    n11 = n11,
-    n10 = n10,
-    n01 = n01,
-    n00 = n00,
-    total_obs = total,
-    mod_freq = (n11 + n10) / total,
-    charged_freq = (n11 + n01) / total,
-    odds_ratio = odds_ratio,
-    log_odds_ratio = log(odds_ratio),
-    p_value = p_value
-  )
 }
 
 empty_charging_or <- function() {

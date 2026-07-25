@@ -10,7 +10,10 @@ compute_charging_odds_ratios(
   sites = NULL,
   refs = NULL,
   min_reads = 10,
+  min_margin = 1,
+  max_p = 1,
   ml_threshold = 200,
+  dedupe = TRUE,
   p_method = "BH"
 )
 }
@@ -35,8 +38,24 @@ positions in \code{calls} are tested.}
 \item{min_reads}{Minimum number of reads with both a call and a charging
 status required for a site to be tested. Default \code{10}.}
 
+\item{min_margin}{Minimum count in each margin of the 2x2 table: modified,
+unmodified, charged and uncharged reads. Default \code{1}, which only requires
+the odds ratio to be defined. Raising it drops sites too thin to carry
+power, such as a position where three of ten thousand reads are modified.}
+
+\item{max_p}{Skip sites where no arrangement of the reads could reach this
+p-value, given the margins. Default \code{1}, which tests everything. Set it to
+the significance threshold you intend to use.}
+
 \item{ml_threshold}{Charging likelihood threshold, used only when
 \code{charging} is a path. Default \code{200}.}
+
+\item{dedupe}{Whether to collapse repeated calls for the same read and
+position before counting. Needed for \code{modkit} output, where a read with
+several modification channels at one position contributes a row per
+channel. Default \code{TRUE}. Set \code{FALSE} for per-read mismatch calls, which
+carry one row per read and position, to skip a grouping pass that is
+costly on large tables.}
 
 \item{p_method}{Method for p-value adjustment, passed to \code{\link[stats:p.adjust]{stats::p.adjust()}}.
 Default \code{"BH"}.}
@@ -75,6 +94,37 @@ same signal.
 Reads with no call at a site are excluded from that site's table rather
 than counted as unmodified, so \code{total_obs} varies between sites.
 }
+\section{Pruning sites before testing}{
+A genome-wide site list is mostly sites that were never testable, and each
+one still consumes FDR budget. Two arguments drop them up front. \code{min_margin}
+requires a minimum count of modified, unmodified, charged and uncharged
+reads; \code{max_p} drops sites whose margins make the intended significance
+threshold unreachable no matter how the reads fall.
+
+Both filter on the margins of the 2x2 table, never on the observed odds
+ratio, and that distinction matters. The margins are ancillary, so filtering
+on them leaves the null distribution of the surviving p-values intact.
+Filtering on effect size would enrich for small p-values and invalidate the
+correction applied afterwards, so do not pre-filter \code{sites} on an effect
+measured from the same reads.
+}
+
+\section{Sites near the 3' end are not interpretable}{
+Charging is called from the nanopore signal over the CCA 3' end, so a site
+in or near that window is not independent of the charging call it is being
+tested against. A charged and an uncharged read differ in signal exactly
+there, which changes base-calling behaviour at those positions, so an odds
+ratio between the two is close to tautological. In practice this dominates
+the result: on a zebrafish dataset every one of the strongest associations
+fell in the acceptor stem, discriminator or CCA.
+
+Restrict \code{sites} to internal positions before drawing any conclusion. The
+\code{region} column of a Sprinzl coordinate table is a convenient filter --
+dropping \code{cca}, \code{discriminator} and both acceptor stem arms removes the
+coupled window. This caveat applies whichever site source is used, since it
+concerns the charging call rather than the modification call.
+}
+
 \examples{
 calls <- clover_example("ecoli/mod_calls.tsv.gz")
 charging <- clover_example("ecoli/charging_calls.tsv.gz")

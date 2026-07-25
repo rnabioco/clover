@@ -1,6 +1,6 @@
 # clover 0.1.0.9000 (development version)
 
-* `compute_charging_odds_ratios()` tests, for each site, whether a read being modified is associated with that same read being charged, using individual reads as the unit of observation. Sites come either from direct modification calls or, via the `sites` argument, from base-calling error.
+* `compute_charging_odds_ratios()` tests, for each site, whether a read being modified is associated with that same read being charged, using individual reads as the unit of observation. Sites come either from direct modification calls or, via the `sites` argument, from base-calling error. Counting is done in C++ in a single pass over the calls, so memory scales with the number of sites rather than with read depth: a 100M-row call table across 46,000 sites takes about 100 seconds. Set `dedupe = FALSE` for call tables that carry one row per read and position to skip a grouping pass.
 
 * `call_bcerror_sites()` selects candidate modification sites from a bcerror tibble by thresholding error rate and coverage, producing a site list for `compute_charging_odds_ratios()` and `compute_odds_ratios()`. This allows the charging odds ratio to be measured against a model-free signal when the modification-caller channels are not trusted for a dataset.
 
