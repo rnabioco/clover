@@ -5,6 +5,20 @@
 #include "cpp11/declarations.hpp"
 #include <R_ext/Visibility.h>
 
+// charging_odds_ratios.cpp
+writable::data_frame charging_odds_ratios_counts_cpp(integers n11, integers n10, integers n01, integers n00, int min_reads, int min_margin, double max_p);
+extern "C" SEXP _clover_charging_odds_ratios_counts_cpp(SEXP n11, SEXP n10, SEXP n01, SEXP n00, SEXP min_reads, SEXP min_margin, SEXP max_p) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(charging_odds_ratios_counts_cpp(cpp11::as_cpp<cpp11::decay_t<integers>>(n11), cpp11::as_cpp<cpp11::decay_t<integers>>(n10), cpp11::as_cpp<cpp11::decay_t<integers>>(n01), cpp11::as_cpp<cpp11::decay_t<integers>>(n00), cpp11::as_cpp<cpp11::decay_t<int>>(min_reads), cpp11::as_cpp<cpp11::decay_t<int>>(min_margin), cpp11::as_cpp<cpp11::decay_t<double>>(max_p)));
+  END_CPP11
+}
+// charging_odds_ratios.cpp
+writable::data_frame charging_odds_ratios_cpp(integers ref_idx, integers pos_idx, integers modified, integers charged, int n_refs, int n_pos, int min_reads, int min_margin, double max_p);
+extern "C" SEXP _clover_charging_odds_ratios_cpp(SEXP ref_idx, SEXP pos_idx, SEXP modified, SEXP charged, SEXP n_refs, SEXP n_pos, SEXP min_reads, SEXP min_margin, SEXP max_p) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(charging_odds_ratios_cpp(cpp11::as_cpp<cpp11::decay_t<integers>>(ref_idx), cpp11::as_cpp<cpp11::decay_t<integers>>(pos_idx), cpp11::as_cpp<cpp11::decay_t<integers>>(modified), cpp11::as_cpp<cpp11::decay_t<integers>>(charged), cpp11::as_cpp<cpp11::decay_t<int>>(n_refs), cpp11::as_cpp<cpp11::decay_t<int>>(n_pos), cpp11::as_cpp<cpp11::decay_t<int>>(min_reads), cpp11::as_cpp<cpp11::decay_t<int>>(min_margin), cpp11::as_cpp<cpp11::decay_t<double>>(max_p)));
+  END_CPP11
+}
 // odds_ratios.cpp
 writable::data_frame pairwise_fisher_exact(integers_matrix<> mat);
 extern "C" SEXP _clover_pairwise_fisher_exact(SEXP mat) {
@@ -15,7 +29,9 @@ extern "C" SEXP _clover_pairwise_fisher_exact(SEXP mat) {
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_clover_pairwise_fisher_exact", (DL_FUNC) &_clover_pairwise_fisher_exact, 1},
+    {"_clover_charging_odds_ratios_counts_cpp", (DL_FUNC) &_clover_charging_odds_ratios_counts_cpp, 7},
+    {"_clover_charging_odds_ratios_cpp",        (DL_FUNC) &_clover_charging_odds_ratios_cpp,        9},
+    {"_clover_pairwise_fisher_exact",           (DL_FUNC) &_clover_pairwise_fisher_exact,           1},
     {NULL, NULL, 0}
 };
 }

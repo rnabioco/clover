@@ -1,5 +1,15 @@
 # clover 0.1.0.9000 (development version)
 
+* `compute_charging_odds_ratios()` tests, for each site, whether a read being modified is associated with that same read being charged, using individual reads as the unit of observation. Sites come either from direct modification calls or, via the `sites` argument, from base-calling error. Counting is done in C++ in a single pass over the calls, so memory scales with the number of sites rather than with read depth: a 100M-row call table across 46,000 sites takes about 100 seconds. Set `dedupe = FALSE` for call tables that carry one row per read and position to skip a grouping pass.
+
+* `charging_odds_ratios_from_counts()` runs the same test from a table that already holds each site's 2x2 counts, as the pipeline now emits in `{sample}.charging_error.tsv.gz`. Those counts are a summary of the BAM walk the pipeline already performs, so this is one row per site instead of one row per read and position -- 488 KB rather than 52 MB on a zebrafish sample, with identical statistics. Prefer it unless you need read-level flexibility such as re-thresholding the charging call.
+
+* `call_bcerror_sites()` selects candidate modification sites from a bcerror tibble by thresholding error rate and coverage, producing a site list for `compute_charging_odds_ratios()` and `compute_odds_ratios()`. This allows the charging odds ratio to be measured against a model-free signal when the modification-caller channels are not trusted for a dataset.
+
+* `read_charging_calls()` reads per-read charging likelihoods and binarizes them at the `CL` threshold, complementing `read_charging()`, which returns per-tRNA aggregates.
+
+* `compute_odds_ratios()` gains a `sites` argument to restrict pairwise testing to selected positions.
+
 # clover 0.1.0
 
 * `read_bedmethyl()` reads per-position modification percentages from bedMethyl files produced by `modkit pileup`, enabling integration of nanopore modification data with the heatmap workflow.

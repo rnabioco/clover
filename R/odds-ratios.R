@@ -310,21 +310,38 @@ compute_ror <- function(
 #'   include. If `NULL`, all references are processed.
 #' @param min_reads Minimum number of reads required for a tRNA to be
 #'   included. Default `10`.
+#' @param sites Optional tibble of sites to test, with columns `ref`
+#'   and `pos`, typically from [call_bcerror_sites()]. If `NULL`
+#'   (default), all positions present in the calls are used.
 #'
 #' @return A tibble with columns: `ref`, `pos1`, `pos2`,
 #'   `odds_ratio`, `log_odds_ratio`, `p_value`, `total_obs`.
+#'
+#' @seealso [compute_charging_odds_ratios()] for modification against
+#'   charging, and [call_bcerror_sites()] for selecting `sites`.
 #'
 #' @export
 #'
 #' @examples
 #' path <- clover_example("ecoli/mod_calls.tsv.gz")
 #' compute_odds_ratios(path)
-compute_odds_ratios <- function(mod_calls_path, refs = NULL, min_reads = 10) {
+compute_odds_ratios <- function(
+  mod_calls_path,
+  refs = NULL,
+  min_reads = 10,
+  sites = NULL
+) {
   mc <- readr::read_tsv(mod_calls_path, show_col_types = FALSE) |>
     dplyr::filter(.data$within_alignment == TRUE)
 
   if (!is.null(refs)) {
     mc <- mc |> dplyr::filter(.data$chrom %in% refs)
+  }
+
+  if (!is.null(sites)) {
+    mc <- mc |>
+      dplyr::mutate(ref_position = as.integer(.data$ref_position)) |>
+      restrict_to_sites(sites, ref_col = "chrom", pos_col = "ref_position")
   }
 
   all_refs <- unique(mc$chrom)

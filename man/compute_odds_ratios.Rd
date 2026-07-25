@@ -4,7 +4,7 @@
 \alias{compute_odds_ratios}
 \title{Compute pairwise modification co-occurrence odds ratios.}
 \usage{
-compute_odds_ratios(mod_calls_path, refs = NULL, min_reads = 10)
+compute_odds_ratios(mod_calls_path, refs = NULL, min_reads = 10, sites = NULL)
 }
 \arguments{
 \item{mod_calls_path}{Path to a \verb{\{sample\}.mod_calls.tsv.gz} file
@@ -15,6 +15,10 @@ include. If \code{NULL}, all references are processed.}
 
 \item{min_reads}{Minimum number of reads required for a tRNA to be
 included. Default \code{10}.}
+
+\item{sites}{Optional tibble of sites to test, with columns \code{ref}
+and \code{pos}, typically from \code{\link[=call_bcerror_sites]{call_bcerror_sites()}}. If \code{NULL}
+(default), all positions present in the calls are used.}
 }
 \value{
 A tibble with columns: \code{ref}, \code{pos1}, \code{pos2},
@@ -30,4 +34,8 @@ tRNAs.
 \examples{
 path <- clover_example("ecoli/mod_calls.tsv.gz")
 compute_odds_ratios(path)
+}
+\seealso{
+\code{\link[=compute_charging_odds_ratios]{compute_charging_odds_ratios()}} for modification against
+charging, and \code{\link[=call_bcerror_sites]{call_bcerror_sites()}} for selecting \code{sites}.
 }
