@@ -1,5 +1,13 @@
 # clover 0.1.0.9000 (development version)
 
+* `compute_charging_odds_ratios()` tests, for each site, whether a read being modified is associated with that same read being charged, using individual reads as the unit of observation. Sites come either from direct modification calls or, via the `sites` argument, from base-calling error.
+
+* `call_bcerror_sites()` selects candidate modification sites from a bcerror tibble by thresholding error rate and coverage, producing a site list for `compute_charging_odds_ratios()` and `compute_odds_ratios()`. This allows the charging odds ratio to be measured against a model-free signal when the modification-caller channels are not trusted for a dataset.
+
+* `read_charging_calls()` reads per-read charging likelihoods and binarizes them at the `CL` threshold, complementing `read_charging()`, which returns per-tRNA aggregates.
+
+* `compute_odds_ratios()` gains a `sites` argument to restrict pairwise testing to selected positions.
+
 # clover 0.1.0
 
 * `read_bedmethyl()` reads per-position modification percentages from bedMethyl files produced by `modkit pileup`, enabling integration of nanopore modification data with the heatmap workflow.
