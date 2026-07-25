@@ -39,6 +39,9 @@ reference:
     - compute_charging_diffs
     - filter_linkages
     - compute_odds_ratios
+    - call_bcerror_sites
+    - compute_charging_odds_ratios
+    - charging_odds_ratios_from_counts
     - summarize_mod_calls
     - compute_ror
     - compute_ror_isodecoder
