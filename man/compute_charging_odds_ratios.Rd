@@ -110,19 +110,26 @@ measured from the same reads.
 }
 
 \section{Sites near the 3' end are not interpretable}{
-Charging is called from the nanopore signal over the CCA 3' end, so a site
-in or near that window is not independent of the charging call it is being
-tested against. A charged and an uncharged read differ in signal exactly
-there, which changes base-calling behaviour at those positions, so an odds
-ratio between the two is close to tautological. In practice this dominates
-the result: on a zebrafish dataset every one of the strongest associations
-fell in the acceptor stem, discriminator or CCA.
+The amino acid is esterified to the terminal A, and charging is called from
+the nanopore signal over that CCA end. A site there is therefore not
+independent of the charging call it is being tested against: the base caller
+is reading out the same thing the charging model is, and the odds ratio
+between them is close to tautological.
 
-Restrict \code{sites} to internal positions before drawing any conclusion. The
-\code{region} column of a Sprinzl coordinate table is a convenient filter --
-dropping \code{cca}, \code{discriminator} and both acceptor stem arms removes the
-coupled window. This caveat applies whichever site source is used, since it
-concerns the charging call rather than the modification call.
+This dominates the result. Across two zebrafish samples, 82\% of terminal-A
+sites came back significant with a median log odds ratio of 1.9, and the
+effect decayed monotonically with distance from that residue -- roughly 50\%
+of sites one or two nucleotides in, 16-33\% from three to ten, and 4.6\%
+beyond fifty, where it flattens out. By region, \code{cca} and \code{discriminator}
+ran at 63\% and 36\% against 3-5\% in the D-loop and anticodon arms.
+
+Note that the position number of the terminal A varies between references,
+since tRNAs differ in length, so filter on distance from the 3' end or on
+the \code{region} column of a Sprinzl coordinate table rather than on an absolute
+position. Dropping \code{cca}, \code{discriminator} and the 3' acceptor stem removes
+the worst of it; the gradient suggests discarding everything within about
+twenty nucleotides of the end. This caveat applies whichever site source is
+used, since it concerns the charging call rather than the modification call.
 }
 
 \examples{
