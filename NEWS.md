@@ -1,5 +1,7 @@
 # clover 0.1.0.9000 (development version)
 
+* `tidy_deseq_results()` gains a `name` argument for extracting a single model coefficient, which is the only way to reach an interaction term. A design such as `~ genotype + charge_status + genotype:charge_status` carries differential charging in its interaction coefficient, and no `contrast` specification refers to it. Exactly one of `contrast` or `name` must be supplied.
+
 # clover 0.1.0
 
 * `read_bedmethyl()` reads per-position modification percentages from bedMethyl files produced by `modkit pileup`, enabling integration of nanopore modification data with the heatmap workflow.

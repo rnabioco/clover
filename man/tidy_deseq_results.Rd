@@ -4,7 +4,7 @@
 \alias{tidy_deseq_results}
 \title{Tidy DESeq2 results into a tibble.}
 \usage{
-tidy_deseq_results(dds, contrast, padj_cutoff = 0.05)
+tidy_deseq_results(dds, contrast = NULL, name = NULL, padj_cutoff = 0.05)
 }
 \arguments{
 \item{dds}{A \code{DESeqDataSet} object (from \code{\link[=run_deseq]{run_deseq()}}).}
@@ -12,6 +12,9 @@ tidy_deseq_results(dds, contrast, padj_cutoff = 0.05)
 \item{contrast}{A contrast specification: either a character vector of
 length 3 (e.g., \code{c("condition", "mutant", "wildtype")}) or a list
 for coefficient-based contrasts.}
+
+\item{name}{Name of a single model coefficient to extract, as returned by
+\code{\link[DESeq2:results]{DESeq2::resultsNames()}}. Use this for interaction terms.}
 
 \item{padj_cutoff}{Adjusted p-value threshold for significance.
 Default \code{0.05}.}
@@ -24,6 +27,15 @@ A tibble with columns: \code{ref}, \code{log2FoldChange}, \code{lfcSE},
 Extract results from a DESeq2 analysis and return a tidy tibble with
 tRNA identifiers and significance flags.
 }
+\details{
+Give either \code{contrast} or \code{name}, not both. A contrast compares two levels
+of one factor. A name addresses a single model coefficient, which is the
+only way to reach an interaction term: in a design such as
+\code{~ genotype + charge_status + genotype:charge_status}, the interaction
+coefficient is what carries differential charging, and no \code{contrast}
+specification refers to it. Use \code{\link[DESeq2:results]{DESeq2::resultsNames()}} to list the
+available coefficients.
+}
 \examples{
 \donttest{
 se <- create_clover(clover_example("ecoli/config.yaml"))
@@ -34,5 +46,12 @@ coldata$condition <- ifelse(
 )
 dds <- run_deseq(counts, coldata, design = ~condition)
 tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
+
+# An interaction coefficient, by name
+DESeq2::resultsNames(dds)
+tidy_deseq_results(dds, name = "condition_inf_vs_ctl")
 }
+}
+\seealso{
+\code{\link[=run_deseq]{run_deseq()}}, \code{\link[=charging_count_matrix]{charging_count_matrix()}}
 }

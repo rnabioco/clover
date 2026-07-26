@@ -207,15 +207,27 @@ run_deseq <- function(count_matrix, coldata, design, ...) {
 #' Extract results from a DESeq2 analysis and return a tidy tibble with
 #' tRNA identifiers and significance flags.
 #'
+#' Give either `contrast` or `name`, not both. A contrast compares two levels
+#' of one factor. A name addresses a single model coefficient, which is the
+#' only way to reach an interaction term: in a design such as
+#' `~ genotype + charge_status + genotype:charge_status`, the interaction
+#' coefficient is what carries differential charging, and no `contrast`
+#' specification refers to it. Use [DESeq2::resultsNames()] to list the
+#' available coefficients.
+#'
 #' @param dds A `DESeqDataSet` object (from [run_deseq()]).
 #' @param contrast A contrast specification: either a character vector of
 #'   length 3 (e.g., `c("condition", "mutant", "wildtype")`) or a list
 #'   for coefficient-based contrasts.
+#' @param name Name of a single model coefficient to extract, as returned by
+#'   [DESeq2::resultsNames()]. Use this for interaction terms.
 #' @param padj_cutoff Adjusted p-value threshold for significance.
 #'   Default `0.05`.
 #'
 #' @return A tibble with columns: `ref`, `log2FoldChange`, `lfcSE`,
 #'   `pvalue`, `padj`, and `significant` (logical).
+#'
+#' @seealso [run_deseq()], [charging_count_matrix()]
 #'
 #' @export
 #'
@@ -229,11 +241,38 @@ run_deseq <- function(count_matrix, coldata, design, ...) {
 #' )
 #' dds <- run_deseq(counts, coldata, design = ~condition)
 #' tidy_deseq_results(dds, contrast = c("condition", "inf", "ctl"))
+#'
+#' # An interaction coefficient, by name
+#' DESeq2::resultsNames(dds)
+#' tidy_deseq_results(dds, name = "condition_inf_vs_ctl")
 #' }
-tidy_deseq_results <- function(dds, contrast, padj_cutoff = 0.05) {
+tidy_deseq_results <- function(
+  dds,
+  contrast = NULL,
+  name = NULL,
+  padj_cutoff = 0.05
+) {
   rlang::check_installed("DESeq2", reason = "to extract results.")
 
-  res <- DESeq2::results(dds, contrast = contrast)
+  if (is.null(contrast) == is.null(name)) {
+    cli_abort(
+      "Supply exactly one of {.arg contrast} or {.arg name}."
+    )
+  }
+
+  if (!is.null(name)) {
+    available <- DESeq2::resultsNames(dds)
+    if (!name %in% available) {
+      cli_abort(c(
+        "{.val {name}} is not a coefficient of this model.",
+        i = "Available: {.val {available}}."
+      ))
+    }
+    res <- DESeq2::results(dds, name = name)
+  } else {
+    res <- DESeq2::results(dds, contrast = contrast)
+  }
+
   res_df <- as.data.frame(res)
 
   tibble::tibble(
