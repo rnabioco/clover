@@ -126,3 +126,111 @@ test_that("run_deseq and tidy_deseq_results work end-to-end", {
   expect_type(res$significant, "logical")
   expect_equal(nrow(res), n_genes)
 })
+
+# A small fitted model to extract coefficients from. With `interaction = TRUE`
+# the columns are split into charged and uncharged halves, which is the shape of
+# a differential charging design.
+synthetic_dds <- function(interaction = FALSE, n_genes = 20) {
+  set.seed(42)
+  n_samples <- 6
+  lambdas <- sample(50:500, n_genes, replace = TRUE)
+
+  counts <- matrix(
+    as.integer(rpois(n_genes * n_samples, lambda = rep(lambdas, n_samples))),
+    nrow = n_genes,
+    ncol = n_samples
+  )
+  rownames(counts) <- paste0("tRNA-", seq_len(n_genes))
+  colnames(counts) <- c("wt1", "wt2", "wt3", "mut1", "mut2", "mut3")
+
+  coldata <- data.frame(
+    sample_id = colnames(counts),
+    condition = factor(rep(c("wt", "mut"), each = 3), levels = c("wt", "mut")),
+    row.names = colnames(counts)
+  )
+
+  if (!interaction) {
+    return(suppressWarnings(run_deseq(counts, coldata, design = ~condition)))
+  }
+
+  counts <- cbind(counts, counts)
+  colnames(counts) <- c(
+    paste0(colnames(coldata)[0], rownames(coldata), "_uncharged"),
+    paste0(rownames(coldata), "_charged")
+  )
+
+  coldata <- data.frame(
+    condition = factor(rep(coldata$condition, 2), levels = c("wt", "mut")),
+    charge_status = factor(
+      rep(c("uncharged", "charged"), each = n_samples),
+      levels = c("uncharged", "charged")
+    ),
+    row.names = colnames(counts)
+  )
+
+  suppressWarnings(
+    run_deseq(counts, coldata, design = ~ condition * charge_status)
+  )
+}
+
+test_that("tidy_deseq_results extracts a coefficient by name", {
+  skip_if_not_installed("DESeq2")
+
+  dds <- synthetic_dds()
+  coef <- setdiff(DESeq2::resultsNames(dds), "Intercept")[1]
+
+  by_name <- tidy_deseq_results(dds, name = coef)
+
+  expect_s3_class(by_name, "tbl_df")
+  expect_named(
+    by_name,
+    c("ref", "log2FoldChange", "lfcSE", "pvalue", "padj", "significant")
+  )
+  # The single coefficient of a two-level factor is that factor's contrast, so
+  # the two routes have to agree.
+  by_contrast <- tidy_deseq_results(dds, contrast = c("condition", "mut", "wt"))
+  expect_equal(by_name$log2FoldChange, by_contrast$log2FoldChange)
+  expect_equal(by_name$pvalue, by_contrast$pvalue)
+})
+
+test_that("tidy_deseq_results reaches an interaction coefficient", {
+  skip_if_not_installed("DESeq2")
+
+  # An interaction term is unreachable through `contrast`, which is the reason
+  # `name` exists: this is the shape of a differential charging model.
+  dds <- synthetic_dds(interaction = TRUE)
+  coef <- grep("\\.", DESeq2::resultsNames(dds), value = TRUE)
+  expect_length(coef, 1)
+
+  res <- tidy_deseq_results(dds, name = coef)
+
+  expect_s3_class(res, "tbl_df")
+  expect_equal(nrow(res), 20)
+})
+
+test_that("tidy_deseq_results requires exactly one of contrast and name", {
+  skip_if_not_installed("DESeq2")
+
+  dds <- synthetic_dds()
+
+  expect_error(tidy_deseq_results(dds), "exactly one")
+  expect_error(
+    tidy_deseq_results(
+      dds,
+      contrast = c("condition", "mut", "wt"),
+      name = "condition_mut_vs_wt"
+    ),
+    "exactly one"
+  )
+})
+
+test_that("tidy_deseq_results rejects an unknown coefficient name", {
+  skip_if_not_installed("DESeq2")
+
+  dds <- synthetic_dds()
+
+  expect_error(
+    tidy_deseq_results(dds, name = "no_such_coefficient"),
+    "not a coefficient"
+  )
+})
