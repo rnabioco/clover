@@ -55,6 +55,11 @@ ORGANISMS = {
         "cm": CM_DIR / "TRNAinf-bact.cm",
         "sec_cm": CM_DIR / "TRNAinf-bact-SeC.cm",
     },
+    "GCE_suppressor_tRNAs": {
+        "fasta": FASTA_DIR / "gce-suppressor-tRNAs.fa",
+        "cm": CM_DIR / "TRNAinf-bact.cm",
+        "sec_cm": CM_DIR / "TRNAinf-bact-SeC.cm",
+    },
 }
 
 # Map GtRNAdb isotype names to MODOMICS subtype names
@@ -580,8 +585,11 @@ def find_innermost_acceptor_pair(structure: str) -> int:
                     else:
                         j += 1
 
-                if inner_stems >= 3:
-                    # This is the innermost acceptor pair enclosing junction
+                if inner_stems >= 2:
+                    # This is the innermost acceptor pair enclosing junction.
+                    # >=2 (not >=3) because some tRNAs (e.g. pyrrolysine
+                    # tRNA) lack a D-stem entirely, leaving only 2 real
+                    # stem branches (AC, T) at the junction.
                     return i
 
             i += 1
@@ -599,8 +607,9 @@ def find_internal_stem_starts(structure: str, m_pos: int) -> list[int]:
 
     Starting from the m_pos (innermost acceptor pair), walk the junction
     and return the position of the first opening bracket of each internal
-    stem. Standard tRNAs have 3 stems (D, AC, T) while long variable arm
-    tRNAs have 4 (D, AC, variable arm, T).
+    stem. Standard tRNAs have 3 stems (D, AC, T), long variable arm tRNAs
+    have 4 (D, AC, variable arm, T), and tRNAs lacking a D-stem (e.g.
+    pyrrolysine tRNA) have 2 (AC, T).
     """
     stack = []
     pairs = {}
@@ -694,6 +703,17 @@ def create_stockholm(name: str, sequence: str, structure: str) -> str:
             "J1/base 0 4.63116 0.91097 0 0 0 "
             "J2/base 0 3.5 -1.5 0 0 -45 "
             "J3/base 0 2.32414 -2.32817 0 0 -90 "
+            "backbonelen 1 1"
+        )
+    elif n_stems == 2:
+        # No D-stem (e.g. pyrrolysine tRNA): only AC and T are real stem
+        # branches. Reuse the AC/T vectors from the standard 3-stem case
+        # (dropping the D vector) so the D-loop is auto-placed as a bulge.
+        directives.append(
+            "#=GF R2R multistem_junction_bulgey j "
+            "disable_auto_flip_place_explicit "
+            "J0/base 0 4.63116 0.91097 0 0 0 "
+            "J1/base 0 2.32414 -2.32817 0 0 -90 "
             "backbonelen 1 1"
         )
     else:
