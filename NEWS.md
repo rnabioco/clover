@@ -1,5 +1,7 @@
 # clover 0.1.0.9000 (development version)
 
+* `plot_tRNA_structure()` gains a new bundled organism, "GCE suppressor tRNAs", with cloverleaf structures for the *Methanosarcina* pyrrolysyl-tRNA and *Methanocaldococcus jannaschii* tyrosyl-tRNA amber suppressors used in genetic code expansion. Use `structure_trnas("GCE suppressor tRNAs")` to list them.
+
 # clover 0.1.0
 
 * `read_bedmethyl()` reads per-position modification percentages from bedMethyl files produced by `modkit pileup`, enabling integration of nanopore modification data with the heatmap workflow.

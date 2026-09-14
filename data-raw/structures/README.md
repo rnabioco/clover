@@ -17,13 +17,17 @@ This provides Python (3.11+), lxml, R2R, and Infernal (cmalign).
 
 ### FASTA sequences (`fasta/`)
 
-Mature tRNA sequences (without introns) for each organism. These are sourced
+Mature tRNA sequences (without introns) for each organism. Most are sourced
 from [GtRNAdb](http://gtrnadb.ucsc.edu/) and include only one representative
 sequence per gene copy (named `tRNA-{AA}-{Anticodon}-{locus}-{copy}`).
 
 - `eschColi_K_12_MG1655-mature-tRNAs.fa`
 - `sacCer3-mature-tRNAs.fa`
 - `hg38-mature-tRNAs.fa`
+- `phageT4-tRNAs.fa`
+- `gce-suppressor-tRNAs.fa` -- engineered orthogonal amber-suppressor tRNAs
+  used for genetic code expansion (not from GtRNAdb): the *Methanosarcina*
+  pyrrolysyl-tRNA and *Methanocaldococcus jannaschii* tyrosyl-tRNA
 
 ### Covariance models
 
@@ -87,12 +91,20 @@ included in the output.
 | *Escherichia coli* K-12 MG1655 | `TRNAinf-bact.cm` | 39 |
 | *Saccharomyces cerevisiae* S288c | `TRNAinf-euk.cm` | 38 |
 | *Homo sapiens* GRCh38 | `TRNAinf-euk.cm` | 47 |
+| T4 phage | `TRNAinf-bact.cm` | 8 |
+| GCE suppressor tRNAs | `TRNAinf-bact.cm` | 2 |
 
 ## Adding a new organism
 
 1. Obtain a mature tRNA FASTA (no introns) and place it in `fasta/`
 2. Add an entry to `ORGANISMS` in `generate_svgs.py` with the FASTA path and
-   the appropriate CM (`TRNAinf-bact.cm` or `TRNAinf-euk.cm`)
+   the appropriate CM (`TRNAinf-bact.cm` or `TRNAinf-euk.cm`) -- if unsure
+   which CM fits best, run `cmalign` against both and use whichever gives
+   the higher bit score
 3. Optionally add MODOMICS data to `inst/extdata/modomics/` to filter to
    isotypes with known modifications
 4. Re-run the pipeline
+
+Layout generation handles tRNAs with 3 stems (D, AC, T), 4 stems (long
+variable arm, e.g. Leu/Ser), or 2 stems (no D-stem, e.g. pyrrolysyl-tRNA,
+whose D-arm is a simple unpaired loop rather than a stem-loop).
