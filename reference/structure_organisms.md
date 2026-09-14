@@ -18,6 +18,7 @@ A character vector of organism names.
 
 ``` r
 structure_organisms()
-#> [1] "Escherichia coli"         "Homo sapiens"            
-#> [3] "Saccharomyces cerevisiae" "T4 phage"                
+#> [1] "Escherichia coli"         "GCE suppressor tRNAs"    
+#> [3] "Homo sapiens"             "Saccharomyces cerevisiae"
+#> [5] "T4 phage"                
 ```

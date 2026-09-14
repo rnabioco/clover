@@ -2,6 +2,13 @@
 
 ## clover 0.1.0.9000 (development version)
 
+- [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
+  gains a new bundled organism, “GCE suppressor tRNAs”, with cloverleaf
+  structures for the *Methanosarcina* pyrrolysyl-tRNA and
+  *Methanocaldococcus jannaschii* tyrosyl-tRNA amber suppressors used in
+  genetic code expansion. Use `structure_trnas("GCE suppressor tRNAs")`
+  to list them.
+
 ## clover 0.1.0
 
 - [`read_bedmethyl()`](https://rnabioco.github.io/clover/reference/read_bedmethyl.md)

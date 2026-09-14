@@ -297,8 +297,9 @@ and text color changes onto these structures.
 
 # List available organisms and tRNAs
 structure_organisms()
-#> [1] "Escherichia coli"         "Homo sapiens"            
-#> [3] "Saccharomyces cerevisiae" "T4 phage"
+#> [1] "Escherichia coli"         "GCE suppressor tRNAs"    
+#> [3] "Homo sapiens"             "Saccharomyces cerevisiae"
+#> [5] "T4 phage"
 head(structure_trnas("Escherichia coli"))
 #> [1] "tRNA-Ala-GGC" "tRNA-Ala-TGC" "tRNA-Arg-ACG" "tRNA-Arg-CCG" "tRNA-Arg-CCT"
 #> [6] "tRNA-Arg-TCT"
@@ -426,9 +427,9 @@ article](https://rnabioco.github.io/clover/articles/rewiring.html).
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -451,37 +452,37 @@ sessionInfo()
 #>  [1] tidyr_1.3.2                 dplyr_1.2.1                
 #>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
 #>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
-#>  [7] IRanges_2.46.0              S4Vectors_0.50.1           
+#>  [7] IRanges_2.46.0              S4Vectors_0.50.2           
 #>  [9] BiocGenerics_0.58.1         generics_0.1.4             
 #> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
 #> [13] clover_0.1.0.9000          
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyselect_1.2.1    farver_2.1.2        Biostrings_2.80.1  
+#>  [1] tidyselect_1.2.1    farver_2.1.2        Biostrings_2.80.2  
 #>  [4] S7_0.2.2            fastmap_1.2.0       digest_0.6.39      
 #>  [7] lifecycle_1.0.5     pwalign_1.8.0       magrittr_2.0.5     
-#> [10] compiler_4.6.0      rlang_1.2.0         sass_0.4.10        
-#> [13] tools_4.6.0         utf8_1.2.6          yaml_2.3.12        
-#> [16] gt_1.3.0            knitr_1.51          S4Arrays_1.12.0    
+#> [10] compiler_4.6.1      rlang_1.3.0         sass_0.4.10        
+#> [13] tools_4.6.1         utf8_1.2.6          yaml_2.3.12        
+#> [16] gt_1.3.0            knitr_1.52          S4Arrays_1.12.0    
 #> [19] labeling_0.4.3      htmlwidgets_1.6.4   bit_4.6.0          
-#> [22] DelayedArray_0.38.2 xml2_1.5.2          RColorBrewer_1.1-3 
-#> [25] abind_1.4-8         BiocParallel_1.46.0 withr_3.0.2        
-#> [28] purrr_1.2.2         desc_1.4.3          grid_4.6.0         
+#> [22] DelayedArray_0.38.2 xml2_1.6.0          RColorBrewer_1.1-3 
+#> [25] abind_1.4-8         BiocParallel_1.46.0 withr_3.0.3        
+#> [28] purrr_1.2.2         desc_1.4.3          grid_4.6.1         
 #> [31] ggplot2_4.0.3       scales_1.4.0        cli_3.6.6          
-#> [34] rmarkdown_2.31      crayon_1.5.3        ragg_1.5.2         
-#> [37] tzdb_0.5.0          commonmark_2.0.0    cachem_1.1.0       
-#> [40] stringr_1.6.0       parallel_4.6.0      XVector_0.52.0     
-#> [43] vctrs_0.7.3         Matrix_1.7-5        jsonlite_2.0.0     
-#> [46] litedown_0.9        hms_1.1.4           bit64_4.8.2        
-#> [49] ggrepel_0.9.8       systemfonts_1.3.2   locfit_1.5-9.12    
-#> [52] jquerylib_0.1.4     glue_1.8.1          reactR_0.6.1       
-#> [55] pkgdown_2.2.0       codetools_0.2-20    ggtext_0.1.2       
-#> [58] cowplot_1.2.0       stringi_1.8.7       gtable_0.3.6       
-#> [61] tibble_3.3.1        pillar_1.11.1       htmltools_0.5.9    
-#> [64] reactable_0.4.5     R6_2.6.1            textshaping_1.0.5  
-#> [67] vroom_1.7.1         evaluate_1.0.5      lattice_0.22-9     
-#> [70] markdown_2.0        readr_2.2.0         gridtext_0.1.6     
-#> [73] bslib_0.11.0        Rcpp_1.1.1-1.1      SparseArray_1.12.2 
-#> [76] DESeq2_1.52.0       xfun_0.57           fs_2.1.0           
-#> [79] forcats_1.0.1       pkgconfig_2.0.3
+#> [34] rmarkdown_2.32      crayon_1.5.3        ragg_1.5.2         
+#> [37] otel_0.2.0          tzdb_0.5.0          commonmark_2.0.0   
+#> [40] cachem_1.1.0        stringr_1.6.0       parallel_4.6.1     
+#> [43] XVector_0.52.0      vctrs_0.7.3         Matrix_1.7-5       
+#> [46] jsonlite_2.0.0      litedown_0.11       hms_1.1.4          
+#> [49] bit64_4.8.6         ggrepel_0.9.8       systemfonts_1.3.2  
+#> [52] locfit_1.5-9.12     jquerylib_0.1.4     glue_1.8.1         
+#> [55] reactR_0.6.1        pkgdown_2.2.1       codetools_0.2-20   
+#> [58] ggtext_0.2.0        cowplot_1.2.0       stringi_1.8.9      
+#> [61] gtable_0.3.6        tibble_3.3.1        pillar_1.11.1      
+#> [64] htmltools_0.5.9     reactable_0.4.5     R6_2.6.1           
+#> [67] textshaping_1.0.5   vroom_1.7.1         evaluate_1.0.5     
+#> [70] lattice_0.22-9      markdown_2.0        readr_2.2.0        
+#> [73] gridtext_0.1.6      bslib_0.12.0        Rcpp_1.1.2         
+#> [76] SparseArray_1.12.2  DESeq2_1.52.0       xfun_0.60          
+#> [79] forcats_1.0.1       fs_2.1.0            pkgconfig_2.0.3
 ```

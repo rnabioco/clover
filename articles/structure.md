@@ -25,8 +25,9 @@ to list tRNAs within an organism.
 ``` r
 
 structure_organisms()
-#> [1] "Escherichia coli"         "Homo sapiens"            
-#> [3] "Saccharomyces cerevisiae" "T4 phage"
+#> [1] "Escherichia coli"         "GCE suppressor tRNAs"    
+#> [3] "Homo sapiens"             "Saccharomyces cerevisiae"
+#> [5] "T4 phage"
 ```
 
 ``` r
@@ -388,9 +389,9 @@ png <- structure_to_png(svg, width = 600)
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -413,39 +414,40 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.42.0 gtable_0.3.6               
-#>  [3] xfun_0.57                   bslib_0.11.0               
+#>  [3] xfun_0.60                   bslib_0.12.0               
 #>  [5] ggplot2_4.0.3               htmlwidgets_1.6.4          
 #>  [7] Biobase_2.72.0              lattice_0.22-9             
 #>  [9] tzdb_0.5.0                  vctrs_0.7.3                
-#> [11] tools_4.6.0                 generics_0.1.4             
-#> [13] parallel_4.6.0              stats4_4.6.0               
+#> [11] tools_4.6.1                 generics_0.1.4             
+#> [13] parallel_4.6.1              stats4_4.6.1               
 #> [15] tibble_3.3.1                pkgconfig_2.0.3            
 #> [17] Matrix_1.7-5                RColorBrewer_1.1-3         
 #> [19] S7_0.2.2                    desc_1.4.3                 
-#> [21] S4Vectors_0.50.1            lifecycle_1.0.5            
-#> [23] compiler_4.6.0              farver_2.1.2               
-#> [25] textshaping_1.0.5           Biostrings_2.80.1          
+#> [21] S4Vectors_0.50.2            lifecycle_1.0.5            
+#> [23] compiler_4.6.1              farver_2.1.2               
+#> [25] textshaping_1.0.5           Biostrings_2.80.2          
 #> [27] Seqinfo_1.2.0               htmltools_0.5.9            
 #> [29] sass_0.4.10                 yaml_2.3.12                
-#> [31] pillar_1.11.1               pkgdown_2.2.0              
+#> [31] pkgdown_2.2.1               pillar_1.11.1              
 #> [33] crayon_1.5.3                jquerylib_0.1.4            
 #> [35] DelayedArray_0.38.2         cachem_1.1.0               
 #> [37] abind_1.4-8                 tidyselect_1.2.1           
 #> [39] digest_0.6.39               purrr_1.2.2                
-#> [41] fastmap_1.2.0               grid_4.6.0                 
+#> [41] fastmap_1.2.0               grid_4.6.1                 
 #> [43] cli_3.6.6                   SparseArray_1.12.2         
 #> [45] magrittr_2.0.5              S4Arrays_1.12.0            
 #> [47] utf8_1.2.6                  readr_2.2.0                
-#> [49] withr_3.0.2                 scales_1.4.0               
-#> [51] bit64_4.8.2                 rmarkdown_2.31             
+#> [49] withr_3.0.3                 scales_1.4.0               
+#> [51] bit64_4.8.6                 rmarkdown_2.32             
 #> [53] pwalign_1.8.0               XVector_0.52.0             
 #> [55] matrixStats_1.5.0           bit_4.6.0                  
-#> [57] ragg_1.5.2                  hms_1.1.4                  
-#> [59] evaluate_1.0.5              knitr_1.51                 
-#> [61] GenomicRanges_1.64.0        IRanges_2.46.0             
-#> [63] rlang_1.2.0                 glue_1.8.1                 
-#> [65] xml2_1.5.2                  BiocGenerics_0.58.1        
-#> [67] vroom_1.7.1                 jsonlite_2.0.0             
-#> [69] R6_2.6.1                    MatrixGenerics_1.24.0      
-#> [71] systemfonts_1.3.2           fs_2.1.0
+#> [57] otel_0.2.0                  ragg_1.5.2                 
+#> [59] hms_1.1.4                   evaluate_1.0.5             
+#> [61] knitr_1.52                  GenomicRanges_1.64.0       
+#> [63] IRanges_2.46.0              rlang_1.3.0                
+#> [65] glue_1.8.1                  xml2_1.6.0                 
+#> [67] BiocGenerics_0.58.1         vroom_1.7.1                
+#> [69] jsonlite_2.0.0              R6_2.6.1                   
+#> [71] MatrixGenerics_1.24.0       systemfonts_1.3.2          
+#> [73] fs_2.1.0
 ```

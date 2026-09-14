@@ -626,9 +626,9 @@ plot_mod_heatmap(
 ``` r
 
 sessionInfo()
-#> R version 4.6.0 (2026-04-24)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -651,45 +651,46 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.42.0 gtable_0.3.6               
-#>  [3] xfun_0.57                   bslib_0.11.0               
+#>  [3] xfun_0.60                   bslib_0.12.0               
 #>  [5] ggplot2_4.0.3               htmlwidgets_1.6.4          
 #>  [7] Biobase_2.72.0              lattice_0.22-9             
 #>  [9] tzdb_0.5.0                  vctrs_0.7.3                
-#> [11] tools_4.6.0                 generics_0.1.4             
-#> [13] stats4_4.6.0                parallel_4.6.0             
+#> [11] tools_4.6.1                 generics_0.1.4             
+#> [13] parallel_4.6.1              stats4_4.6.1               
 #> [15] tibble_3.3.1                pkgconfig_2.0.3            
 #> [17] Matrix_1.7-5                RColorBrewer_1.1-3         
 #> [19] S7_0.2.2                    desc_1.4.3                 
-#> [21] S4Vectors_0.50.1            lifecycle_1.0.5            
-#> [23] stringr_1.6.0               compiler_4.6.0             
-#> [25] farver_2.1.2                Biostrings_2.80.1          
+#> [21] S4Vectors_0.50.2            lifecycle_1.0.5            
+#> [23] stringr_1.6.0               compiler_4.6.1             
+#> [25] farver_2.1.2                Biostrings_2.80.2          
 #> [27] textshaping_1.0.5           Seqinfo_1.2.0              
-#> [29] litedown_0.9                htmltools_0.5.9            
+#> [29] litedown_0.11               htmltools_0.5.9            
 #> [31] sass_0.4.10                 yaml_2.3.12                
-#> [33] pillar_1.11.1               pkgdown_2.2.0              
+#> [33] pkgdown_2.2.1               pillar_1.11.1              
 #> [35] crayon_1.5.3                jquerylib_0.1.4            
 #> [37] tidyr_1.3.2                 DelayedArray_0.38.2        
 #> [39] cachem_1.1.0                abind_1.4-8                
 #> [41] commonmark_2.0.0            tidyselect_1.2.1           
-#> [43] digest_0.6.39               stringi_1.8.7              
+#> [43] digest_0.6.39               stringi_1.8.9              
 #> [45] purrr_1.2.2                 labeling_0.4.3             
 #> [47] cowplot_1.2.0               fastmap_1.2.0              
-#> [49] grid_4.6.0                  cli_3.6.6                  
+#> [49] grid_4.6.1                  cli_3.6.6                  
 #> [51] SparseArray_1.12.2          magrittr_2.0.5             
 #> [53] patchwork_1.3.2             S4Arrays_1.12.0            
 #> [55] utf8_1.2.6                  readr_2.2.0                
-#> [57] withr_3.0.2                 scales_1.4.0               
-#> [59] bit64_4.8.2                 rmarkdown_2.31             
-#> [61] pwalign_1.8.0               XVector_0.52.0             
-#> [63] matrixStats_1.5.0           ggtext_0.1.2               
-#> [65] bit_4.6.0                   ragg_1.5.2                 
-#> [67] hms_1.1.4                   evaluate_1.0.5             
-#> [69] knitr_1.51                  GenomicRanges_1.64.0       
-#> [71] IRanges_2.46.0              markdown_2.0               
-#> [73] rlang_1.2.0                 Rcpp_1.1.1-1.1             
-#> [75] gridtext_0.1.6              glue_1.8.1                 
-#> [77] xml2_1.5.2                  BiocGenerics_0.58.1        
-#> [79] vroom_1.7.1                 jsonlite_2.0.0             
-#> [81] R6_2.6.1                    MatrixGenerics_1.24.0      
-#> [83] systemfonts_1.3.2           fs_2.1.0
+#> [57] withr_3.0.3                 scales_1.4.0               
+#> [59] bit64_4.8.6                 pwalign_1.8.0              
+#> [61] rmarkdown_2.32              XVector_0.52.0             
+#> [63] matrixStats_1.5.0           ggtext_0.2.0               
+#> [65] bit_4.6.0                   otel_0.2.0                 
+#> [67] ragg_1.5.2                  hms_1.1.4                  
+#> [69] evaluate_1.0.5              knitr_1.52                 
+#> [71] GenomicRanges_1.64.0        IRanges_2.46.0             
+#> [73] markdown_2.0                rlang_1.3.0                
+#> [75] Rcpp_1.1.2                  gridtext_0.1.6             
+#> [77] glue_1.8.1                  xml2_1.6.0                 
+#> [79] BiocGenerics_0.58.1         vroom_1.7.1                
+#> [81] jsonlite_2.0.0              R6_2.6.1                   
+#> [83] MatrixGenerics_1.24.0       systemfonts_1.3.2          
+#> [85] fs_2.1.0
 ```
