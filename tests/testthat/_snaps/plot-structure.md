@@ -22,16 +22,8 @@
       plot_tRNA_structure("tRNA-Fake-XXX", org)
     Condition
       Error in `plot_tRNA_structure()`:
-      ! No structure SVG found for "tRNA-Fake-XXX".
-      i Use `structure_trnas()` to list available tRNAs.
-
-# structure_to_png errors for missing file
-
-    Code
-      structure_to_png("nonexistent.svg")
-    Condition
-      Error in `structure_to_png()`:
-      ! SVG file not found: 'nonexistent.svg'.
+      ! No cloverleaf structure SVG found for "tRNA-Fake-XXX".
+      i Use `structure_trnas("Escherichia coli", layout = "cloverleaf")` to list available tRNAs.
 
 # structure_html errors on missing file
 
@@ -40,4 +32,13 @@
     Condition
       Error in `structure_html()`:
       ! SVG file not found: 'nonexistent.svg'.
+
+# plot_tRNA_structure(layout = 'elbow') errors clearly when missing
+
+    Code
+      plot_tRNA_structure("tRNA-Leu-CAA", "Escherichia coli", layout = "elbow")
+    Condition
+      Error in `plot_tRNA_structure()`:
+      ! No elbow structure SVG found for "tRNA-Leu-CAA".
+      i Use `structure_trnas("Escherichia coli", layout = "elbow")` to list available tRNAs.
 
