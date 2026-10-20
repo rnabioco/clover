@@ -105,6 +105,7 @@ reference:
     - clover_example
     - dna_to_rna_anticodon
     - shorten_trna_names
+    - normalize_trna_id
     - list_pipeline_files
     - order_sprinzl_positions
     - trna_regions

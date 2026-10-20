@@ -291,3 +291,34 @@ test_that("plot_tRNA_structure respects position_markers = FALSE", {
   end_labels <- xml2::xml_find_first(doc, ".//*[@id='clover-end-labels']")
   expect_false(is.na(end_labels))
 })
+
+test_that("plot_tRNA_structure keeps only modifications for the tRNA drawn", {
+  skip_if(
+    length(structure_organisms()) == 0,
+    "No bundled structure SVGs"
+  )
+  org <- "Escherichia coli"
+  skip_if_not(org %in% structure_organisms())
+  mods <- dplyr::tibble(
+    ref = c("host-tRNA-Arg-CCG-1-1", "host-tRNA-Ala-TGC-1-1"),
+    pos = c(9L, 9L),
+    mod1 = c("m1G", "m1G")
+  )
+  expect_warning(
+    svg <- plot_tRNA_structure("tRNA-Arg-CCG", org, modifications = mods),
+    "Dropped 1 row"
+  )
+  expect_true(file.exists(svg))
+  expect_error(
+    plot_tRNA_structure("tRNA-Arg-CCG", org, modifications = mods[2, ]),
+    "match"
+  )
+  # No `ref` column: taken as already filtered, as before
+  expect_no_warning(
+    plot_tRNA_structure(
+      "tRNA-Arg-CCG",
+      org,
+      modifications = mods[1, c("pos", "mod1")]
+    )
+  )
+})

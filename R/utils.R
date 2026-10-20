@@ -56,3 +56,72 @@ shorten_trna_names <- function(x, strip_prefix = "^(host|phage)-") {
     sub("^tRNA-", "", x = _) |>
     sub("-\\d+-\\d+$", "", x = _)
 }
+
+#' Normalise tRNA identifiers to one canonical form
+#'
+#' The readers, Sprinzl coordinate tables, [modomics_mods()] and
+#' [plot_tRNA_structure()] spell the same tRNA differently
+#' (`host-tRNA-Ala-GGC-1-1`, `nuc-tRNA-Ala-AGC-1-1`, `tRNA-Ile-GAU-1-1`,
+#' `trna-Gln-TTG`). `normalize_trna_id()` maps them onto one form so that
+#' tables can be joined on the result.
+#'
+#' The canonical form is `tRNA-<isotype>-<anticodon>`, with the anticodon in
+#' DNA letters (T, not U), for example `tRNA-Ala-GGC`. It drops:
+#'
+#' - the source prefix: `host-`, `phage-`, `nuc-` or `mito-`;
+#' - a trailing `-uncharged` (the reference variant in charging tables);
+#' - the gene-copy suffix (`-1-1`), unless `copy = TRUE`.
+#'
+#' It also upper-cases the `tRNA` stem and converts U to T in the anticodon.
+#' Isotype names such as `Ile2`, `fMet` and `SeC` are kept as written. This
+#' is the same form [plot_tRNA_structure()] uses for its `trna` argument.
+#'
+#' Copy suffixes are not stable between sources: the same gene can be
+#' `tRNA-Thr-CGT-1-2` in one table and `tRNA-Thr-CGT-2-1` in another. The
+#' default therefore matches at the isodecoder level (isotype and anticodon).
+#' Use `copy = TRUE` only when both tables come from the same source.
+#'
+#' The function is idempotent. A string that is not a tRNA identifier in
+#' one of these forms (for example `"tRNA-Ala"`, which has no anticodon)
+#' becomes `NA`, so `x[is.na(normalize_trna_id(x))]` lists what did not
+#' resolve.
+#'
+#' @param x Character vector of tRNA identifiers.
+#' @param copy If `TRUE`, keep the gene-copy suffix when `x` has one.
+#'
+#' @return Character vector the same length as `x`.
+#'
+#' @export
+#' @examples
+#' normalize_trna_id(c(
+#'   "host-tRNA-Ala-GGC-1-1",
+#'   "nuc-tRNA-Ala-AGC-1-1",
+#'   "tRNA-Ile-GAU-1-1",
+#'   "mito-tRNA-fMet-CAU",
+#'   "tRNA-Gly-GCC-1-1-uncharged"
+#' ))
+#' normalize_trna_id("phage-tRNA-Thr-CGT-2-1", copy = TRUE)
+normalize_trna_id <- function(x, copy = FALSE) {
+  x <- as.character(x)
+  if (length(x) == 0) {
+    return(character())
+  }
+  parts <- stringr::str_match(
+    x,
+    paste0(
+      "^(?:(?:host|phage|nuc|mito)-)?[tT][rR][nN][aA]-",
+      "([A-Za-z0-9]+)-([ACGTUacgtu]{3})",
+      "((?:-\\d+){0,2})(?:-uncharged)?$"
+    )
+  )
+  suffix <- if (copy) parts[, 4] else ""
+  out <- paste0(
+    "tRNA-",
+    parts[, 2],
+    "-",
+    chartr("U", "T", toupper(parts[, 3])),
+    suffix
+  )
+  out[is.na(parts[, 1])] <- NA_character_
+  out
+}
