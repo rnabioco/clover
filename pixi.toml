@@ -6,7 +6,7 @@ platforms = ["linux-64"]
 version = "0.1.0"
 
 [tasks]
-setup = "Rscript -e \"if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/'); pak::local_install_dev_deps(upgrade = FALSE); pak::pak(c('devtools', 'roxygen2', 'usethis', 'pkgdown', 'rnabioco/rbitemplate'))\""
+setup = "Rscript -e \"if (!requireNamespace('pak', quietly = TRUE)) install.packages('pak', repos = 'https://r-lib.github.io/p/pak/stable/'); pak::local_install_dev_deps(upgrade = FALSE); pak::pak(c('devtools', 'roxygen2', 'usethis', 'pkgdown', 'decor', 'rnabioco/rbitemplate'))\""
 document = "Rscript -e \"devtools::document()\""
 test = "Rscript -e \"devtools::test()\""
 check = "Rscript -e \"devtools::check()\""
