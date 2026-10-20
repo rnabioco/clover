@@ -190,6 +190,7 @@ assign_sprinzl <- function(aln_seq, rf_chars, cm_map) {
   seq_pos <- 0L
   prev_cm <- 0L # track previous consensus column for insert labeling
   rows <- list()
+  loop_rows <- integer(0) # rows in the 44-48 variable loop, for renumbering
 
   for (i in seq_along(aln_chars)) {
     is_cons <- rf_chars[i] != "."
@@ -233,6 +234,9 @@ assign_sprinzl <- function(aln_seq, rf_chars, cm_map) {
         residue = residue,
         stringsAsFactors = FALSE
       )
+      if (cm_col %in% c(44, 45, 64, 65)) {
+        loop_rows <- c(loop_rows, length(rows))
+      }
       prev_cm <- cm_col
     } else {
       # Insert position: label based on context
@@ -278,6 +282,23 @@ assign_sprinzl <- function(aln_seq, rf_chars, cm_map) {
         residue = residue,
         stringsAsFactors = FALSE
       )
+      if (prev_cm == 64) {
+        loop_rows <- c(loop_rows, length(rows))
+      }
+    }
+  }
+
+  # Variable loop without an arm: the CM columns 44, 45, 64, the insert after
+  # 64 and 65 carry 44, 45, 46, 47 and 48, which is right for a five-nucleotide
+  # loop. A four-nucleotide loop is numbered 44, 45, 46, 48 whichever of those
+  # five slots it fills, so it is numbered by its length, like the e-positions.
+  has_arm <- any(
+    vapply(rows, \(r) grepl("^e", r$sprinzl_label), logical(1)),
+    na.rm = TRUE
+  )
+  if (length(loop_rows) == 4 && !has_arm) {
+    for (k in seq_along(loop_rows)) {
+      rows[[loop_rows[k]]]$sprinzl_label <- c("44", "45", "46", "48")[k]
     }
   }
 
