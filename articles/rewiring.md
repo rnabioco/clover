@@ -224,13 +224,13 @@ sessionInfo()
 #>  [1] dplyr_1.2.1                 SummarizedExperiment_1.42.0
 #>  [3] Biobase_2.72.0              GenomicRanges_1.64.0       
 #>  [5] Seqinfo_1.2.0               IRanges_2.46.0             
-#>  [7] S4Vectors_0.50.2            BiocGenerics_0.58.1        
+#>  [7] S4Vectors_0.50.3            BiocGenerics_0.58.1        
 #>  [9] generics_0.1.4              MatrixGenerics_1.24.0      
 #> [11] matrixStats_1.5.0           clover_0.1.0.9000          
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] shape_1.4.6.1       circlize_0.4.18     gtable_0.3.6       
-#>  [4] xfun_0.60           bslib_0.12.0        ggplot2_4.0.3      
+#>  [4] xfun_0.62           bslib_0.12.0        ggplot2_4.0.3      
 #>  [7] GlobalOptions_0.1.4 htmlwidgets_1.6.4   ggrepel_0.9.8      
 #> [10] lattice_0.22-9      tzdb_0.5.0          vctrs_0.7.3        
 #> [13] tools_4.6.1         parallel_4.6.1      tibble_3.3.1       
@@ -244,8 +244,8 @@ sessionInfo()
 #> [37] abind_1.4-8         tidyselect_1.2.1    digest_0.6.39      
 #> [40] stringi_1.8.9       purrr_1.2.2         labeling_0.4.3     
 #> [43] cowplot_1.2.0       fastmap_1.2.0       grid_4.6.1         
-#> [46] colorspace_2.1-3    cli_3.6.6           SparseArray_1.12.2 
-#> [49] magrittr_2.0.5      S4Arrays_1.12.0     utf8_1.2.6         
+#> [46] colorspace_2.1-4    cli_3.6.6           SparseArray_1.12.3 
+#> [49] magrittr_2.0.5      S4Arrays_1.12.1     utf8_1.2.6         
 #> [52] readr_2.2.0         withr_3.0.3         scales_1.4.0       
 #> [55] bit64_4.8.6         rmarkdown_2.32      XVector_0.52.0     
 #> [58] bit_4.6.0           otel_0.2.0          ragg_1.5.2         

@@ -414,7 +414,7 @@ sessionInfo()
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] SummarizedExperiment_1.42.0 gtable_0.3.6               
-#>  [3] xfun_0.60                   bslib_0.12.0               
+#>  [3] xfun_0.62                   bslib_0.12.0               
 #>  [5] ggplot2_4.0.3               htmlwidgets_1.6.4          
 #>  [7] Biobase_2.72.0              lattice_0.22-9             
 #>  [9] tzdb_0.5.0                  vctrs_0.7.3                
@@ -423,7 +423,7 @@ sessionInfo()
 #> [15] tibble_3.3.1                pkgconfig_2.0.3            
 #> [17] Matrix_1.7-5                RColorBrewer_1.1-3         
 #> [19] S7_0.2.2                    desc_1.4.3                 
-#> [21] S4Vectors_0.50.2            lifecycle_1.0.5            
+#> [21] S4Vectors_0.50.3            lifecycle_1.0.5            
 #> [23] compiler_4.6.1              farver_2.1.2               
 #> [25] textshaping_1.0.5           Biostrings_2.80.2          
 #> [27] Seqinfo_1.2.0               htmltools_0.5.9            
@@ -434,8 +434,8 @@ sessionInfo()
 #> [37] abind_1.4-8                 tidyselect_1.2.1           
 #> [39] digest_0.6.39               purrr_1.2.2                
 #> [41] fastmap_1.2.0               grid_4.6.1                 
-#> [43] cli_3.6.6                   SparseArray_1.12.2         
-#> [45] magrittr_2.0.5              S4Arrays_1.12.0            
+#> [43] cli_3.6.6                   SparseArray_1.12.3         
+#> [45] magrittr_2.0.5              S4Arrays_1.12.1            
 #> [47] utf8_1.2.6                  readr_2.2.0                
 #> [49] withr_3.0.3                 scales_1.4.0               
 #> [51] bit64_4.8.6                 rmarkdown_2.32             

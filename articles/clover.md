@@ -452,7 +452,7 @@ sessionInfo()
 #>  [1] tidyr_1.3.2                 dplyr_1.2.1                
 #>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
 #>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
-#>  [7] IRanges_2.46.0              S4Vectors_0.50.2           
+#>  [7] IRanges_2.46.0              S4Vectors_0.50.3           
 #>  [9] BiocGenerics_0.58.1         generics_0.1.4             
 #> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
 #> [13] clover_0.1.0.9000          
@@ -463,7 +463,7 @@ sessionInfo()
 #>  [7] lifecycle_1.0.5     pwalign_1.8.0       magrittr_2.0.5     
 #> [10] compiler_4.6.1      rlang_1.3.0         sass_0.4.10        
 #> [13] tools_4.6.1         utf8_1.2.6          yaml_2.3.12        
-#> [16] gt_1.3.0            knitr_1.52          S4Arrays_1.12.0    
+#> [16] gt_1.4.0            knitr_1.52          S4Arrays_1.12.1    
 #> [19] labeling_0.4.3      htmlwidgets_1.6.4   bit_4.6.0          
 #> [22] DelayedArray_0.38.2 xml2_1.6.0          RColorBrewer_1.1-3 
 #> [25] abind_1.4-8         BiocParallel_1.46.0 withr_3.0.3        
@@ -483,6 +483,6 @@ sessionInfo()
 #> [67] textshaping_1.0.5   vroom_1.7.1         evaluate_1.0.5     
 #> [70] lattice_0.22-9      markdown_2.0        readr_2.2.0        
 #> [73] gridtext_0.1.6      bslib_0.12.0        Rcpp_1.1.2         
-#> [76] SparseArray_1.12.2  DESeq2_1.52.0       xfun_0.60          
+#> [76] SparseArray_1.12.3  DESeq2_1.52.0       xfun_0.62          
 #> [79] forcats_1.0.1       fs_2.1.0            pkgconfig_2.0.3
 ```
