@@ -82,3 +82,22 @@ test_that("trna_regions CCA positions are 74-76", {
   regions <- trna_regions()
   expect_equal(regions$cca, 74L:76L)
 })
+
+test_that("a 4-nt variable loop is numbered 44, 45, 46, 48, not 44, 46, 47, 48", {
+  # Tables built by data-raw/sprinzl.R. A tRNA with a variable arm (e labels)
+  # is numbered differently and is not checked here.
+  for (name in c("ecoliK12", "phageT4")) {
+    coords <- read_sprinzl_coords(
+      clover_example(paste0("sprinzl/", name, "_global_coords.tsv.gz"))
+    )
+    buggy <- coords |>
+      dplyr::summarise(
+        buggy = !any(grepl("^e", sprinzl_label)) &&
+          !"45" %in% sprinzl_label &&
+          all(c("44", "46", "47", "48") %in% sprinzl_label),
+        .by = trna_id
+      ) |>
+      dplyr::filter(buggy)
+    expect_equal(nrow(buggy), 0, info = name)
+  }
+})
