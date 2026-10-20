@@ -1,5 +1,7 @@
 # clover 0.1.0.9000 (development version)
 
+* New `normalize_trna_id()` maps the tRNA identifiers of the readers, the Sprinzl tables, `modomics_mods()` and the structure plotter onto one form, `tRNA-<isotype>-<anticodon>` with a DNA anticodon, so that their outputs can be joined. It drops the `host-`, `phage-`, `nuc-` and `mito-` prefixes and `-uncharged`, converts U to T, and drops the gene-copy suffix unless `copy = TRUE`; the suffix is not stable between sources, so matching is at the isodecoder level by default. Strings that are not tRNA identifiers become `NA`. `plot_tRNA_structure()` now keeps only the rows of `modifications$ref` that match the tRNA drawn (warning when it drops rows, error when none match) instead of drawing every tRNA's modifications on one structure (#39).
+
 * The bundled *E. coli* K-12 and T4 Sprinzl coordinates now number a 4-nucleotide variable loop 44, 45, 46, 48 instead of 44, 46, 47, 48 (8 of 87 *E. coli* tRNAs and 1 of 8 T4 tRNAs), as GtRNAdb does. The fix is in `assign_sprinzl()` in `data-raw/sprinzl.R`. The bundled T5 and yeast tables, and tRNAs with a variable arm, are not yet regenerated (#43).
 
 * `plot_tRNA_structure()` gains a new bundled organism, "GCE suppressor tRNAs", with cloverleaf structures for the *Methanosarcina* pyrrolysyl-tRNA and *Methanocaldococcus jannaschii* tyrosyl-tRNA amber suppressors used in genetic code expansion. Use `structure_trnas("GCE suppressor tRNAs")` to list them.

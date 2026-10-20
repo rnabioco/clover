@@ -130,6 +130,8 @@ plot_tRNA_structure <- function(
     )
   }
 
+  modifications <- filter_mods_to_trna(modifications, trna)
+
   # Load base SVG and metadata
   svg_doc <- xml2::read_xml(svg_path)
   metadata <- jsonlite::fromJSON(json_path, simplifyVector = TRUE)
@@ -371,6 +373,33 @@ restyle_base_svg <- function(svg_doc) {
   }
 
   svg_doc
+}
+
+# Keep only the rows of `modifications` that belong to the tRNA being drawn.
+# Without this, the output of modomics_mods() for a whole FASTA is drawn onto a
+# single structure. A table with no `ref` column is taken as already filtered.
+filter_mods_to_trna <- function(modifications, trna) {
+  if (is.null(modifications) || !"ref" %in% names(modifications)) {
+    return(modifications)
+  }
+  target <- normalize_trna_id(trna)
+  if (is.na(target)) {
+    return(modifications)
+  }
+  keep <- normalize_trna_id(modifications$ref) %in% target
+  if (!any(keep)) {
+    cli::cli_abort(c(
+      "None of the {nrow(modifications)} row{?s} in {.arg modifications} \\
+       match {.val {trna}}.",
+      "i" = "{.arg modifications$ref} is compared with {.fn normalize_trna_id}."
+    ))
+  }
+  if (!all(keep)) {
+    cli::cli_warn(
+      "Dropped {sum(!keep)} row{?s} in {.arg modifications} for other tRNAs."
+    )
+  }
+  modifications[keep, , drop = FALSE]
 }
 
 add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
