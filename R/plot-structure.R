@@ -60,27 +60,30 @@ structure_trnas <- function(organism) {
 #' @param organism Character string specifying the organism name
 #'   (e.g., `"Escherichia coli"`).
 #' @param modifications A tibble with columns `pos` (1-based
-#'   position in the tRNA sequence) and `mod1` (short modification
-#'   name, e.g., `"m1A"`). Output of [modomics_mods()] works
-#'   directly after filtering to the tRNA of interest.
-#' @param outlines A tibble with columns `pos` (1-based position)
-#'   and `group` (category name for palette lookup). Draws circle
-#'   outlines (stroke only, no fill) around each nucleotide.
-#' @param linkages A tibble with columns `pos1`, `pos2`, and
-#'   optionally `value` (e.g., log odds ratio) for coloring arcs.
-#'   If a `log_odds_ratio` column is present and `value` is not, it
-#'   is automatically used as `value`, so output of
-#'   [clean_odds_ratios()] or [filter_linkages()] works directly.
+#'   position or Sprinzl label when `sprinzl_coords` is provided)
+#'   and `mod1` (short modification name, e.g., `"m1A"`). Output
+#'   of [modomics_mods()] works directly after filtering to the
+#'   tRNA of interest.
+#' @param outlines A tibble with columns `pos` (1-based position
+#'   or Sprinzl label) and `group` (category name for palette
+#'   lookup). Draws circle outlines (stroke only, no fill) around
+#'   each nucleotide.
+#' @param linkages A tibble with columns `pos1`, `pos2` (1-based
+#'   positions or Sprinzl labels), and optionally `value` (e.g.,
+#'   log odds ratio) for coloring arcs. If a `log_odds_ratio`
+#'   column is present and `value` is not, it is automatically
+#'   used as `value`, so output of [clean_odds_ratios()] or
+#'   [filter_linkages()] works directly.
 #' @param output Path for the output SVG file. If `NULL` (default),
 #'   writes to a temporary file.
 #' @param mod_palette Named character vector of colors keyed by
 #'   modification short name. If `NULL`, uses a default palette.
 #' @param outline_palette Named character vector of colors keyed by
 #'   outline group name. If `NULL`, uses `"#333333"` for all.
-#' @param text_colors A tibble with columns `pos` (1-based position)
-#'   and `color` (hex color string). Changes the nucleotide letter
-#'   color at specified positions. Unspecified positions keep the
-#'   default color.
+#' @param text_colors A tibble with columns `pos` (1-based position
+#'   or Sprinzl label) and `color` (hex color string). Changes the
+#'   nucleotide letter color at specified positions. Unspecified
+#'   positions keep the default color.
 #' @param position_markers Logical; if `TRUE` (default), draw
 #'   small grey position numbers every 10 nucleotides around the
 #'   cloverleaf to help orient readers.
@@ -89,6 +92,16 @@ structure_trnas <- function(organism) {
 #'   linkage values. Default `c("#0072B2", "#D55E00")` (blue for
 #'   exclusive, vermillion for co-occurring). Stroke width encodes
 #'   the magnitude of the value.
+#' @param sprinzl_coords A tibble of Sprinzl coordinates as
+#'   returned by [read_sprinzl_coords()], or `NULL` (default). When
+#'   provided, position columns in `modifications`, `outlines`,
+#'   `text_colors`, and `linkages` are interpreted as Sprinzl
+#'   labels and converted to 1-based sequence positions
+#'   automatically.
+#' @param trna_id Character string identifying the tRNA in
+#'   `sprinzl_coords` (e.g.,
+#'   `"nuc-tRNA-Glu-UUC-1-1"`). If `NULL` (default), the tRNA
+#'   name is resolved from `trna` automatically.
 #'
 #' @return The path to the annotated SVG file (invisibly).
 #'
@@ -109,9 +122,55 @@ plot_tRNA_structure <- function(
   outline_palette = NULL,
   text_colors = NULL,
   position_markers = TRUE,
-  linkage_palette = c("#0072B2", "#D55E00")
+  linkage_palette = c("#0072B2", "#D55E00"),
+  sprinzl_coords = NULL,
+  trna_id = NULL
 ) {
   rlang::check_installed("jsonlite", reason = "to read structure metadata.")
+
+  if (!is.null(sprinzl_coords)) {
+    if (is.null(trna_id)) {
+      trna_id <- find_sprinzl_id(trna, sprinzl_coords)
+      if (is.null(trna_id)) {
+        # Fallback: try matching without "nuc-" prefix
+        trna_id <- find_sprinzl_id_bare(trna, sprinzl_coords)
+      }
+      if (is.null(trna_id)) {
+        cli::cli_abort(
+          "Could not find {.val {trna}} in {.arg sprinzl_coords}."
+        )
+      }
+    }
+    trna_coords <- sprinzl_coords[sprinzl_coords$trna_id == trna_id, ]
+    if (!is.null(modifications)) {
+      modifications <- convert_sprinzl_positions(
+        modifications,
+        "pos",
+        trna_coords
+      )
+    }
+    if (!is.null(outlines)) {
+      outlines <- convert_sprinzl_positions(
+        outlines,
+        "pos",
+        trna_coords
+      )
+    }
+    if (!is.null(text_colors)) {
+      text_colors <- convert_sprinzl_positions(
+        text_colors,
+        "pos",
+        trna_coords
+      )
+    }
+    if (!is.null(linkages)) {
+      linkages <- convert_sprinzl_positions(
+        linkages,
+        c("pos1", "pos2"),
+        trna_coords
+      )
+    }
+  }
 
   org_dir <- structure_org_dir(organism)
 
@@ -297,6 +356,39 @@ structure_html <- function(svg_path) {
 }
 
 # Internal helpers -------------------------------------------------------------
+
+find_sprinzl_id_bare <- function(trna, sprinzl_coords) {
+  parts <- strsplit(trna, "-")[[1]]
+  if (length(parts) >= 3) {
+    parts[3] <- gsub("T", "U", parts[3])
+  }
+  rna_name <- paste(parts, collapse = "-")
+  pattern <- paste0("^", rna_name, "-")
+
+  ids <- unique(sprinzl_coords$trna_id)
+  matches <- grep(pattern, ids, value = TRUE)
+  if (length(matches) == 0) {
+    return(NULL)
+  }
+  sort(matches)[1]
+}
+
+convert_sprinzl_positions <- function(df, pos_cols, trna_coords) {
+  lookup <- trna_coords[, c("sprinzl_label", "pos")]
+  for (col in pos_cols) {
+    original <- as.character(df[[col]])
+    matched <- lookup$pos[match(original, lookup$sprinzl_label)]
+    unmatched <- original[is.na(matched) & !is.na(original)]
+    if (length(unmatched) > 0) {
+      n <- length(unmatched)
+      cli::cli_warn(
+        "Sprinzl position{cli::qty(length(unique(unmatched)))} {?s} {.val {unique(unmatched)}} not found; dropping {n} row{cli::qty(n)}{?s}."
+      )
+    }
+    df[[col]] <- matched
+  }
+  df[stats::complete.cases(df[pos_cols]), , drop = FALSE]
+}
 
 # R2R SVGs use font-size 7.1 Helvetica. The text x/y attributes give the
 # left baseline of the character. These offsets shift to the visual center

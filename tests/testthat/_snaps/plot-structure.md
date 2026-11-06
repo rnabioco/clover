@@ -41,3 +41,19 @@
       Error in `structure_html()`:
       ! SVG file not found: 'nonexistent.svg'.
 
+# convert_sprinzl_positions warns on unmatched and drops rows
+
+    Code
+      result <- convert_sprinzl_positions(df, "pos", trna_coords)
+    Condition
+      Warning:
+      Sprinzl position "99" not found; dropping 1 row.
+
+# plot_tRNA_structure errors when tRNA not in sprinzl_coords
+
+    Code
+      plot_tRNA_structure(trna, org, sprinzl_coords = fake_coords)
+    Condition
+      Error in `plot_tRNA_structure()`:
+      ! Could not find "tRNA-Ala-GGC" in `sprinzl_coords`.
+
