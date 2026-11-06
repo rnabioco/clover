@@ -291,3 +291,49 @@ test_that("plot_tRNA_structure respects position_markers = FALSE", {
   end_labels <- xml2::xml_find_first(doc, ".//*[@id='clover-end-labels']")
   expect_false(is.na(end_labels))
 })
+
+test_that("plot_tRNA_diff marks the deleted position and updates the legend", {
+  ecoli <- read_sprinzl_coords(
+    clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+  )
+  t4 <- read_sprinzl_coords(
+    clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+  )
+
+  svg_path <- plot_tRNA_diff(
+    "tRNA-Gly-TCC",
+    "Escherichia coli",
+    reference_coords = ecoli,
+    reference_id = "tRNA-Gly-UCC-1-1",
+    query_coords = t4,
+    query_id = "tRNA-Gly-UCC"
+  )
+  doc <- xml2::read_xml(svg_path)
+
+  circles <- xml2::xml_find_all(doc, ".//*[@id='clover-diff']/*")
+  strokes <- xml2::xml_attr(circles, "stroke")
+  expect_equal(sum(strokes == "#999999"), 1)
+  expect_equal(sum(strokes == "#D55E00"), 12)
+
+  legend <- xml2::xml_text(
+    xml2::xml_find_all(doc, ".//*[@id='clover-legend']/*")
+  )
+  expect_contains(legend, c("Absent in query (1)", "Different base (12)"))
+})
+
+test_that("plot_tRNA_diff errors when the reference does not match", {
+  ecoli <- read_sprinzl_coords(
+    clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+  )
+  expect_snapshot(
+    plot_tRNA_diff(
+      "tRNA-Gly-TCC",
+      "Escherichia coli",
+      reference_coords = ecoli,
+      reference_id = "tRNA-Gly-GCC-1-1",
+      query_coords = ecoli,
+      query_id = "tRNA-Gly-UCC-1-1"
+    ),
+    error = TRUE
+  )
+})

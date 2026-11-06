@@ -101,3 +101,51 @@ test_that("a 4-nt variable loop is numbered 44, 45, 46, 48, not 44, 46, 47, 48",
     expect_equal(nrow(buggy), 0, info = name)
   }
 })
+
+test_that("diff_sprinzl classifies deletions, substitutions and insertions", {
+  coords <- function(id, labels, bases) {
+    dplyr::tibble(
+      trna_id = id,
+      pos = seq_along(labels),
+      sprinzl_label = labels,
+      global_index = seq_along(labels),
+      region = "D-loop",
+      residue = bases
+    )
+  }
+  ref <- coords("ref", c("1", "2", "2a", "3"), c("G", "C", "U", "T"))
+  qry <- coords("qry", c("0x", "1", "2", "3"), c("C", "G", "U", "T"))
+  both <- rbind(ref, qry)
+  d <- diff_sprinzl(both, "ref", both, "qry")
+
+  expect_equal(
+    d$reference$status,
+    c("match", "substitution", "deletion", "match")
+  )
+  expect_equal(d$reference$query_base, c("G", "U", NA, "U"))
+  expect_equal(d$insertions$sprinzl_label, "0x")
+  expect_equal(d$insertions$after_pos, 0L)
+})
+
+test_that("diff_sprinzl finds the E. coli / T4 Gly-UCC D-loop deletion", {
+  ecoli <- read_sprinzl_coords(
+    clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+  )
+  t4 <- read_sprinzl_coords(
+    clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+  )
+  d <- diff_sprinzl(ecoli, "tRNA-Gly-UCC-1-1", t4, "tRNA-Gly-UCC")
+
+  expect_equal(
+    d$reference$sprinzl_label[d$reference$status == "deletion"],
+    "20a"
+  )
+  expect_equal(nrow(d$insertions), 0)
+})
+
+test_that("diff_sprinzl errors for an unknown tRNA", {
+  coords <- read_sprinzl_coords(
+    clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+  )
+  expect_snapshot(diff_sprinzl(coords, "nope", coords, "nope"), error = TRUE)
+})

@@ -105,3 +105,91 @@ trna_regions <- function() {
     cca = 74L:76L
   )
 }
+
+#' Compare a query tRNA to a reference by Sprinzl label.
+#'
+#' Aligns two tRNAs through their Sprinzl position labels and classifies
+#' each reference position as `"match"`, `"substitution"` (same label,
+#' different base) or `"deletion"` (label absent from the query). Query
+#' positions whose label is absent from the reference are returned
+#' separately as insertions.
+#'
+#' @param reference_coords,query_coords Tibbles of Sprinzl coordinates as
+#'   returned by [read_sprinzl_coords()].
+#' @param reference_id,query_id The `trna_id` of the reference and query tRNA
+#'   within their coordinate tables.
+#'
+#' @return A list with two tibbles:
+#'   - `reference`: one row per reference position with columns `pos`,
+#'     `sprinzl_label`, `ref_base`, `query_pos`, `query_base` and `status`.
+#'   - `insertions`: one row per query-only position with columns
+#'     `query_pos`, `sprinzl_label`, `query_base` and `after_pos`, the
+#'     reference position the inserted base follows (`0` for the 5' end).
+#'
+#' @export
+#'
+#' @examples
+#' ecoli <- read_sprinzl_coords(
+#'   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+#' )
+#' t4 <- read_sprinzl_coords(
+#'   clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+#' )
+#' d <- diff_sprinzl(ecoli, "tRNA-Gly-UCC-1-1", t4, "tRNA-Gly-UCC")
+#' d$reference[d$reference$status != "match", ]
+diff_sprinzl <- function(
+  reference_coords,
+  reference_id,
+  query_coords,
+  query_id
+) {
+  ref <- sprinzl_trna(reference_coords, reference_id, "reference_coords")
+  qry <- sprinzl_trna(query_coords, query_id, "query_coords")
+
+  idx <- match(ref$sprinzl_label, qry$sprinzl_label)
+  status <- dplyr::case_when(
+    is.na(idx) ~ "deletion",
+    qry$base[idx] == ref$base ~ "match",
+    .default = "substitution"
+  )
+  reference <- tibble::tibble(
+    pos = ref$pos,
+    sprinzl_label = ref$sprinzl_label,
+    ref_base = ref$base,
+    query_pos = qry$pos[idx],
+    query_base = qry$base[idx],
+    status = status
+  )
+
+  # The reference position each query row follows: the last query row at
+  # or before it that also exists in the reference (0 at the 5' end).
+  ref_pos_of_query <- ref$pos[match(qry$sprinzl_label, ref$sprinzl_label)]
+  after <- cummax(replace(ref_pos_of_query, is.na(ref_pos_of_query), 0L))
+  only_query <- is.na(ref_pos_of_query)
+  insertions <- tibble::tibble(
+    query_pos = qry$pos[only_query],
+    sprinzl_label = qry$sprinzl_label[only_query],
+    query_base = qry$base[only_query],
+    after_pos = as.integer(after[only_query])
+  )
+
+  list(reference = reference, insertions = insertions)
+}
+
+sprinzl_trna <- function(coords, trna_id, arg) {
+  rows <- coords[coords$trna_id == trna_id, ]
+  if (nrow(rows) == 0) {
+    cli::cli_abort("tRNA {.val {trna_id}} not found in {.arg {arg}}.")
+  }
+  if (anyDuplicated(rows$sprinzl_label)) {
+    cli::cli_abort(
+      "{.val {trna_id}} has duplicated Sprinzl labels in {.arg {arg}}."
+    )
+  }
+  rows <- rows[order(rows$pos), ]
+  tibble::tibble(
+    pos = as.integer(rows$pos),
+    sprinzl_label = rows$sprinzl_label,
+    base = chartr("T", "U", toupper(rows$residue))
+  )
+}
