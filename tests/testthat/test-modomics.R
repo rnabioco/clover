@@ -196,6 +196,44 @@ test_that("match_modomics_to_refs warns when no alignment passes min_identity", 
   expect_equal(nrow(result), 0)
 })
 
+test_that("match_modomics_to_refs rejects short local fragments", {
+  skip_if_not_installed("pwalign")
+
+  entry <- list(
+    subtype = "Ala",
+    anticodon = "AGC",
+    mods = dplyr::tibble(pos = 4L, mod_full = "dihydrouridine", mod1 = "D"),
+    plain_seq = "GGGGGGGGGGGGGGGGGGGGAUAUAUAUAUAUAUAUAUAU"
+  )
+  ref_seq <- Biostrings::DNAStringSet("GGGGGGGGGGCCCCCCCCCC")
+  names(ref_seq) <- "tRNA-Ala-AGC-1"
+
+  expect_snapshot(
+    result <- match_modomics_to_refs(list(entry), ref_seq, min_identity = 0.7)
+  )
+  expect_equal(nrow(result), 0)
+})
+
+test_that("match_modomics_to_refs reports duplicate entries once", {
+  skip_if_not_installed("pwalign")
+
+  entry <- list(
+    subtype = "Ala",
+    anticodon = "AGC",
+    mods = dplyr::tibble(pos = 4L, mod_full = "dihydrouridine", mod1 = "D"),
+    plain_seq = "GGGAAATTTCCCGGGAAATTT"
+  )
+  ref_seq <- Biostrings::DNAStringSet("GGGAAATTTCCCGGGAAATTT")
+  names(ref_seq) <- "tRNA-Ala-AGC-1"
+
+  result <- match_modomics_to_refs(
+    list(entry, entry, entry),
+    ref_seq,
+    min_identity = 0.7
+  )
+  expect_equal(result$pos, 4L)
+})
+
 test_that("fetch_modomics_mods returns expected structure with mocked API", {
   skip_if_not_installed("httr2")
   skip_if_not_installed("jsonlite")
@@ -344,7 +382,11 @@ test_that("modomics_mods annotates non-canonical SeC tRNA (#30)", {
   sec_idx <- grep("SeC", names(fa))
   expect_length(sec_idx, 1)
 
-  mods <- suppressMessages(modomics_mods(fa[sec_idx], "Escherichia coli"))
+  # A second, unrelated 75-nt Sec record covers only a short fragment of
+  # the reference and is rejected with a warning.
+  mods <- suppressWarnings(
+    suppressMessages(modomics_mods(fa[sec_idx], "Escherichia coli"))
+  )
 
   expect_setequal(mods$ref, names(fa)[sec_idx])
   expect_setequal(mods$mod1, c("s4U", "D", "i6A", "m5U", "Y"))
