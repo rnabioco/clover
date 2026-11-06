@@ -125,6 +125,7 @@ test_that("diff_sprinzl classifies deletions, substitutions and insertions", {
   expect_equal(d$reference$query_base, c("G", "U", NA, "U"))
   expect_equal(d$insertions$sprinzl_label, "0x")
   expect_equal(d$insertions$after_pos, 0L)
+  expect_equal(d$insertions$after_label, NA_character_)
 })
 
 test_that("diff_sprinzl finds the E. coli / T4 Gly-UCC D-loop deletion", {

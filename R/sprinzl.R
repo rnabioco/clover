@@ -123,8 +123,9 @@ trna_regions <- function() {
 #'   - `reference`: one row per reference position with columns `pos`,
 #'     `sprinzl_label`, `ref_base`, `query_pos`, `query_base` and `status`.
 #'   - `insertions`: one row per query-only position with columns
-#'     `query_pos`, `sprinzl_label`, `query_base` and `after_pos`, the
-#'     reference position the inserted base follows (`0` for the 5' end).
+#'     `query_pos`, `sprinzl_label`, `query_base`, `after_pos` and
+#'     `after_label`, the reference position (sequence index and Sprinzl
+#'     label) the inserted base follows. Both are `0`/`NA` at the 5' end.
 #'
 #' @export
 #'
@@ -170,7 +171,8 @@ diff_sprinzl <- function(
     query_pos = qry$pos[only_query],
     sprinzl_label = qry$sprinzl_label[only_query],
     query_base = qry$base[only_query],
-    after_pos = as.integer(after[only_query])
+    after_pos = as.integer(after[only_query]),
+    after_label = ref$sprinzl_label[match(after[only_query], ref$pos)]
   )
 
   list(reference = reference, insertions = insertions)

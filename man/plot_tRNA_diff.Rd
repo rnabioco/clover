@@ -29,9 +29,9 @@ within their coordinate tables.}
 \item{output}{Path for the output SVG file. If \code{NULL} (default),
 writes to a temporary file.}
 
-\item{position_markers}{Logical; if \code{TRUE} (default), draw
-small grey position numbers every 10 nucleotides around the
-cloverleaf to help orient readers.}
+\item{position_markers}{Logical; if \code{TRUE} (default), draw small grey
+numbers at Sprinzl positions 10, 20, 30, ... Unlike
+\code{\link[=plot_tRNA_structure]{plot_tRNA_structure()}}, these are Sprinzl labels, not sequence indices.}
 }
 \value{
 The path to the annotated SVG file (invisibly).

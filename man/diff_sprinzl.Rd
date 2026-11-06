@@ -19,8 +19,9 @@ A list with two tibbles:
 \item \code{reference}: one row per reference position with columns \code{pos},
 \code{sprinzl_label}, \code{ref_base}, \code{query_pos}, \code{query_base} and \code{status}.
 \item \code{insertions}: one row per query-only position with columns
-\code{query_pos}, \code{sprinzl_label}, \code{query_base} and \code{after_pos}, the
-reference position the inserted base follows (\code{0} for the 5' end).
+\code{query_pos}, \code{sprinzl_label}, \code{query_base}, \code{after_pos} and
+\code{after_label}, the reference position (sequence index and Sprinzl
+label) the inserted base follows. Both are \code{0}/\code{NA} at the 5' end.
 }
 }
 \description{

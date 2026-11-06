@@ -316,6 +316,9 @@ structure_html <- function(svg_path) {
 #' @inheritParams plot_tRNA_structure
 #' @param trna,organism The bundled reference structure, as in
 #'   [plot_tRNA_structure()].
+#' @param position_markers Logical; if `TRUE` (default), draw small grey
+#'   numbers at Sprinzl positions 10, 20, 30, ... Unlike
+#'   [plot_tRNA_structure()], these are Sprinzl labels, not sequence indices.
 #' @param reference_coords,query_coords Tibbles of Sprinzl coordinates as
 #'   returned by [read_sprinzl_coords()]. The reference positions must
 #'   correspond to the nucleotides of the bundled structure.
@@ -357,11 +360,7 @@ plot_tRNA_diff <- function(
 
   diff <- diff_sprinzl(reference_coords, reference_id, query_coords, query_id)
 
-  base_svg <- plot_tRNA_structure(
-    trna,
-    organism,
-    position_markers = position_markers
-  )
+  base_svg <- plot_tRNA_structure(trna, organism, position_markers = FALSE)
   metadata <- jsonlite::fromJSON(
     file.path(structure_org_dir(organism), paste0(trna, ".json")),
     simplifyVector = TRUE
@@ -370,6 +369,10 @@ plot_tRNA_diff <- function(
   check_diff_matches_structure(diff$reference, nucs, trna, reference_id)
 
   svg_doc <- xml2::read_xml(base_svg)
+  if (position_markers) {
+    labels <- diff$reference$sprinzl_label[match(nucs$pos, diff$reference$pos)]
+    svg_doc <- add_position_markers(svg_doc, nucs, labels = labels)
+  }
   svg_doc <- add_diff_marks(svg_doc, nucs, diff)
   svg_doc <- add_diff_legend(svg_doc, metadata, diff, reference_id, query_id)
 
@@ -547,13 +550,13 @@ add_diff_legend <- function(svg_doc, metadata, diff, reference_id, query_id) {
 
   ins <- diff$insertions
   for (i in seq_len(nrow(ins))) {
+    after <- if (is.na(ins$after_label[i])) {
+      "5' end"
+    } else {
+      paste("after", ins$after_label[i])
+    }
     add_text(
-      sprintf(
-        "+%s (%s) after %d",
-        ins$query_base[i],
-        ins$sprinzl_label[i],
-        ins$after_pos[i]
-      ),
+      sprintf("+%s (%s) %s", ins$query_base[i], ins$sprinzl_label[i], after),
       16,
       y,
       8
@@ -1399,7 +1402,7 @@ remove_extra_aa_text <- function(svg_doc, nucs) {
   }
 }
 
-add_position_markers <- function(svg_doc, nucs) {
+add_position_markers <- function(svg_doc, nucs, labels = NULL) {
   root <- xml2::xml_root(svg_doc)
 
   marker_group <- xml2::xml_add_child(
@@ -1408,8 +1411,18 @@ add_position_markers <- function(svg_doc, nucs) {
     id = "clover-position-markers"
   )
 
-  max_pos <- max(nucs$pos)
-  marker_positions <- seq(10, max_pos, by = 10)
+  # With `labels` (one Sprinzl label per row of `nucs`), mark the nucleotides
+  # labelled 10, 20, ... rather than every 10th sequence index.
+  if (is.null(labels)) {
+    marker_positions <- seq(10, max(nucs$pos), by = 10)
+    marker_text <- as.character(marker_positions)
+  } else {
+    wanted <- as.character(seq(10, 100, by = 10))
+    hit <- match(wanted, labels)
+    hit <- hit[!is.na(hit)]
+    marker_positions <- nucs$pos[hit]
+    marker_text <- labels[hit]
+  }
 
   offset <- 10
 
@@ -1423,7 +1436,8 @@ add_position_markers <- function(svg_doc, nucs) {
   n_candidates <- 12
   angles <- seq(0, 2 * pi, length.out = n_candidates + 1)[-(n_candidates + 1)]
 
-  for (pos in marker_positions) {
+  for (i in seq_along(marker_positions)) {
+    pos <- marker_positions[i]
     nuc <- find_nuc(nucs, pos)
     if (is.null(nuc)) {
       next
@@ -1459,7 +1473,7 @@ add_position_markers <- function(svg_doc, nucs) {
       "text-anchor" = "middle",
       "dominant-baseline" = "central",
       fill = "#666666",
-      as.character(pos)
+      marker_text[i]
     )
   }
 
