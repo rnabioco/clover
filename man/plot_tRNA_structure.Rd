@@ -15,7 +15,8 @@ plot_tRNA_structure(
   outline_palette = NULL,
   text_colors = NULL,
   position_markers = TRUE,
-  linkage_palette = c("#0072B2", "#D55E00")
+  linkage_palette = c("#0072B2", "#D55E00"),
+  layout = c("cloverleaf", "elbow")
 )
 }
 \arguments{
@@ -64,6 +65,13 @@ colors for negative (exclusive) and positive (co-occurring)
 linkage values. Default \code{c("#0072B2", "#D55E00")} (blue for
 exclusive, vermillion for co-occurring). Stroke width encodes
 the magnitude of the value.}
+
+\item{layout}{One of \code{"cloverleaf"} (default) or \code{"elbow"}.
+\code{"elbow"} renders the L-shaped depiction with the acceptor stem
+and T-arm stacked coaxially at the top, the D-arm extending
+horizontally, and the anticodon arm hanging vertically. The
+elbow form is currently available for E. coli standard
+3-arm tRNAs.}
 }
 \value{
 The path to the annotated SVG file (invisibly).
@@ -78,5 +86,6 @@ linkages are drawn as Bezier curve arcs between position pairs.
 \examples{
 \donttest{
 plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+plot_tRNA_structure("tRNA-Phe-GAA", "Escherichia coli", layout = "elbow")
 }
 }

@@ -291,3 +291,53 @@ test_that("plot_tRNA_structure respects position_markers = FALSE", {
   end_labels <- xml2::xml_find_first(doc, ".//*[@id='clover-end-labels']")
   expect_false(is.na(end_labels))
 })
+
+# Elbow layout ----------------------------------------------------------------
+
+test_that("structure_trnas(layout = 'elbow') lists bundled elbow tRNAs", {
+  trnas <- structure_trnas("Escherichia coli", layout = "elbow")
+  expect_type(trnas, "character")
+  expect_true(length(trnas) > 0)
+  # variable-arm tRNAs (Leu, Ser, SeC) are deferred to v2
+  expect_false(any(grepl("^tRNA-(Leu|Ser|SeC)-", trnas)))
+})
+
+test_that("plot_tRNA_structure renders elbow layout SVG", {
+  trnas <- structure_trnas("Escherichia coli", layout = "elbow")
+  skip_if(length(trnas) == 0, "No bundled elbow structures")
+  out <- plot_tRNA_structure(
+    "tRNA-Phe-GAA",
+    "Escherichia coli",
+    layout = "elbow"
+  )
+  expect_true(file.exists(out))
+  doc <- xml2::read_xml(out)
+  texts <- xml2::xml_find_all(doc, ".//*[local-name()='text']")
+  expect_true(length(texts) > 70) # 76 nucleotides plus title
+})
+
+test_that("plot_tRNA_structure(layout = 'elbow') errors clearly when missing", {
+  expect_snapshot(
+    plot_tRNA_structure(
+      "tRNA-Leu-CAA",
+      "Escherichia coli",
+      layout = "elbow"
+    ),
+    error = TRUE
+  )
+})
+
+test_that("plot_tRNA_structure(layout = 'elbow') applies modification overlay", {
+  trnas <- structure_trnas("Escherichia coli", layout = "elbow")
+  skip_if(length(trnas) == 0, "No bundled elbow structures")
+  mods <- dplyr::tibble(pos = c(34L, 37L), mod1 = c("m1A", "m7G"))
+  out <- plot_tRNA_structure(
+    "tRNA-Phe-GAA",
+    "Escherichia coli",
+    modifications = mods,
+    layout = "elbow"
+  )
+  doc <- xml2::read_xml(out)
+  circles <- xml2::xml_find_all(doc, ".//*[local-name()='circle']")
+  expect_gte(length(circles), 2)
+})

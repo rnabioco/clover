@@ -27,12 +27,14 @@ structure_organisms <- function() {
 
 #' List available tRNA structures for an organism
 #'
-#' Returns the names of tRNAs for which cloverleaf structure SVGs
-#' are bundled with the package for the given organism.
+#' Returns the names of tRNAs for which structure SVGs are bundled with
+#' the package for the given organism and layout.
 #'
 #' @param organism Character string specifying the organism name
 #'   (e.g., `"Escherichia coli"`). Use [structure_organisms()] to
 #'   list available organisms.
+#' @param layout One of `"cloverleaf"` (default) or `"elbow"`. The
+#'   elbow form is currently bundled for E. coli standard tRNAs only.
 #'
 #' @return A character vector of tRNA names.
 #'
@@ -40,9 +42,19 @@ structure_organisms <- function() {
 #'
 #' @examples
 #' structure_trnas("Escherichia coli")
-structure_trnas <- function(organism) {
+#' structure_trnas("Escherichia coli", layout = "elbow")
+structure_trnas <- function(organism, layout = c("cloverleaf", "elbow")) {
+  layout <- match.arg(layout)
   org_dir <- structure_org_dir(organism)
-  svg_files <- list.files(org_dir, pattern = "\\.svg$")
+  svg_dir <- if (layout == "cloverleaf") {
+    org_dir
+  } else {
+    file.path(org_dir, "elbow")
+  }
+  if (!dir.exists(svg_dir)) {
+    return(character(0))
+  }
+  svg_files <- list.files(svg_dir, pattern = "\\.svg$")
   tools::file_path_sans_ext(svg_files)
 }
 
@@ -89,6 +101,12 @@ structure_trnas <- function(organism) {
 #'   linkage values. Default `c("#0072B2", "#D55E00")` (blue for
 #'   exclusive, vermillion for co-occurring). Stroke width encodes
 #'   the magnitude of the value.
+#' @param layout One of `"cloverleaf"` (default) or `"elbow"`.
+#'   `"elbow"` renders the L-shaped depiction with the acceptor stem
+#'   and T-arm stacked coaxially at the top, the D-arm extending
+#'   horizontally, and the anticodon arm hanging vertically. The
+#'   elbow form is currently available for E. coli standard
+#'   3-arm tRNAs.
 #'
 #' @return The path to the annotated SVG file (invisibly).
 #'
@@ -97,6 +115,7 @@ structure_trnas <- function(organism) {
 #' @examples
 #' \donttest{
 #' plot_tRNA_structure("tRNA-Glu-TTC", "Escherichia coli")
+#' plot_tRNA_structure("tRNA-Phe-GAA", "Escherichia coli", layout = "elbow")
 #' }
 plot_tRNA_structure <- function(
   trna,
@@ -109,24 +128,31 @@ plot_tRNA_structure <- function(
   outline_palette = NULL,
   text_colors = NULL,
   position_markers = TRUE,
-  linkage_palette = c("#0072B2", "#D55E00")
+  linkage_palette = c("#0072B2", "#D55E00"),
+  layout = c("cloverleaf", "elbow")
 ) {
   rlang::check_installed("jsonlite", reason = "to read structure metadata.")
+  layout <- match.arg(layout)
 
   org_dir <- structure_org_dir(organism)
+  layout_dir <- if (layout == "cloverleaf") {
+    org_dir
+  } else {
+    file.path(org_dir, "elbow")
+  }
 
-  svg_path <- file.path(org_dir, paste0(trna, ".svg"))
-  json_path <- file.path(org_dir, paste0(trna, ".json"))
+  svg_path <- file.path(layout_dir, paste0(trna, ".svg"))
+  json_path <- file.path(layout_dir, paste0(trna, ".json"))
 
   if (!file.exists(svg_path)) {
     cli::cli_abort(c(
-      "No structure SVG found for {.val {trna}}.",
-      "i" = "Use {.fn structure_trnas} to list available tRNAs."
+      "No {layout} structure SVG found for {.val {trna}}.",
+      "i" = "Use {.code structure_trnas({.val {organism}}, layout = {.val {layout}})} to list available tRNAs."
     ))
   }
   if (!file.exists(json_path)) {
     cli::cli_abort(
-      "No position metadata found for {.val {trna}}."
+      "No position metadata found for {.val {trna}} in {layout} layout."
     )
   }
 

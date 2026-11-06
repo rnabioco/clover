@@ -4,20 +4,24 @@
 \alias{structure_trnas}
 \title{List available tRNA structures for an organism}
 \usage{
-structure_trnas(organism)
+structure_trnas(organism, layout = c("cloverleaf", "elbow"))
 }
 \arguments{
 \item{organism}{Character string specifying the organism name
 (e.g., \code{"Escherichia coli"}). Use \code{\link[=structure_organisms]{structure_organisms()}} to
 list available organisms.}
+
+\item{layout}{One of \code{"cloverleaf"} (default) or \code{"elbow"}. The
+elbow form is currently bundled for E. coli standard tRNAs only.}
 }
 \value{
 A character vector of tRNA names.
 }
 \description{
-Returns the names of tRNAs for which cloverleaf structure SVGs
-are bundled with the package for the given organism.
+Returns the names of tRNAs for which structure SVGs are bundled with
+the package for the given organism and layout.
 }
 \examples{
 structure_trnas("Escherichia coli")
+structure_trnas("Escherichia coli", layout = "elbow")
 }
