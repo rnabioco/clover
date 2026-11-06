@@ -1,5 +1,7 @@
 # clover 0.1.0.9000 (development version)
 
+* `modomics_mods()` and `fetch_modomics_mods()` no longer assign a MODOMICS record to a reference when its alignment covers less than 80% of the MODOMICS sequence, and now report identical annotations once. Short local fragments used to win ties between same-amino-acid references, so for example *E. coli* Gly-TCC received duplicated m5U and pseudouridine calls from unrelated Gly records.
+
 * The bundled *E. coli* K-12 and T4 Sprinzl coordinates now number a 4-nucleotide variable loop 44, 45, 46, 48 instead of 44, 46, 47, 48 (8 of 87 *E. coli* tRNAs and 1 of 8 T4 tRNAs), as GtRNAdb does. The fix is in `assign_sprinzl()` in `data-raw/sprinzl.R`. The bundled T5 and yeast tables, and tRNAs with a variable arm, are not yet regenerated (#43).
 
 * `plot_tRNA_structure()` gains a new bundled organism, "GCE suppressor tRNAs", with cloverleaf structures for the *Methanosarcina* pyrrolysyl-tRNA and *Methanocaldococcus jannaschii* tyrosyl-tRNA amber suppressors used in genetic code expansion. Use `structure_trnas("GCE suppressor tRNAs")` to list them.

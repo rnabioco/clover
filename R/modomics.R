@@ -27,7 +27,10 @@
 #' If a MODOMICS sequence is named-matched to candidate reference
 #' tRNAs but no candidate alignment reaches `min_identity`, a
 #' warning is emitted naming the subtype, anticodon, MODOMICS
-#' sequence length, and best observed identity. This surfaces
+#' sequence length, and best observed identity and coverage. A match
+#' must also cover at least 80% of the MODOMICS sequence, so a short
+#' local fragment cannot assign modifications to the wrong tRNA.
+#' Identical annotations are reported once. This surfaces
 #' silent skips (e.g., for non-canonical tRNAs or curated
 #' references that diverge from MODOMICS) so they are visible
 #' rather than dropped without notice.
@@ -416,7 +419,8 @@ strip_modifications <- function(seq, mod_dict) {
 match_modomics_to_refs <- function(
   modomics_entries,
   fasta,
-  min_identity
+  min_identity,
+  min_coverage = 0.8
 ) {
   fasta_names <- names(fasta)
   results <- vector("list", length(modomics_entries))
@@ -462,8 +466,9 @@ match_modomics_to_refs <- function(
       pwalign::alignedPattern(alns)
     ))
     identities <- n_matches / aln_widths
+    coverage <- aln_widths / nchar(entry$plain_seq)
 
-    valid <- identities >= min_identity
+    valid <- identities >= min_identity & coverage >= min_coverage
     if (!any(valid)) {
       cli::cli_warn(
         c(
@@ -471,8 +476,10 @@ match_modomics_to_refs <- function(
             "No reference matched MODOMICS ",
             "{.val {entry$subtype}-{entry$anticodon}} ",
             "(length {nchar(entry$plain_seq)}) at ",
-            "min_identity = {min_identity}; best identity was ",
-            "{round(max(identities), 2)}."
+            "min_identity = {min_identity} and ",
+            "min_coverage = {min_coverage}; best identity was ",
+            "{round(max(identities), 2)} and best coverage was ",
+            "{round(max(coverage), 2)}."
           )
         )
       )
@@ -504,7 +511,8 @@ match_modomics_to_refs <- function(
   }
 
   result |>
-    dplyr::select(ref, pos, mod_full, mod1)
+    dplyr::select("ref", "pos", "mod_full", "mod1") |>
+    dplyr::distinct()
 }
 
 find_aa_candidates <- function(subtype, fasta_names) {
