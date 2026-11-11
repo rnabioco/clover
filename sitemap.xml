@@ -32,6 +32,7 @@
 <url><loc>https://rnabioco.github.io/clover/reference/compute_ror_isodecoder.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/create_clover.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/default_mod_palette.html</loc></url>
+<url><loc>https://rnabioco.github.io/clover/reference/diff_sprinzl.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/dna_to_rna_anticodon.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/fetch_modomics_mods.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/filter_linkages.html</loc></url>
@@ -56,6 +57,7 @@
 <url><loc>https://rnabioco.github.io/clover/reference/plot_mod_heatmap.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/plot_mod_landscape.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/plot_pcoa_rewiring.html</loc></url>
+<url><loc>https://rnabioco.github.io/clover/reference/plot_tRNA_diff.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/plot_tRNA_structure.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/plot_volcano.html</loc></url>
 <url><loc>https://rnabioco.github.io/clover/reference/prep_mod_heatmap.html</loc></url>

@@ -2,6 +2,17 @@
 
 ## clover 0.1.0.9000 (development version)
 
+- [`diff_sprinzl()`](https://rnabioco.github.io/clover/reference/diff_sprinzl.md)
+  compares a query tRNA to a reference through their Sprinzl labels,
+  classifying each reference position as a match, substitution or
+  deletion and listing query-only positions as insertions.
+
+- [`plot_tRNA_diff()`](https://rnabioco.github.io/clover/reference/plot_tRNA_diff.md)
+  draws a query tRNA on a reference cloverleaf layout and highlights the
+  differences: reference positions missing from the query are empty grey
+  circles, different bases are outlined, and extra query bases are
+  marked on the backbone and listed in the legend.
+
 - The bundled *E. coli* K-12 and T4 Sprinzl coordinates now number a
   4-nucleotide variable loop 44, 45, 46, 48 instead of 44, 46, 47, 48 (8
   of 87 *E. coli* tRNAs and 1 of 8 T4 tRNAs), as GtRNAdb does. The fix

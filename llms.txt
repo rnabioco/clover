@@ -187,6 +187,9 @@ for a complete walkthrough.
 
 - [`default_mod_palette()`](https://rnabioco.github.io/clover/reference/default_mod_palette.md)
   : Default modification color palette
+- [`plot_tRNA_diff()`](https://rnabioco.github.io/clover/reference/plot_tRNA_diff.md)
+  : Plot a query tRNA on a reference cloverleaf, highlighting
+  differences
 - [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md)
   : Plot tRNA secondary structure with modifications and linkages
 - [`structure_html()`](https://rnabioco.github.io/clover/reference/structure_html.md)
@@ -241,6 +244,8 @@ for a complete walkthrough.
   : Charging status color palette.
 - [`clover_example()`](https://rnabioco.github.io/clover/reference/clover_example.md)
   : Provide working directory for clover example files.
+- [`diff_sprinzl()`](https://rnabioco.github.io/clover/reference/diff_sprinzl.md)
+  : Compare a query tRNA to a reference by Sprinzl label.
 - [`dna_to_rna_anticodon()`](https://rnabioco.github.io/clover/reference/dna_to_rna_anticodon.md)
   : Convert DNA anticodon to RNA in tRNA name strings
 - [`shorten_trna_names()`](https://rnabioco.github.io/clover/reference/shorten_trna_names.md)
