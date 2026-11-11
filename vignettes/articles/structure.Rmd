@@ -390,6 +390,64 @@ svg <- plot_identity_panel(
 structure_html(svg)
 ```
 
+## Comparing a query to a reference
+
+`plot_tRNA_diff()` draws a query tRNA on a reference cloverleaf, so several
+queries share one layout and only the differences stand out. Positions are
+matched through Sprinzl labels, so it needs the Sprinzl coordinates of both
+tRNAs and their `trna_id`s. The position markers are Sprinzl labels too.
+
+Here the T4 phage tRNA-Gly-UCC is drawn on the *E. coli* tRNA-Gly-TCC
+cloverleaf. The *E. coli* D-loop has an extra base at Sprinzl position 20a that
+T4 lacks.
+
+```{r}
+#| label: diff-setup
+t4 <- read_sprinzl_coords(
+  clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+)
+```
+
+```{r}
+#| label: diff-plot
+svg <- plot_tRNA_diff(
+  "tRNA-Gly-TCC",
+  "Escherichia coli",
+  reference_coords = sprinzl,
+  reference_id = "tRNA-Gly-UCC-1-1",
+  query_coords = t4,
+  query_id = "tRNA-Gly-UCC"
+)
+```
+
+```{r}
+#| label: fig-diff-plot
+#| echo: false
+structure_html(svg)
+```
+
+- An empty grey circle is a reference position that is absent from the query,
+  here the D-loop base at 20a.
+- An outlined letter is a position where the query has a different base; the
+  query base is shown.
+- A small blue dot on the backbone marks a query base with no position in the
+  reference. It is named in the legend by its Sprinzl label.
+
+`diff_sprinzl()` returns the same comparison as a table.
+
+```{r}
+#| label: diff-table
+d <- diff_sprinzl(sprinzl, "tRNA-Gly-UCC-1-1", t4, "tRNA-Gly-UCC")
+d$reference |>
+  filter(status != "match")
+d$insertions
+```
+
+Note that the reference tRNA's Sprinzl rows must belong to the bundled
+structure. Reference IDs use RNA anticodons (`tRNA-Gly-UCC-1-1`) while the
+bundled structures use DNA anticodons (`tRNA-Gly-TCC`); `plot_tRNA_diff()`
+stops if the two disagree.
+
 ## Output formats
 
 `plot_tRNA_structure()` writes an SVG file and returns the path invisibly.

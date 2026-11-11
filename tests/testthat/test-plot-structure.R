@@ -291,3 +291,93 @@ test_that("plot_tRNA_structure respects position_markers = FALSE", {
   end_labels <- xml2::xml_find_first(doc, ".//*[@id='clover-end-labels']")
   expect_false(is.na(end_labels))
 })
+
+test_that("plot_tRNA_diff marks the deleted position and updates the legend", {
+  ecoli <- read_sprinzl_coords(
+    clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+  )
+  t4 <- read_sprinzl_coords(
+    clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+  )
+
+  svg_path <- plot_tRNA_diff(
+    "tRNA-Gly-TCC",
+    "Escherichia coli",
+    reference_coords = ecoli,
+    reference_id = "tRNA-Gly-UCC-1-1",
+    query_coords = t4,
+    query_id = "tRNA-Gly-UCC"
+  )
+  doc <- xml2::read_xml(svg_path)
+
+  circles <- xml2::xml_find_all(doc, ".//*[@id='clover-diff']/*")
+  strokes <- xml2::xml_attr(circles, "stroke")
+  expect_equal(sum(strokes == "#999999"), 1)
+  expect_equal(sum(strokes == "#D55E00"), 12)
+
+  legend <- xml2::xml_text(
+    xml2::xml_find_all(doc, ".//*[@id='clover-legend']/*")
+  )
+  expect_contains(legend, c("Absent in query (1)", "Different base (12)"))
+})
+
+test_that("add_position_markers can mark Sprinzl labels instead of indices", {
+  nucs <- data.frame(
+    pos = 1:12,
+    base = "A",
+    x = seq(0, 110, by = 10),
+    y = 0
+  )
+  labels <- c(as.character(1:9), "9a", "10", "11")
+  doc <- xml2::read_xml("<svg xmlns='http://www.w3.org/2000/svg'></svg>")
+
+  doc <- add_position_markers(doc, nucs, labels = labels)
+  markers <- xml2::xml_find_all(doc, ".//*[@id='clover-position-markers']/*")
+
+  expect_equal(xml2::xml_text(markers), "10")
+  marker_x <- as.numeric(xml2::xml_attr(markers, "x"))
+  expect_lt(abs(marker_x - (nucs$x[11] + nuc_x_offset)), 10.1)
+  expect_gt(abs(marker_x - (nucs$x[10] + nuc_x_offset)), 0)
+})
+
+test_that("plot_tRNA_diff marks Sprinzl positions and names insertions by label", {
+  ecoli <- read_sprinzl_coords(
+    clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+  )
+  t4 <- read_sprinzl_coords(
+    clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+  )
+  # Reverse roles so the E. coli 20a base is an insertion in the query
+  doc <- xml2::read_xml(
+    plot_tRNA_diff(
+      "tRNA-Gly-TCC",
+      "T4 phage",
+      reference_coords = t4,
+      reference_id = "tRNA-Gly-UCC",
+      query_coords = ecoli,
+      query_id = "tRNA-Gly-UCC-1-1"
+    )
+  )
+
+  legend <- xml2::xml_text(
+    xml2::xml_find_all(doc, ".//*[@id='clover-legend']/*")
+  )
+  expect_contains(legend, "+U (20a) after 20")
+})
+
+test_that("plot_tRNA_diff errors when the reference does not match", {
+  ecoli <- read_sprinzl_coords(
+    clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+  )
+  expect_snapshot(
+    plot_tRNA_diff(
+      "tRNA-Gly-TCC",
+      "Escherichia coli",
+      reference_coords = ecoli,
+      reference_id = "tRNA-Gly-GCC-1-1",
+      query_coords = ecoli,
+      query_id = "tRNA-Gly-UCC-1-1"
+    ),
+    error = TRUE
+  )
+})

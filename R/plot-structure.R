@@ -296,7 +296,288 @@ structure_html <- function(svg_path) {
   ))
 }
 
+#' Plot a query tRNA on a reference cloverleaf, highlighting differences
+#'
+#' Draws the bundled cloverleaf for a reference tRNA and overlays how a
+#' query tRNA differs from it, so that several queries share one layout.
+#' Positions are matched through Sprinzl labels (see [diff_sprinzl()]):
+#'
+#' - A reference position missing from the query is drawn as an empty grey
+#'   circle with no letter.
+#' - A position with a different base shows the query base, outlined.
+#' - A query base with no reference position cannot sit in the reference
+#'   layout, so it is marked by a small dot on the backbone and listed in
+#'   the legend. Inserted bases at the 5' end are placed at the first
+#'   nucleotide and those at the 3' end at the last.
+#'
+#' Nothing in the reference layout moves; bases that match are drawn as in
+#' [plot_tRNA_structure()].
+#'
+#' @inheritParams plot_tRNA_structure
+#' @param trna,organism The bundled reference structure, as in
+#'   [plot_tRNA_structure()].
+#' @param position_markers Logical; if `TRUE` (default), draw small grey
+#'   numbers at Sprinzl positions 10, 20, 30, ... Unlike
+#'   [plot_tRNA_structure()], these are Sprinzl labels, not sequence indices.
+#' @param reference_coords,query_coords Tibbles of Sprinzl coordinates as
+#'   returned by [read_sprinzl_coords()]. The reference positions must
+#'   correspond to the nucleotides of the bundled structure.
+#' @param reference_id,query_id The `trna_id` of the reference and query tRNA
+#'   within their coordinate tables.
+#'
+#' @return The path to the annotated SVG file (invisibly).
+#'
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' ecoli <- read_sprinzl_coords(
+#'   clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+#' )
+#' t4 <- read_sprinzl_coords(
+#'   clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+#' )
+#' plot_tRNA_diff(
+#'   "tRNA-Gly-TCC",
+#'   "Escherichia coli",
+#'   reference_coords = ecoli,
+#'   reference_id = "tRNA-Gly-UCC-1-1",
+#'   query_coords = t4,
+#'   query_id = "tRNA-Gly-UCC"
+#' )
+#' }
+plot_tRNA_diff <- function(
+  trna,
+  organism,
+  reference_coords,
+  reference_id,
+  query_coords,
+  query_id,
+  output = NULL,
+  position_markers = TRUE
+) {
+  rlang::check_installed("jsonlite", reason = "to read structure metadata.")
+
+  diff <- diff_sprinzl(reference_coords, reference_id, query_coords, query_id)
+
+  base_svg <- plot_tRNA_structure(trna, organism, position_markers = FALSE)
+  metadata <- jsonlite::fromJSON(
+    file.path(structure_org_dir(organism), paste0(trna, ".json")),
+    simplifyVector = TRUE
+  )
+  nucs <- metadata$nucleotides
+  check_diff_matches_structure(diff$reference, nucs, trna, reference_id)
+
+  svg_doc <- xml2::read_xml(base_svg)
+  if (position_markers) {
+    labels <- diff$reference$sprinzl_label[match(nucs$pos, diff$reference$pos)]
+    svg_doc <- add_position_markers(svg_doc, nucs, labels = labels)
+  }
+  svg_doc <- add_diff_marks(svg_doc, nucs, diff)
+  svg_doc <- add_diff_legend(svg_doc, metadata, diff, reference_id, query_id)
+
+  if (is.null(output)) {
+    output <- tempfile(fileext = ".svg")
+  }
+  xml2::write_xml(svg_doc, output)
+
+  invisible(output)
+}
+
 # Internal helpers -------------------------------------------------------------
+
+diff_colors <- c(
+  deletion = "#999999",
+  substitution = "#D55E00",
+  insertion = "#0072B2"
+)
+
+check_diff_matches_structure <- function(reference, nucs, trna, reference_id) {
+  ref_base <- reference$ref_base[match(nucs$pos, reference$pos)]
+  struct_base <- chartr("T", "U", toupper(nucs$base))
+  bad <- is.na(ref_base) | ref_base != struct_base
+  if (any(bad)) {
+    cli::cli_abort(c(
+      "{.arg reference_coords} does not match the {.val {trna}} structure.",
+      "x" = "{sum(bad)} of {length(bad)} position{?s} differ between
+        {.val {reference_id}} and the bundled cloverleaf.",
+      "i" = "Check that {.arg reference_id} is the same tRNA as {.arg trna}."
+    ))
+  }
+  invisible(NULL)
+}
+
+find_nuc_tspan <- function(tspans, nuc) {
+  for (ts in tspans) {
+    tx <- as.numeric(xml2::xml_attr(ts, "x"))
+    ty <- as.numeric(xml2::xml_attr(ts, "y"))
+    if (
+      !is.na(tx) &&
+        !is.na(ty) &&
+        abs(tx - nuc$x) < 0.01 &&
+        abs(ty - nuc$y) < 0.01
+    ) {
+      return(ts)
+    }
+  }
+  NULL
+}
+
+add_diff_marks <- function(svg_doc, nucs, diff) {
+  root <- xml2::xml_root(svg_doc)
+  tspans <- xml2::xml_find_all(root, ".//d1:tspan", xml2::xml_ns(svg_doc))
+  group <- xml2::xml_add_child(root, "g", id = "clover-diff")
+
+  changed <- diff$reference[diff$reference$status != "match", ]
+  for (i in seq_len(nrow(changed))) {
+    nuc <- find_nuc(nucs, changed$pos[i])
+    if (is.null(nuc)) {
+      next
+    }
+    status <- changed$status[i]
+    ts <- find_nuc_tspan(tspans, nuc)
+    if (!is.null(ts)) {
+      if (status == "deletion") {
+        xml2::xml_text(ts) <- ""
+      } else {
+        xml2::xml_text(ts) <- changed$query_base[i]
+        xml2::xml_set_attr(ts, "fill", diff_colors[["substitution"]])
+      }
+    }
+    xml2::xml_add_child(
+      group,
+      "circle",
+      cx = as.character(nuc$x + nuc_x_offset),
+      cy = as.character(nuc$y + nuc_y_offset),
+      r = "4.3",
+      fill = if (status == "deletion") "#FFFFFF" else "none",
+      stroke = diff_colors[[status]],
+      "stroke-width" = "1.2"
+    )
+  }
+
+  ins <- diff$insertions
+  for (i in seq_len(nrow(ins))) {
+    before <- find_nuc(nucs, ins$after_pos[i])
+    after <- find_nuc(nucs, ins$after_pos[i] + 1L)
+    if (is.null(before) && is.null(after)) {
+      next
+    }
+    x <- mean(c(before$x, after$x))
+    y <- mean(c(before$y, after$y))
+    xml2::xml_add_child(
+      group,
+      "circle",
+      cx = as.character(x + nuc_x_offset),
+      cy = as.character(y + nuc_y_offset),
+      r = "2",
+      fill = diff_colors[["insertion"]],
+      stroke = "#FFFFFF",
+      "stroke-width" = "0.6"
+    )
+  }
+
+  svg_doc
+}
+
+add_diff_legend <- function(svg_doc, metadata, diff, reference_id, query_id) {
+  root <- xml2::xml_root(svg_doc)
+  legend <- xml2::xml_add_child(
+    root,
+    "g",
+    id = "clover-legend",
+    transform = sprintf("translate(%.0f, 20)", metadata$width + 10)
+  )
+  font <- "Helvetica, Arial, sans-serif"
+  y <- 0
+
+  add_text <- function(label, x, y, size, bold = FALSE) {
+    xml2::xml_add_child(
+      legend,
+      "text",
+      x = as.character(x),
+      y = as.character(y),
+      "font-size" = as.character(size),
+      "font-weight" = if (bold) "bold" else "normal",
+      "font-family" = font,
+      label
+    )
+  }
+
+  add_text(paste("Query:", query_id), 0, y, 10, bold = TRUE)
+  y <- y + 13
+  add_text(paste("Reference:", reference_id), 0, y, 9)
+  y <- y + 18
+
+  n_del <- sum(diff$reference$status == "deletion")
+  n_sub <- sum(diff$reference$status == "substitution")
+  n_ins <- nrow(diff$insertions)
+
+  entries <- list(
+    list("deletion", sprintf("Absent in query (%d)", n_del), n_del),
+    list("substitution", sprintf("Different base (%d)", n_sub), n_sub),
+    list("insertion", sprintf("Extra in query (%d)", n_ins), n_ins)
+  )
+  for (e in entries) {
+    kind <- e[[1]]
+    if (e[[3]] == 0) {
+      next
+    }
+    if (kind == "insertion") {
+      xml2::xml_add_child(
+        legend,
+        "circle",
+        cx = "6",
+        cy = as.character(y - 3),
+        r = "2.5",
+        fill = diff_colors[["insertion"]]
+      )
+    } else {
+      xml2::xml_add_child(
+        legend,
+        "circle",
+        cx = "6",
+        cy = as.character(y - 3),
+        r = "5",
+        fill = if (kind == "deletion") "#FFFFFF" else "none",
+        stroke = diff_colors[[kind]],
+        "stroke-width" = "1.2"
+      )
+    }
+    add_text(e[[2]], 16, y, 9)
+    y <- y + 14
+  }
+
+  ins <- diff$insertions
+  for (i in seq_len(nrow(ins))) {
+    after <- if (is.na(ins$after_label[i])) {
+      "5' end"
+    } else {
+      paste("after", ins$after_label[i])
+    }
+    add_text(
+      sprintf("+%s (%s) %s", ins$query_base[i], ins$sprinzl_label[i], after),
+      16,
+      y,
+      8
+    )
+    y <- y + 11
+  }
+
+  viewbox <- xml2::xml_attr(root, "viewBox")
+  if (!is.na(viewbox)) {
+    parts <- as.numeric(strsplit(viewbox, "\\s+")[[1]])
+    if (length(parts) == 4) {
+      xml2::xml_set_attr(
+        root,
+        "viewBox",
+        paste(parts[1], parts[2], parts[3] + 140, parts[4])
+      )
+    }
+  }
+
+  svg_doc
+}
 
 # R2R SVGs use font-size 7.1 Helvetica. The text x/y attributes give the
 # left baseline of the character. These offsets shift to the visual center
@@ -1121,7 +1402,7 @@ remove_extra_aa_text <- function(svg_doc, nucs) {
   }
 }
 
-add_position_markers <- function(svg_doc, nucs) {
+add_position_markers <- function(svg_doc, nucs, labels = NULL) {
   root <- xml2::xml_root(svg_doc)
 
   marker_group <- xml2::xml_add_child(
@@ -1130,8 +1411,18 @@ add_position_markers <- function(svg_doc, nucs) {
     id = "clover-position-markers"
   )
 
-  max_pos <- max(nucs$pos)
-  marker_positions <- seq(10, max_pos, by = 10)
+  # With `labels` (one Sprinzl label per row of `nucs`), mark the nucleotides
+  # labelled 10, 20, ... rather than every 10th sequence index.
+  if (is.null(labels)) {
+    marker_positions <- seq(10, max(nucs$pos), by = 10)
+    marker_text <- as.character(marker_positions)
+  } else {
+    wanted <- as.character(seq(10, 100, by = 10))
+    hit <- match(wanted, labels)
+    hit <- hit[!is.na(hit)]
+    marker_positions <- nucs$pos[hit]
+    marker_text <- labels[hit]
+  }
 
   offset <- 10
 
@@ -1145,7 +1436,8 @@ add_position_markers <- function(svg_doc, nucs) {
   n_candidates <- 12
   angles <- seq(0, 2 * pi, length.out = n_candidates + 1)[-(n_candidates + 1)]
 
-  for (pos in marker_positions) {
+  for (i in seq_along(marker_positions)) {
+    pos <- marker_positions[i]
     nuc <- find_nuc(nucs, pos)
     if (is.null(nuc)) {
       next
@@ -1181,7 +1473,7 @@ add_position_markers <- function(svg_doc, nucs) {
       "text-anchor" = "middle",
       "dominant-baseline" = "central",
       fill = "#666666",
-      as.character(pos)
+      marker_text[i]
     )
   }
 

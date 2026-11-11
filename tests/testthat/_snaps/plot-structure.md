@@ -41,3 +41,14 @@
       Error in `structure_html()`:
       ! SVG file not found: 'nonexistent.svg'.
 
+# plot_tRNA_diff errors when the reference does not match
+
+    Code
+      plot_tRNA_diff("tRNA-Gly-TCC", "Escherichia coli", reference_coords = ecoli,
+        reference_id = "tRNA-Gly-GCC-1-1", query_coords = ecoli, query_id = "tRNA-Gly-UCC-1-1")
+    Condition
+      Error in `check_diff_matches_structure()`:
+      ! `reference_coords` does not match the "tRNA-Gly-TCC" structure.
+      x 43 of 75 positions differ between "tRNA-Gly-GCC-1-1" and the bundled cloverleaf.
+      i Check that `reference_id` is the same tRNA as `trna`.
+
