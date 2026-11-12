@@ -406,6 +406,7 @@ plot_tRNA_diff <- function(
     query_id,
     legend_y
   )
+  svg_doc <- extend_viewbox_height(svg_doc, "clover-legend")
 
   if (is.null(output)) {
     output <- tempfile(fileext = ".svg")
@@ -422,6 +423,28 @@ diff_colors <- c(
   substitution = "#D55E00",
   insertion = "#0072B2"
 )
+
+extend_viewbox_height <- function(svg_doc, group_id) {
+  root <- xml2::xml_root(svg_doc)
+  group <- xml2::xml_find_first(root, sprintf(".//*[@id='%s']", group_id))
+  viewbox <- xml2::xml_attr(root, "viewBox")
+  if (inherits(group, "xml_missing") || is.na(viewbox)) {
+    return(svg_doc)
+  }
+  top <- as.numeric(sub(
+    ".*, *([0-9.]+)\\)$",
+    "\\1",
+    xml2::xml_attr(group, "transform")
+  ))
+  ys <- suppressWarnings(as.numeric(xml2::xml_attr(
+    xml2::xml_children(group),
+    "y"
+  )))
+  parts <- as.numeric(strsplit(viewbox, "\\s+")[[1]])
+  parts[4] <- max(parts[4], top + max(ys, 0, na.rm = TRUE) + 10)
+  xml2::xml_set_attr(root, "viewBox", paste(parts, collapse = " "))
+  svg_doc
+}
 
 map_mods_to_reference <- function(modifications, diff) {
   if (is.null(modifications)) {
@@ -444,9 +467,20 @@ map_mods_to_reference <- function(modifications, diff) {
 }
 
 check_diff_matches_structure <- function(reference, nucs, trna, reference_id) {
-  ref_base <- reference$ref_base[match(nucs$pos, reference$pos)]
   struct_base <- chartr("T", "U", toupper(nucs$base))
-  bad <- is.na(ref_base) | ref_base != struct_base
+  in_ref <- nucs$pos %in% reference$pos
+
+  # The bundled structures end in a CCA tail that genomic tables lack
+  extra <- !in_ref
+  tail_ok <- !any(extra) ||
+    (all(nucs$pos[extra] > max(reference$pos)) &&
+      paste(struct_base[extra], collapse = "") %in% c("CCA", "CA", "A"))
+  ref_base <- reference$ref_base[match(nucs$pos, reference$pos)]
+  bad <- if (tail_ok) {
+    in_ref & ref_base != struct_base
+  } else {
+    is.na(ref_base) | ref_base != struct_base
+  }
   if (any(bad)) {
     cli::cli_abort(c(
       "{.arg reference_coords} does not match the {.val {trna}} structure.",
@@ -719,7 +753,6 @@ restyle_base_svg <- function(svg_doc) {
 }
 
 add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
-  svg_ns <- xml2::xml_ns(svg_doc)
   root <- xml2::xml_root(svg_doc)
 
   # Create a group for modification circles (inserted at position 0, behind text)
@@ -730,32 +763,63 @@ add_mod_circles <- function(svg_doc, nucs, modifications, palette) {
     .where = 0
   )
 
-  for (i in seq_len(nrow(modifications))) {
-    mod_pos <- modifications$pos[i]
-    mod_name <- modifications$mod1[i]
-
-    nuc <- find_nuc(nucs, mod_pos)
+  # One drawing per position: several modifications share it as pie slices
+  modifications <- unique(modifications[, c("pos", "mod1")])
+  for (pos in unique(modifications$pos)) {
+    nuc <- find_nuc(nucs, pos)
     if (is.null(nuc)) {
       next
     }
-    color <- palette[mod_name]
-    if (is.na(color) || is.null(color)) {
-      color <- "#999999"
+    cx <- nuc$x + nuc_x_offset
+    cy <- nuc$y + nuc_y_offset
+    mods <- modifications$mod1[modifications$pos == pos]
+    for (k in seq_along(mods)) {
+      add_mod_slice(mod_group, cx, cy, k, length(mods), palette[mods[k]])
     }
-
-    xml2::xml_add_child(
-      mod_group,
-      "circle",
-      cx = as.character(nuc$x + nuc_x_offset),
-      cy = as.character(nuc$y + nuc_y_offset),
-      r = "4.3",
-      fill = color,
-      "fill-opacity" = "0.6",
-      stroke = "none"
-    )
   }
 
   svg_doc
+}
+
+# Modifications missing from the palette are drawn as a dotted ring, not a
+# fill, so they cannot be mistaken for a real colour class.
+unknown_mod_style <- list(stroke = "#555555", dash = "1,1.2")
+
+add_mod_slice <- function(group, cx, cy, k, n, color, r = 4.3) {
+  known <- !is.na(color)
+  attrs <- if (known) {
+    list(fill = unname(color), "fill-opacity" = "0.6", stroke = "none")
+  } else {
+    list(
+      fill = "none",
+      stroke = unknown_mod_style$stroke,
+      "stroke-width" = "0.8",
+      "stroke-dasharray" = unknown_mod_style$dash
+    )
+  }
+  if (n == 1) {
+    do.call(
+      xml2::xml_add_child,
+      c(list(group, "circle", cx = cx, cy = cy, r = r), attrs)
+    )
+    return(invisible(NULL))
+  }
+  a0 <- -pi / 2 + 2 * pi * (k - 1) / n
+  a1 <- -pi / 2 + 2 * pi * k / n
+  d <- sprintf(
+    "M %.2f %.2f L %.2f %.2f A %.2f %.2f 0 %d 1 %.2f %.2f Z",
+    cx,
+    cy,
+    cx + r * cos(a0),
+    cy + r * sin(a0),
+    r,
+    r,
+    as.integer(a1 - a0 > pi),
+    cx + r * cos(a1),
+    cy + r * sin(a1)
+  )
+  do.call(xml2::xml_add_child, c(list(group, "path", d = d), attrs))
+  invisible(NULL)
 }
 
 recolor_text <- function(svg_doc, nucs, text_colors) {
@@ -1110,18 +1174,29 @@ add_structure_legend <- function(
 
       for (mod in mod_types) {
         color <- mod_palette[mod]
-        if (is.na(color) || is.null(color)) {
-          color <- "#999999"
+        if (is.na(color)) {
+          xml2::xml_add_child(
+            legend_group,
+            "circle",
+            cx = "6",
+            cy = as.character(y_offset - 3),
+            r = "5",
+            fill = "none",
+            stroke = unknown_mod_style$stroke,
+            "stroke-width" = "0.8",
+            "stroke-dasharray" = unknown_mod_style$dash
+          )
+        } else {
+          xml2::xml_add_child(
+            legend_group,
+            "circle",
+            cx = "6",
+            cy = as.character(y_offset - 3),
+            r = "5",
+            fill = color,
+            "fill-opacity" = "0.6"
+          )
         }
-        xml2::xml_add_child(
-          legend_group,
-          "circle",
-          cx = "6",
-          cy = as.character(y_offset - 3),
-          r = "5",
-          fill = color,
-          "fill-opacity" = "0.6"
-        )
         xml2::xml_add_child(
           legend_group,
           "text",
@@ -1313,10 +1388,11 @@ add_structure_legend <- function(
     parts <- as.numeric(strsplit(viewbox, "\\s+")[[1]])
     if (length(parts) == 4) {
       new_width <- parts[3] + 120
+      new_height <- max(parts[4], legend_y + y_offset + 10)
       xml2::xml_set_attr(
         root,
         "viewBox",
-        paste(parts[1], parts[2], new_width, parts[4])
+        paste(parts[1], parts[2], new_width, new_height)
       )
     }
   }

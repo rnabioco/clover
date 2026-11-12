@@ -4,7 +4,11 @@
 
 * `plot_tRNA_diff()` gains `modifications` and `mod_palette` arguments so that query modifications (for example from `modomics_mods()`) are drawn on the reference layout through Sprinzl matching.
 
+* `plot_tRNA_diff()` no longer fails on the bundled yeast and human structures, whose appended CCA tail is absent from the Sprinzl tables.
+
 * `plot_tRNA_diff()` draws a query tRNA on a reference cloverleaf layout and highlights the differences: reference positions missing from the query are empty grey circles, different bases are outlined, and extra query bases are marked on the backbone and listed in the legend.
+
+* `plot_tRNA_structure()` now grows the figure to fit long modification legends, draws positions with several modifications as pie slices instead of stacked fills, and draws modifications missing from the palette as dotted rings instead of grey fills.
 
 * The bundled *E. coli* K-12 and T4 Sprinzl coordinates now number a 4-nucleotide variable loop 44, 45, 46, 48 instead of 44, 46, 47, 48 (8 of 87 *E. coli* tRNAs and 1 of 8 T4 tRNAs), as GtRNAdb does. The fix is in `assign_sprinzl()` in `data-raw/sprinzl.R`. The bundled T5 and yeast tables, and tRNAs with a variable arm, are not yet regenerated (#43).
 
