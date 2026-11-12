@@ -415,3 +415,48 @@ test_that("plot_tRNA_diff errors when the reference does not match", {
     error = TRUE
   )
 })
+
+test_that("add_mod_circles draws shared positions as slices and unknowns as rings", {
+  nucs <- data.frame(pos = 1:3, base = "A", x = c(0, 10, 20), y = 0)
+  doc <- xml2::read_xml("<svg xmlns='http://www.w3.org/2000/svg'></svg>")
+  mods <- tibble::tibble(
+    pos = c(1, 1, 1, 2, 3),
+    mod1 = c("m1A", "D", "D", "zzz", "m1A")
+  )
+  doc <- add_mod_circles(doc, nucs, mods, c(m1A = "#E69F00", D = "#56B4E9"))
+
+  kids <- xml2::xml_children(xml2::xml_find_first(
+    doc,
+    ".//*[@id='clover-modifications']"
+  ))
+  expect_equal(xml2::xml_name(kids), c("path", "path", "circle", "circle"))
+  expect_equal(xml2::xml_attr(kids[[3]], "fill"), "none")
+  expect_equal(xml2::xml_attr(kids[[3]], "stroke-dasharray"), "1,1.2")
+})
+
+test_that("plot_tRNA_structure grows the viewBox to fit a long legend", {
+  mods <- tibble::tibble(pos = 1:30, mod1 = paste0("mod", 1:30))
+  pal <- stats::setNames(rep("#E69F00", 30), mods$mod1)
+  doc <- xml2::read_xml(
+    plot_tRNA_structure(
+      "tRNA-Gly-TCC",
+      "Escherichia coli",
+      modifications = mods,
+      mod_palette = pal
+    )
+  )
+  vb <- as.numeric(strsplit(xml2::xml_attr(doc, "viewBox"), " ")[[1]])
+  expect_gte(vb[4], 20 + 15 + 14 * 30)
+})
+
+test_that("check_diff_matches_structure accepts a CCA tail missing from the reference", {
+  nucs <- data.frame(pos = 1:6, base = c("G", "C", "G", "C", "C", "A"))
+  reference <- tibble::tibble(pos = 1:3, ref_base = c("G", "C", "G"))
+  expect_silent(check_diff_matches_structure(reference, nucs[1:6, ], "x", "y"))
+
+  nucs$base[1] <- "A"
+  expect_snapshot(
+    check_diff_matches_structure(reference, nucs, "x", "y"),
+    error = TRUE
+  )
+})

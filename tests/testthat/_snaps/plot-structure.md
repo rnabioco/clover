@@ -52,3 +52,13 @@
       x 43 of 75 positions differ between "tRNA-Gly-GCC-1-1" and the bundled cloverleaf.
       i Check that `reference_id` is the same tRNA as `trna`.
 
+# check_diff_matches_structure accepts a CCA tail missing from the reference
+
+    Code
+      check_diff_matches_structure(reference, nucs, "x", "y")
+    Condition
+      Error in `check_diff_matches_structure()`:
+      ! `reference_coords` does not match the "x" structure.
+      x 1 of 6 positions differ between "y" and the bundled cloverleaf.
+      i Check that `reference_id` is the same tRNA as `trna`.
+
