@@ -365,6 +365,40 @@ test_that("plot_tRNA_diff marks Sprinzl positions and names insertions by label"
   expect_contains(legend, "+U (20a) after 20")
 })
 
+test_that("plot_tRNA_diff carries query modifications onto the reference", {
+  ecoli <- read_sprinzl_coords(
+    clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")
+  )
+  t4 <- read_sprinzl_coords(
+    clover_example("sprinzl/phageT4_global_coords.tsv.gz")
+  )
+  diff <- diff_sprinzl(ecoli, "tRNA-Gly-UCC-1-1", t4, "tRNA-Gly-UCC")
+  matched <- diff$reference[!is.na(diff$reference$query_pos), ]
+  mods <- tibble::tibble(
+    pos = matched$query_pos[c(3, 10)],
+    mod1 = c("m1A", "D")
+  )
+
+  doc <- xml2::read_xml(
+    plot_tRNA_diff(
+      "tRNA-Gly-TCC",
+      "Escherichia coli",
+      reference_coords = ecoli,
+      reference_id = "tRNA-Gly-UCC-1-1",
+      query_coords = t4,
+      query_id = "tRNA-Gly-UCC",
+      modifications = mods
+    )
+  )
+
+  expect_length(xml2::xml_find_all(doc, ".//*[@id='clover-mod-legend']"), 1)
+  expect_length(xml2::xml_find_all(doc, ".//*[@id='clover-legend']"), 1)
+  mod_text <- xml2::xml_text(
+    xml2::xml_find_all(doc, ".//*[@id='clover-mod-legend']/*")
+  )
+  expect_contains(mod_text, c("m1A", "D"))
+})
+
 test_that("plot_tRNA_diff errors when the reference does not match", {
   ecoli <- read_sprinzl_coords(
     clover_example("sprinzl/ecoliK12_global_coords.tsv.gz")

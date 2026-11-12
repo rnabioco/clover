@@ -11,7 +11,9 @@ plot_tRNA_diff(
   reference_id,
   query_coords,
   query_id,
+  modifications = NULL,
   output = NULL,
+  mod_palette = NULL,
   position_markers = TRUE
 )
 }
@@ -26,8 +28,16 @@ correspond to the nucleotides of the bundled structure.}
 \item{reference_id, query_id}{The \code{trna_id} of the reference and query tRNA
 within their coordinate tables.}
 
+\item{modifications}{A tibble with columns \code{pos} (1-based position in the
+\strong{query} tRNA sequence) and \code{mod1} (short modification name), such as
+\code{\link[=modomics_mods]{modomics_mods()}} output filtered to the query tRNA. The positions are
+translated to the reference layout.}
+
 \item{output}{Path for the output SVG file. If \code{NULL} (default),
 writes to a temporary file.}
+
+\item{mod_palette}{Named character vector of colors keyed by
+modification short name. If \code{NULL}, uses a default palette.}
 
 \item{position_markers}{Logical; if \code{TRUE} (default), draw small grey
 numbers at Sprinzl positions 10, 20, 30, ... Unlike
@@ -54,6 +64,10 @@ nucleotide and those at the 3' end at the last.
 
 Nothing in the reference layout moves; bases that match are drawn as in
 \code{\link[=plot_tRNA_structure]{plot_tRNA_structure()}}.
+
+Modifications of the query are carried onto the reference layout through
+the same Sprinzl matching. A modified query base that has no reference
+position (an insertion) cannot be drawn and is reported in a message.
 }
 \examples{
 \donttest{
