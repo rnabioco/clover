@@ -313,7 +313,15 @@ structure_html <- function(svg_path) {
 #' Nothing in the reference layout moves; bases that match are drawn as in
 #' [plot_tRNA_structure()].
 #'
+#' Modifications of the query are carried onto the reference layout through
+#' the same Sprinzl matching. A modified query base that has no reference
+#' position (an insertion) cannot be drawn and is reported in a message.
+#'
 #' @inheritParams plot_tRNA_structure
+#' @param modifications A tibble with columns `pos` (1-based position in the
+#'   **query** tRNA sequence) and `mod1` (short modification name), such as
+#'   [modomics_mods()] output filtered to the query tRNA. The positions are
+#'   translated to the reference layout.
 #' @param trna,organism The bundled reference structure, as in
 #'   [plot_tRNA_structure()].
 #' @param position_markers Logical; if `TRUE` (default), draw small grey
@@ -353,14 +361,23 @@ plot_tRNA_diff <- function(
   reference_id,
   query_coords,
   query_id,
+  modifications = NULL,
   output = NULL,
+  mod_palette = NULL,
   position_markers = TRUE
 ) {
   rlang::check_installed("jsonlite", reason = "to read structure metadata.")
 
   diff <- diff_sprinzl(reference_coords, reference_id, query_coords, query_id)
+  ref_mods <- map_mods_to_reference(modifications, diff)
 
-  base_svg <- plot_tRNA_structure(trna, organism, position_markers = FALSE)
+  base_svg <- plot_tRNA_structure(
+    trna,
+    organism,
+    modifications = ref_mods,
+    mod_palette = mod_palette,
+    position_markers = FALSE
+  )
   metadata <- jsonlite::fromJSON(
     file.path(structure_org_dir(organism), paste0(trna, ".json")),
     simplifyVector = TRUE
@@ -374,7 +391,21 @@ plot_tRNA_diff <- function(
     svg_doc <- add_position_markers(svg_doc, nucs, labels = labels)
   }
   svg_doc <- add_diff_marks(svg_doc, nucs, diff)
-  svg_doc <- add_diff_legend(svg_doc, metadata, diff, reference_id, query_id)
+
+  legend_y <- 0
+  if (!is.null(ref_mods) && nrow(ref_mods) > 0) {
+    mod_legend <- xml2::xml_find_first(svg_doc, ".//*[@id='clover-legend']")
+    xml2::xml_set_attr(mod_legend, "id", "clover-mod-legend")
+    legend_y <- 15 + 14 * dplyr::n_distinct(ref_mods$mod1) + 10
+  }
+  svg_doc <- add_diff_legend(
+    svg_doc,
+    metadata,
+    diff,
+    reference_id,
+    query_id,
+    legend_y
+  )
 
   if (is.null(output)) {
     output <- tempfile(fileext = ".svg")
@@ -391,6 +422,26 @@ diff_colors <- c(
   substitution = "#D55E00",
   insertion = "#0072B2"
 )
+
+map_mods_to_reference <- function(modifications, diff) {
+  if (is.null(modifications)) {
+    return(NULL)
+  }
+  ref_pos <- diff$reference$pos[match(
+    modifications$pos,
+    diff$reference$query_pos
+  )]
+  lost <- is.na(ref_pos)
+  if (any(lost)) {
+    cli::cli_inform(c(
+      "!" = "{sum(lost)} modification{?s} not drawn: no matching reference
+        position.",
+      "i" = "Query position{?s} {modifications$pos[lost]}."
+    ))
+  }
+  modifications$pos <- ref_pos
+  modifications[!lost, ]
+}
 
 check_diff_matches_structure <- function(reference, nucs, trna, reference_id) {
   ref_base <- reference$ref_base[match(nucs$pos, reference$pos)]
@@ -452,7 +503,8 @@ add_diff_marks <- function(svg_doc, nucs, diff) {
       r = "4.3",
       fill = if (status == "deletion") "#FFFFFF" else "none",
       stroke = diff_colors[[status]],
-      "stroke-width" = "1.2"
+      "stroke-width" = if (status == "deletion") "1" else "0.7",
+      "stroke-dasharray" = if (status == "deletion") "1.8,1.4" else NULL
     )
   }
 
@@ -480,13 +532,24 @@ add_diff_marks <- function(svg_doc, nucs, diff) {
   svg_doc
 }
 
-add_diff_legend <- function(svg_doc, metadata, diff, reference_id, query_id) {
+add_diff_legend <- function(
+  svg_doc,
+  metadata,
+  diff,
+  reference_id,
+  query_id,
+  y_start = 0
+) {
   root <- xml2::xml_root(svg_doc)
   legend <- xml2::xml_add_child(
     root,
     "g",
     id = "clover-legend",
-    transform = sprintf("translate(%.0f, 20)", metadata$width + 10)
+    transform = sprintf(
+      "translate(%.0f, %.0f)",
+      metadata$width + 10,
+      20 + y_start
+    )
   )
   font <- "Helvetica, Arial, sans-serif"
   y <- 0
@@ -541,7 +604,8 @@ add_diff_legend <- function(svg_doc, metadata, diff, reference_id, query_id) {
         r = "5",
         fill = if (kind == "deletion") "#FFFFFF" else "none",
         stroke = diff_colors[[kind]],
-        "stroke-width" = "1.2"
+        "stroke-width" = if (kind == "deletion") "1" else "0.7",
+        "stroke-dasharray" = if (kind == "deletion") "1.8,1.4" else NULL
       )
     }
     add_text(e[[2]], 16, y, 9)
