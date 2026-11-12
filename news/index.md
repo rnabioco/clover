@@ -8,6 +8,12 @@
   deletion and listing query-only positions as insertions.
 
 - [`plot_tRNA_diff()`](https://rnabioco.github.io/clover/reference/plot_tRNA_diff.md)
+  gains `modifications` and `mod_palette` arguments so that query
+  modifications (for example from
+  [`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md))
+  are drawn on the reference layout through Sprinzl matching.
+
+- [`plot_tRNA_diff()`](https://rnabioco.github.io/clover/reference/plot_tRNA_diff.md)
   draws a query tRNA on a reference cloverleaf layout and highlights the
   differences: reference positions missing from the query are empty grey
   circles, different bases are outlined, and extra query bases are

@@ -65,7 +65,9 @@ Positions are matched through Sprinzl labels (see <code><a href="diff_sprinzl.ht
 <span>  <span class="va">reference_id</span>,</span>
 <span>  <span class="va">query_coords</span>,</span>
 <span>  <span class="va">query_id</span>,</span>
+<span>  modifications <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mod_palette <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  position_markers <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -90,9 +92,21 @@ correspond to the nucleotides of the bundled structure.</p></dd>
 within their coordinate tables.</p></dd>
 
 
+<dt id="arg-modifications">modifications<a class="anchor" aria-label="anchor" href="#arg-modifications"></a></dt>
+<dd><p>A tibble with columns <code>pos</code> (1-based position in the
+<strong>query</strong> tRNA sequence) and <code>mod1</code> (short modification name), such as
+<code><a href="modomics_mods.html">modomics_mods()</a></code> output filtered to the query tRNA. The positions are
+translated to the reference layout.</p></dd>
+
+
 <dt id="arg-output">output<a class="anchor" aria-label="anchor" href="#arg-output"></a></dt>
 <dd><p>Path for the output SVG file. If <code>NULL</code> (default),
 writes to a temporary file.</p></dd>
+
+
+<dt id="arg-mod-palette">mod_palette<a class="anchor" aria-label="anchor" href="#arg-mod-palette"></a></dt>
+<dd><p>Named character vector of colors keyed by
+modification short name. If <code>NULL</code>, uses a default palette.</p></dd>
 
 
 <dt id="arg-position-markers">position_markers<a class="anchor" aria-label="anchor" href="#arg-position-markers"></a></dt>
@@ -117,6 +131,9 @@ the legend. Inserted bases at the 5' end are placed at the first
 nucleotide and those at the 3' end at the last.</p></li>
 </ul><p>Nothing in the reference layout moves; bases that match are drawn as in
 <code><a href="plot_tRNA_structure.html">plot_tRNA_structure()</a></code>.</p>
+<p>Modifications of the query are carried onto the reference layout through
+the same Sprinzl matching. A modified query base that has no reference
+position (an insertion) cannot be drawn and is reported in a message.</p>
     </div>
 
     <div class="section level2">

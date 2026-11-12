@@ -15,7 +15,9 @@ plot_tRNA_diff(
   reference_id,
   query_coords,
   query_id,
+  modifications = NULL,
   output = NULL,
+  mod_palette = NULL,
   position_markers = TRUE
 )
 ```
@@ -39,10 +41,23 @@ plot_tRNA_diff(
   The `trna_id` of the reference and query tRNA within their coordinate
   tables.
 
+- modifications:
+
+  A tibble with columns `pos` (1-based position in the **query** tRNA
+  sequence) and `mod1` (short modification name), such as
+  [`modomics_mods()`](https://rnabioco.github.io/clover/reference/modomics_mods.md)
+  output filtered to the query tRNA. The positions are translated to the
+  reference layout.
+
 - output:
 
   Path for the output SVG file. If `NULL` (default), writes to a
   temporary file.
+
+- mod_palette:
+
+  Named character vector of colors keyed by modification short name. If
+  `NULL`, uses a default palette.
 
 - position_markers:
 
@@ -69,6 +84,10 @@ The path to the annotated SVG file (invisibly).
 
 Nothing in the reference layout moves; bases that match are drawn as in
 [`plot_tRNA_structure()`](https://rnabioco.github.io/clover/reference/plot_tRNA_structure.md).
+
+Modifications of the query are carried onto the reference layout through
+the same Sprinzl matching. A modified query base that has no reference
+position (an insertion) cannot be drawn and is reported in a message.
 
 ## Examples
 
